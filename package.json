@@ -1,0 +1,58 @@
+{
+  "name": "web3-boilerplate",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@headlessui/react": "^1.7.3",
+    "@heroicons/react": "^2.0.12",
+    "@types/node": "^16.18.0",
+    "@types/react": "^18.0.23",
+    "@types/react-dom": "^18.0.7",
+    "@web3modal/ethereum": "^2.0.0-alpha.8",
+    "@web3modal/react": "^2.0.0-alpha.8",
+    "ethers": "^5.7.2",
+    "heroicons-react": "^1.4.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.4.2"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "format": "prettier --config .prettierrc 'src/**/*.{js,ts,tsx}' --write",
+    "lint": "tsc --noEmit && eslint",
+    "lint:fix": "tsc --noEmit && eslint --fix"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.41.0",
+    "@typescript-eslint/parser": "^5.41.0",
+    "@vitejs/plugin-react": "^2.2.0",
+    "autoprefixer": "^10.4.12",
+    "eslint": "^8.26.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "postcss": "^8.4.18",
+    "prettier": "2.7.1",
+    "tailwindcss": "^3.2.1",
+    "typescript": "^4.8.4",
+    "vite": "^3.2.0"
+  }
+}
