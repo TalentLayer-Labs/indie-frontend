@@ -1,7 +1,11 @@
 import Header from '../components/Header';
 import ServiceItem from '../components/ServiceItem';
+import useServices from '../hooks/useServices';
+import { ServiceStatus } from '../types';
 
 function Services() {
+  const { services } = useServices(ServiceStatus.Opened);
+
   return (
     <>
       <Header />
@@ -14,16 +18,18 @@ function Services() {
             </p>
 
             <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4'>
-              {[...Array(12)].map((e, i) => {
-                return <ServiceItem />;
+              {services.map((service, i) => {
+                return <ServiceItem service={service} key={i} />;
               })}
             </div>
 
-            <a
-              href='#'
-              className='px-5 py-2  border border-indigo-600 rounded-full text-indigo-600 hover:text-white hover:bg-indigo-600'>
-              Load More
-            </a>
+            {services.length === 20 && (
+              <a
+                href='#'
+                className='px-5 py-2  border border-indigo-600 rounded-full text-indigo-600 hover:text-white hover:bg-indigo-600'>
+                Load More
+              </a>
+            )}
           </div>
         </div>
       </div>
