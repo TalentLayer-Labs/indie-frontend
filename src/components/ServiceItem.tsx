@@ -18,7 +18,7 @@ function ServiceItem() {
             <p className='text-gray-500 font-medium'>1 week</p>
           </div>
           <div>
-            <p className='text-gray-500'>I'm an export on integrating web3 dapps with reactJS</p>
+            <p className='text-gray-500'>I'm an expert on integrating web3 dapps with reactJS</p>
           </div>
         </div>
 
