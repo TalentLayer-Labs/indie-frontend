@@ -2,13 +2,16 @@ import { Menu, Transition } from '@headlessui/react';
 import { ConnectButton, useAccount, useDisconnect, useEnsAvatar } from '@web3modal/react';
 import { Fragment } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAsync } from '../hooks/useAsync';
+import { getUserByAddress } from '../services/queries';
 import { truncateAddress } from '../utils';
+import UserHandle from './UserHandle';
 
 function UserAccount() {
   const { account } = useAccount();
   const navigate = useNavigate();
   const disconnect = useDisconnect();
-  const { data, isLoading } = useEnsAvatar({
+  const { data: avatarImage } = useEnsAvatar({
     addressOrName: 'vitalik.eth',
   });
 
@@ -23,8 +26,8 @@ function UserAccount() {
               <div className='flex items-center'>
                 <Menu.Button className='flex max-w-xs items-center rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2'>
                   <span className='sr-only'>Open user menu</span>
-                  {data !== undefined ? (
-                    <img className='h-8 w-8 rounded-full' alt='' src={data} />
+                  {avatarImage !== undefined ? (
+                    <img className='h-8 w-8 rounded-full' alt='' src={avatarImage} />
                   ) : (
                     <img
                       className='h-8 w-8 rounded-full'
@@ -38,10 +41,12 @@ function UserAccount() {
                   <p
                     className='text-sm font-medium text-gray-700 group-hover:text-gray-900'
                     style={{ marginBottom: '-3px' }}>
-                    {truncateAddress(account.address)}
+                    {account.isConnected && (
+                      <UserHandle address={account.address.toLocaleLowerCase()} />
+                    )}
                   </p>
                   <p className='text-xs font-medium text-gray-500 group-hover:text-gray-700'>
-                    More
+                    {truncateAddress(account.address)}
                   </p>
                 </Menu.Button>
               </div>
