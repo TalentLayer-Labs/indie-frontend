@@ -1,38 +1,36 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-import { Route, Routes } from 'react-router-dom';
-import { useAccount, Web3Modal } from '@web3modal/react';
 import type { ConfigOptions } from '@web3modal/core';
-import Home from './pages/Home';
+import { chains } from '@web3modal/ethereum';
+import { Web3Modal } from '@web3modal/react';
+import { Route, Routes } from 'react-router-dom';
+import './App.css';
 import About from './pages/About';
-import Services from './pages/Services';
 import Dashboard from './pages/Dashboard';
-import NotLog from './pages/NotLog';
+import Home from './pages/Home';
+import Services from './pages/Services';
+import Talents from './pages/Talents';
 
 const config: ConfigOptions = {
   projectId: `${import.meta.env.VITE_WALLECT_CONNECT_PROJECT_ID}`,
   theme: 'dark',
   accentColor: 'default',
   ethereum: {
-    appName: 'web3-boilerplate',
+    appName: 'TalentLayer Workshop',
+    chains: [chains.goerli, chains.mainnet, chains.localhost, chains.polygon],
   },
 };
 
 function App() {
-  const { account, isReady } = useAccount();
-
   return (
-    <>
+    <div className='antialiased'>
       <Routes>
         <Route path='/' element={<Home />} />
-        <Route path='about' element={<About />} />
-        <Route path='services' element={<Services />} />
-        <Route path='dashboard' element={<Dashboard />} />
-        <Route path='notlog' element={<NotLog />} />
+        <Route path='/dashboard' element={<Dashboard />} />
+        <Route path='/services' element={<Services />} />
+        <Route path='/talents' element={<Talents />} />
+        <Route path='/about' element={<About />} />
       </Routes>
       <Web3Modal config={config} />
-    </>
+    </div>
   );
 }
 

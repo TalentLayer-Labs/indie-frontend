@@ -1,17 +1,13 @@
-import Hero from '../components/Hero';
-import Logo from '../components/Logo';
-import Content from '../components/Content';
-import Footer from '../components/Footer';
-import Menu from '../components/Menu';
+import Header from '../components/Header';
+import CreateId from '../components/Home/CreateId';
+import SearchService from '../components/Home/SearchService';
 
 function Home() {
   return (
     <>
-      <Menu />
-      <Hero />
-      <Logo />
-      <Content />
-      <Footer />
+      <Header />
+      <CreateId />
+      <SearchService />
     </>
   );
 }

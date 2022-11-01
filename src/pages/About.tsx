@@ -1,13 +1,11 @@
-import Menu from '../components/Menu';
-import Footer from '../components/Footer';
-import Content from '../components/Content';
+import Header from '../components/Header';
+import CreateId from '../components/Home/CreateId';
+import SearchService from '../components/Home/SearchService';
 
 function About() {
   return (
     <>
-      <Menu />
-      <Content />
-      <Footer />
+      <Header />
     </>
   );
 }
