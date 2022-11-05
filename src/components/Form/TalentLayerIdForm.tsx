@@ -64,7 +64,7 @@ function TalentLayerIdForm() {
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className='flex divide-x bg-white py-4 px-1 sm:px-0 justify-center items-center flex-row drop-shadow-lg rounded-full'>
+      <div className='flex divide-x bg-white py-4 px-1 sm:px-0 justify-center items-center flex-row drop-shadow-lg rounded-lg'>
         <div className='sm:px-6 flex flex-row items-center gap-2'>
           <span className='text-gray-500'>
             <svg
@@ -94,7 +94,9 @@ function TalentLayerIdForm() {
           />
         </div>
 
-        <SubmitButton isSubmitting={isSubmitting} />
+        <div className='sm:px-4 sm:space-x-4'>
+          <SubmitButton isSubmitting={isSubmitting} />
+        </div>
       </div>
     </form>
   );
