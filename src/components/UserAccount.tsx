@@ -1,16 +1,12 @@
 import { Menu, Transition } from '@headlessui/react';
-import { ConnectButton, useAccount, useDisconnect, useEnsAvatar } from '@web3modal/react';
+import { ConnectButton, useAccount, useEnsAvatar } from '@web3modal/react';
 import { Fragment } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAsync } from '../hooks/useAsync';
-import { getUserByAddress } from '../services/queries';
 import { truncateAddress } from '../utils';
 import UserHandle from './UserHandle';
+import UserSubMenu from './UserSubMenu';
 
 function UserAccount() {
   const { account } = useAccount();
-  const navigate = useNavigate();
-  const disconnect = useDisconnect();
   const { data: avatarImage } = useEnsAvatar({
     addressOrName: 'vitalik.eth',
   });
@@ -63,38 +59,7 @@ function UserAccount() {
             leaveFrom='transform opacity-100 scale-100'
             leaveTo='transform opacity-0 scale-95'>
             <Menu.Items className='absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none'>
-              <Menu.Item key='Log out'>
-                {({ active }) => (
-                  <a
-                    href='Log out'
-                    onClick={event => {
-                      event.preventDefault();
-                      disconnect();
-                      navigate('/');
-                    }}
-                    className={`block px-4 py-2 text-sm text-gray-700' ${
-                      active ? 'bg-gray-100' : ''
-                    }`}>
-                    Log out
-                  </a>
-                )}
-              </Menu.Item>
-              <Menu.Item key='Recovery'>
-                {({ active }) => (
-                  <a
-                    href='recovery'
-                    onClick={event => {
-                      event.preventDefault();
-                      disconnect();
-                      navigate('/recovery');
-                    }}
-                    className={`block px-4 py-2 text-sm text-gray-700' ${
-                      active ? 'bg-gray-100' : ''
-                    }`}>
-                    Recover an ID
-                  </a>
-                )}
-              </Menu.Item>
+              <UserSubMenu />
             </Menu.Items>
           </Transition>
         </Menu>
