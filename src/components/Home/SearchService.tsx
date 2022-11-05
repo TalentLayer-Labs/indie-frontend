@@ -21,7 +21,7 @@ function SearchService() {
           </p>
 
           <div>
-            <div className='flex divide-x bg-white py-4 px-1 sm:px-0 justify-center items-center flex-row drop-shadow-lg rounded-full'>
+            <div className='flex divide-x bg-white py-4 px-1 sm:px-0 justify-center items-center flex-row drop-shadow-lg rounded-lg'>
               <div className='sm:px-6 flex flex-row items-center gap-2'>
                 <span className='text-gray-500'>
                   <svg
@@ -39,7 +39,7 @@ function SearchService() {
                   </svg>
                 </span>
                 <input
-                  className='text-gray-500 py-2 focus:ring-0 outline-none text-sm sm:text-lg'
+                  className='text-gray-500 py-2 focus:ring-0 outline-none text-sm sm:text-lg border-0'
                   type='text'
                   placeholder='Search by title'
                 />
@@ -49,7 +49,7 @@ function SearchService() {
                 <button
                   onClick={onClick}
                   type='button'
-                  className='px-5 py-2 border border-indigo-600 rounded-full hover:text-indigo-600 hover:bg-white text-white bg-indigo-600'>
+                  className='px-5 py-2 border border-indigo-600 rounded-lg hover:text-indigo-600 hover:bg-white text-white bg-indigo-600'>
                   Search
                 </button>
               </div>

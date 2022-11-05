@@ -35,7 +35,7 @@ function ServiceItem({ service }: { service: Service }) {
 
         <div className='flex flex-row gap-4 justify-between items-center'>
           <p className='text-gray-900 font-bold'>
-            {serviceDetail.rateAmount}
+            {serviceDetail.rateAmount.toString()}
             {serviceDetail.rateToken == CONST.ETH_ADDRESS ? CONST.ETH_SYMBOL : 'ERC20'}
           </p>
           <a

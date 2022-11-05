@@ -8,6 +8,15 @@ export type User = {
   numReviews: string;
 };
 
+export type Account = {
+  address: string;
+  isConnected: boolean | undefined;
+  isReconnecting: boolean | undefined;
+  isConnecting: boolean | undefined;
+  isDisconnected: boolean | undefined;
+  status: 'connected' | 'reconnecting' | 'connecting' | 'disconnected' | undefined;
+};
+
 export type Service = {
   id: string;
   status: string;
