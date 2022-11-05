@@ -62,8 +62,10 @@ function CreateId() {
               Create <span className='text-indigo-600'>Your </span> TalentLayer ID
             </p>
 
-            <p className='text-gray-500'>
-              Own your reputation and identity on the decentralized web
+            <p className='text-gray-500 text-center'>
+              Own your reputation as an indie freelancer.
+              <br />
+              Onboard your clients, leave mutual reviews, and grow your reputation.
             </p>
 
             <form onSubmit={handleSubmit}>

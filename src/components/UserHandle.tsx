@@ -8,7 +8,7 @@ function UserHandle({ address }: { address: string }) {
     const fetchData = async () => {
       try {
         const response = await getUserByAddress(address);
-        if (response?.data?.data?.users) {
+        if (response?.data?.data?.users[0]?.handle !== undefined) {
           setHandle(response?.data?.data?.users[0].handle);
         }
       } catch (error: any) {
@@ -19,7 +19,7 @@ function UserHandle({ address }: { address: string }) {
     fetchData();
   }, [address]);
 
-  if (!handle) {
+  if (handle === null) {
     return null;
   }
 

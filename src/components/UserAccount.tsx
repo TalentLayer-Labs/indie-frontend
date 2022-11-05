@@ -79,6 +79,22 @@ function UserAccount() {
                   </a>
                 )}
               </Menu.Item>
+              <Menu.Item key='Recovery'>
+                {({ active }) => (
+                  <a
+                    href='recovery'
+                    onClick={event => {
+                      event.preventDefault();
+                      disconnect();
+                      navigate('/recovery');
+                    }}
+                    className={`block px-4 py-2 text-sm text-gray-700' ${
+                      active ? 'bg-gray-100' : ''
+                    }`}>
+                    Recover an ID
+                  </a>
+                )}
+              </Menu.Item>
             </Menu.Items>
           </Transition>
         </Menu>
