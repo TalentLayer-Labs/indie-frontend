@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-function SearchService() {
+function SearchTalent() {
   const navigate = useNavigate();
 
   const onClick = useCallback(() => {
@@ -9,15 +9,15 @@ function SearchService() {
   }, []);
 
   return (
-    <div className='bg-gray-50'>
+    <div className='bg-white'>
       <div className='max-w-7xl mx-auto text-gray-900 px-4'>
         <div className='flex justify-center items-center gap-10 flex-col py-20'>
           <p className='text-7xl font-medium tracking-wider max-w-lg text-center'>
-            Find your <span className='text-indigo-600'>Next Job </span> Now
+            Search a <span className='text-indigo-600'>Talent </span>
           </p>
 
           <p className='text-gray-500'>
-            Earn money doing what you love. Find a job that fits your skills and schedule.
+            Hire the best freelance, verified their reviews and start working together.
           </p>
 
           <div>
@@ -41,7 +41,7 @@ function SearchService() {
                 <input
                   className='text-gray-500 py-2 focus:ring-0 outline-none text-sm sm:text-lg'
                   type='text'
-                  placeholder='Search by title'
+                  placeholder='Search by skills'
                 />
               </div>
 
@@ -61,4 +61,4 @@ function SearchService() {
   );
 }
 
-export default SearchService;
+export default SearchTalent;
