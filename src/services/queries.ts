@@ -167,7 +167,7 @@ export const getUserById = (id: string): Promise<any> => {
 export const getUserByAddress = (address: string): Promise<any> => {
   const query = `
   {
-    users(where: {address: "${address}"}, first: 1) {
+    users(where: {address: "${address.toLocaleLowerCase()}"}, first: 1) {
       id
       address
       uri

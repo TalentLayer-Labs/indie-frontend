@@ -17,29 +17,31 @@ const config: ConfigOptions = {
   theme: 'dark',
   accentColor: 'default',
   ethereum: {
-    appName: 'TalentLayer Workshop',
+    appName: 'TalentLayer indie',
     chains: [chains.goerli, chains.mainnet, chains.localhost, chains.polygon],
   },
 };
 
 function App() {
   return (
-    <div className='antialiased'>
-      <BrowserRouter>
-        <Routes>
-          <Route path='/' element={<Layout />}>
-            <Route index element={<Home />} />
-            <Route path='/dashboard' element={<Dashboard />} />
-            <Route path='/services' element={<Services />} />
-            <Route path='/services/:id' element={<Service />} />
-            <Route path='/services/create' element={<CreateService />} />
-            <Route path='/talents' element={<Talents />} />
-            <Route path='/about' element={<About />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
+    <>
+      <div className='antialiased'>
+        <BrowserRouter>
+          <Routes>
+            <Route path='/' element={<Layout />}>
+              <Route index element={<Home />} />
+              <Route path='/dashboard' element={<Dashboard />} />
+              <Route path='/services' element={<Services />} />
+              <Route path='/services/:id' element={<Service />} />
+              <Route path='/services/create' element={<CreateService />} />
+              <Route path='/talents' element={<Talents />} />
+              <Route path='/about' element={<About />} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </div>
       <Web3Modal config={config} />
-    </div>
+    </>
   );
 }
 
