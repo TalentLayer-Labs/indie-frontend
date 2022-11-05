@@ -1,15 +1,21 @@
-import { FolderIcon, HomeIcon, UsersIcon } from '@heroicons/react/24/outline';
+import {
+  HomeIcon,
+  MagnifyingGlassIcon,
+  PlusIcon,
+  PresentationChartBarIcon,
+  SparklesIcon,
+} from '@heroicons/react/24/outline';
 import { NavLink } from 'react-router-dom';
 
 const navigation = [
-  { name: 'Presentation', href: '/', icon: FolderIcon, current: false },
-  { name: 'Your dashboard', href: '/dashboard', icon: HomeIcon, current: true },
-  { name: 'Find jobs', href: '/services', icon: FolderIcon, current: false },
-  { name: 'Post a job', href: '/services/create', icon: UsersIcon, current: false },
-  { name: 'Find talents', href: '/talents', icon: FolderIcon, current: false },
+  { name: 'Presentation', href: '/', icon: HomeIcon, current: false },
+  { name: 'Your dashboard', href: '/dashboard', icon: PresentationChartBarIcon, current: true },
+  { name: 'Find jobs', href: '/services', icon: MagnifyingGlassIcon, current: false },
+  { name: 'Post a job', href: '/services/create', icon: PlusIcon, current: false },
+  { name: 'Find talents', href: '/talents', icon: SparklesIcon, current: false },
 ];
 
-function Nav() {
+function SideMenu() {
   return (
     <nav className='space-y-1 px-2'>
       {navigation.map(item => (
@@ -29,4 +35,4 @@ function Nav() {
   );
 }
 
-export default Nav;
+export default SideMenu;

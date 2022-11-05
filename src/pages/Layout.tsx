@@ -4,7 +4,7 @@ import { ConnectButton, useAccount } from '@web3modal/react';
 import { Fragment, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import Logo from '../components/Logo';
-import Nav from '../components/Nav';
+import SideMenu from '../components/SideMenu';
 import UserAccount from '../components/UserAccount';
 
 function Layout(props: any) {
@@ -63,7 +63,7 @@ function Layout(props: any) {
                     <Logo />
                   </div>
                   <div className='mt-5 h-0 flex-1 overflow-y-auto'>
-                    <Nav />
+                    <SideMenu />
                   </div>
                 </Dialog.Panel>
               </Transition.Child>
@@ -80,7 +80,7 @@ function Layout(props: any) {
               <Logo />
             </div>
             <div className='mt-5 flex flex-1 flex-col'>
-              <Nav />
+              <SideMenu />
             </div>
           </div>
         </div>
