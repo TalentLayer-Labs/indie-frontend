@@ -23,7 +23,7 @@ const getDecimal = async (erc20Token: Contract): Promise<string> => {
 export const parseRateAmount = async (
   rateAmount: string,
   rateToken: string,
-  signer: Signer,
+  signer: ethers.Signer,
 ): Promise<BigNumber> => {
   if (rateToken === CONST.ETH_ADDRESS) {
     return ethers.utils.parseEther(rateAmount);

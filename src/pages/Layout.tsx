@@ -1,19 +1,13 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { Bars3BottomLeftIcon, XMarkIcon } from '@heroicons/react/24/outline';
-import { ConnectButton, useAccount } from '@web3modal/react';
 import { Fragment, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import Logo from '../components/Logo';
 import SideMenu from '../components/SideMenu';
 import UserAccount from '../components/UserAccount';
 
-function Layout(props: any) {
-  const { account } = useAccount();
+function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
-  if (account.isConnected === false) {
-    return <ConnectButton />;
-  }
 
   return (
     <>

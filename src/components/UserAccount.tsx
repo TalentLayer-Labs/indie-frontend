@@ -1,12 +1,13 @@
 import { Menu, Transition } from '@headlessui/react';
 import { ConnectButton, useAccount, useEnsAvatar } from '@web3modal/react';
 import { Fragment } from 'react';
+import useUser from '../hooks/useUser';
 import { truncateAddress } from '../utils';
-import UserHandle from './UserHandle';
 import UserSubMenu from './UserSubMenu';
 
 function UserAccount() {
   const { account } = useAccount();
+  const user = useUser();
   const { data: avatarImage } = useEnsAvatar({
     addressOrName: 'vitalik.eth',
   });
@@ -37,9 +38,7 @@ function UserAccount() {
                   <p
                     className='text-sm font-medium text-gray-700 group-hover:text-gray-900'
                     style={{ marginBottom: '-3px' }}>
-                    {account.isConnected && (
-                      <UserHandle address={account.address.toLocaleLowerCase()} />
-                    )}
+                    {user?.handle !== undefined ? user.handle : ''}
                   </p>
                   <p className='text-xs font-medium text-gray-500 group-hover:text-gray-700'>
                     {truncateAddress(account.address)}
