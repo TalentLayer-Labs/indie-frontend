@@ -1,25 +1,13 @@
-import { CONST } from '../constants';
-import { ProposalType } from '../types';
+import { ethers } from 'ethers';
+import { TOKENS } from '../constants';
 
-export const renderToken = (tokenAddress: string): string => {
-  let result = '';
-  switch (tokenAddress) {
-    case CONST.DAI_ADDRESS:
-      result = CONST.DAI_SYMBOL;
-      break;
-    case CONST.ETH_ADDRESS:
-      result = CONST.ETH_SYMBOL;
-      break;
-    case CONST.USDC_ADDRESS:
-      result = CONST.USDC_SYMBOL;
-      break;
-    default:
-      // eslint-disable-next-line no-console
-      console.error('Missing token!');
-      result = '';
-      break;
+export const renderTokenAmount = (tokenAddress: string, value: string): string => {
+  if (TOKENS[tokenAddress] === undefined) {
+    return 'unknown token';
   }
-  return result;
+  const symbol = TOKENS[tokenAddress].symbol;
+  const formattedValue = ethers.utils.formatUnits(value, 18);
+  return `${formattedValue} ${symbol}`;
 };
 
 export const renderRateUnit = (typeId: string) => {

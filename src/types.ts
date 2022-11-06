@@ -35,7 +35,7 @@ export type ServiceDetails = {
   keywords: string;
   recipient: string;
   role: string;
-  rateAmount: number;
+  rateAmount: string;
   rateToken: string;
 };
 
@@ -118,6 +118,8 @@ export enum ProfileType {
 export type Token = {
   name: string;
   symbol: string;
+  address: string;
+  decimals: number;
 };
 
 export type TokenFormattedValues = {

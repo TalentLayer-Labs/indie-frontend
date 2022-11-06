@@ -1,12 +1,14 @@
-import { useAccount, useConnectModal, useNetwork, useProvider, useSigner } from '@web3modal/react';
+import { getParsedEthersError } from '@enzoferey/ethers-error-parser';
+import { EthersError } from '@enzoferey/ethers-error-parser/dist/types';
+import { useConnectModal } from '@web3modal/react';
 import { ethers } from 'ethers';
-import { Field, Form, Formik, useFormik } from 'formik';
-import { useContext, useEffect, useState } from 'react';
+import { Field, Form, Formik } from 'formik';
+import { useContext } from 'react';
+import { toast } from 'react-toastify';
 import * as Yup from 'yup';
-import { CONST } from '../../constants';
+import { TOKENS } from '../../constants';
 import TalentLayerContext from '../../context/talentLayer';
 import ServiceRegistry from '../../contracts/ServiceRegistry.json';
-import useUser from '../../hooks/useUser';
 import postToIPFS from '../../services/ipfs';
 import { parseRateAmount } from '../../services/web3';
 import SubmitButton from './SubmitButton';
@@ -35,37 +37,19 @@ const validationSchema = Yup.object({
   rateAmount: Yup.string().required('amount is required'),
 });
 
-const tokens = [
-  {
-    name: CONST.DAI_SYMBOL,
-    address: CONST.DAI_ADDRESS,
-  },
-  {
-    name: CONST.USDC_SYMBOL,
-    address: CONST.USDC_ADDRESS,
-  },
-  {
-    name: CONST.ETH_SYMBOL,
-    address: CONST.ETH_ADDRESS,
-  },
-];
-
 function ServiceForm() {
   const { open: openConnectModal } = useConnectModal();
-  const { provider } = useProvider();
-  const [hasSucceed, setHasSucceed] = useState(false);
-  const { account, signer } = useContext(TalentLayerContext);
-
-  console.log({ signer, account });
+  const { account, signer, provider } = useContext(TalentLayerContext);
 
   const onSubmit = async (
     values: IFormValues,
-    { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void },
+    {
+      setSubmitting,
+      resetForm,
+    }: { setSubmitting: (isSubmitting: boolean) => void; resetForm: () => void },
   ) => {
-    console.log('onSubmit', values);
     if (account?.isConnected === true && provider !== undefined && signer !== undefined) {
       try {
-        console.log(provider);
         const parsedRateAmount = await parseRateAmount(
           values.rateAmount.toString(),
           values.rateToken,
@@ -78,7 +62,7 @@ function ServiceForm() {
             keywords: values.keywords,
             role: 'buyer',
             rateToken: values.rateToken,
-            rateAmount: parsedRateAmount,
+            rateAmount: parsedRateAmount.toString(),
           }),
         );
 
@@ -88,17 +72,22 @@ function ServiceForm() {
           signer,
         );
         const tx = await contract.createOpenServiceFromBuyer('1', uri);
-        const receipt = await provider.waitForTransaction(tx.hash);
+        const receipt = await toast.promise(provider.waitForTransaction(tx.hash), {
+          pending: 'Your transaction is pending',
+          success:
+            'Congrats! Your new job has been added, it will be visible in a few minutes in the dedicated section.',
+          error: 'An error occurred while creating your job',
+        });
         setSubmitting(false);
 
         if (receipt.status === 1) {
-          console.log('success');
-          setHasSucceed(true);
+          resetForm();
         } else {
           console.log('error');
         }
       } catch (error) {
-        console.error(error);
+        const parsedEthersError = getParsedEthersError(error as EthersError);
+        toast.error(`${parsedEthersError.errorCode} - ${parsedEthersError.context}`);
       }
     } else {
       openConnectModal();
@@ -164,9 +153,9 @@ function ServiceForm() {
                   className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
                   placeholder=''>
                   <option value=''>Select a token</option>
-                  {tokens.map((token, index) => (
-                    <option key={index} value={token.address}>
-                      {token.name}
+                  {Object.keys(TOKENS).map((address, index) => (
+                    <option key={index} value={address}>
+                      {TOKENS[address].symbol}
                     </option>
                   ))}
                 </Field>

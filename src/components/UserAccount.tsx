@@ -1,25 +1,23 @@
 import { Menu, Transition } from '@headlessui/react';
-import { ConnectButton, useAccount, useEnsAvatar } from '@web3modal/react';
-import { Fragment } from 'react';
-import useUser from '../hooks/useUser';
+import { ConnectButton, useEnsAvatar } from '@web3modal/react';
+import { Fragment, useContext } from 'react';
+import TalentLayerContext from '../context/talentLayer';
 import { truncateAddress } from '../utils';
 import UserSubMenu from './UserSubMenu';
 
 function UserAccount() {
-  const { account } = useAccount();
-  const user = useUser();
+  const { account, user } = useContext(TalentLayerContext);
   const { data: avatarImage } = useEnsAvatar({
     addressOrName: 'vitalik.eth',
   });
 
   return (
-    <div className='flex flex-1 justify-between px-4'>
-      <div className='flex flex-1'></div>
-      <div className='ml-4 flex items-center md:ml-6'>
+    <div className='flex justify-between'>
+      <div className='ml-4 px-4 flex items-center md:ml-6 border-l border-gray-200'>
         {/* Profile dropdown */}
-        <Menu as='div' className='relative ml-3'>
+        <Menu as='div' className='relative'>
           <div>
-            {account.isConnected === true ? (
+            {account && account.isConnected === true ? (
               <div className='flex items-center'>
                 <Menu.Button className='flex max-w-xs items-center rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2'>
                   <span className='sr-only'>Open user menu</span>

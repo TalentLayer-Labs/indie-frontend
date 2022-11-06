@@ -1,4 +1,4 @@
-import { useAccount, useNetwork, useSigner } from '@web3modal/react';
+import { useAccount, useNetwork, useProvider, useSigner } from '@web3modal/react';
 import { ethers } from 'ethers';
 import { createContext, ReactNode, useEffect, useMemo, useState } from 'react';
 import { getUserByAddress } from '../services/queries';
@@ -8,6 +8,7 @@ const TalentLayerContext = createContext<{
   user?: User;
   account?: Account;
   signer?: ethers.Signer;
+  provider?: ethers.providers.Provider;
 }>({
   user: undefined,
   account: undefined,
@@ -18,14 +19,17 @@ const TalentLayerProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | undefined>();
   const { account } = useAccount();
   const { data: signer, refetch: refetchSigner } = useSigner();
-  const { isReady } = useNetwork();
+  const { provider, isReady: providerIsReady } = useProvider();
+  const { network, isReady: networkIsReady } = useNetwork();
 
   useEffect(() => {
-    if (isReady === true) {
-      // refetch signer when network is ready else it will throw an error on each tx
-      refetchSigner();
-    }
-  }, [isReady]);
+    (async () => {
+      if (networkIsReady === true) {
+        // refetch signer when network is ready else it will throw an error on each tx
+        await refetchSigner();
+      }
+    })();
+  }, [networkIsReady, providerIsReady, network?.chain?.id]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -51,8 +55,9 @@ const TalentLayerProvider = ({ children }: { children: ReactNode }) => {
       user,
       account,
       signer,
+      provider,
     };
-  }, [isReady, account.address, user?.id, signer]);
+  }, [account.address, user?.id, signer]);
 
   return <TalentLayerContext.Provider value={value}>{children}</TalentLayerContext.Provider>;
 };

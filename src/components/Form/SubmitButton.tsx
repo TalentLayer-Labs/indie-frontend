@@ -36,7 +36,9 @@ function SubmitButton({ isSubmitting }: { isSubmitting: boolean }) {
         </button>
       ) : (
         <button
-          onClick={openConnectModal}
+          onClick={() => {
+            openConnectModal();
+          }}
           type='button'
           className='px-5 py-2 border border-indigo-600 rounded-md hover:text-indigo-600 hover:bg-white text-white bg-indigo-600'>
           {'Connect first'}

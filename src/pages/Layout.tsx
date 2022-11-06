@@ -3,6 +3,7 @@ import { Bars3BottomLeftIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { Fragment, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import Logo from '../components/Logo';
+import NetworkSwitch from '../components/NetworkSwitch';
 import SideMenu from '../components/SideMenu';
 import UserAccount from '../components/UserAccount';
 
@@ -88,11 +89,13 @@ function Layout() {
               <span className='sr-only'>Open sidebar</span>
               <Bars3BottomLeftIcon className='h-6 w-6' aria-hidden='true' />
             </button>
+            <div className='flex flex-1'></div>
+            <NetworkSwitch />
             <UserAccount />
           </div>
 
           <main>
-            <div className='p-12'>
+            <div className='p-6 sm:p-12'>
               <Outlet />
             </div>
           </main>
