@@ -16,13 +16,6 @@
       "@typescript-eslint"
   ],
   "rules": {
-      "@typescript-eslint/strict-boolean-expressions": [
-          2,
-          {
-              "allowString" : false,
-              "allowNumber" : false
-          }
-      ],
       "react/jsx-filename-extension": [1, { "extensions": [".tsx"] }]
   },
   "ignorePatterns": ["src/**/*.test.ts"]

@@ -10,10 +10,8 @@ const chainIdToName = (chainId: number) => {
       return 'Ethereum';
     case 5:
       return 'Goerli';
-    case 80001:
-      return 'Mumbai';
-    case 338:
-      return 'Cronos testnet';
+    case 1337:
+      return 'Localhost';
     default:
       return 'Unknown';
   }
@@ -50,8 +48,8 @@ function NetworkSwitch() {
               <NetworkLink chaindId={5} chainName='Goerli' />
             </Menu.Item>
             {import.meta.env.DEV && (
-              <Menu.Item key={1137}>
-                <NetworkLink chaindId={1137} chainName='Localhost' />
+              <Menu.Item key={1337}>
+                <NetworkLink chaindId={1337} chainName='Localhost' />
               </Menu.Item>
             )}
           </div>
