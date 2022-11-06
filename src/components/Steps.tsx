@@ -9,7 +9,7 @@ function Steps({ targetTitle }: { targetTitle: string }) {
 
   return (
     <>
-      <nav className='my-8'>
+      <nav className='mb-8'>
         <ol
           role='list'
           className='divide-y divide-gray-200 rounded-md border border-gray-200 md:flex md:divide-y-0'>

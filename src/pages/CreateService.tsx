@@ -10,11 +10,9 @@ function CreateService() {
 
   return (
     <div className='max-w-7xl mx-auto text-gray-900 sm:px-4 lg:px-0'>
-      <div className='flex flex-col gap-10'>
-        <p className='text-5xl font-medium tracking-wider'>
-          Post <span className='text-indigo-600'>a job</span>
-        </p>
-      </div>
+      <p className='text-5xl font-medium tracking-wider mb-8'>
+        Post <span className='text-indigo-600'>a job</span>
+      </p>
 
       <Steps targetTitle={'Filled the job form'} />
       {account?.isConnected && user && <ServiceForm />}
