@@ -27,7 +27,9 @@ function UserAccount() {
                     <img
                       className='h-8 w-8 rounded-full'
                       alt=''
-                      src='https://imageio.forbes.com/specials-images/imageserve/6170e01f8d7639b95a7f2eeb/Sotheby-s-NFT-Natively-Digital-1-2-sale-Bored-Ape-Yacht-Club--8817-by-Yuga-Labs/0x0.png?format=png&width=960'
+                      src={`/default-avatar-${
+                        Number(user?.id !== undefined ? user.id : '1') % 11
+                      }.jpeg`}
                     />
                   )}
                 </Menu.Button>

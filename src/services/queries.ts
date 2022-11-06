@@ -124,6 +124,8 @@ export const getUsers = (): Promise<any> => {
       uri
       handle
       withPoh
+      numReviews
+      rating
     }
   }
   `;
@@ -183,7 +185,7 @@ export const getUserByAddress = (address: string): Promise<any> => {
 
 export const getServices = (serviceStatus?: ServiceStatus): Promise<any> => {
   let query = '';
-  if (!serviceStatus) {
+  if (serviceStatus === undefined) {
     query = `
   {
     services(orderBy: id, orderDirection: desc) {
