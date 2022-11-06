@@ -4,8 +4,6 @@ import useUsers from '../hooks/useUsers';
 function Talents() {
   const { users } = useUsers();
 
-  console.log(users);
-
   return (
     <div className='max-w-7xl mx-auto text-gray-900 px-4 lg:px-0'>
       <div className='flex flex-col gap-10'>

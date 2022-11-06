@@ -14,6 +14,7 @@ import Service from './pages/Service';
 import Services from './pages/Services';
 import Talents from './pages/Talents';
 import 'react-toastify/dist/ReactToastify.css';
+import EditProfile from './pages/EditProfile';
 
 const config: ConfigOptions = {
   projectId: `${import.meta.env.VITE_WALLECT_CONNECT_PROJECT_ID}`,
@@ -42,6 +43,7 @@ function App() {
                 <Route path='/services/create' element={<CreateService />} />
                 <Route path='/talents' element={<Talents />} />
                 <Route path='/about' element={<About />} />
+                <Route path='/edit-profile' element={<EditProfile />} />
               </Route>
             </Routes>
           </BrowserRouter>
