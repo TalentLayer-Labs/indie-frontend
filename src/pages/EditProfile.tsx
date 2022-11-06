@@ -1,7 +1,6 @@
 import { useContext } from 'react';
-import ConnectBlock from '../components/ConnectBlock';
 import ProfileForm from '../components/Form/ProfileForm';
-import TalentLayerIdForm from '../components/Form/TalentLayerIdForm';
+import Steps from '../components/Steps';
 import TalentLayerContext from '../context/talentLayer';
 
 function EditProfile() {
@@ -13,11 +12,11 @@ function EditProfile() {
         <p className='text-5xl font-medium tracking-wider'>
           Edit your <span className='text-indigo-600'>Profile</span>
         </p>
-      </div>
 
-      {(account?.isConnected == undefined || account?.isConnected === false) && <ConnectBlock />}
-      {account && account.isConnected === true && user === undefined && <TalentLayerIdForm />}
-      {account && account.isConnected === true && user !== undefined && <ProfileForm />}
+        <Steps targetTitle={'Edit your profile'} />
+
+        {account?.isConnected && user && <ProfileForm />}
+      </div>
     </div>
   );
 }

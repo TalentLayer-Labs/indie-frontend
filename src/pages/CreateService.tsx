@@ -1,11 +1,12 @@
 import { useContext } from 'react';
-import ConnectBlock from '../components/ConnectBlock';
 import ServiceForm from '../components/Form/ServiceForm';
-import TalentLayerIdForm from '../components/Form/TalentLayerIdForm';
+import Steps from '../components/Steps';
 import TalentLayerContext from '../context/talentLayer';
 
 function CreateService() {
   const { account, user } = useContext(TalentLayerContext);
+
+  console.log({ account, user });
 
   return (
     <div className='max-w-7xl mx-auto text-gray-900 sm:px-4 lg:px-0'>
@@ -15,9 +16,8 @@ function CreateService() {
         </p>
       </div>
 
-      {(account?.isConnected == undefined || account?.isConnected === false) && <ConnectBlock />}
-      {account && account.isConnected === true && user === undefined && <TalentLayerIdForm />}
-      {account && account.isConnected === true && user !== undefined && <ServiceForm />}
+      <Steps targetTitle={'Filled the job form'} />
+      {account?.isConnected && user && <ServiceForm />}
     </div>
   );
 }

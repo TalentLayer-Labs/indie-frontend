@@ -1,6 +1,5 @@
 import { useContext } from 'react';
-import ConnectBlock from '../components/ConnectBlock';
-import TalentLayerIdForm from '../components/Form/TalentLayerIdForm';
+import Steps from '../components/Steps';
 import UserItem from '../components/UserItem';
 import UserServices from '../components/UserServices';
 import TalentLayerContext from '../context/talentLayer';
@@ -15,9 +14,9 @@ function Dashboard() {
           Your <span className='text-indigo-600'>dashboard</span>
         </p>
 
-        {(account?.isConnected == undefined || account?.isConnected === false) && <ConnectBlock />}
-        {account && account.isConnected === true && user === undefined && <TalentLayerIdForm />}
-        {account && account.isConnected === true && user !== undefined && (
+        <Steps targetTitle={'Access your dashboard'} />
+
+        {account?.isConnected && user && (
           <div>
             <div className='mb-6'>
               <h2 className='mb-6 pb-4 border-b border-gray-gray-200 text-gray-900 font-medium'>
