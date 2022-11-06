@@ -1,13 +1,11 @@
-import { ConnectButton, useAccount } from '@web3modal/react';
+import { useContext } from 'react';
+import ConnectBlock from '../components/ConnectBlock';
 import ServiceForm from '../components/Form/ServiceForm';
 import TalentLayerIdForm from '../components/Form/TalentLayerIdForm';
-import useUser from '../hooks/useUser';
+import TalentLayerContext from '../context/talentLayer';
 
 function CreateService() {
-  const { account } = useAccount();
-  const user = useUser();
-
-  console.log(user);
+  const { account, user } = useContext(TalentLayerContext);
 
   return (
     <div className='max-w-7xl mx-auto text-gray-900 px-4 lg:px-0'>
@@ -17,9 +15,9 @@ function CreateService() {
         </p>
       </div>
 
-      {account.isConnected === false && <ConnectButton />}
-      {account.isConnected === true && user === undefined && <TalentLayerIdForm />}
-      {account.isConnected === true && user !== undefined && <ServiceForm />}
+      {(account?.isConnected == undefined || account?.isConnected === false) && <ConnectBlock />}
+      {account && account.isConnected === true && user === undefined && <TalentLayerIdForm />}
+      {account && account.isConnected === true && user !== undefined && <ServiceForm />}
     </div>
   );
 }

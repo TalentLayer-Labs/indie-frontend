@@ -2,6 +2,7 @@ import type { ConfigOptions } from '@web3modal/core';
 import { chains } from '@web3modal/ethereum';
 import { Web3Modal } from '@web3modal/react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
 import './App.css';
 import { TalentLayerProvider } from './context/talentLayer';
 import About from './pages/About';
@@ -12,6 +13,7 @@ import Layout from './pages/Layout';
 import Service from './pages/Service';
 import Services from './pages/Services';
 import Talents from './pages/Talents';
+import 'react-toastify/dist/ReactToastify.css';
 
 const config: ConfigOptions = {
   projectId: `${import.meta.env.VITE_WALLECT_CONNECT_PROJECT_ID}`,
@@ -19,7 +21,7 @@ const config: ConfigOptions = {
   accentColor: 'default',
   ethereum: {
     appName: 'TalentLayer indie',
-    chains: [chains.goerli, chains.mainnet, chains.localhost, chains.polygon],
+    chains: [chains.goerli, chains.localhost],
   },
 };
 
@@ -27,6 +29,7 @@ function App() {
   return (
     <>
       <Web3Modal config={config} />
+      <ToastContainer position='bottom-right' />
       <TalentLayerProvider>
         <div className='antialiased'>
           <BrowserRouter>

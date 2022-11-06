@@ -1,18 +1,16 @@
-import { CONST } from '../constants';
 import useServiceDetails from '../hooks/useServiceDetails';
+import { renderTokenAmount } from '../services/Conversion';
 import { Service } from '../types';
 
 function ServiceItem({ service }: { service: Service }) {
   const serviceDetail = useServiceDetails(service.uri);
-  console.log(service, serviceDetail);
-
   if (!serviceDetail) {
     return null;
   }
 
   return (
     <div className='flex flex-row gap-2 rounded-xl p-4 border border-gray-200'>
-      <div className='flex flex-col items-top justify-between gap-8'>
+      <div className='flex flex-col items-top justify-between gap-8 w-full'>
         <div className='flex flex-col justify-start items-start gap-4'>
           <div className='flex items-center justify-start'>
             <img src='/logo192.png' className='w-6 m-4' />
@@ -34,9 +32,8 @@ function ServiceItem({ service }: { service: Service }) {
         </div>
 
         <div className='flex flex-row gap-4 justify-between items-center'>
-          <p className='text-gray-900 font-bold'>
-            {serviceDetail.rateAmount.toString()}
-            {serviceDetail.rateToken == CONST.ETH_ADDRESS ? CONST.ETH_SYMBOL : 'ERC20'}
+          <p className='text-gray-900 font-bold text-ellipsis overflow-hidden max-w-[100px]'>
+            {renderTokenAmount(serviceDetail.rateToken, serviceDetail.rateAmount)}
           </p>
           <a
             className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg'
