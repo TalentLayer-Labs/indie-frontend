@@ -1,4 +1,5 @@
 import { useContext } from 'react';
+import { NavLink } from 'react-router-dom';
 import TalentLayerContext from '../context/talentLayer';
 import useProposalDetails from '../hooks/useProposalDetails';
 import useServiceDetails from '../hooks/useServiceDetails';
@@ -6,7 +7,7 @@ import { renderTokenAmount } from '../services/Conversion';
 import { Proposal, ProposalStatus } from '../types';
 import { formatDate } from '../utils/dates';
 
-function ProposalItem({ proposal }: { proposal: Proposal }) {
+function UserProposalItem({ proposal }: { proposal: Proposal }) {
   const { user } = useContext(TalentLayerContext);
   const proposalDetail = useProposalDetails(proposal.uri);
   const serviceDetail = useServiceDetails(proposal.service.uri);
@@ -22,15 +23,14 @@ function ProposalItem({ proposal }: { proposal: Proposal }) {
         <div className='flex flex-col justify-start items-start gap-4'>
           <div className='flex items-center justify-start w-full  relative'>
             <img
-              src={`/default-avatar-${Number(proposal.seller.id) % 11}.jpeg`}
+              src={`/default-avatar-${Number(proposal.service.buyer.id) % 11}.jpeg`}
               className='w-10 mr-4 rounded-full'
             />
             <div className='flex flex-col gap-1'>
-              <p className='text-gray-900 font-medium'>
-                {proposal.seller.handle} - {serviceDetail.title}
-              </p>
+              <p className='text-gray-900 font-medium'>{serviceDetail.title}</p>
               <p className='text-xs text-gray-500'>
-                Proposal created the {formatDate(Number(proposal.createdAt) * 1000)}
+                Job created by {proposal.service.buyer.handle} the{' '}
+                {formatDate(Number(proposal.service.createdAt) * 1000)}
               </p>
             </div>
 
@@ -39,7 +39,11 @@ function ProposalItem({ proposal }: { proposal: Proposal }) {
             </span>
           </div>
 
-          <div className=' border-t border-gray-100 w-full'>
+          <div className=' border-t border-gray-100 pt-4'>
+            <p className='text-sm text-gray-500 mt-4'>
+              <strong>Proposal:</strong> created by {proposal.seller.handle} the{' '}
+              {formatDate(Number(proposal.createdAt) * 1000)}
+            </p>
             <p className='text-sm text-gray-500 mt-4'>
               <strong>Message:</strong> {proposalDetail.description}
             </p>
@@ -49,6 +53,11 @@ function ProposalItem({ proposal }: { proposal: Proposal }) {
           <p className='text-gray-900 font-bold line-clamp-1 flex-1'>
             {renderTokenAmount(serviceDetail.rateToken, serviceDetail.rateAmount)}
           </p>
+          <NavLink
+            className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg'
+            to={`/services/${proposal.service.id}`}>
+            Show Job
+          </NavLink>
           {isBuyer && proposal.status === ProposalStatus.Pending && (
             <button className='text-green-600 bg-green-50 hover:bg-green-500 hover:text-white px-5 py-2 rounded-lg'>
               Validate proposal
@@ -60,4 +69,4 @@ function ProposalItem({ proposal }: { proposal: Proposal }) {
   );
 }
 
-export default ProposalItem;
+export default UserProposalItem;
