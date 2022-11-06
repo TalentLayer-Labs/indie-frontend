@@ -183,14 +183,28 @@ export const getUserByAddress = (address: string): Promise<any> => {
   return processRequest(query);
 };
 
-export const getServices = (serviceStatus?: ServiceStatus): Promise<any> => {
-  let query = '';
-  if (serviceStatus === undefined) {
-    query = `
+export const getServices = (
+  serviceStatus?: ServiceStatus,
+  buyerId?: string,
+  sellerId?: string,
+): Promise<any> => {
+  let condition = '';
+
+  if (serviceStatus) {
+    condition = `, where: {status: ${serviceStatus}}`;
+  } else if (buyerId) {
+    condition = `, where: {buyer: "${buyerId}"}`;
+  } else if (sellerId) {
+    condition = `, where: {seller: "${sellerId}"}`;
+  }
+
+  const query = `
   {
-    services(orderBy: id, orderDirection: desc) {
+    services(orderBy: id, orderDirection: desc ${condition}) {
       id
       status
+      createdAt
+      uri
       buyer {
         id
         handle
@@ -199,44 +213,11 @@ export const getServices = (serviceStatus?: ServiceStatus): Promise<any> => {
         id
         handle
       }
-      sender {
+      proposals {
         id
-        handle
       }
-      recipient {
-        id
-        handle
-      }
-      uri
     }
-  }
-  `;
-  } else {
-    query = `
-    {
-      services(orderBy: id, orderDirection: desc, where: {status: "${serviceStatus}"}) {
-        id
-        status
-        buyer {
-          id
-          handle
-        }
-        seller {
-          id
-          handle
-        }
-        sender {
-          id
-          handle
-        }
-        recipient {
-          id
-          handle
-        }
-        uri
-      }
-    }  `;
-  }
+  }`;
   return processRequest(query);
 };
 

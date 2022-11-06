@@ -28,9 +28,9 @@ function ProfileForm() {
   const userDetails = useUserDetails(user?.uri);
 
   const initialValues: IFormValues = {
-    title: userDetails?.title,
-    about: userDetails?.about,
-    skills: userDetails?.skills,
+    title: userDetails?.title || '',
+    about: userDetails?.about || '',
+    skills: userDetails?.skills || '',
   };
 
   const onSubmit = async (

@@ -1,10 +1,38 @@
+import { useContext } from 'react';
+import ConnectBlock from '../components/ConnectBlock';
+import TalentLayerIdForm from '../components/Form/TalentLayerIdForm';
+import UserItem from '../components/UserItem';
+import UserServices from '../components/UserServices';
+import TalentLayerContext from '../context/talentLayer';
+
 function Dashboard() {
+  const { account, user } = useContext(TalentLayerContext);
+
   return (
-    <div className='max-w-7xl mx-auto text-gray-900 px-4 lg:px-0'>
+    <div className='max-w-7xl mx-auto text-gray-900 sm:px-4 lg:px-0'>
       <div className='flex flex-col gap-10'>
         <p className='text-5xl font-medium tracking-wider'>
           Your <span className='text-indigo-600'>dashboard</span>
         </p>
+
+        {(account?.isConnected == undefined || account?.isConnected === false) && <ConnectBlock />}
+        {account && account.isConnected === true && user === undefined && <TalentLayerIdForm />}
+        {account && account.isConnected === true && user !== undefined && (
+          <div>
+            <div className='mb-6'>
+              <h2 className='mb-6 pb-4 border-b border-gray-gray-200 text-gray-900 font-medium'>
+                Your profile
+              </h2>
+              <UserItem user={user} />
+            </div>
+            <div className='mb-6'>
+              <UserServices user={user} type='buyer' />
+            </div>
+            <div className='mb-6'>
+              <UserServices user={user} type='seller' />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
