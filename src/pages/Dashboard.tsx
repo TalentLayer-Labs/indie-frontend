@@ -1,6 +1,7 @@
 import { useContext } from 'react';
 import Steps from '../components/Steps';
 import UserItem from '../components/UserItem';
+import UserProposals from '../components/UserProposals';
 import UserServices from '../components/UserServices';
 import TalentLayerContext from '../context/talentLayer';
 
@@ -28,6 +29,9 @@ function Dashboard() {
           </div>
           <div className='mb-6'>
             <UserServices user={user} type='seller' />
+          </div>
+          <div className='mb-6'>
+            <UserProposals user={user} />
           </div>
         </div>
       )}

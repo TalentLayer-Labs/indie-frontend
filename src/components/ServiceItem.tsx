@@ -22,7 +22,7 @@ function ServiceItem({ service }: { service: Service }) {
             <div className='flex flex-col gap-1'>
               <p className='text-gray-900 font-medium'>{serviceDetail.title}</p>
               <p className='text-xs text-gray-500'>
-                by {service.buyer.handle} - {formatDate(Number(service.createdAt) * 1000)}
+                created by {service.buyer.handle} the {formatDate(Number(service.createdAt) * 1000)}
               </p>
             </div>
           </div>
