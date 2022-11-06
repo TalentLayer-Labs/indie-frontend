@@ -3,6 +3,7 @@ function Stars({ rating, numReviews }: { rating: number; numReviews: string }) {
     <div className='flex items-center mt-2.5 mb-5'>
       {[...Array(5)].map((_, i) => (
         <svg
+          key={i}
           className={`w-5 h-5 ${i < rating ? 'text-yellow-300' : 'text-gray-300'}`}
           fill='currentColor'
           viewBox='0 0 20 20'

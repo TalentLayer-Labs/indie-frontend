@@ -1,6 +1,12 @@
 import { useAccount, useConnectModal } from '@web3modal/react';
 
-function SubmitButton({ isSubmitting }: { isSubmitting: boolean }) {
+function SubmitButton({
+  isSubmitting,
+  label = 'Create',
+}: {
+  isSubmitting: boolean;
+  label?: string;
+}) {
   const { account } = useAccount();
   const { open: openConnectModal } = useConnectModal();
 
@@ -32,7 +38,7 @@ function SubmitButton({ isSubmitting }: { isSubmitting: boolean }) {
         <button
           type='submit'
           className='px-5 py-2 border border-indigo-600 rounded-md hover:text-indigo-600 hover:bg-white text-white bg-indigo-600'>
-          {'Create'}
+          {label}
         </button>
       ) : (
         <button

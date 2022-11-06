@@ -1,6 +1,6 @@
 import { Menu } from '@headlessui/react';
 import { useDisconnect } from '@web3modal/react';
-import { useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 
 function UserSubMenu() {
   const navigate = useNavigate();
@@ -8,32 +8,37 @@ function UserSubMenu() {
 
   return (
     <>
+      <Menu.Item key='editProfile'>
+        {({ active }) => (
+          <NavLink
+            to='/edit-profile'
+            className={`block px-4 py-2 text-sm text-gray-700' ${active ? 'bg-gray-100' : ''}`}>
+            Edit my profile
+          </NavLink>
+        )}
+      </Menu.Item>
+
+      <Menu.Item key='Recovery'>
+        {({ active }) => (
+          <NavLink
+            to='/recovery'
+            className={`block px-4 py-2 text-sm text-gray-700' ${active ? 'bg-gray-100' : ''}`}>
+            Recover my ID
+          </NavLink>
+        )}
+      </Menu.Item>
+
       <Menu.Item key='Log out'>
         {({ active }) => (
-          <a
-            href='Log out'
+          <button
             onClick={event => {
               event.preventDefault();
               disconnect();
               navigate('/');
             }}
-            className={`block px-4 py-2 text-sm text-gray-700' ${active ? 'bg-gray-100' : ''}`}>
+            className={`block px-4 py-2 text-sm text-red-700 ' ${active ? 'bg-gray-100' : ''}`}>
             Log out
-          </a>
-        )}
-      </Menu.Item>
-      <Menu.Item key='Recovery'>
-        {({ active }) => (
-          <a
-            href='recovery'
-            onClick={event => {
-              event.preventDefault();
-              disconnect();
-              navigate('/recovery');
-            }}
-            className={`block px-4 py-2 text-sm text-gray-700' ${active ? 'bg-gray-100' : ''}`}>
-            Recover your ID
-          </a>
+          </button>
         )}
       </Menu.Item>
     </>

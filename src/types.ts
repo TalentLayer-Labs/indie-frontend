@@ -8,6 +8,12 @@ export type User = {
   numReviews: string;
 };
 
+export type UserDetails = {
+  title: string;
+  about: string;
+  skills: string;
+};
+
 export type Account = {
   address: string;
   isConnected: boolean | undefined;
