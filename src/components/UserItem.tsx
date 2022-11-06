@@ -1,10 +1,15 @@
+import { useContext } from 'react';
 import { NavLink } from 'react-router-dom';
+import TalentLayerContext from '../context/talentLayer';
 import useUserDetails from '../hooks/useUserDetails';
 import { User } from '../types';
 import Stars from './Stars';
 
 function UserItem({ user }: { user: User }) {
+  const { user: currentUser } = useContext(TalentLayerContext);
   const userDetails = useUserDetails(user?.uri);
+
+  console.log({ user, userDetails, currentUser });
 
   return (
     <div className='flex flex-row gap-2 rounded-xl p-4 border border-gray-200'>
@@ -24,12 +29,19 @@ function UserItem({ user }: { user: User }) {
 
         <Stars rating={Number(user.rating)} numReviews={user.numReviews} />
 
-        <div className='flex flex-row gap-4 justify-between items-center'>
+        <div className='flex flex-row gap-4 justify-end items-center'>
           <NavLink
             className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg'
             to={`/profile/${user.id}`}>
             View profile
           </NavLink>
+          {currentUser?.id === user.id && (
+            <NavLink
+              className='text-green-600 bg-green-50 hover:bg-green-500 hover:text-white px-5 py-2 rounded-lg'
+              to={`/profile/edit`}>
+              Edit profile
+            </NavLink>
+          )}
         </div>
       </div>
     </div>
