@@ -12,7 +12,7 @@ function SearchTalent() {
     <div className='bg-white'>
       <div className='max-w-7xl mx-auto text-gray-900 px-4'>
         <div className='flex justify-center items-center gap-10 flex-col py-20'>
-          <p className='text-7xl font-medium tracking-wider max-w-lg text-center'>
+          <p className='text-5xl sm:text-7xl font-medium tracking-wider max-w-lg text-center'>
             Search a <span className='text-indigo-600'>Talent </span>
           </p>
 
@@ -21,7 +21,7 @@ function SearchTalent() {
           </p>
 
           <div>
-            <div className='flex divide-x bg-white py-4 px-1 sm:px-0 justify-center items-center flex-row drop-shadow-lg rounded-lg'>
+            <div className='flex divide-x bg-white py-4 px-4 sm:px-0 justify-center items-center flex-row drop-shadow-lg rounded-lg'>
               <div className='sm:px-6 flex flex-row items-center gap-2'>
                 <span className='text-gray-500'>
                   <svg

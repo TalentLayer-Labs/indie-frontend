@@ -18,16 +18,6 @@ function UserSubMenu() {
         )}
       </Menu.Item>
 
-      <Menu.Item key='Recovery'>
-        {({ active }) => (
-          <NavLink
-            to='/recovery'
-            className={`block px-4 py-2 text-sm text-gray-700' ${active ? 'bg-gray-100' : ''}`}>
-            Recover my ID
-          </NavLink>
-        )}
-      </Menu.Item>
-
       <Menu.Item key='Log out'>
         {({ active }) => (
           <button
