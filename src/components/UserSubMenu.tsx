@@ -26,7 +26,9 @@ function UserSubMenu() {
               disconnect();
               navigate('/');
             }}
-            className={`block px-4 py-2 text-sm text-red-700 ' ${active ? 'bg-gray-100' : ''}`}>
+            className={`block px-4 py-2 text-sm text-left text-red-700 w-full ${
+              active ? 'bg-gray-100' : ''
+            }`}>
             Log out
           </button>
         )}

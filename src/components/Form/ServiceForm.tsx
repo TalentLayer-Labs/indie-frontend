@@ -98,7 +98,7 @@ function ServiceForm() {
     <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
       {({ isSubmitting }) => (
         <Form>
-          <div className='grid grid-cols-1 gap-6 py-4'>
+          <div className='grid grid-cols-1 gap-6 border border-gray-200 rounded-md p-8'>
             <label className='block'>
               <span className='text-gray-700'>Title</span>
               <Field
@@ -162,7 +162,7 @@ function ServiceForm() {
               </label>
             </div>
 
-            <SubmitButton isSubmitting={isSubmitting} />
+            <SubmitButton isSubmitting={isSubmitting} label='Post' />
           </div>
         </Form>
       )}

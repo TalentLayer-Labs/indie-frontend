@@ -225,12 +225,21 @@ export const getServiceById = (id: string): Promise<any> => {
   const query = `
   {
     service(id: "${id}") {
-      id,
-      status,
-      sender,
-      uri,
-      createdAt,
-      updatedAt
+      id
+      status
+      createdAt
+      uri
+      buyer {
+        id
+        handle
+      }
+      seller {
+        id
+        handle
+      }
+      proposals {
+        id
+      }
     }
   }
   `;
