@@ -9,7 +9,7 @@ const useServices = (serviceStatus?: ServiceStatus): { services: Service[] } => 
     const fetchData = async () => {
       try {
         const response = await getServices(serviceStatus);
-        if (response?.data?.data?.services) {
+        if (response?.data?.data?.services.length > 0) {
           setServices(response.data.data.services);
         }
       } catch (err: any) {
