@@ -8,7 +8,7 @@ const useUserDetails = (uri: string | undefined): UserDetails | null => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        if (uri === undefined) return null;
+        if (!uri) return null;
 
         if (!isValidHttpsUrl(uri)) {
           throw new Error('Uri not valid: ' + uri);

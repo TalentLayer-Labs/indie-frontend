@@ -1,6 +1,6 @@
 import useProposalsByUser from '../hooks/useProposalsByUser';
 import { User } from '../types';
-import ProposalItem from './ProposalItem';
+import UserProposalItem from './UserProposalItem';
 
 interface IProps {
   user: User;
@@ -20,7 +20,7 @@ function UserProposals({ user }: IProps) {
       </h2>
       <div className=''>
         {proposals.map((proposal, i) => {
-          return <ProposalItem proposal={proposal} key={i} />;
+          return <UserProposalItem proposal={proposal} key={i} />;
         })}
       </div>
     </>

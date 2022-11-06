@@ -27,7 +27,7 @@ function ProfileForm() {
   const { user, signer, provider } = useContext(TalentLayerContext);
   const userDetails = useUserDetails(user?.uri);
 
-  if (!userDetails) {
+  if (user?.uri && !userDetails) {
     return <p>loading...</p>;
   }
 

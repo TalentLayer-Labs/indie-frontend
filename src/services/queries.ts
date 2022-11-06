@@ -88,7 +88,8 @@ export const getAllProposalsbyServiceId = (id: string): Promise<any> => {
   {
     proposals(where: {service_: {id: "${id}"}}) {
       service {
-        id
+        id,
+        uri
         buyer {
           id
         }
