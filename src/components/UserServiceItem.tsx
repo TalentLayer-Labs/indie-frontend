@@ -13,7 +13,7 @@ function UserServiceItem({ service }: { service: Service }) {
   return (
     <div className='flex flex-row gap-2 rounded-xl p-4 border border-gray-200'>
       <div className='flex flex-col items-top justify-between gap-4 w-full'>
-        <div className='flex flex-col justify-start items-start gap-4'>
+        <div className='flex flex-col justify-start items-start gap-4 relative'>
           <div className='flex items-center justify-start'>
             <img
               src={`/default-avatar-${Number(service.buyer.id) % 11}.jpeg`}
@@ -22,9 +22,12 @@ function UserServiceItem({ service }: { service: Service }) {
             <div className='flex flex-col gap-1'>
               <p className='text-gray-900 font-medium'>{serviceDetail.title}</p>
               <p className='text-xs text-gray-500'>
-                {service.status} - {formatDate(Number(service.createdAt) * 1000)}
+                created by {service.buyer.handle} the {formatDate(Number(service.createdAt) * 1000)}
               </p>
             </div>
+            <span className='absolute right-0 inline-flex items-center rounded-full bg-indigo-100 px-2.5 py-1 text-xs font-medium text-indigo-800'>
+              {service.status}
+            </span>
           </div>
 
           <div className=' border-t border-gray-100 pt-4'>

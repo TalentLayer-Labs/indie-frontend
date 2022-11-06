@@ -23,7 +23,7 @@ function ServiceDetail({ service }: { service: Service }) {
   const hasReviewed = !!reviews.find(review => {
     return review.to.id !== user?.id;
   });
-  console.log({ service, serviceDetail, reviews, proposals, hasReviewed });
+  console.debug({ service, serviceDetail, reviews, proposals, hasReviewed });
 
   return (
     <div className='flex flex-row gap-2 rounded-xl p-4 border border-gray-200'>
@@ -71,14 +71,14 @@ function ServiceDetail({ service }: { service: Service }) {
           {!isBuyer && service.status == ServiceStatus.Opened && (
             <NavLink
               className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg'
-              to={`/service/${service.id}/create-proposal`}>
+              to={`/services/${service.id}/create-proposal`}>
               Create proposal
             </NavLink>
           )}
           {(isBuyer || isSeller) && service.status === ServiceStatus.Finished && (
             <NavLink
               className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg'
-              to={`/${service.id}/create-review`}>
+              to={`/services/${service.id}/create-review`}>
               Create a review
             </NavLink>
           )}

@@ -27,6 +27,10 @@ function ProfileForm() {
   const { user, signer, provider } = useContext(TalentLayerContext);
   const userDetails = useUserDetails(user?.uri);
 
+  if (!userDetails) {
+    return <p>loading...</p>;
+  }
+
   const initialValues: IFormValues = {
     title: userDetails?.title || '',
     about: userDetails?.about || '',
@@ -86,7 +90,7 @@ function ProfileForm() {
       validationSchema={validationSchema}>
       {({ isSubmitting }) => (
         <Form>
-          <div className='grid grid-cols-1 gap-6 py-4'>
+          <div className='grid grid-cols-1 gap-6 border border-gray-200 rounded-md p-8'>
             <label className='block'>
               <span className='text-gray-700'>Title</span>
               <Field

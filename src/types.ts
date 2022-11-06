@@ -85,17 +85,7 @@ export enum ProposalStatus {
   Rejected = 'Rejected',
 }
 export type ProposalDetails = {
-  sellerId: string;
-  uri: string;
-  proposalTitle: string;
-  proposalAbout: string;
-  rateType: string;
-  expectedHour: string;
-  rateToken: string;
-  rateAmount: string;
-  serviceId: string;
-  createdAt: string;
-  updatedAt: string;
+  description: string;
 };
 
 export type Proposal = {

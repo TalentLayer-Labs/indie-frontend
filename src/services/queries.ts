@@ -381,22 +381,26 @@ export const getProposalByServiceIdAndUser = (
   return processRequest(query);
 };
 
-export const getAllProposalsByUserHandle = (userHandle: string): Promise<any> => {
+export const getAllProposalsByUser = (id: string): Promise<any> => {
   const query = `
     {
-      proposals(where: {seller_: {handle: "${userHandle}"}}) {
+      proposals(where: {seller: "${id}", status: "Pending"}) {
         id
         rateAmount
         rateToken
         status
         uri
+        createdAt
         seller {
+          id
           handle
         }
         service {
           id
           uri
+          createdAt
           buyer {
+            id
             handle
           }
         }

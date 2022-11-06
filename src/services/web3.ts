@@ -2,7 +2,7 @@ import { ExternalProvider, JsonRpcFetchFunc, Web3Provider } from '@ethersproject
 import { BigNumber, ethers, FixedNumber, Signer } from 'ethers';
 import { Contract } from '@ethersproject/contracts';
 import ERC20 from '../contracts/ERC20.json';
-import { CONST } from '../constants';
+import { CONST, TOKENS } from '../constants';
 import { TokenFormattedValues } from '../types';
 
 export default function getLibrary(provider: ExternalProvider | JsonRpcFetchFunc): Web3Provider {
@@ -23,15 +23,11 @@ const getDecimal = async (erc20Token: Contract): Promise<string> => {
 export const parseRateAmount = async (
   rateAmount: string,
   rateToken: string,
-  signer: ethers.Signer,
 ): Promise<BigNumber> => {
   if (rateToken === CONST.ETH_ADDRESS) {
     return ethers.utils.parseEther(rateAmount);
   }
-  const ERC20Token = new Contract(rateToken, ERC20.abi, signer);
-  const tokenDecimals = await getDecimal(ERC20Token);
-
-  return ethers.utils.parseUnits(rateAmount, tokenDecimals);
+  return ethers.utils.parseUnits(rateAmount, TOKENS[rateToken].decimals);
 };
 
 export const formatRateAmount = async (
