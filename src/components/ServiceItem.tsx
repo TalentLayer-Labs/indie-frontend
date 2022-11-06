@@ -1,3 +1,4 @@
+import { NavLink } from 'react-router-dom';
 import useServiceDetails from '../hooks/useServiceDetails';
 import { renderTokenAmount } from '../services/Conversion';
 import { Service } from '../types';
@@ -10,36 +11,42 @@ function ServiceItem({ service }: { service: Service }) {
 
   return (
     <div className='flex flex-row gap-2 rounded-xl p-4 border border-gray-200'>
-      <div className='flex flex-col items-top justify-between gap-8 w-full'>
+      <div className='flex flex-col items-top justify-between gap-4 w-full'>
         <div className='flex flex-col justify-start items-start gap-4'>
           <div className='flex items-center justify-start'>
-            <img src='/logo192.png' className='w-6 m-4' />
+            <img
+              src={`/default-avatar-${Number(service.buyer.id) % 11}.jpeg`}
+              className='w-10 mr-4 rounded-full'
+            />
             <div className='flex flex-col gap-1'>
-              <p className='text-gray-900 font-medium'>{service.buyer.handle}</p>
-              <p className='text-xs text-gray-500'>Remote or Lisbon</p>
+              <p className='text-gray-900 font-medium'>{serviceDetail.title}</p>
+              <p className='text-xs text-gray-500'>by {service.buyer.handle}</p>
             </div>
           </div>
 
-          <div>
-            <p className='text-lg font-bold text-gray-900'>{serviceDetail.title}</p>
-            <p className='text-gray-500 font-medium italic'>1 week</p>
-          </div>
-          <div>
-            <p className='text-gray-500'>
-              {serviceDetail.keywords} - {serviceDetail.about}
+          <div className=' border-t border-gray-100 pt-4'>
+            <div>
+              {serviceDetail.keywords.split(',').map(keyword => (
+                <span className='inline-block bg-gray-200 rounded-full px-2 py-1 text-xs font-semibold text-gray-700 mr-2 mb-2'>
+                  {keyword}
+                </span>
+              ))}
+            </div>
+            <p className='text-sm text-gray-500  line-clamp-1 mt-4'>
+              <strong>About:</strong> {serviceDetail.about}
             </p>
           </div>
         </div>
 
-        <div className='flex flex-row gap-4 justify-between items-center'>
-          <p className='text-gray-900 font-bold text-ellipsis overflow-hidden max-w-[100px]'>
+        <div className='flex flex-row gap-4 justify-between items-center border-t border-gray-100 pt-4'>
+          <p className='text-gray-900 font-bold line-clamp-1 max-w-[100px]'>
             {renderTokenAmount(serviceDetail.rateToken, serviceDetail.rateAmount)}
           </p>
-          <a
+          <NavLink
             className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg'
-            href='#'>
-            Make a proposal
-          </a>
+            to={`/services/${service.id}`}>
+            Show details
+          </NavLink>
         </div>
       </div>
     </div>

@@ -11,7 +11,7 @@ function UserSubMenu() {
       <Menu.Item key='editProfile'>
         {({ active }) => (
           <NavLink
-            to='/edit-profile'
+            to='/profile/edit'
             className={`block px-4 py-2 text-sm text-gray-700' ${active ? 'bg-gray-100' : ''}`}>
             Edit my profile
           </NavLink>
