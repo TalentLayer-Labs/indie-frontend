@@ -1,5 +1,6 @@
 import { useContext } from 'react';
 import { useParams } from 'react-router-dom';
+import Back from '../components/Back';
 import ProposalForm from '../components/Form/ProposalForm';
 import Loading from '../components/Loading';
 import Steps from '../components/Steps';
@@ -15,10 +16,9 @@ function CreateProposal() {
     return <Loading />;
   }
 
-  console.log({ account, user });
-
   return (
     <div className='max-w-7xl mx-auto text-gray-900 sm:px-4 lg:px-0'>
+      <Back />
       <p className='text-5xl font-medium tracking-wider mb-8'>
         Create <span className='text-indigo-600'>a proposal</span>
       </p>

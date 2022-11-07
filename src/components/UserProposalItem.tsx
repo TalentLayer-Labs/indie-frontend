@@ -26,7 +26,7 @@ function UserProposalItem({ proposal }: { proposal: Proposal }) {
               src={`/default-avatar-${Number(proposal.service.buyer.id) % 11}.jpeg`}
               className='w-10 mr-4 rounded-full'
             />
-            <div className='flex flex-col gap-1'>
+            <div className='flex flex-col'>
               <p className='text-gray-900 font-medium'>{serviceDetail.title}</p>
               <p className='text-xs text-gray-500'>
                 Job created by {proposal.service.buyer.handle} the{' '}
