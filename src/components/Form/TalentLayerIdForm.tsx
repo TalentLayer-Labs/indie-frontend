@@ -1,6 +1,6 @@
 import { getParsedEthersError } from '@enzoferey/ethers-error-parser';
 import { EthersError } from '@enzoferey/ethers-error-parser/dist/types';
-import { useConnectModal, useNetwork, useSigner } from '@web3modal/react';
+import { useConnectModal, useNetwork, useProvider, useSigner } from '@web3modal/react';
 import { ethers } from 'ethers';
 import { Field, Form, Formik } from 'formik';
 import { useContext, useEffect } from 'react';
@@ -20,14 +20,14 @@ const initialValues: IFormValues = {
 
 function TalentLayerIdForm() {
   const { open: openConnectModal } = useConnectModal();
-  const { account, provider } = useContext(TalentLayerContext);
+  const { account } = useContext(TalentLayerContext);
   const { data: signer, refetch: refetchSigner } = useSigner();
+  const { provider } = useProvider();
   const { isReady: networkIsReady } = useNetwork();
 
   useEffect(() => {
     (async () => {
       if (networkIsReady) {
-        console.log('refretch');
         await refetchSigner({ chainId: 5 });
       }
     })();

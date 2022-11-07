@@ -9,8 +9,6 @@ function UserItem({ user }: { user: User }) {
   const { user: currentUser } = useContext(TalentLayerContext);
   const userDetails = useUserDetails(user?.uri);
 
-  console.log({ user, userDetails, currentUser });
-
   return (
     <div className='flex flex-row gap-2 rounded-xl p-4 border border-gray-200'>
       <div className='flex flex-col items-top justify-between w-full'>

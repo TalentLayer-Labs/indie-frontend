@@ -21,9 +21,9 @@ function UserServices({ user, type }: IProps) {
   return (
     <>
       <h2 className='mb-6 pb-4 border-b border-gray-gray-200 text-gray-900 font-medium'>
-        {type == 'buyer' ? 'Jobs you posted' : 'Jobs you applied'}
+        {type == 'buyer' ? 'Jobs posted' : 'Jobs applied'}
       </h2>
-      <div className='grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
+      <div className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4'>
         {services.map((service, i) => {
           return <UserServiceItem service={service} key={i} />;
         })}

@@ -1,6 +1,6 @@
 import { getParsedEthersError } from '@enzoferey/ethers-error-parser';
 import { EthersError } from '@enzoferey/ethers-error-parser/dist/types';
-import { useConnectModal, useSigner } from '@web3modal/react';
+import { useConnectModal, useProvider, useSigner } from '@web3modal/react';
 import { ethers } from 'ethers';
 import { Field, Form, Formik } from 'formik';
 import { useContext, useEffect } from 'react';
@@ -39,7 +39,8 @@ const validationSchema = Yup.object({
 
 function ServiceForm() {
   const { open: openConnectModal } = useConnectModal();
-  const { account, provider } = useContext(TalentLayerContext);
+  const { account } = useContext(TalentLayerContext);
+  const { provider } = useProvider();
   const { data: signer, refetch: refetchSigner } = useSigner();
 
   useEffect(() => {
