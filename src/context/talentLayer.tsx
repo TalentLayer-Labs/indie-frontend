@@ -1,5 +1,4 @@
-import { useAccount, useNetwork, useProvider, useSigner } from '@web3modal/react';
-import { ethers } from 'ethers';
+import { useAccount } from '@web3modal/react';
 import { createContext, ReactNode, useEffect, useMemo, useState } from 'react';
 import { getUserByAddress } from '../services/queries';
 import { Account, User } from '../types';
@@ -7,29 +6,14 @@ import { Account, User } from '../types';
 const TalentLayerContext = createContext<{
   user?: User;
   account?: Account;
-  signer?: ethers.Signer;
-  provider?: ethers.providers.Provider;
 }>({
   user: undefined,
   account: undefined,
-  signer: undefined,
 });
 
 const TalentLayerProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | undefined>();
   const { account } = useAccount();
-  const { data: signer, refetch: refetchSigner } = useSigner();
-  const { provider, isReady: providerIsReady } = useProvider();
-  const { network, isReady: networkIsReady } = useNetwork();
-
-  useEffect(() => {
-    (async () => {
-      if (networkIsReady === true) {
-        // refetch signer when network is ready else it will throw an error on each tx
-        await refetchSigner();
-      }
-    })();
-  }, [networkIsReady, providerIsReady, network?.chain?.id]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -54,10 +38,8 @@ const TalentLayerProvider = ({ children }: { children: ReactNode }) => {
     return {
       user,
       account,
-      signer,
-      provider,
     };
-  }, [account.address, user?.id, signer]);
+  }, [account.address, user?.id]);
 
   return <TalentLayerContext.Provider value={value}>{children}</TalentLayerContext.Provider>;
 };
