@@ -25,14 +25,14 @@ function UserServices({ user, type }: IProps) {
       </h2>
       <div className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4'>
         {services.map((service, i) => {
-          return <UserServiceItem service={service} key={i} />;
+          return <UserServiceItem user={user} service={service} key={i} />;
         })}
       </div>
 
       {services.length === 20 && (
         <a
           href='#'
-          className='px-5 py-2  border border-indigo-600 rounded-full text-indigo-600 hover:text-white hover:bg-indigo-600'>
+          className='px-5 py-2  border border-indigo-600 rounded-full text-indigo-600 hover:text-white hover:bg-indigo-700'>
           Load More
         </a>
       )}

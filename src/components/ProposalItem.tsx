@@ -1,5 +1,7 @@
-import { useContext } from 'react';
+import { useSigner } from '@web3modal/react';
+import { useCallback, useContext, useEffect } from 'react';
 import TalentLayerContext from '../context/talentLayer';
+import { acceptProposal } from '../contracts/utils';
 import useProposalDetails from '../hooks/useProposalDetails';
 import useServiceDetails from '../hooks/useServiceDetails';
 import { renderTokenAmount } from '../services/Conversion';
@@ -8,8 +10,30 @@ import { formatDate } from '../utils/dates';
 
 function ProposalItem({ proposal }: { proposal: Proposal }) {
   const { user } = useContext(TalentLayerContext);
+  const { data: signer, refetch: refetchSigner } = useSigner();
   const proposalDetail = useProposalDetails(proposal.uri);
   const serviceDetail = useServiceDetails(proposal.service.uri);
+
+  useEffect(() => {
+    (async () => {
+      await refetchSigner({ chainId: 5 });
+    })();
+  }, []);
+
+  const validateProposal = () => {
+    if (!signer) {
+      return;
+    }
+    console.log('validateProposal');
+    acceptProposal(
+      signer,
+      proposal.service.id,
+      proposal.id,
+      proposal.rateToken,
+      proposal.rateAmount,
+    );
+  };
+
   if (!proposalDetail || !serviceDetail) {
     return null;
   }
@@ -47,10 +71,12 @@ function ProposalItem({ proposal }: { proposal: Proposal }) {
         </div>
         <div className='flex flex-row gap-4 justify-between items-center border-t border-gray-100 pt-4'>
           <p className='text-gray-900 font-bold line-clamp-1 flex-1'>
-            {renderTokenAmount(serviceDetail.rateToken, serviceDetail.rateAmount)}
+            {renderTokenAmount(proposal.rateToken, proposal.rateAmount)}
           </p>
           {isBuyer && proposal.status === ProposalStatus.Pending && (
-            <button className='text-green-600 bg-green-50 hover:bg-green-500 hover:text-white px-5 py-2 rounded-lg'>
+            <button
+              onClick={validateProposal}
+              className='text-green-600 bg-green-50 hover:bg-green-500 hover:text-white px-5 py-2 rounded-lg'>
               Validate proposal
             </button>
           )}

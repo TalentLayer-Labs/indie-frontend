@@ -15,7 +15,7 @@ function Step({
         <span className='flex items-center px-6 py-4 text-sm font-medium'>
           {status === 'done' && (
             <>
-              <span className='flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-indigo-600 group-hover:bg-indigo-800'>
+              <span className='flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-indigo-700 group-hover:bg-indigo-800'>
                 <svg
                   className='h-6 w-6 text-white'
                   xmlns='http://www.w3.org/2000/svg'

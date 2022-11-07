@@ -24,7 +24,7 @@ function SideMenu() {
           to={item.href}
           end
           className={({ isActive }) =>
-            (isActive ? 'bg-indigo-800 text-white' : 'text-indigo-100 hover:bg-indigo-600') +
+            (isActive ? 'bg-indigo-800 text-white' : 'text-indigo-100 hover:bg-indigo-700') +
             ' group flex items-center px-2 py-2 text-base font-medium rounded-md'
           }>
           <item.icon className='mr-3 h-5 w-5 flex-shrink-0 text-indigo-300' aria-hidden='true' />

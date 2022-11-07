@@ -19,7 +19,7 @@ function Talents() {
       {users.length === 20 && (
         <a
           href='#'
-          className='px-5 py-2  border border-indigo-600 rounded-full text-indigo-600 hover:text-white hover:bg-indigo-600'>
+          className='px-5 py-2  border border-indigo-600 rounded-full text-indigo-600 hover:text-white hover:bg-indigo-700'>
           Load More
         </a>
       )}

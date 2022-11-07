@@ -33,6 +33,7 @@ export type Service = {
   uri: string;
   createdAt: string;
   updatedAt: string;
+  proposals: Proposal[];
 };
 
 export type ServiceDetails = {

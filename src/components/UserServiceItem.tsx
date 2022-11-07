@@ -1,14 +1,16 @@
 import { NavLink } from 'react-router-dom';
 import useServiceDetails from '../hooks/useServiceDetails';
 import { renderTokenAmount } from '../services/Conversion';
-import { Service } from '../types';
+import { Service, ServiceStatus, User } from '../types';
 import { formatDate } from '../utils/dates';
 
-function UserServiceItem({ service }: { service: Service }) {
+function UserServiceItem({ user, service }: { user: User; service: Service }) {
   const serviceDetail = useServiceDetails(service.uri);
   if (!serviceDetail) {
     return null;
   }
+
+  const isBuyer = user?.id === service.buyer.id;
 
   return (
     <div className='flex flex-row gap-2 rounded-xl p-4 border border-gray-200'>
@@ -51,9 +53,14 @@ function UserServiceItem({ service }: { service: Service }) {
             {renderTokenAmount(serviceDetail.rateToken, serviceDetail.rateAmount)}
           </p>
           <NavLink
-            className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg'
+            className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg relative'
             to={`/services/${service.id}`}>
             Show details
+            {isBuyer && service.status == ServiceStatus.Opened && (
+              <div className='inline-flex absolute -top-2 -right-2 justify-center items-center w-6 h-6 text-xs font-bold text-white bg-indigo-700 rounded-full border-2 border-white'>
+                {service.proposals.length}
+              </div>
+            )}
           </NavLink>
         </div>
       </div>

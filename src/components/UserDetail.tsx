@@ -1,9 +1,13 @@
+import { useContext } from 'react';
+import { NavLink } from 'react-router-dom';
+import TalentLayerContext from '../context/talentLayer';
 import useUserDetails from '../hooks/useUserDetails';
 import { User } from '../types';
 import Loading from './Loading';
 import Stars from './Stars';
 
 function UserDetail({ user }: { user: User }) {
+  const { user: currentUser } = useContext(TalentLayerContext);
   const userDetails = useUserDetails(user?.uri);
 
   if (user.uri && !userDetails) {
@@ -36,6 +40,22 @@ function UserDetail({ user }: { user: User }) {
           <strong>About:</strong> {userDetails?.about}
         </p>
       </div>
+      {currentUser?.id === user.id && (
+        <div className=' border-t border-gray-100 pt-4 w-full mt-4'>
+          <div className='flex flex-row gap-4 justify-end items-center'>
+            <NavLink
+              className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg'
+              to={`/profile/${user.id}`}>
+              View profile
+            </NavLink>
+            <NavLink
+              className='text-green-600 bg-green-50 hover:bg-green-500 hover:text-white px-5 py-2 rounded-lg'
+              to={`/profile/edit`}>
+              Edit profile
+            </NavLink>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
