@@ -25,7 +25,7 @@ function ProposalItem({ proposal }: { proposal: Proposal }) {
               src={`/default-avatar-${Number(proposal.seller.id) % 11}.jpeg`}
               className='w-10 mr-4 rounded-full'
             />
-            <div className='flex flex-col gap-1'>
+            <div className='flex flex-col'>
               <p className='text-gray-900 font-medium'>
                 {proposal.seller.handle} - {serviceDetail.title}
               </p>

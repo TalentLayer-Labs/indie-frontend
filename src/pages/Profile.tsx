@@ -1,4 +1,5 @@
 import { useParams } from 'react-router-dom';
+import Back from '../components/Back';
 import Loading from '../components/Loading';
 import UserDetail from '../components/UserDetail';
 import UserServices from '../components/UserServices';
@@ -14,6 +15,7 @@ function Profile() {
 
   return (
     <div className='max-w-7xl mx-auto text-gray-900 sm:px-4 lg:px-0'>
+      <Back />
       {user && (
         <>
           <p className='text-5xl font-medium tracking-wider mb-8'>
