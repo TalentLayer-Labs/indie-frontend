@@ -11,7 +11,7 @@ function Services() {
         All <span className='text-indigo-600'>Jobs </span>
       </p>
 
-      <div className='grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
+      <div className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4'>
         {services.map((service: Service, i: number) => {
           return <ServiceItem service={service} key={i} />;
         })}

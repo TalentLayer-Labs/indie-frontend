@@ -1,18 +1,16 @@
 import { getParsedEthersError } from '@enzoferey/ethers-error-parser';
 import { EthersError } from '@enzoferey/ethers-error-parser/dist/types';
-import { useSigner } from '@web3modal/react';
+import { useProvider, useSigner } from '@web3modal/react';
 import { ethers } from 'ethers';
 import { Field, Form, Formik } from 'formik';
-import { useContext, useEffect } from 'react';
+import { useEffect } from 'react';
 import { toast } from 'react-toastify';
 import * as Yup from 'yup';
 import { TOKENS } from '../../constants';
-import TalentLayerContext from '../../context/talentLayer';
 import ServiceRegistry from '../../contracts/ServiceRegistry.json';
 import postToIPFS from '../../services/ipfs';
 import { parseRateAmount } from '../../services/web3';
-import { Service, ServiceDetails } from '../../types';
-import { formatDate } from '../../utils/dates';
+import { Service } from '../../types';
 import ServiceItem from '../ServiceItem';
 import SubmitButton from './SubmitButton';
 
@@ -35,7 +33,7 @@ const validationSchema = Yup.object({
 });
 
 function ProposalForm({ service }: { service: Service }) {
-  const { provider } = useContext(TalentLayerContext);
+  const { provider } = useProvider();
   const { data: signer, refetch: refetchSigner } = useSigner();
 
   useEffect(() => {

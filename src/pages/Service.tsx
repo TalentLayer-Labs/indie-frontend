@@ -1,4 +1,5 @@
 import { useParams } from 'react-router-dom';
+import Loading from '../components/Loading';
 import ServiceDetail from '../components/ServiceDetail';
 import useServiceById from '../hooks/useServiceById';
 
@@ -11,7 +12,7 @@ function Service() {
       <p className='text-5xl font-medium tracking-wider mb-8'>
         Job <span className='text-indigo-600'>#{id}</span>
       </p>
-      {service ? <ServiceDetail service={service} /> : <p>Loading...</p>}
+      {service ? <ServiceDetail service={service} /> : <Loading />}
     </div>
   );
 }

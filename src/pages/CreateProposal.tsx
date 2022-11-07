@@ -1,6 +1,7 @@
 import { useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import ProposalForm from '../components/Form/ProposalForm';
+import Loading from '../components/Loading';
 import Steps from '../components/Steps';
 import TalentLayerContext from '../context/talentLayer';
 import useServiceById from '../hooks/useServiceById';
@@ -11,7 +12,7 @@ function CreateProposal() {
   const service = useServiceById(id || '1');
 
   if (!service) {
-    return <p>Loading...</p>;
+    return <Loading />;
   }
 
   console.log({ account, user });
