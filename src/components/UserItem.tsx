@@ -26,7 +26,6 @@ function UserItem({ user }: { user: User }) {
             </div>
           </div>
         </div>
-
         <Stars rating={Number(user.rating)} numReviews={user.numReviews} />
 
         <div className='flex flex-row gap-4 justify-end items-center'>

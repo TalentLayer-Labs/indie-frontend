@@ -1,9 +1,9 @@
 import { getParsedEthersError } from '@enzoferey/ethers-error-parser';
 import { EthersError } from '@enzoferey/ethers-error-parser/dist/types';
-import { useConnectModal } from '@web3modal/react';
+import { useConnectModal, useSigner } from '@web3modal/react';
 import { ethers } from 'ethers';
 import { Field, Form, Formik } from 'formik';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import * as Yup from 'yup';
 import TalentLayerContext from '../../context/talentLayer';
@@ -24,8 +24,15 @@ const validationSchema = Yup.object({
 
 function ProfileForm() {
   const { open: openConnectModal } = useConnectModal();
-  const { user, signer, provider } = useContext(TalentLayerContext);
+  const { user, provider } = useContext(TalentLayerContext);
   const userDetails = useUserDetails(user?.uri);
+  const { data: signer, refetch: refetchSigner } = useSigner();
+
+  useEffect(() => {
+    (async () => {
+      await refetchSigner({ chainId: 5 });
+    })();
+  }, []);
 
   if (user?.uri && !userDetails) {
     return <p>loading...</p>;

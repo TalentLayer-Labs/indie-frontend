@@ -1,9 +1,9 @@
 import { getParsedEthersError } from '@enzoferey/ethers-error-parser';
 import { EthersError } from '@enzoferey/ethers-error-parser/dist/types';
-import { useConnectModal } from '@web3modal/react';
+import { useConnectModal, useNetwork, useSigner } from '@web3modal/react';
 import { ethers } from 'ethers';
-import { Field, Form, Formik, useFormik } from 'formik';
-import { useContext } from 'react';
+import { Field, Form, Formik } from 'formik';
+import { useContext, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import * as Yup from 'yup';
 import TalentLayerContext from '../../context/talentLayer';
@@ -20,7 +20,18 @@ const initialValues: IFormValues = {
 
 function TalentLayerIdForm() {
   const { open: openConnectModal } = useConnectModal();
-  const { account, signer, provider } = useContext(TalentLayerContext);
+  const { account, provider } = useContext(TalentLayerContext);
+  const { data: signer, refetch: refetchSigner } = useSigner();
+  const { isReady: networkIsReady } = useNetwork();
+
+  useEffect(() => {
+    (async () => {
+      if (networkIsReady) {
+        console.log('refretch');
+        await refetchSigner({ chainId: 5 });
+      }
+    })();
+  }, [networkIsReady]);
 
   const validationSchema = Yup.object().shape({
     handle: Yup.string()

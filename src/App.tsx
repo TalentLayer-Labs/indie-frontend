@@ -1,5 +1,5 @@
 import type { ConfigOptions } from '@web3modal/core';
-import { chains } from '@web3modal/ethereum';
+import { chains, providers } from '@web3modal/ethereum';
 import { Web3Modal } from '@web3modal/react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
@@ -25,18 +25,18 @@ const config: ConfigOptions = {
   accentColor: 'default',
   ethereum: {
     appName: 'TalentLayer indie',
-    chains: [chains.goerli, chains.localhost],
+    chains: [chains.goerli],
   },
 };
 
 function App() {
   return (
     <>
-      <Web3Modal config={config} />
       <ToastContainer position='bottom-right' />
-      <TalentLayerProvider>
-        <div className='antialiased'>
-          <BrowserRouter>
+      <div className='antialiased'>
+        <BrowserRouter>
+          <TalentLayerProvider>
+            <Web3Modal config={config} />
             <Routes>
               <Route path='/' element={<Layout />}>
                 <Route index element={<Home />} />
@@ -52,9 +52,9 @@ function App() {
                 <Route path='/profile/edit' element={<EditProfile />} />
               </Route>
             </Routes>
-          </BrowserRouter>
-        </div>
-      </TalentLayerProvider>
+          </TalentLayerProvider>
+        </BrowserRouter>
+      </div>
     </>
   );
 }
