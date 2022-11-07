@@ -49,7 +49,7 @@ function SearchService() {
                 <button
                   onClick={onClick}
                   type='button'
-                  className='px-5 py-2 border border-indigo-600 rounded-lg hover:text-indigo-600 hover:bg-white text-white bg-indigo-600'>
+                  className='px-5 py-2 border border-indigo-600 rounded-lg hover:text-indigo-600 hover:bg-white text-white bg-indigo-700'>
                   Search
                 </button>
               </div>

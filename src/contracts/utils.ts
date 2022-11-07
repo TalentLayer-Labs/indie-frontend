@@ -6,9 +6,9 @@ import ERC20 from './ERC20.json';
 export const acceptProposal = async (
   signer: Signer,
   serviceId: string,
-  sellerId: string,
-  rateAmount: string,
+  proposalId: string,
   rateToken: string,
+  rateAmount: string,
 ): Promise<void> => {
   const talentLayerMultipleArbitrableTransaction = new Contract(
     '0x64A705B5121F005431574d3F23159adc230B0041',
@@ -27,7 +27,7 @@ export const acceptProposal = async (
       CONST.KLEROS_TRANSACTION_ADMIN_WALLET_ADDRESS,
       CONST.KLEROS_TRANSACTION_ADMIN_FEE,
       parseInt(serviceId, 10),
-      parseInt(sellerId, 10),
+      parseInt(proposalId, 10),
       {
         value,
         gasLimit: 5000000,
@@ -35,11 +35,13 @@ export const acceptProposal = async (
     );
   } else {
     // Token transfer approval for escrow contract
+    console.log('test', { rateToken });
     const ERC20Token = new Contract(rateToken, ERC20.abi, signer);
     const value = ethers.utils
       .parseUnits(rateAmount, 0)
       // unitName is set to "0" to parse to smallest unit of token
       .add(ethers.utils.parseUnits(CONST.KLEROS_TRANSACTION_ADMIN_FEE, 0));
+    console.log(value.toString());
 
     await ERC20Token.approve('0x64A705B5121F005431574d3F23159adc230B0041', value);
     await talentLayerMultipleArbitrableTransaction.createTokenTransaction(
@@ -48,7 +50,7 @@ export const acceptProposal = async (
       CONST.KLEROS_TRANSACTION_ADMIN_WALLET_ADDRESS,
       CONST.KLEROS_TRANSACTION_ADMIN_FEE,
       parseInt(serviceId, 10),
-      parseInt(sellerId, 10),
+      parseInt(proposalId, 10),
       {
         gasLimit: 5000000,
       },
