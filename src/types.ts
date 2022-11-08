@@ -94,7 +94,7 @@ export type Proposal = {
   uri: string;
   status: ProposalStatus;
   seller: User;
-  rateToken: string;
+  rateToken: `0x${string}`;
   rateAmount: string;
   service: Service;
   createdAt: string;

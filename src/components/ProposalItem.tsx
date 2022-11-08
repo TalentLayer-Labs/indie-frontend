@@ -1,38 +1,16 @@
-import { useSigner } from '@web3modal/react';
-import { useCallback, useContext, useEffect } from 'react';
+import { useContext } from 'react';
 import TalentLayerContext from '../context/talentLayer';
-import { acceptProposal } from '../contracts/utils';
 import useProposalDetails from '../hooks/useProposalDetails';
 import useServiceDetails from '../hooks/useServiceDetails';
 import { renderTokenAmount } from '../services/Conversion';
 import { Proposal, ProposalStatus } from '../types';
 import { formatDate } from '../utils/dates';
+import ValidateProposalModal from './Modal/ValidateProposalModal';
 
 function ProposalItem({ proposal }: { proposal: Proposal }) {
-  const { user } = useContext(TalentLayerContext);
-  const { data: signer, refetch: refetchSigner } = useSigner();
+  const { user, account } = useContext(TalentLayerContext);
   const proposalDetail = useProposalDetails(proposal.uri);
   const serviceDetail = useServiceDetails(proposal.service.uri);
-
-  useEffect(() => {
-    (async () => {
-      await refetchSigner({ chainId: 5 });
-    })();
-  }, []);
-
-  const validateProposal = () => {
-    if (!signer) {
-      return;
-    }
-    console.log('validateProposal');
-    acceptProposal(
-      signer,
-      proposal.service.id,
-      proposal.id,
-      proposal.rateToken,
-      proposal.rateAmount,
-    );
-  };
 
   if (!proposalDetail || !serviceDetail) {
     return null;
@@ -73,12 +51,8 @@ function ProposalItem({ proposal }: { proposal: Proposal }) {
           <p className='text-gray-900 font-bold line-clamp-1 flex-1'>
             {renderTokenAmount(proposal.rateToken, proposal.rateAmount)}
           </p>
-          {isBuyer && proposal.status === ProposalStatus.Pending && (
-            <button
-              onClick={validateProposal}
-              className='text-green-600 bg-green-50 hover:bg-green-500 hover:text-white px-5 py-2 rounded-lg'>
-              Validate proposal
-            </button>
+          {account && isBuyer && proposal.status === ProposalStatus.Pending && (
+            <ValidateProposalModal proposal={proposal} account={account} />
           )}
         </div>
       </div>

@@ -76,8 +76,7 @@ function ProposalForm({ service }: { service: Service }) {
         );
         const receipt = await toast.promise(provider.waitForTransaction(tx.hash), {
           pending: 'Your transaction is pending',
-          success:
-            'Congrats! Your new proposal has been added, it will be visible in a few minutes in the dedicated section.',
+          success: 'Congrats! Your new proposal has been added',
           error: 'An error occurred while creating your proposal',
         });
         setSubmitting(false);

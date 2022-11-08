@@ -47,11 +47,11 @@ function NetworkSwitch() {
             <Menu.Item key={5}>
               <NetworkLink chaindId={5} chainName='Goerli' />
             </Menu.Item>
-            {import.meta.env.DEV && (
+            {/* {import.meta.env.DEV && (
               <Menu.Item key={1337}>
                 <NetworkLink chaindId={1337} chainName='Localhost' />
               </Menu.Item>
-            )}
+            )} */}
           </div>
         </Menu.Items>
       </Transition>

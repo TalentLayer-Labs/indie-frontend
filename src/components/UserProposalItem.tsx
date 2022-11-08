@@ -11,6 +11,7 @@ function UserProposalItem({ proposal }: { proposal: Proposal }) {
   const { user } = useContext(TalentLayerContext);
   const proposalDetail = useProposalDetails(proposal.uri);
   const serviceDetail = useServiceDetails(proposal.service.uri);
+
   if (!proposalDetail || !serviceDetail) {
     return null;
   }
