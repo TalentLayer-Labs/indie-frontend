@@ -7,7 +7,7 @@ import { useContext, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import * as Yup from 'yup';
 import TalentLayerContext from '../../context/talentLayer';
-import TalentLayerID from '../../contracts/TalentLayerID.json';
+import TalentLayerID from '../../contracts/ABI/TalentLayerID.json';
 import SubmitButton from './SubmitButton';
 
 interface IFormValues {

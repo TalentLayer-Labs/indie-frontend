@@ -1,13 +1,13 @@
 import { Contract, ethers, Signer } from 'ethers';
 import { CONST } from '../constants';
-import TalentLayerMultipleArbitrableTransaction from './TalentLayerMultipleArbitrableTransaction.json';
-import ERC20 from './ERC20.json';
+import TalentLayerMultipleArbitrableTransaction from './ABI/TalentLayerMultipleArbitrableTransaction.json';
+import ERC20 from './ABI/ERC20.json';
 import { toast } from 'react-toastify';
 import { Provider } from '@web3modal/ethereum';
 import { getParsedEthersError } from '@enzoferey/ethers-error-parser';
 import { EthersError } from '@enzoferey/ethers-error-parser/dist/types';
 
-export const acceptProposal = async (
+export const validateProposal = async (
   signer: Signer,
   provider: Provider,
   serviceId: string,
@@ -27,15 +27,6 @@ export const acceptProposal = async (
         .parseUnits(rateAmount, 'wei')
         .add(ethers.utils.parseUnits(CONST.KLEROS_TRANSACTION_ADMIN_FEE, 'wei'));
 
-      console.log({
-        timeout: CONST.KLEROS_TRANSACTION_TIMEOUT_PAYMENT,
-        adminWallet: CONST.KLEROS_TRANSACTION_ADMIN_WALLET_ADDRESS,
-        adminFee: CONST.KLEROS_TRANSACTION_ADMIN_FEE,
-        serviceId: parseInt(serviceId, 10),
-        proposalId: proposalId,
-        value: value.toString(),
-      });
-
       const tx1 = await talentLayerMultipleArbitrableTransaction.createETHTransaction(
         CONST.KLEROS_TRANSACTION_TIMEOUT_PAYMENT,
         'meta_evidence',
@@ -51,7 +42,7 @@ export const acceptProposal = async (
       const receipt1 = await toast.promise(provider.waitForTransaction(tx1.hash), {
         pending: 'Your validation is in progress',
         success: 'Transaction validated',
-        error: 'An error occurred while updating your profile',
+        error: 'An error occurred while validating your transaction',
       });
       if (receipt1.status !== 1) {
         throw new Error('Approve Transaction failed');

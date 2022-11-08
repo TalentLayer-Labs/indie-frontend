@@ -1,20 +1,23 @@
 import { useContext } from 'react';
 import { NavLink } from 'react-router-dom';
 import TalentLayerContext from '../context/talentLayer';
+import usePaymentsByService from '../hooks/usePaymentsByUser';
 import useProposalsByService from '../hooks/useProposalsByService';
 import useReviewsByService from '../hooks/useReviewsByService';
 import useServiceDetails from '../hooks/useServiceDetails';
 import { renderTokenAmount } from '../services/Conversion';
-import { IService, ServiceStatusEnum } from '../types';
+import { IService, ProposalStatusEnum, ServiceStatusEnum } from '../types';
 import { formatDate } from '../utils/dates';
+import PaymentModal from './Modal/PaymentModal';
 import ProposalItem from './ProposalItem';
 import ServiceStatus from './ServiceStatus';
 
 function ServiceDetail({ service }: { service: IService }) {
-  const { user } = useContext(TalentLayerContext);
+  const { account, user } = useContext(TalentLayerContext);
   const serviceDetail = useServiceDetails(service.uri);
   const { reviews } = useReviewsByService(service.id);
   const proposals = useProposalsByService(service.id);
+  const payments = usePaymentsByService(service.id);
 
   if (!serviceDetail) {
     return null;
@@ -25,7 +28,16 @@ function ServiceDetail({ service }: { service: IService }) {
   const hasReviewed = !!reviews.find(review => {
     return review.to.id !== user?.id;
   });
-  console.debug({ isBuyer, isSeller, service, serviceDetail, reviews, proposals, hasReviewed });
+  console.debug({
+    isBuyer,
+    isSeller,
+    service,
+    serviceDetail,
+    reviews,
+    proposals,
+    hasReviewed,
+    payments,
+  });
 
   return (
     <>
@@ -92,6 +104,9 @@ function ServiceDetail({ service }: { service: IService }) {
                 Create a review
               </NavLink>
             )}
+            {account && isBuyer && service.status === ServiceStatusEnum.Confirmed && (
+              <PaymentModal service={service} payments={payments} account={account} />
+            )}
             {isSeller && (
               <>
                 <p className='text-gray-900 font-bold'>Actions:</p>
@@ -101,14 +116,26 @@ function ServiceDetail({ service }: { service: IService }) {
         </div>
       </div>
 
-      {isBuyer && service.status === ServiceStatusEnum.Opened && (
+      {isBuyer && (
         <>
           {proposals.length > 0 ? (
             <>
-              <p className='text-gray-900 font-bold mt-12 mb-4'>Review proposals:</p>
+              <p className='text-gray-900 font-bold mt-12 mb-4'>
+                {service.status === ServiceStatusEnum.Opened
+                  ? 'Review proposals'
+                  : 'Validated proposal'}
+                :
+              </p>
               <div className=''>
                 {proposals.map((proposal, i) => {
-                  return <ProposalItem proposal={proposal} key={i} />;
+                  return (
+                    <div key={i}>
+                      {(service.status === ServiceStatusEnum.Opened ||
+                        proposal.status === ProposalStatusEnum.Validated) && (
+                        <ProposalItem proposal={proposal} />
+                      )}
+                    </div>
+                  );
                 })}
               </div>
             </>

@@ -7,7 +7,7 @@ import { useEffect } from 'react';
 import { toast } from 'react-toastify';
 import * as Yup from 'yup';
 import { TOKENS } from '../../constants';
-import ServiceRegistry from '../../contracts/ServiceRegistry.json';
+import ServiceRegistry from '../../contracts/ABI/ServiceRegistry.json';
 import postToIPFS from '../../services/ipfs';
 import { parseRateAmount } from '../../services/web3';
 import { IService } from '../../types';

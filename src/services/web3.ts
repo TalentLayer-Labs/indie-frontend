@@ -1,7 +1,7 @@
 import { ExternalProvider, JsonRpcFetchFunc, Web3Provider } from '@ethersproject/providers';
 import { BigNumber, ethers, FixedNumber, Signer } from 'ethers';
 import { Contract } from '@ethersproject/contracts';
-import ERC20 from '../contracts/ERC20.json';
+import ERC20 from '../contracts/ABI/ERC20.json';
 import { CONST, TOKENS } from '../constants';
 import { ITokenFormattedValues } from '../types';
 
