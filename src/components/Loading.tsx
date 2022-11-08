@@ -1,6 +1,6 @@
 function Loading() {
   return (
-    <div className='flex justify-center align-center'>
+    <div className='flex justify-center items-center'>
       <svg
         className='inline mr-2 w-8 h-8 text-gray-200 animate-spin fill-indigo-700'
         viewBox='0 0 100 101'
