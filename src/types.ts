@@ -33,7 +33,9 @@ export type IService = {
   uri: string;
   createdAt: string;
   updatedAt: string;
+  transactionId: string;
   proposals: IProposal[];
+  validatedProposal: IProposal[];
 };
 
 export type IServiceDetails = {
@@ -112,6 +114,11 @@ export enum ProfileTypeEnum {
   Seller,
 }
 
+export enum PaymentTypeEnum {
+  Release = 'Release',
+  Reimburse = 'Reimburse',
+}
+
 export type IToken = {
   name: string;
   symbol: string;
@@ -122,4 +129,10 @@ export type IToken = {
 export type ITokenFormattedValues = {
   roundedValue: string;
   exactValue: string;
+};
+
+export type IPayment = {
+  id: string;
+  amount: string;
+  paymentType: PaymentTypeEnum;
 };

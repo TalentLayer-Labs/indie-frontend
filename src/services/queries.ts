@@ -230,6 +230,7 @@ export const getServiceById = (id: string): Promise<any> => {
       status
       createdAt
       uri
+      transactionId
       buyer {
         id
         handle
@@ -240,6 +241,11 @@ export const getServiceById = (id: string): Promise<any> => {
       }
       proposals {
         id
+      }
+      validatedProposal: proposals(where: {status: "Validated"}){
+        id,
+        rateToken,
+        rateAmount,
       }
     }
   }
@@ -300,6 +306,19 @@ export const getReviewsByHandle = (handle: string): Promise<any> => {
       uri
     }
   }`;
+  return processRequest(query);
+};
+
+export const getPaymentsByService = (serviceId: string): Promise<any> => {
+  const query = `
+  {
+    payments(where: { service: "${serviceId}" }, orderBy: id, orderDirection: asc) {
+      id
+      amount
+      paymentType
+    }
+  }
+  `;
   return processRequest(query);
 };
 

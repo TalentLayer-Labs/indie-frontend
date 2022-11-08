@@ -3,7 +3,7 @@ import { ethers } from 'ethers';
 import { Check, X } from 'heroicons-react';
 import { useEffect, useState } from 'react';
 import { CONST } from '../../constants';
-import { acceptProposal } from '../../contracts/acceptProposal';
+import { validateProposal } from '../../contracts/acceptProposal';
 import { renderTokenAmount } from '../../services/Conversion';
 import { IAccount, IProposal } from '../../types';
 import Step from '../Step';
@@ -26,11 +26,11 @@ function ValidateProposalModal({ proposal, account }: { proposal: IProposal; acc
     })();
   }, []);
 
-  const validateProposal = async () => {
+  const onSubmit = async () => {
     if (!signer || !provider) {
       return;
     }
-    await acceptProposal(
+    await validateProposal(
       signer,
       provider,
       proposal.service.id,
@@ -195,7 +195,7 @@ function ValidateProposalModal({ proposal, account }: { proposal: IProposal; acc
             <div className='flex items-center p-6 space-x-2 rounded-b border-t border-gray-200 '>
               {hasEnoughBalance() ? (
                 <button
-                  onClick={() => validateProposal()}
+                  onClick={() => onSubmit()}
                   type='button'
                   className='hover:text-green-600 hover:bg-green-50 bg-green-500 text-white rounded-lg px-5 py-2.5 text-center'>
                   {isProposalUseEth ? 'Validate proposal' : 'Allow spending'}
