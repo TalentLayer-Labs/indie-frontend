@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { ProposalDetails } from '../types';
+import { IProposalDetails } from '../types';
 import { isValidHttpsUrl } from '../utils';
 
-const useProposalDetails = (uri: string): ProposalDetails | null => {
-  const [proposalDetails, setProposalDetails] = useState<ProposalDetails | null>(null);
+const useProposalDetails = (uri: string): IProposalDetails | null => {
+  const [proposalDetails, setProposalDetails] = useState<IProposalDetails | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -13,7 +13,7 @@ const useProposalDetails = (uri: string): ProposalDetails | null => {
         }
 
         const response = await fetch(uri);
-        const data: ProposalDetails = await response.json();
+        const data: IProposalDetails = await response.json();
         if (data) {
           setProposalDetails(data);
         }

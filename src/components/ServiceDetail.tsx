@@ -5,11 +5,12 @@ import useProposalsByService from '../hooks/useProposalsByService';
 import useReviewsByService from '../hooks/useReviewsByService';
 import useServiceDetails from '../hooks/useServiceDetails';
 import { renderTokenAmount } from '../services/Conversion';
-import { Service, ServiceStatus } from '../types';
+import { IService, ServiceStatusEnum } from '../types';
 import { formatDate } from '../utils/dates';
 import ProposalItem from './ProposalItem';
+import ServiceStatus from './ServiceStatus';
 
-function ServiceDetail({ service }: { service: Service }) {
+function ServiceDetail({ service }: { service: IService }) {
   const { user } = useContext(TalentLayerContext);
   const serviceDetail = useServiceDetails(service.uri);
   const { reviews } = useReviewsByService(service.id);
@@ -43,12 +44,19 @@ function ServiceDetail({ service }: { service: Service }) {
                   {formatDate(Number(service.createdAt) * 1000)}
                 </p>
               </div>
-              <span className='absolute right-0 inline-flex items-center rounded-full bg-indigo-100 px-2.5 py-1 text-xs font-medium text-indigo-800'>
-                {service.status}
+              <span className='absolute right-0 inline-flex items-center'>
+                <ServiceStatus status={service.status} />
               </span>
             </div>
 
             <div className=' border-t border-gray-100 pt-4 w-full'>
+              {service.seller && (
+                <NavLink
+                  className='text-sm text-gray-500 mt-4'
+                  to={`/profile/${service.seller.id}`}>
+                  Job handle by <span className='text-indigo-600'>{service.seller.handle}</span>
+                </NavLink>
+              )}
               <p className='text-sm text-gray-500 mt-4'>
                 <strong>About:</strong> {serviceDetail.about}
               </p>
@@ -70,14 +78,14 @@ function ServiceDetail({ service }: { service: Service }) {
           </div>
 
           <div className='flex flex-row gap-4 justify-between items-center border-t border-gray-100 pt-4'>
-            {!isBuyer && service.status == ServiceStatus.Opened && (
+            {!isBuyer && service.status == ServiceStatusEnum.Opened && (
               <NavLink
                 className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg'
                 to={`/services/${service.id}/create-proposal`}>
                 Create proposal
               </NavLink>
             )}
-            {(isBuyer || isSeller) && service.status === ServiceStatus.Finished && (
+            {(isBuyer || isSeller) && service.status === ServiceStatusEnum.Finished && (
               <NavLink
                 className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg'
                 to={`/services/${service.id}/create-review`}>
@@ -93,7 +101,7 @@ function ServiceDetail({ service }: { service: Service }) {
         </div>
       </div>
 
-      {isBuyer && service.status === ServiceStatus.Opened && (
+      {isBuyer && service.status === ServiceStatusEnum.Opened && (
         <>
           {proposals.length > 0 ? (
             <>

@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import axios from 'axios';
-import { ServiceStatus } from '../types';
+import { ServiceStatusEnum } from '../types';
 
 const processRequest = async (query: string): Promise<any> => {
   try {
@@ -185,7 +185,7 @@ export const getUserByAddress = (address: string): Promise<any> => {
 };
 
 export const getServices = (
-  serviceStatus?: ServiceStatus,
+  serviceStatus?: ServiceStatusEnum,
   buyerId?: string,
   sellerId?: string,
 ): Promise<any> => {

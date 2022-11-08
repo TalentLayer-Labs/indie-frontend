@@ -1,9 +1,9 @@
 import ServiceItem from '../components/ServiceItem';
 import useServices from '../hooks/useServices';
-import { Service, ServiceStatus } from '../types';
+import { IService, ServiceStatusEnum } from '../types';
 
 function Services() {
-  const services = useServices(ServiceStatus.Opened);
+  const services = useServices(ServiceStatusEnum.Opened);
 
   return (
     <div className='max-w-7xl mx-auto text-gray-900 sm:px-4 lg:px-0'>
@@ -12,7 +12,7 @@ function Services() {
       </p>
 
       <div className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4'>
-        {services.map((service: Service, i: number) => {
+        {services.map((service: IService, i: number) => {
           return <ServiceItem service={service} key={i} />;
         })}
       </div>

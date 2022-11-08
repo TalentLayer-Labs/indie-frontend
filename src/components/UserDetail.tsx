@@ -2,11 +2,11 @@ import { useContext } from 'react';
 import { NavLink } from 'react-router-dom';
 import TalentLayerContext from '../context/talentLayer';
 import useUserDetails from '../hooks/useUserDetails';
-import { User } from '../types';
+import { IUser } from '../types';
 import Loading from './Loading';
 import Stars from './Stars';
 
-function UserDetail({ user }: { user: User }) {
+function UserDetail({ user }: { user: IUser }) {
   const { user: currentUser } = useContext(TalentLayerContext);
   const userDetails = useUserDetails(user?.uri);
 

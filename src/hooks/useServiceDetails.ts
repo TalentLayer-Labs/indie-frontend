@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { ServiceDetails } from '../types';
+import { IServiceDetails } from '../types';
 import { isValidHttpsUrl } from '../utils';
 
-const useServiceDetails = (uri: string): ServiceDetails | null => {
-  const [serviceDetails, setServiceDetails] = useState<ServiceDetails | null>(null);
+const useServiceDetails = (uri: string): IServiceDetails | null => {
+  const [serviceDetails, setServiceDetails] = useState<IServiceDetails | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -13,7 +13,7 @@ const useServiceDetails = (uri: string): ServiceDetails | null => {
         }
 
         const response = await fetch(uri);
-        const data: ServiceDetails = await response.json();
+        const data: IServiceDetails = await response.json();
         if (data) {
           setServiceDetails(data);
         }

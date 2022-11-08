@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { getAllProposalsbyServiceId } from '../services/queries';
-import { Proposal } from '../types';
+import { IProposal } from '../types';
 
-const useProposalsByService = (serviceId?: string | undefined): Proposal[] => {
-  const [proposals, setProposals] = useState<Proposal[]>([]);
+const useProposalsByService = (serviceId?: string | undefined): IProposal[] => {
+  const [proposals, setProposals] = useState<IProposal[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {

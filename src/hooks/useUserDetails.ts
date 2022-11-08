@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { UserDetails } from '../types';
+import { IUserDetails } from '../types';
 import { isValidHttpsUrl } from '../utils';
 
-const useUserDetails = (uri: string | undefined): UserDetails | null => {
-  const [serviceDetails, setUserDetails] = useState<UserDetails | null>(null);
+const useUserDetails = (uri: string | undefined): IUserDetails | null => {
+  const [serviceDetails, setUserDetails] = useState<IUserDetails | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -15,7 +15,7 @@ const useUserDetails = (uri: string | undefined): UserDetails | null => {
         }
 
         const response = await fetch(uri);
-        const data: UserDetails = await response.json();
+        const data: IUserDetails = await response.json();
         if (typeof data === 'object') {
           setUserDetails(data);
         }

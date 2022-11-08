@@ -4,10 +4,10 @@ import TalentLayerContext from '../context/talentLayer';
 import useProposalDetails from '../hooks/useProposalDetails';
 import useServiceDetails from '../hooks/useServiceDetails';
 import { renderTokenAmount } from '../services/Conversion';
-import { Proposal, ProposalStatus } from '../types';
+import { IProposal, ProposalStatusEnum } from '../types';
 import { formatDate } from '../utils/dates';
 
-function UserProposalItem({ proposal }: { proposal: Proposal }) {
+function UserProposalItem({ proposal }: { proposal: IProposal }) {
   const { user } = useContext(TalentLayerContext);
   const proposalDetail = useProposalDetails(proposal.uri);
   const serviceDetail = useServiceDetails(proposal.service.uri);
@@ -59,7 +59,7 @@ function UserProposalItem({ proposal }: { proposal: Proposal }) {
             to={`/services/${proposal.service.id}`}>
             Show Job
           </NavLink>
-          {isBuyer && proposal.status === ProposalStatus.Pending && (
+          {isBuyer && proposal.status === ProposalStatusEnum.Pending && (
             <button className='text-green-600 bg-green-50 hover:bg-green-500 hover:text-white px-5 py-2 rounded-lg'>
               Validate proposal
             </button>

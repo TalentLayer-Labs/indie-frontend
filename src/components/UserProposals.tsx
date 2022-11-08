@@ -1,9 +1,9 @@
 import useProposalsByUser from '../hooks/useProposalsByUser';
-import { User } from '../types';
+import { IUser } from '../types';
 import UserProposalItem from './UserProposalItem';
 
 interface IProps {
-  user: User;
+  user: IUser;
 }
 
 function UserProposals({ user }: IProps) {

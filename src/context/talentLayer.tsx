@@ -1,18 +1,18 @@
 import { useAccount } from '@web3modal/react';
 import { createContext, ReactNode, useEffect, useMemo, useState } from 'react';
 import { getUserByAddress } from '../services/queries';
-import { Account, User } from '../types';
+import { IAccount, IUser } from '../types';
 
 const TalentLayerContext = createContext<{
-  user?: User;
-  account?: Account;
+  user?: IUser;
+  account?: IAccount;
 }>({
   user: undefined,
   account: undefined,
 });
 
 const TalentLayerProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | undefined>();
+  const [user, setUser] = useState<IUser | undefined>();
   const { account } = useAccount();
 
   useEffect(() => {

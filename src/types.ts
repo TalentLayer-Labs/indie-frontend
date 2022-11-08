@@ -1,4 +1,4 @@
-export type User = {
+export type IUser = {
   id: string;
   handle: string;
   address: string;
@@ -8,13 +8,13 @@ export type User = {
   numReviews: string;
 };
 
-export type UserDetails = {
+export type IUserDetails = {
   title: string;
   about: string;
   skills: string;
 };
 
-export type Account = {
+export type IAccount = {
   address: string;
   isConnected: boolean | undefined;
   isReconnecting: boolean | undefined;
@@ -23,20 +23,20 @@ export type Account = {
   status: 'connected' | 'reconnecting' | 'connecting' | 'disconnected' | undefined;
 };
 
-export type Service = {
+export type IService = {
   id: string;
-  status: string;
-  buyer: User;
-  seller: User;
-  sender: User;
-  recipient: User;
+  status: ServiceStatusEnum;
+  buyer: IUser;
+  seller: IUser;
+  sender: IUser;
+  recipient: IUser;
   uri: string;
   createdAt: string;
   updatedAt: string;
-  proposals: Proposal[];
+  proposals: IProposal[];
 };
 
-export type ServiceDetails = {
+export type IServiceDetails = {
   title: string;
   about: string;
   keywords: string;
@@ -46,7 +46,7 @@ export type ServiceDetails = {
   rateToken: string;
 };
 
-export type ServiceDetailsBuyer = {
+export type IServiceDetailsBuyer = {
   title: string;
   about: string;
   rateAmount: string;
@@ -60,19 +60,19 @@ export type ServiceDetailsBuyer = {
   updatedAt: string;
 };
 
-export type Review = {
+export type IReview = {
   id: string;
-  service: Service;
-  to: User;
+  service: IService;
+  to: IUser;
   uri: string;
 };
 
-export type ReviewDetails = {
+export type IReviewDetails = {
   content: string;
   rating: string;
 };
 
-export enum ServiceStatus {
+export enum ServiceStatusEnum {
   Filled = 'Filled',
   Confirmed = 'Confirmed',
   Finished = 'Finished',
@@ -80,46 +80,46 @@ export enum ServiceStatus {
   Opened = 'Opened',
 }
 
-export enum ProposalStatus {
+export enum ProposalStatusEnum {
   Pending = 'Pending',
   Validated = 'Validated',
   Rejected = 'Rejected',
 }
-export type ProposalDetails = {
+export type IProposalDetails = {
   description: string;
 };
 
-export type Proposal = {
+export type IProposal = {
   id: string;
   uri: string;
-  status: ProposalStatus;
-  seller: User;
+  status: ProposalStatusEnum;
+  seller: IUser;
   rateToken: `0x${string}`;
   rateAmount: string;
-  service: Service;
+  service: IService;
   createdAt: string;
   updatedAt: string;
 };
 
-export enum ProposalType {
+export enum ProposalTypeEnum {
   Hourly = 1,
   Flat,
   Milestone,
 }
 
-export enum ProfileType {
+export enum ProfileTypeEnum {
   Buyer = 1,
   Seller,
 }
 
-export type Token = {
+export type IToken = {
   name: string;
   symbol: string;
   address: string;
   decimals: number;
 };
 
-export type TokenFormattedValues = {
+export type ITokenFormattedValues = {
   roundedValue: string;
   exactValue: string;
 };

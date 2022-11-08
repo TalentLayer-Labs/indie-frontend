@@ -10,7 +10,7 @@ import { TOKENS } from '../../constants';
 import ServiceRegistry from '../../contracts/ServiceRegistry.json';
 import postToIPFS from '../../services/ipfs';
 import { parseRateAmount } from '../../services/web3';
-import { Service } from '../../types';
+import { IService } from '../../types';
 import ServiceItem from '../ServiceItem';
 import SubmitButton from './SubmitButton';
 
@@ -32,7 +32,7 @@ const validationSchema = Yup.object({
   rateAmount: Yup.string().required('amount is required'),
 });
 
-function ProposalForm({ service }: { service: Service }) {
+function ProposalForm({ service }: { service: IService }) {
   const { provider } = useProvider();
   const { data: signer, refetch: refetchSigner } = useSigner();
 
