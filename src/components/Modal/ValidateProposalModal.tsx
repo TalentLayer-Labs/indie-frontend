@@ -1,14 +1,14 @@
-import { useBalance, useProvider, useSigner, useToken } from '@web3modal/react';
+import { useBalance, useProvider, useSigner } from '@web3modal/react';
+import { ethers } from 'ethers';
 import { Check, X } from 'heroicons-react';
 import { useEffect, useState } from 'react';
-import { acceptProposal } from '../../contracts/acceptProposal';
-import { Account, Proposal } from '../../types';
-import Step from '../Step';
 import { CONST } from '../../constants';
+import { acceptProposal } from '../../contracts/acceptProposal';
 import { renderTokenAmount } from '../../services/Conversion';
-import { ethers } from 'ethers';
+import { IAccount, IProposal } from '../../types';
+import Step from '../Step';
 
-function ValidateProposalModal({ proposal, account }: { proposal: Proposal; account: Account }) {
+function ValidateProposalModal({ proposal, account }: { proposal: IProposal; account: IAccount }) {
   const { data: signer, refetch: refetchSigner } = useSigner();
   const { provider } = useProvider();
   const [show, setShow] = useState(false);

@@ -1,4 +1,4 @@
-import { Token } from './types';
+import { IToken } from './types';
 
 export const CONST = {
   DAI_ADDRESS: '0x73967c6a0904aa032c103b4104747e88c566b1a2',
@@ -9,7 +9,7 @@ export const CONST = {
   KLEROS_TRANSACTION_ADMIN_WALLET_ADDRESS: '0x4B3380d3A8C1AF85e47dBC1Fc6C3f4e0c8F78fEa',
 };
 
-export const TOKENS: { [key: string]: Token } = {
+export const TOKENS: { [key: string]: IToken } = {
   [CONST.DAI_ADDRESS]: {
     symbol: 'DAI',
     name: 'DAI Stablecoin',

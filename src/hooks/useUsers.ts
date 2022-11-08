@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { getUsers } from '../services/queries';
-import { User } from '../types';
+import { IUser } from '../types';
 
-const useUsers = (): { users: User[] } => {
-  const [users, setUsers] = useState<User[]>([]);
+const useUsers = (): { users: IUser[] } => {
+  const [users, setUsers] = useState<IUser[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {

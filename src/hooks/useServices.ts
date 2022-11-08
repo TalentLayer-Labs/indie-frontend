@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import { getServices } from '../services/queries';
-import { Service, ServiceStatus } from '../types';
+import { IService, ServiceStatusEnum } from '../types';
 
 const useServices = (
-  serviceStatus?: ServiceStatus,
+  serviceStatus?: ServiceStatusEnum,
   buyerId?: string,
   sellerId?: string,
-): Service[] => {
-  const [services, setServices] = useState<Service[]>([]);
+): IService[] => {
+  const [services, setServices] = useState<IService[]>([]);
 
   console.log('useServices', serviceStatus, buyerId, sellerId);
 

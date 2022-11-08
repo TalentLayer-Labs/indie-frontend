@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { getReviewsByService } from '../services/queries';
-import { Review } from '../types';
+import { IReview } from '../types';
 
-const useReviewsByService = (serviceId: string): { reviews: Review[] } => {
-  const [reviews, setReviews] = useState<Review[]>([]);
+const useReviewsByService = (serviceId: string): { reviews: IReview[] } => {
+  const [reviews, setReviews] = useState<IReview[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {

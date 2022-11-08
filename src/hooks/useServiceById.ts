@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { getServiceById } from '../services/queries';
-import { Service } from '../types';
+import { IService } from '../types';
 
-const useServiceById = (serviceId: string): Service | null => {
-  const [user, setUser] = useState<Service | null>(null);
+const useServiceById = (serviceId: string): IService | null => {
+  const [user, setUser] = useState<IService | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {

@@ -3,11 +3,11 @@ import TalentLayerContext from '../context/talentLayer';
 import useProposalDetails from '../hooks/useProposalDetails';
 import useServiceDetails from '../hooks/useServiceDetails';
 import { renderTokenAmount } from '../services/Conversion';
-import { Proposal, ProposalStatus } from '../types';
+import { IProposal, ProposalStatusEnum } from '../types';
 import { formatDate } from '../utils/dates';
 import ValidateProposalModal from './Modal/ValidateProposalModal';
 
-function ProposalItem({ proposal }: { proposal: Proposal }) {
+function ProposalItem({ proposal }: { proposal: IProposal }) {
   const { user, account } = useContext(TalentLayerContext);
   const proposalDetail = useProposalDetails(proposal.uri);
   const serviceDetail = useServiceDetails(proposal.service.uri);
@@ -51,7 +51,7 @@ function ProposalItem({ proposal }: { proposal: Proposal }) {
           <p className='text-gray-900 font-bold line-clamp-1 flex-1'>
             {renderTokenAmount(proposal.rateToken, proposal.rateAmount)}
           </p>
-          {account && isBuyer && proposal.status === ProposalStatus.Pending && (
+          {account && isBuyer && proposal.status === ProposalStatusEnum.Pending && (
             <ValidateProposalModal proposal={proposal} account={account} />
           )}
         </div>

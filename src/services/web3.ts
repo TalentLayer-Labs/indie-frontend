@@ -3,7 +3,7 @@ import { BigNumber, ethers, FixedNumber, Signer } from 'ethers';
 import { Contract } from '@ethersproject/contracts';
 import ERC20 from '../contracts/ERC20.json';
 import { CONST, TOKENS } from '../constants';
-import { TokenFormattedValues } from '../types';
+import { ITokenFormattedValues } from '../types';
 
 export default function getLibrary(provider: ExternalProvider | JsonRpcFetchFunc): Web3Provider {
   const library = new Web3Provider(provider);
@@ -34,7 +34,7 @@ export const formatRateAmount = async (
   rateAmount: string,
   rateToken: string,
   signer: Signer,
-): Promise<TokenFormattedValues> => {
+): Promise<ITokenFormattedValues> => {
   if (rateToken === CONST.ETH_ADDRESS) {
     const valueInEther = ethers.utils.formatEther(rateAmount);
     const roundedValue = FixedNumber.from(valueInEther).round(2).toString();

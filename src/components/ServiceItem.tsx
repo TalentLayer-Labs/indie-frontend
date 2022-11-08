@@ -1,10 +1,10 @@
 import { NavLink } from 'react-router-dom';
 import useServiceDetails from '../hooks/useServiceDetails';
 import { renderTokenAmount } from '../services/Conversion';
-import { Service } from '../types';
+import { IService } from '../types';
 import { formatDate } from '../utils/dates';
 
-function ServiceItem({ service }: { service: Service }) {
+function ServiceItem({ service }: { service: IService }) {
   const serviceDetail = useServiceDetails(service.uri);
   if (!serviceDetail) {
     return null;
