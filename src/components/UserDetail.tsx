@@ -14,8 +14,6 @@ function UserDetail({ user }: { user: IUser }) {
     return <Loading />;
   }
 
-  console.log(userDetails);
-
   return (
     <div className='flex flex-col rounded-xl p-4 border border-gray-200'>
       <div className='flex items-top justify-between w-full'>

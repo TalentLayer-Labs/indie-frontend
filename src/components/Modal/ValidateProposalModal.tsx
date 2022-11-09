@@ -2,9 +2,8 @@ import { useBalance, useProvider, useSigner } from '@web3modal/react';
 import { ethers } from 'ethers';
 import { Check, X } from 'heroicons-react';
 import { useEffect, useState } from 'react';
-import { CONST } from '../../constants';
 import { validateProposal } from '../../contracts/acceptProposal';
-import { renderTokenAmount } from '../../services/Conversion';
+import { renderTokenAmount } from '../../utils/conversion';
 import { IAccount, IProposal } from '../../types';
 import Step from '../Step';
 
@@ -13,7 +12,7 @@ function ValidateProposalModal({ proposal, account }: { proposal: IProposal; acc
   const { provider } = useProvider();
   const [show, setShow] = useState(false);
   const { data: ethBalance } = useBalance({ addressOrName: account.address });
-  const isProposalUseEth: boolean = proposal.rateToken === CONST.ETH_ADDRESS;
+  const isProposalUseEth: boolean = proposal.rateToken === ethers.constants.AddressZero;
   const { data: tokenBalance } = useBalance({
     addressOrName: account.address,
     enabled: !isProposalUseEth,

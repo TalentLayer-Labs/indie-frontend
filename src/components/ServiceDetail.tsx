@@ -5,7 +5,7 @@ import usePaymentsByService from '../hooks/usePaymentsByUser';
 import useProposalsByService from '../hooks/useProposalsByService';
 import useReviewsByService from '../hooks/useReviewsByService';
 import useServiceDetails from '../hooks/useServiceDetails';
-import { renderTokenAmount } from '../services/Conversion';
+import { renderTokenAmount } from '../utils/conversion';
 import { IService, ProposalStatusEnum, ServiceStatusEnum } from '../types';
 import { formatDate } from '../utils/dates';
 import PaymentModal from './Modal/PaymentModal';
@@ -29,16 +29,6 @@ function ServiceDetail({ service }: { service: IService }) {
   const isSeller = user?.id === service.seller?.id;
   const hasReviewed = !!reviews.find(review => {
     return review.to.id !== user?.id;
-  });
-  console.debug({
-    isBuyer,
-    isSeller,
-    service,
-    serviceDetail,
-    reviews,
-    proposals,
-    hasReviewed,
-    payments,
   });
 
   return (
@@ -91,7 +81,7 @@ function ServiceDetail({ service }: { service: IService }) {
             </div>
           </div>
 
-          <div className='flex flex-row gap-4 justify-between items-center border-t border-gray-100 pt-4'>
+          <div className='flex flex-row gap-4 items-center border-t border-gray-100 pt-4'>
             {!isBuyer && service.status == ServiceStatusEnum.Opened && (
               <NavLink
                 className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg'
@@ -107,13 +97,8 @@ function ServiceDetail({ service }: { service: IService }) {
                   userToReview={isBuyer ? service.seller : service.buyer}
                 />
               )}
-            {account && isBuyer && service.status === ServiceStatusEnum.Confirmed && (
-              <PaymentModal service={service} payments={payments} />
-            )}
-            {isSeller && (
-              <>
-                <p className='text-gray-900 font-bold'>Actions:</p>
-              </>
+            {account && service.status !== ServiceStatusEnum.Opened && (
+              <PaymentModal service={service} payments={payments} isBuyer={isBuyer} />
             )}
           </div>
         </div>
@@ -122,8 +107,8 @@ function ServiceDetail({ service }: { service: IService }) {
       {(isBuyer || isSeller) && reviews.length > 0 && (
         <div className='flex flex-col gap-4 mt-4'>
           <p className='text-gray-900 font-bold'>Reviews:</p>
-          {reviews.map(review => (
-            <ReviewItem review={review} />
+          {reviews.map((review, index) => (
+            <ReviewItem review={review} key={index} />
           ))}
         </div>
       )}

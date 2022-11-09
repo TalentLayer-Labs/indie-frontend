@@ -6,10 +6,10 @@ import { Field, Form, Formik } from 'formik';
 import { useEffect } from 'react';
 import { toast } from 'react-toastify';
 import * as Yup from 'yup';
-import { TOKENS } from '../../constants';
+import { config } from '../../config';
 import ServiceRegistry from '../../contracts/ABI/ServiceRegistry.json';
-import postToIPFS from '../../services/ipfs';
-import { parseRateAmount } from '../../services/web3';
+import postToIPFS from '../../utils/ipfs';
+import { parseRateAmount } from '../../utils/web3';
 import { IService } from '../../types';
 import ServiceItem from '../ServiceItem';
 import SubmitButton from './SubmitButton';
@@ -136,9 +136,9 @@ function ProposalForm({ service }: { service: IService }) {
                   className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
                   placeholder=''>
                   <option value=''>Select a token</option>
-                  {Object.keys(TOKENS).map((address, index) => (
+                  {Object.keys(config.tokens).map((address, index) => (
                     <option key={index} value={address}>
-                      {TOKENS[address].symbol}
+                      {config.tokens[address].symbol}
                     </option>
                   ))}
                 </Field>

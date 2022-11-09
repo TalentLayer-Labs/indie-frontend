@@ -1,11 +1,20 @@
+import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
 import { useProvider, useSigner } from '@web3modal/react';
 import { ethers } from 'ethers';
 import { useEffect, useState } from 'react';
 import { releasePayment } from '../../contracts/releasePayment';
-import { renderTokenAmount } from '../../services/Conversion';
-import { IPayment, IService, PaymentTypeEnum } from '../../types';
+import { renderTokenAmount } from '../../utils/conversion';
+import { IPayment, IService, PaymentTypeEnum, ServiceStatusEnum } from '../../types';
 
-function PaymentModal({ service, payments }: { service: IService; payments: IPayment[] }) {
+function PaymentModal({
+  service,
+  payments,
+  isBuyer,
+}: {
+  service: IService;
+  payments: IPayment[];
+  isBuyer: boolean;
+}) {
   const { data: signer, refetch: refetchSigner } = useSigner();
   const { provider } = useProvider();
   const [show, setShow] = useState(false);
@@ -34,22 +43,20 @@ function PaymentModal({ service, payments }: { service: IService; payments: IPay
   }, ethers.BigNumber.from('0'));
 
   const totalInEscrow = ethers.BigNumber.from(rateAmount).sub(totalPayments);
-
-  console.log({
-    totalPayments: totalPayments.toString(),
-    totalInEscrow: totalInEscrow.toString(),
-    payments,
-    service,
-  });
-
   return (
     <>
       <button
         onClick={() => setShow(true)}
-        className='block text-green-600 bg-green-50 hover:bg-green-500 hover:text-white rounded-lg px-5 py-2.5 text-center'
+        className={`block ${
+          service.status === ServiceStatusEnum.Confirmed && !isBuyer
+            ? 'text-green-600 bg-green-50 hover:bg-green-500'
+            : 'text-indigo-600 bg-indigo-50 hover:bg-indigo-500'
+        } hover:text-white rounded-lg px-5 py-2.5 text-center`}
         type='button'
         data-modal-toggle='defaultModal'>
-        Release payment
+        {service.status === ServiceStatusEnum.Confirmed && !isBuyer
+          ? 'Release payment'
+          : 'Payment summary'}
       </button>
 
       <div
@@ -59,7 +66,11 @@ function PaymentModal({ service, payments }: { service: IService; payments: IPay
         <div className='relative p-4 w-full max-w-2xl h-auto'>
           <div className='relative bg-white rounded-lg shadow '>
             <div className='flex justify-between items-start p-4 rounded-t border-b '>
-              <h3 className='text-xl font-semibold text-gray-900 '>Realease payment</h3>
+              <h3 className='text-xl font-semibold text-gray-900 '>
+                {service.status === ServiceStatusEnum.Confirmed
+                  ? 'Release payment'
+                  : 'Payment summary'}
+              </h3>
               <button
                 onClick={() => setShow(false)}
                 type='button'
@@ -80,7 +91,11 @@ function PaymentModal({ service, payments }: { service: IService; payments: IPay
             </div>
             <div className='p-6 space-y-6'>
               <div className='flex flex-col px-4 py-6 md:p-6 xl:p-8 w-full bg-gray-50 space-y-6'>
-                <h3 className='text-xl font-semibold leading-5 text-gray-800'>Payments summary</h3>
+                {service.status === ServiceStatusEnum.Confirmed && (
+                  <h3 className='text-xl font-semibold leading-5 text-gray-800'>
+                    Payments summary
+                  </h3>
+                )}
                 <div className='flex justify-center items-center w-full space-y-4 flex-col border-gray-200 border-b pb-4'>
                   <div className='flex justify-between w-full'>
                     <p className='text-base leading-4 text-gray-800'>Job rate</p>
@@ -88,10 +103,18 @@ function PaymentModal({ service, payments }: { service: IService; payments: IPay
                       {renderTokenAmount(rateToken, rateAmount)}
                     </p>
                   </div>
-                  {payments.map(payment => (
-                    <div className='flex justify-between w-full'>
+                  {payments.map((payment, index) => (
+                    <div key={index} className='flex justify-between w-full'>
                       <p className='text-base leading-4 text-gray-800'>
-                        {payment.paymentType == PaymentTypeEnum.Release ? 'Realease' : 'Reimbourse'}
+                        <a
+                          className='flex'
+                          href={`https://goerli.etherscan.io/tx/${payment.transactionHash}`}
+                          target='_blank'>
+                          {payment.paymentType == PaymentTypeEnum.Release
+                            ? 'Realease'
+                            : 'Reimbourse'}
+                          <ArrowTopRightOnSquareIcon className='ml-2 w-4 h-4' />
+                        </a>
                       </p>
                       <p className='text-base  leading-4 text-gray-600'>
                         -{renderTokenAmount(rateToken, payment.amount)}
@@ -108,9 +131,14 @@ function PaymentModal({ service, payments }: { service: IService; payments: IPay
                   </p>
                 </div>
               </div>
+              {totalInEscrow.eq(0) && (
+                <div className='p-4 mb-4 text-sm text-green-600 bg-green-50 rounded-lg'>
+                  All the payment has been released
+                </div>
+              )}
             </div>
             <div className='flex items-center p-6 space-x-2 rounded-b border-t border-gray-200 '>
-              {totalInEscrow.gt(0) && (
+              {isBuyer && totalInEscrow.gt(0) && (
                 <button
                   onClick={() => onSubmit()}
                   type='button'
@@ -122,7 +150,7 @@ function PaymentModal({ service, payments }: { service: IService; payments: IPay
                 onClick={() => setShow(false)}
                 type='button'
                 className='text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 '>
-                Decline
+                Close
               </button>
             </div>
           </div>

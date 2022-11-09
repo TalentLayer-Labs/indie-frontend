@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom';
 import TalentLayerContext from '../context/talentLayer';
 import useProposalDetails from '../hooks/useProposalDetails';
 import useServiceDetails from '../hooks/useServiceDetails';
-import { renderTokenAmount } from '../services/Conversion';
+import { renderTokenAmount } from '../utils/conversion';
 import { IProposal, ProposalStatusEnum } from '../types';
 import { formatDate } from '../utils/dates';
 

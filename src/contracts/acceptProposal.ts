@@ -1,11 +1,11 @@
 import { Contract, ethers, Signer } from 'ethers';
-import { CONST } from '../constants';
 import TalentLayerMultipleArbitrableTransaction from './ABI/TalentLayerMultipleArbitrableTransaction.json';
 import ERC20 from './ABI/ERC20.json';
 import { toast } from 'react-toastify';
 import { Provider } from '@web3modal/ethereum';
 import { getParsedEthersError } from '@enzoferey/ethers-error-parser';
 import { EthersError } from '@enzoferey/ethers-error-parser/dist/types';
+import { config } from '../config';
 
 export const validateProposal = async (
   signer: Signer,
@@ -22,16 +22,16 @@ export const validateProposal = async (
   );
 
   try {
-    if (rateToken === CONST.ETH_ADDRESS) {
+    if (rateToken === ethers.constants.AddressZero) {
       const value = ethers.utils
         .parseUnits(rateAmount, 'wei')
-        .add(ethers.utils.parseUnits(CONST.KLEROS_TRANSACTION_ADMIN_FEE, 'wei'));
+        .add(ethers.utils.parseUnits(config.escrowConfig.adminFee, 'wei'));
 
       const tx1 = await talentLayerMultipleArbitrableTransaction.createETHTransaction(
-        CONST.KLEROS_TRANSACTION_TIMEOUT_PAYMENT,
+        config.escrowConfig.timeoutPayment,
         'meta_evidence',
-        CONST.KLEROS_TRANSACTION_ADMIN_WALLET_ADDRESS,
-        CONST.KLEROS_TRANSACTION_ADMIN_FEE,
+        config.escrowConfig.adminWallet,
+        config.escrowConfig.adminFee,
         parseInt(serviceId, 10),
         parseInt(proposalId, 10),
         {
@@ -49,17 +49,14 @@ export const validateProposal = async (
       }
     } else {
       // Token transfer approval for escrow contract
-      console.log('test', { rateToken });
       const ERC20Token = new Contract(rateToken, ERC20.abi, signer);
       const value = ethers.utils
         .parseUnits(rateAmount, 0)
         // unitName is set to "0" to parse to smallest unit of token
-        .add(ethers.utils.parseUnits(CONST.KLEROS_TRANSACTION_ADMIN_FEE, 0));
-      console.log(value.toString());
+        .add(ethers.utils.parseUnits(config.escrowConfig.adminFee, 0));
 
       // TODO: Check if balance and allowance are enough
       const balance = await ERC20Token.balanceOf(signer.getAddress());
-      console.log(balance.toString());
 
       if (balance.lt(value)) {
         throw new Error('Unsufficient balance');
@@ -69,7 +66,6 @@ export const validateProposal = async (
         signer.getAddress(),
         '0x64A705B5121F005431574d3F23159adc230B0041',
       );
-      console.log(allowance.toString());
 
       if (allowance.lt(value)) {
         const tx1 = await ERC20Token.approve('0x64A705B5121F005431574d3F23159adc230B0041', value);
@@ -84,10 +80,10 @@ export const validateProposal = async (
       }
 
       const tx2 = await talentLayerMultipleArbitrableTransaction.createTokenTransaction(
-        CONST.KLEROS_TRANSACTION_TIMEOUT_PAYMENT,
+        config.escrowConfig.timeoutPayment,
         'meta_evidence',
-        CONST.KLEROS_TRANSACTION_ADMIN_WALLET_ADDRESS,
-        CONST.KLEROS_TRANSACTION_ADMIN_FEE,
+        config.escrowConfig.adminWallet,
+        config.escrowConfig.adminFee,
         parseInt(serviceId, 10),
         parseInt(proposalId, 10),
       );

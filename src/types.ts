@@ -119,10 +119,14 @@ export enum PaymentTypeEnum {
   Reimburse = 'Reimburse',
 }
 
+export enum NetworkEnum {
+  LOCAL = 0,
+  GOERLI = 5,
+}
+
 export type IToken = {
   name: string;
   symbol: string;
-  address: string;
   decimals: number;
 };
 
@@ -135,4 +139,5 @@ export type IPayment = {
   id: string;
   amount: string;
   paymentType: PaymentTypeEnum;
+  transactionHash: string;
 };

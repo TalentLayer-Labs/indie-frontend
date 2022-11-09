@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getPaymentsByService } from '../services/queries';
+import { getPaymentsByService } from '../queries/payments';
 import { IPayment } from '../types';
 
 const usePaymentsByService = (id: string): IPayment[] => {

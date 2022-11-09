@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getUsers } from '../services/queries';
+import { getUsers } from '../queries/users';
 import { IUser } from '../types';
 
 const useUsers = (): { users: IUser[] } => {
@@ -9,7 +9,6 @@ const useUsers = (): { users: IUser[] } => {
     const fetchData = async () => {
       try {
         const response = await getUsers();
-        console.log(response);
         if (response?.data?.data?.users.length > 0) {
           setUsers(response.data.data.users);
         }

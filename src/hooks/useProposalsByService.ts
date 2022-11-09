@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getAllProposalsbyServiceId } from '../services/queries';
+import { getAllProposalsbyServiceId } from '../queries/proposals';
 import { IProposal } from '../types';
 
 const useProposalsByService = (serviceId?: string | undefined): IProposal[] => {

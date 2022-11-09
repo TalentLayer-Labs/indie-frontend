@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getAllProposalsByUser } from '../services/queries';
+import { getAllProposalsByUser } from '../queries/proposals';
 import { IProposal } from '../types';
 
 const useProposalsByUser = (id?: string | undefined): IProposal[] => {

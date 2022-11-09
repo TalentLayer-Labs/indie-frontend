@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getUserById } from '../services/queries';
+import { getUserById } from '../queries/users';
 import { IUser } from '../types';
 
 const useUserById = (userId: string): IUser | null => {
