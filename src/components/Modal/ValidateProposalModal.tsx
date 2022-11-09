@@ -161,7 +161,7 @@ function ValidateProposalModal({ proposal, account }: { proposal: IProposal; acc
                             hasEnoughBalance() ? 'bg-green-500' : 'bg-red-500'
                           } p-1 text-xs font-medium text-white rounded-full`}>
                           {hasEnoughBalance() ? (
-                            <Check className='w-9 h-4' />
+                            <Check className='w-4 h-4' />
                           ) : (
                             <X className='w-4 h-4' />
                           )}
@@ -206,7 +206,7 @@ function ValidateProposalModal({ proposal, account }: { proposal: IProposal; acc
                   disabled
                   type='button'
                   className='hover:text-red-600 hover:bg-red-50 bg-red-500 text-white rounded-lg px-5 py-2.5 text-center'>
-                  Allow spending
+                  Validate proposal
                 </button>
               )}
               <button

@@ -33,7 +33,7 @@ const goerli: Config = {
     '0x73967c6a0904aa032c103b4104747e88c566b1a2': {
       symbol: 'DAI',
       name: 'DAI Stablecoin',
-      decimals: 6,
+      decimals: 18,
     },
     '0x07865c6e87b9f70255377e024ace6630c1eaa37f': {
       symbol: 'USDC',
