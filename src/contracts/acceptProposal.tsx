@@ -65,9 +65,7 @@ export const validateProposal = async (
         // unitName is set to "0" to parse to smallest unit of token
         .add(ethers.utils.parseUnits(config.escrowConfig.adminFee, 0));
 
-      // TODO: Check if balance and allowance are enough
       const balance = await ERC20Token.balanceOf(signer.getAddress());
-
       if (balance.lt(value)) {
         throw new Error('Unsufficient balance');
       }
