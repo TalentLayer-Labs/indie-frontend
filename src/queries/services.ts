@@ -50,6 +50,8 @@ export const getServiceById = (id: string): Promise<any> => {
         buyer {
           id
           handle
+          rating
+          numReviews
         }
         seller {
           id

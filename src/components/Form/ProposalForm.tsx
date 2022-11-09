@@ -13,6 +13,8 @@ import { parseRateAmount } from '../../utils/web3';
 import { IService } from '../../types';
 import ServiceItem from '../ServiceItem';
 import SubmitButton from './SubmitButton';
+import TransactionToast from '../TransactionToast';
+import { useNavigate } from 'react-router-dom';
 
 interface IFormValues {
   description: string;
@@ -35,6 +37,7 @@ const validationSchema = Yup.object({
 function ProposalForm({ service }: { service: IService }) {
   const { provider } = useProvider();
   const { data: signer, refetch: refetchSigner } = useSigner();
+  const navigate = useNavigate();
 
   useEffect(() => {
     (async () => {
@@ -75,7 +78,16 @@ function ProposalForm({ service }: { service: IService }) {
           uri,
         );
         const receipt = await toast.promise(provider.waitForTransaction(tx.hash), {
-          pending: 'Your transaction is pending',
+          pending: {
+            render() {
+              return (
+                <TransactionToast
+                  message='Your proposal creation is in progress'
+                  transactionHash={tx.hash}
+                />
+              );
+            },
+          },
           success: 'Congrats! Your new proposal has been added',
           error: 'An error occurred while creating your proposal',
         });
@@ -83,6 +95,7 @@ function ProposalForm({ service }: { service: IService }) {
 
         if (receipt.status === 1) {
           resetForm();
+          navigate(-1);
         } else {
           console.log('error');
         }

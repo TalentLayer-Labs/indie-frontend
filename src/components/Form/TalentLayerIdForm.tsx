@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 import * as Yup from 'yup';
 import TalentLayerContext from '../../context/talentLayer';
 import TalentLayerID from '../../contracts/ABI/TalentLayerID.json';
+import TransactionToast from '../TransactionToast';
 import SubmitButton from './SubmitButton';
 
 interface IFormValues {
@@ -27,11 +28,11 @@ function TalentLayerIdForm() {
 
   useEffect(() => {
     (async () => {
-      if (networkIsReady) {
+      setTimeout(async () => {
         await refetchSigner({ chainId: 5 });
-      }
+      }, 1000);
     })();
-  }, [networkIsReady]);
+  }, []);
 
   const validationSchema = Yup.object().shape({
     handle: Yup.string()
@@ -56,7 +57,13 @@ function TalentLayerIdForm() {
         );
         const tx = await contract.mint('1', submittedValues.handle);
         const receipt = await toast.promise(provider.waitForTransaction(tx.hash), {
-          pending: 'Your transaction is pending',
+          pending: {
+            render() {
+              return (
+                <TransactionToast message='Your update is in progress' transactionHash={tx.hash} />
+              );
+            },
+          },
           success: 'Transaction resolved',
           error: 'Transaction rejected',
         });

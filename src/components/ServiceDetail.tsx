@@ -13,6 +13,7 @@ import ReviewModal from './Modal/ReviewModal';
 import ProposalItem from './ProposalItem';
 import ReviewItem from './ReviewItem';
 import ServiceStatus from './ServiceStatus';
+import Stars from './Stars';
 
 function ServiceDetail({ service }: { service: IService }) {
   const { account, user } = useContext(TalentLayerContext);
@@ -29,6 +30,9 @@ function ServiceDetail({ service }: { service: IService }) {
   const isSeller = user?.id === service.seller?.id;
   const hasReviewed = !!reviews.find(review => {
     return review.to.id !== user?.id;
+  });
+  const userProposal = proposals.find(proposal => {
+    return proposal.seller.id !== user?.id;
   });
 
   return (
@@ -61,6 +65,13 @@ function ServiceDetail({ service }: { service: IService }) {
                   Job handle by <span className='text-indigo-600'>{service.seller.handle}</span>
                 </NavLink>
               )}
+              <div className='text-sm text-gray-500 mt-4'>
+                <strong>Employer rating:</strong>
+                <Stars
+                  rating={Number(service.buyer.rating)}
+                  numReviews={service.buyer.numReviews}
+                />
+              </div>
               <p className='text-sm text-gray-500 mt-4'>
                 <strong>About:</strong> {serviceDetail.about}
               </p>
@@ -113,6 +124,13 @@ function ServiceDetail({ service }: { service: IService }) {
         </div>
       )}
 
+      {userProposal && (
+        <div className='flex flex-col gap-4 mt-4'>
+          <p className='text-gray-900 font-bold'>Your proposal:</p>
+          <ProposalItem proposal={userProposal} />
+        </div>
+      )}
+
       {isBuyer && (
         <>
           {proposals.length > 0 ? (
@@ -137,9 +155,24 @@ function ServiceDetail({ service }: { service: IService }) {
               </div>
             </>
           ) : (
-            <>
-              <p className='text-gray-500 text-sm'>There is no proposal yet</p>
-            </>
+            <div
+              className='flex p-4 text-sm text-gray-700 bg-gray-100 rounded-lg mt-4'
+              role='alert'>
+              <svg
+                className='flex-shrink-0 inline w-5 h-5 mr-3'
+                fill='currentColor'
+                viewBox='0 0 20 20'
+                xmlns='http://www.w3.org/2000/svg'>
+                <path
+                  fill-rule='evenodd'
+                  d='M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z'
+                  clip-rule='evenodd'></path>
+              </svg>
+              <span className='sr-only'>Info</span>
+              <div>
+                <span className='font-medium'>There is no proposal yet</span>
+              </div>
+            </div>
           )}
         </>
       )}

@@ -3,6 +3,7 @@ import { EthersError } from '@enzoferey/ethers-error-parser/dist/types';
 import { Provider } from '@web3modal/ethereum';
 import { BigNumber, Contract, Signer } from 'ethers';
 import { toast } from 'react-toastify';
+import TransactionToast from '../components/TransactionToast';
 import TalentLayerMultipleArbitrableTransaction from './ABI/TalentLayerMultipleArbitrableTransaction.json';
 
 export const releasePayment = async (
@@ -24,7 +25,16 @@ export const releasePayment = async (
     );
 
     const receipt = await toast.promise(provider.waitForTransaction(tx.hash), {
-      pending: 'Your payment release is in progress',
+      pending: {
+        render() {
+          return (
+            <TransactionToast
+              message='Your payment release is in progress'
+              transactionHash={tx.hash}
+            />
+          );
+        },
+      },
       success: 'Payment realse validated',
       error: 'An error occurred while validating your transaction',
     });
