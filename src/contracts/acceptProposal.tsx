@@ -6,6 +6,7 @@ import { Provider } from '@web3modal/ethereum';
 import { getParsedEthersError } from '@enzoferey/ethers-error-parser';
 import { EthersError } from '@enzoferey/ethers-error-parser/dist/types';
 import { config } from '../config';
+import TransactionToast from '../components/TransactionToast';
 
 export const validateProposal = async (
   signer: Signer,
@@ -40,7 +41,16 @@ export const validateProposal = async (
       );
 
       const receipt1 = await toast.promise(provider.waitForTransaction(tx1.hash), {
-        pending: 'Your validation is in progress',
+        pending: {
+          render() {
+            return (
+              <TransactionToast
+                message='Your validation is in progress'
+                transactionHash={tx1.hash}
+              />
+            );
+          },
+        },
         success: 'Transaction validated',
         error: 'An error occurred while validating your transaction',
       });
@@ -70,7 +80,16 @@ export const validateProposal = async (
       if (allowance.lt(value)) {
         const tx1 = await ERC20Token.approve('0x64A705B5121F005431574d3F23159adc230B0041', value);
         const receipt1 = await toast.promise(provider.waitForTransaction(tx1.hash), {
-          pending: 'Your Approve transaction is pending',
+          pending: {
+            render() {
+              return (
+                <TransactionToast
+                  message='Your approval is in progress'
+                  transactionHash={tx1.hash}
+                />
+              );
+            },
+          },
           success: 'Transaction validated',
           error: 'An error occurred while updating your profile',
         });
@@ -88,7 +107,16 @@ export const validateProposal = async (
         parseInt(proposalId, 10),
       );
       const receipt2 = await toast.promise(provider.waitForTransaction(tx2.hash), {
-        pending: 'Your validation is in progress',
+        pending: {
+          render() {
+            return (
+              <TransactionToast
+                message='Your validation is in progress'
+                transactionHash={tx2.hash}
+              />
+            );
+          },
+        },
         success: 'Transaction validated',
         error: 'An error occurred while updating your profile',
       });

@@ -11,6 +11,7 @@ import TalentLayerReview from '../../contracts/ABI/TalentLayerReview.json';
 import useUserDetails from '../../hooks/useUserDetails';
 import postToIPFS from '../../utils/ipfs';
 import Loading from '../Loading';
+import TransactionToast from '../TransactionToast';
 import SubmitButton from './SubmitButton';
 
 interface IFormValues {
@@ -63,7 +64,16 @@ function ReviewForm({ serviceId }: { serviceId: string }) {
         );
         const tx = await contract.addReview(serviceId, uri, values.rating, '1');
         const receipt = await toast.promise(provider.waitForTransaction(tx.hash), {
-          pending: 'Your transaction is pending',
+          pending: {
+            render() {
+              return (
+                <TransactionToast
+                  message='Your review creation is in progress'
+                  transactionHash={tx.hash}
+                />
+              );
+            },
+          },
           success: 'Congrats! Your review has been posted',
           error: 'An error occurred while creating your review',
         });

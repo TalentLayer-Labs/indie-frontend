@@ -11,6 +11,7 @@ import TalentLayerContext from '../../context/talentLayer';
 import ServiceRegistry from '../../contracts/ABI/ServiceRegistry.json';
 import postToIPFS from '../../utils/ipfs';
 import { parseRateAmount } from '../../utils/web3';
+import TransactionToast from '../TransactionToast';
 import SubmitButton from './SubmitButton';
 
 interface IFormValues {
@@ -81,7 +82,16 @@ function ServiceForm() {
         );
         const tx = await contract.createOpenServiceFromBuyer('1', uri);
         const receipt = await toast.promise(provider.waitForTransaction(tx.hash), {
-          pending: 'Your transaction is pending',
+          pending: {
+            render() {
+              return (
+                <TransactionToast
+                  message='Your job creation is in progress'
+                  transactionHash={tx.hash}
+                />
+              );
+            },
+          },
           success:
             'Congrats! Your new job has been added, it will be visible in a few minutes in the dedicated section.',
           error: 'An error occurred while creating your job',

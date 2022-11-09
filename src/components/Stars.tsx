@@ -17,7 +17,7 @@ function Stars({ rating, numReviews }: { rating: number; numReviews: string }) {
         {rating}/5
       </span>
       <span className='text-xs text-gray-400'>
-        {numReviews} review{parseInt(numReviews) > 0 ? 's' : ''}
+        {numReviews} review{parseInt(numReviews) > 1 ? 's' : ''}
       </span>
     </div>
   );

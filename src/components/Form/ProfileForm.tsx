@@ -11,6 +11,7 @@ import TalentLayerID from '../../contracts/ABI/TalentLayerID.json';
 import useUserDetails from '../../hooks/useUserDetails';
 import postToIPFS from '../../utils/ipfs';
 import Loading from '../Loading';
+import TransactionToast from '../TransactionToast';
 import SubmitButton from './SubmitButton';
 
 interface IFormValues {
@@ -70,15 +71,22 @@ function ProfileForm() {
         );
         const tx = await contract.updateProfileData(user.id, uri);
         const receipt = await toast.promise(provider.waitForTransaction(tx.hash), {
-          pending: 'Your transaction is pending',
+          pending: {
+            render() {
+              return (
+                <TransactionToast
+                  message='Your profile update is in progress'
+                  transactionHash={tx.hash}
+                />
+              );
+            },
+          },
           success: 'Congrats! Your profile has been updated',
           error: 'An error occurred while updating your profile',
         });
         setSubmitting(false);
 
-        if (receipt.status === 1) {
-          resetForm();
-        } else {
+        if (receipt.status !== 1) {
           console.log('error');
         }
       } catch (error) {
