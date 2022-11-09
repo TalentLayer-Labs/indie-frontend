@@ -6,6 +6,7 @@ import { Field, Form, Formik } from 'formik';
 import { useContext, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import * as Yup from 'yup';
+import { config } from '../../config';
 import TalentLayerContext from '../../context/talentLayer';
 import TalentLayerID from '../../contracts/ABI/TalentLayerID.json';
 import useUserDetails from '../../hooks/useUserDetails';
@@ -49,10 +50,7 @@ function ProfileForm() {
 
   const onSubmit = async (
     values: IFormValues,
-    {
-      setSubmitting,
-      resetForm,
-    }: { setSubmitting: (isSubmitting: boolean) => void; resetForm: () => void },
+    { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void; resetForm: () => void },
   ) => {
     if (user !== undefined && provider !== undefined && signer !== undefined) {
       try {
@@ -65,7 +63,7 @@ function ProfileForm() {
         );
 
         const contract = new ethers.Contract(
-          '0x97aa4622Aeda18CAF5c797C1E5285Bd5c6fc145D',
+          config.contracts.talentLayerId,
           TalentLayerID.abi,
           signer,
         );
@@ -125,6 +123,7 @@ function ProfileForm() {
                 as='textarea'
                 id='about'
                 name='about'
+                rows='8'
                 className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
                 placeholder=''
               />

@@ -6,11 +6,10 @@ import { Field, Form, Formik } from 'formik';
 import { useContext, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import * as Yup from 'yup';
+import { config } from '../../config';
 import TalentLayerContext from '../../context/talentLayer';
 import TalentLayerReview from '../../contracts/ABI/TalentLayerReview.json';
-import useUserDetails from '../../hooks/useUserDetails';
 import postToIPFS from '../../utils/ipfs';
-import Loading from '../Loading';
 import TransactionToast from '../TransactionToast';
 import SubmitButton from './SubmitButton';
 
@@ -58,7 +57,7 @@ function ReviewForm({ serviceId }: { serviceId: string }) {
         );
 
         const contract = new ethers.Contract(
-          '0x67EE2a1f75788794f516b8F9919496D63109A380',
+          config.contracts.talentLayerReview,
           TalentLayerReview.abi,
           signer,
         );

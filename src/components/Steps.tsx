@@ -7,6 +7,11 @@ import Step from './Step';
 function Steps({ targetTitle }: { targetTitle: string }) {
   const { account, user } = useContext(TalentLayerContext);
 
+  const isLastStep = !!user;
+  if (isLastStep) {
+    return null;
+  }
+
   return (
     <>
       <nav className='mb-8'>

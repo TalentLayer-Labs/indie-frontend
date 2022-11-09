@@ -3,7 +3,7 @@ import { processRequest } from '../utils/graphql';
 export const getUsers = (): Promise<any> => {
   const query = `
     {
-      users(orderBy: id, orderDirection: desc) {
+      users(orderBy: rating, orderDirection: desc) {
         id
         address
         uri
