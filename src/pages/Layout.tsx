@@ -2,10 +2,11 @@ import { Dialog, Transition } from '@headlessui/react';
 import { Bars3BottomLeftIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { Fragment, useState } from 'react';
 import { Outlet } from 'react-router-dom';
-import Logo from '../components/Logo';
+import Logo from '../components/Layout/Logo';
 import NetworkSwitch from '../components/NetworkSwitch';
-import SideMenu from '../components/SideMenu';
+import SideMenu from '../components/Layout/SideMenu';
 import UserAccount from '../components/UserAccount';
+import SideBottom from '../components/Layout/SideBottom';
 
 function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -74,8 +75,9 @@ function Layout() {
             <div className='flex flex-shrink-0 items-center px-4'>
               <Logo />
             </div>
-            <div className='mt-5 flex flex-1 flex-col'>
+            <div className='mt-5 flex flex-1 flex-col justify-between'>
               <SideMenu />
+              <SideBottom />
             </div>
           </div>
         </div>
