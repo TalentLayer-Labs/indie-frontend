@@ -138,6 +138,8 @@ export type ITokenFormattedValues = {
 export type IPayment = {
   id: string;
   amount: string;
+  rateToken: string;
   paymentType: PaymentTypeEnum;
   transactionHash: string;
+  service: IService;
 };
