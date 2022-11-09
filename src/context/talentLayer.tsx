@@ -1,6 +1,6 @@
 import { useAccount } from '@web3modal/react';
 import { createContext, ReactNode, useEffect, useMemo, useState } from 'react';
-import { getUserByAddress } from '../services/queries';
+import { getUserByAddress } from '../queries/users';
 import { IAccount, IUser } from '../types';
 
 const TalentLayerContext = createContext<{

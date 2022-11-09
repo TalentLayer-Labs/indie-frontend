@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import useServiceDetails from '../hooks/useServiceDetails';
-import { renderTokenAmount } from '../services/Conversion';
+import { renderTokenAmount } from '../utils/conversion';
 import { IService } from '../types';
 import { formatDate } from '../utils/dates';
 

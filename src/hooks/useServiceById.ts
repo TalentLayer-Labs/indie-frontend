@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getServiceById } from '../services/queries';
+import { getServiceById } from '../queries/services';
 import { IService } from '../types';
 
 const useServiceById = (serviceId: string): IService | null => {

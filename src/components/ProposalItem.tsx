@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import TalentLayerContext from '../context/talentLayer';
 import useProposalDetails from '../hooks/useProposalDetails';
 import useServiceDetails from '../hooks/useServiceDetails';
-import { renderTokenAmount } from '../services/Conversion';
+import { renderTokenAmount } from '../utils/conversion';
 import { IProposal, ProposalStatusEnum } from '../types';
 import { formatDate } from '../utils/dates';
 import ValidateProposalModal from './Modal/ValidateProposalModal';

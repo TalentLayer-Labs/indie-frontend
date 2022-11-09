@@ -5,8 +5,6 @@ import ReviewForm from '../Form/ReviewForm';
 function ReviewModal({ service, userToReview }: { service: IService; userToReview: IUser }) {
   const [show, setShow] = useState(false);
 
-  console.log({ service, userToReview });
-
   return (
     <>
       <button

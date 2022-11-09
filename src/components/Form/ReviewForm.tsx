@@ -9,7 +9,7 @@ import * as Yup from 'yup';
 import TalentLayerContext from '../../context/talentLayer';
 import TalentLayerReview from '../../contracts/ABI/TalentLayerReview.json';
 import useUserDetails from '../../hooks/useUserDetails';
-import postToIPFS from '../../services/ipfs';
+import postToIPFS from '../../utils/ipfs';
 import Loading from '../Loading';
 import SubmitButton from './SubmitButton';
 

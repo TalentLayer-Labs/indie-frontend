@@ -18,10 +18,6 @@ export const releasePayment = async (
   );
 
   try {
-    console.log({
-      transactionId: parseInt(transactionId, 10),
-      amount: amount.toString(),
-    });
     const tx = await talentLayerMultipleArbitrableTransaction.release(
       parseInt(transactionId, 10),
       amount.toString(),

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getReviewsByService } from '../services/queries';
+import { getReviewsByService } from '../queries/reviews';
 import { IReview } from '../types';
 
 const useReviewsByService = (serviceId: string): { reviews: IReview[] } => {

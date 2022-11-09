@@ -71,7 +71,7 @@ function TalentLayerIdForm() {
       } catch (error) {
         const parsedEthersError = getParsedEthersError(error as EthersError);
         toast.error(`${parsedEthersError.errorCode} - ${parsedEthersError.context}`);
-        console.log(error);
+        console.error(error);
       }
     } else {
       openConnectModal();

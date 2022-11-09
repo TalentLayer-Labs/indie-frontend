@@ -1,8 +1,8 @@
+import { Contract } from '@ethersproject/contracts';
 import { ExternalProvider, JsonRpcFetchFunc, Web3Provider } from '@ethersproject/providers';
 import { BigNumber, ethers, FixedNumber, Signer } from 'ethers';
-import { Contract } from '@ethersproject/contracts';
+import { config } from '../config';
 import ERC20 from '../contracts/ABI/ERC20.json';
-import { CONST, TOKENS } from '../constants';
 import { ITokenFormattedValues } from '../types';
 
 export default function getLibrary(provider: ExternalProvider | JsonRpcFetchFunc): Web3Provider {
@@ -24,10 +24,10 @@ export const parseRateAmount = async (
   rateAmount: string,
   rateToken: string,
 ): Promise<BigNumber> => {
-  if (rateToken === CONST.ETH_ADDRESS) {
+  if (rateToken === ethers.constants.AddressZero) {
     return ethers.utils.parseEther(rateAmount);
   }
-  return ethers.utils.parseUnits(rateAmount, TOKENS[rateToken].decimals);
+  return ethers.utils.parseUnits(rateAmount, config.tokens[rateToken].decimals);
 };
 
 export const formatRateAmount = async (
@@ -35,7 +35,7 @@ export const formatRateAmount = async (
   rateToken: string,
   signer: Signer,
 ): Promise<ITokenFormattedValues> => {
-  if (rateToken === CONST.ETH_ADDRESS) {
+  if (rateToken === ethers.constants.AddressZero) {
     const valueInEther = ethers.utils.formatEther(rateAmount);
     const roundedValue = FixedNumber.from(valueInEther).round(2).toString();
     const exactValue = FixedNumber.from(valueInEther).toString();
