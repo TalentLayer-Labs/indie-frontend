@@ -3,18 +3,9 @@ import { ethers } from 'ethers';
 import { useEffect, useState } from 'react';
 import { releasePayment } from '../../contracts/releasePayment';
 import { renderTokenAmount } from '../../services/Conversion';
-import { parseRateAmount } from '../../services/web3';
-import { IAccount, IPayment, IService, PaymentTypeEnum } from '../../types';
+import { IPayment, IService, PaymentTypeEnum } from '../../types';
 
-function PaymentModal({
-  service,
-  payments,
-  account,
-}: {
-  service: IService;
-  payments: IPayment[];
-  account: IAccount;
-}) {
+function PaymentModal({ service, payments }: { service: IService; payments: IPayment[] }) {
   const { data: signer, refetch: refetchSigner } = useSigner();
   const { provider } = useProvider();
   const [show, setShow] = useState(false);

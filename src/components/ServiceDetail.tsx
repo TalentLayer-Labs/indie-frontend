@@ -9,7 +9,9 @@ import { renderTokenAmount } from '../services/Conversion';
 import { IService, ProposalStatusEnum, ServiceStatusEnum } from '../types';
 import { formatDate } from '../utils/dates';
 import PaymentModal from './Modal/PaymentModal';
+import ReviewModal from './Modal/ReviewModal';
 import ProposalItem from './ProposalItem';
+import ReviewItem from './ReviewItem';
 import ServiceStatus from './ServiceStatus';
 
 function ServiceDetail({ service }: { service: IService }) {
@@ -97,15 +99,16 @@ function ServiceDetail({ service }: { service: IService }) {
                 Create proposal
               </NavLink>
             )}
-            {(isBuyer || isSeller) && service.status === ServiceStatusEnum.Finished && (
-              <NavLink
-                className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg'
-                to={`/services/${service.id}/create-review`}>
-                Create a review
-              </NavLink>
-            )}
+            {(isBuyer || isSeller) &&
+              service.status === ServiceStatusEnum.Finished &&
+              !hasReviewed && (
+                <ReviewModal
+                  service={service}
+                  userToReview={isBuyer ? service.seller : service.buyer}
+                />
+              )}
             {account && isBuyer && service.status === ServiceStatusEnum.Confirmed && (
-              <PaymentModal service={service} payments={payments} account={account} />
+              <PaymentModal service={service} payments={payments} />
             )}
             {isSeller && (
               <>
@@ -115,6 +118,15 @@ function ServiceDetail({ service }: { service: IService }) {
           </div>
         </div>
       </div>
+
+      {(isBuyer || isSeller) && reviews.length > 0 && (
+        <div className='flex flex-col gap-4 mt-4'>
+          <p className='text-gray-900 font-bold'>Reviews:</p>
+          {reviews.map(review => (
+            <ReviewItem review={review} />
+          ))}
+        </div>
+      )}
 
       {isBuyer && (
         <>
