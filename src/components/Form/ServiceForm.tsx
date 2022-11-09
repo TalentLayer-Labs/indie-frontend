@@ -76,7 +76,7 @@ function ServiceForm() {
         );
 
         const contract = new ethers.Contract(
-          '0xE5054E2e59B284CA09713418451709E0CEb4116b',
+          config.contracts.serviceRegistry,
           ServiceRegistry.abi,
           signer,
         );

@@ -15,7 +15,9 @@ export const maxDecimals = {
 const goerli: Config = {
   networkId: NetworkEnum.GOERLI,
   contracts: {
-    escrowFactory: '0x3f5f310A63AD54256403586f133D578fCa80B8FC',
+    talentLayerId: '0x97aa4622Aeda18CAF5c797C1E5285Bd5c6fc145D',
+    serviceRegistry: '0xE5054E2e59B284CA09713418451709E0CEb4116b',
+    talentLayerReview: '0x67EE2a1f75788794f516b8F9919496D63109A380',
   },
   escrowConfig: {
     adminFee: '0',

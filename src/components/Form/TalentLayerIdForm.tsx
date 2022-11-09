@@ -4,8 +4,10 @@ import { useConnectModal, useNetwork, useProvider, useSigner } from '@web3modal/
 import { ethers } from 'ethers';
 import { Field, Form, Formik } from 'formik';
 import { useContext, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import * as Yup from 'yup';
+import { config } from '../../config';
 import TalentLayerContext from '../../context/talentLayer';
 import TalentLayerID from '../../contracts/ABI/TalentLayerID.json';
 import TransactionToast from '../TransactionToast';
@@ -24,7 +26,7 @@ function TalentLayerIdForm() {
   const { account } = useContext(TalentLayerContext);
   const { data: signer, refetch: refetchSigner } = useSigner();
   const { provider } = useProvider();
-  const { isReady: networkIsReady } = useNetwork();
+  const navigate = useNavigate();
 
   useEffect(() => {
     (async () => {
@@ -51,7 +53,7 @@ function TalentLayerIdForm() {
     if (account && account.isConnected === true && provider) {
       try {
         const contract = new ethers.Contract(
-          '0x97aa4622Aeda18CAF5c797C1E5285Bd5c6fc145D',
+          config.contracts.talentLayerId,
           TalentLayerID.abi,
           signer,
         );
@@ -65,13 +67,27 @@ function TalentLayerIdForm() {
             },
           },
           success: 'Transaction resolved',
-          error: 'Transaction rejected',
+          error: `Congrats ${submittedValues.handle}! Your Talent Layer Id is minted`,
         });
 
         setSubmitting(false);
 
         if (receipt.status === 1) {
-          toast.success(`Congrats ${submittedValues.handle}! Your Talent Layer Id is minted`);
+          toast.promise(
+            new Promise(resolve =>
+              setTimeout(() => {
+                navigate(0);
+                resolve(true);
+              }, 3000),
+            ),
+            {
+              pending: 'Refreshing your data',
+            },
+          );
+
+          setTimeout(() => {
+            navigate(0);
+          }, 3000);
         } else {
           console.log('error');
         }

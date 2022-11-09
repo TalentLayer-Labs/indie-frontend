@@ -158,10 +158,10 @@ function ValidateProposalModal({ proposal, account }: { proposal: IProposal; acc
                       <p className=''>
                         <span
                           className={`block ${
-                            tokenBalance.value.gt(total) ? 'bg-green-500' : 'bg-red-500'
+                            hasEnoughBalance() ? 'bg-green-500' : 'bg-red-500'
                           } p-1 text-xs font-medium text-white rounded-full`}>
-                          {tokenBalance.value.gt(total) ? (
-                            <Check className='w-4 h-4' />
+                          {hasEnoughBalance() ? (
+                            <Check className='w-9 h-4' />
                           ) : (
                             <X className='w-4 h-4' />
                           )}
@@ -177,9 +177,11 @@ function ValidateProposalModal({ proposal, account }: { proposal: IProposal; acc
                       <p className=''>
                         <span
                           className={`block ${
-                            ethBalance.value.gt(0) ? 'bg-green-500' : 'bg-red-500'
+                            (isProposalUseEth && hasEnoughBalance()) || ethBalance.value.gt(0)
+                              ? 'bg-green-500'
+                              : 'bg-red-500'
                           } p-1 text-xs font-medium text-white rounded-full`}>
-                          {ethBalance.value.gt(0) ? (
+                          {(isProposalUseEth && hasEnoughBalance()) || ethBalance.value.gt(0) ? (
                             <Check className='w-4 h-4' />
                           ) : (
                             <X className='w-4 h-4' />
