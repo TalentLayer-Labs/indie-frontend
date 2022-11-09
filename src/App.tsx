@@ -1,5 +1,5 @@
 import type { ConfigOptions } from '@web3modal/core';
-import { chains, providers } from '@web3modal/ethereum';
+import { chains } from '@web3modal/ethereum';
 import { Web3Modal } from '@web3modal/react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
@@ -8,7 +8,6 @@ import './App.css';
 import { TalentLayerProvider } from './context/talentLayer';
 import About from './pages/About';
 import CreateProposal from './pages/CreateProposal';
-import CreateReview from './pages/CreateReview';
 import CreateService from './pages/CreateService';
 import Dashboard from './pages/Dashboard';
 import EditProfile from './pages/EditProfile';
@@ -45,7 +44,6 @@ function App() {
                 <Route path='/services/:id' element={<Service />} />
                 <Route path='/services/create' element={<CreateService />} />
                 <Route path='/services/:id/create-proposal' element={<CreateProposal />} />
-                <Route path='/services/:id/create-review' element={<CreateReview />} />
                 <Route path='/talents' element={<Talents />} />
                 <Route path='/about' element={<About />} />
                 <Route path='/profile/:id' element={<Profile />} />
