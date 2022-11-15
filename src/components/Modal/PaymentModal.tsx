@@ -21,7 +21,8 @@ function PaymentModal({
   const { data: signer, refetch: refetchSigner } = useSigner();
   const { provider } = useProvider();
   const [show, setShow] = useState(false);
-  const [pourcentToToken, setpourcentToToken] = useState(0);
+  const [pourcentToToken, setPourcentToToken] = useState(0);
+  const [minMaxAmount, setminMaxAmount] = useState(0);
 
   const rateToken = service.validatedProposal[0].rateToken;
   const rateAmount = service.validatedProposal[0].rateAmount;
@@ -56,7 +57,7 @@ function PaymentModal({
       .mul(selectedPourcent)
       .div(100);
     console.log('amount', pourcentToToken);
-    setpourcentToToken(pourcentToToken);
+    setPourcentToToken(pourcentToToken);
 
     // await releasePayment(signer, provider, service.transactionId, pourcentToToken);
     // setShow(false);
@@ -64,13 +65,15 @@ function PaymentModal({
 
   const releaseMax = () => {
     const max = totalInEscrow;
-    setpourcentToToken(max);
+    setPourcentToToken(max);
+    setminMaxAmount(100);
   };
 
   const releaseMin = () => {
     //1% of totalInEscrow
     const min = totalInEscrow.div(100);
-    setpourcentToToken(min);
+    setPourcentToToken(min);
+    setminMaxAmount(1);
   };
 
   interface IFormValues {
@@ -84,7 +87,7 @@ function PaymentModal({
     const amount = totalInEscrow.mul(pourcent).div(100);
     console.log('amount', amount);
 
-    setpourcentToToken(amount);
+    setPourcentToToken(amount);
   };
 
   const amount = useMemo(() => {
@@ -92,7 +95,7 @@ function PaymentModal({
   }, [pourcentToToken]);
 
   const initialValues: IFormValues = {
-    amountPourcentField: 0,
+    amountPourcentField: '',
   };
 
   /* ------------------------------ */
@@ -231,6 +234,7 @@ function PaymentModal({
                           id='amountPourcentField'
                           name='amountPourcentField'
                           required
+                          // value={minMaxAmount}
                           onKeyUp={onChangeAmount}
                         />
                         {
