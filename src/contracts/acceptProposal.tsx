@@ -14,7 +14,7 @@ export const validateProposal = async (
   serviceId: string,
   proposalId: string,
   rateToken: string,
-  value: ethers.BigNumber,
+  rateAmount: string,
 ): Promise<void> => {
   const talentLayerMultipleArbitrableTransaction = new Contract(
     '0x64A705B5121F005431574d3F23159adc230B0041',
@@ -24,9 +24,15 @@ export const validateProposal = async (
 
   try {
     if (rateToken === ethers.constants.AddressZero) {
+      const value = ethers.utils
+        .parseUnits(rateAmount, 'wei')
+        .add(ethers.utils.parseUnits(config.escrowConfig.adminFee, 'wei'));
+
       const tx1 = await talentLayerMultipleArbitrableTransaction.createETHTransaction(
         config.escrowConfig.timeoutPayment,
         'meta_evidence',
+        config.escrowConfig.adminWallet,
+        config.escrowConfig.adminFee,
         parseInt(serviceId, 10),
         parseInt(proposalId, 10),
         {
@@ -54,10 +60,14 @@ export const validateProposal = async (
     } else {
       // Token transfer approval for escrow contract
       const ERC20Token = new Contract(rateToken, ERC20.abi, signer);
+      const value = ethers.utils
+        .parseUnits(rateAmount, 0)
+        // unitName is set to "0" to parse to smallest unit of token
+        .add(ethers.utils.parseUnits(config.escrowConfig.adminFee, 0));
 
       const balance = await ERC20Token.balanceOf(signer.getAddress());
       if (balance.lt(value)) {
-        throw new Error('Insufficient balance');
+        throw new Error('Unsufficient balance');
       }
 
       const allowance = await ERC20Token.allowance(
@@ -89,6 +99,8 @@ export const validateProposal = async (
       const tx2 = await talentLayerMultipleArbitrableTransaction.createTokenTransaction(
         config.escrowConfig.timeoutPayment,
         'meta_evidence',
+        config.escrowConfig.adminWallet,
+        config.escrowConfig.adminFee,
         parseInt(serviceId, 10),
         parseInt(proposalId, 10),
       );
