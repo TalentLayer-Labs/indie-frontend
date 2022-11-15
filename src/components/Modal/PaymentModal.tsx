@@ -36,7 +36,7 @@ function PaymentModal({
     return acc.add(ethers.BigNumber.from(payment.amount));
   }, ethers.BigNumber.from('0'));
 
-  const totalInEscrow = ethers.BigNumber.from(rateAmount).sub(totalPayments);
+  const totalInEscrow: any = ethers.BigNumber.from(rateAmount).sub(totalPayments);
 
   /* ------------------------------ */
 
@@ -52,7 +52,9 @@ function PaymentModal({
     const selectedPourcent = values.amountPourcentField;
     console.log('selectedAmount', selectedPourcent);
 
-    const pourcentToToken = ethers.BigNumber.from(totalInEscrow).mul(selectedPourcent).div(100);
+    const pourcentToToken: any = ethers.BigNumber.from(totalInEscrow)
+      .mul(selectedPourcent)
+      .div(100);
     console.log('amount', pourcentToToken);
     setpourcentToToken(pourcentToToken);
 
@@ -72,7 +74,7 @@ function PaymentModal({
   };
 
   interface IFormValues {
-    amountValue: string | number;
+    amountPourcentField: number;
   }
 
   const onChangeAmount = (e: any) => {
@@ -80,11 +82,17 @@ function PaymentModal({
     console.log('pourcent', pourcent);
 
     const amount = totalInEscrow.mul(pourcent).div(100);
+    console.log('amount', amount);
+
     setpourcentToToken(amount);
   };
 
-  const initialValues = {
-    amountPourcentField: '',
+  const amount = useMemo(() => {
+    return pourcentToToken ? (pourcentToToken * 100) / totalInEscrow : '';
+  }, [pourcentToToken]);
+
+  const initialValues: IFormValues = {
+    amountPourcentField: 0,
   };
 
   /* ------------------------------ */
@@ -223,7 +231,6 @@ function PaymentModal({
                           id='amountPourcentField'
                           name='amountPourcentField'
                           required
-                          // value={pourcentToToken}
                           onKeyUp={onChangeAmount}
                         />
                         {
