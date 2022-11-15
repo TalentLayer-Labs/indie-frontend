@@ -1,5 +1,3 @@
-import { ethers } from 'ethers';
-
 export type IUser = {
   id: string;
   handle: string;
@@ -103,12 +101,6 @@ export type IProposal = {
   service: IService;
   createdAt: string;
   updatedAt: string;
-};
-
-export type IFees = {
-  protocolFeeRate: ethers.BigNumber;
-  originPlatformFeeRate: ethers.BigNumber;
-  platformFeeRate: ethers.BigNumber;
 };
 
 export enum ProposalTypeEnum {
