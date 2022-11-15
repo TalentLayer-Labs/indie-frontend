@@ -12,6 +12,8 @@ export const maxDecimals = {
   ETH: 2,
 };
 
+export const FEE_RATE_DIVIDER = 10_000;
+
 const goerli: Config = {
   networkId: NetworkEnum.GOERLI,
   contracts: {
