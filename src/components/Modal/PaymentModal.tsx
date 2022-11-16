@@ -45,10 +45,6 @@ function PaymentModal({
 
   /* ------------------------------ */
 
-  const validationSchema = Yup.object().shape({
-    pourcentField: Yup.number().required('This field is required').min(1).max(100).positive(),
-  });
-
   const handleSubmit = async (values: any) => {
     if (!signer || !provider) {
       return;
@@ -209,11 +205,7 @@ function PaymentModal({
                       </button>
                     </div>
                   </div>
-                  <Formik
-                    initialValues={initialValues}
-                    onSubmit={handleSubmit}
-                    // validationSchema={validationSchema}
-                  >
+                  <Formik initialValues={initialValues} onSubmit={handleSubmit}>
                     <Form>
                       <div className='sm:px-6 justify-between bg-white flex flex-row items-center gap-2'>
                         <div>
