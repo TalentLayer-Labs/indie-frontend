@@ -9,6 +9,10 @@ import { Field, Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import { config } from '../../config';
 
+interface IFormValues {
+  pourcentField: number | '';
+}
+
 function PaymentModal({
   service,
   payments,
@@ -21,11 +25,11 @@ function PaymentModal({
   const { data: signer, refetch: refetchSigner } = useSigner();
   const { provider } = useProvider();
   const [show, setShow] = useState(false);
-  const [pourcentToToken, setPourcentToToken] = useState(0);
-  const [minMaxAmount, setminMaxAmount] = useState(0);
+  const [pourcentage, setPourcentage] = useState(0);
 
   const rateToken = service.validatedProposal[0].rateToken;
   const rateAmount = service.validatedProposal[0].rateAmount;
+  const symbol = config.tokens[rateToken].symbol;
 
   useEffect(() => {
     (async () => {
@@ -37,12 +41,12 @@ function PaymentModal({
     return acc.add(ethers.BigNumber.from(payment.amount));
   }, ethers.BigNumber.from('0'));
 
-  const totalInEscrow: any = ethers.BigNumber.from(rateAmount).sub(totalPayments);
+  const totalInEscrow = ethers.BigNumber.from(rateAmount).sub(totalPayments);
 
   /* ------------------------------ */
 
   const validationSchema = Yup.object().shape({
-    amountPourcentField: Yup.number().required('This field is required').min(1).max(100).positive(),
+    pourcentField: Yup.number().required('This field is required').min(1).max(100).positive(),
   });
 
   const handleSubmit = async (values: any) => {
@@ -50,52 +54,37 @@ function PaymentModal({
       return;
     }
 
-    const selectedPourcent = values.amountPourcentField;
-    console.log('selectedAmount', selectedPourcent);
+    console.log('selectedAmount', pourcentage);
 
-    const pourcentToToken: any = ethers.BigNumber.from(totalInEscrow)
-      .mul(selectedPourcent)
-      .div(100);
+    const pourcentToToken = totalInEscrow.mul(pourcentage).div(100);
     console.log('amount', pourcentToToken);
-    setPourcentToToken(pourcentToToken);
 
-    // await releasePayment(signer, provider, service.transactionId, pourcentToToken);
-    // setShow(false);
+    await releasePayment(signer, provider, service.transactionId, pourcentToToken);
+    setShow(false);
   };
 
   const releaseMax = () => {
-    const max = totalInEscrow;
-    setPourcentToToken(max);
-    setminMaxAmount(100);
+    setPourcentage(100);
   };
 
   const releaseMin = () => {
-    //1% of totalInEscrow
-    const min = totalInEscrow.div(100);
-    setPourcentToToken(min);
-    setminMaxAmount(1);
+    setPourcentage(1);
   };
 
-  interface IFormValues {
-    amountPourcentField: number;
-  }
-
-  const onChangeAmount = (e: any) => {
-    const pourcent = e.target.value;
-    console.log('pourcent', pourcent);
-
-    const amount = totalInEscrow.mul(pourcent).div(100);
-    console.log('amount', amount);
-
-    setPourcentToToken(amount);
+  const onChange = (e: any) => {
+    const pourcentOnChange = e.target.value;
+    console.log('pourcent', pourcentOnChange);
+    if (pourcentOnChange <= 100 && pourcentOnChange >= 0) {
+      setPourcentage(pourcentOnChange);
+    }
   };
 
   const amount = useMemo(() => {
-    return pourcentToToken ? (pourcentToToken * 100) / totalInEscrow : '';
-  }, [pourcentToToken]);
+    return pourcentage ? totalInEscrow.mul(pourcentage).div(100) : '';
+  }, [pourcentage]);
 
   const initialValues: IFormValues = {
-    amountPourcentField: '',
+    pourcentField: '',
   };
 
   /* ------------------------------ */
@@ -222,24 +211,30 @@ function PaymentModal({
                   </div>
                   <Formik
                     initialValues={initialValues}
-                    onSubmit={values => handleSubmit(values)}
-                    validationSchema={validationSchema}>
+                    onSubmit={handleSubmit}
+                    // validationSchema={validationSchema}
+                  >
                     <Form>
-                      <div className='sm:px-6 bg-white flex flex-row items-center gap-2'>
-                        <span className='text-base font-semibold leading-4 text-gray-800'>%</span>
-                        <Field
-                          type='string'
-                          className='text-gray-500 py-2 focus:outline-none text-sm sm:text-lg border-0'
-                          placeholder='between 0 and 100'
-                          id='amountPourcentField'
-                          name='amountPourcentField'
-                          required
-                          // value={minMaxAmount}
-                          onKeyUp={onChangeAmount}
-                        />
+                      <div className='sm:px-6 justify-between bg-white flex flex-row items-center gap-2'>
+                        <div>
+                          <span className='text-base font-semibold leading-4 text-gray-800'>
+                            %{' '}
+                          </span>
+                          <Field
+                            type='string'
+                            className='text-gray-500 py-2 focus:outline-none text-sm sm:text-lg border-0'
+                            placeholder='between 0 and 100'
+                            id='pourcentField'
+                            name='pourcentField'
+                            required
+                            value={pourcentage ? pourcentage : ''}
+                            onChange={onChange}
+                          />
+                        </div>
                         {
-                          <div className='flex justify-end text-base font-semibold leading-4 text-gray-400  '>
-                            {renderTokenAmount(rateToken, pourcentToToken.toString())}
+                          <div className='pr-2 text-base font-semibold leading-4 text-gray-400  '>
+                            {amount && renderTokenAmount(rateToken, amount.toString())}
+                            {!amount && '0 ' + `${symbol}`}
                           </div>
                         }
                       </div>
