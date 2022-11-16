@@ -1,9 +1,12 @@
-# web3-boilerplate
+# Indie Frontend for a TalentLayer-Integrated Job Marketplace
 
-## Motivation
+## About Indie
+Indie is an open-source fork-able codebase that is available for marketplaces and other platforms integrating with [TalentLayer](https://docs.talentlayer.org/) to borrow from and use to get inspired. 
 
-- Most existing boilerplates bring too many dependencies, or are not maintained anymore
-- Let anyone choose their dependencies by documenting all the steps done to build the boilerplate
+Indie lays the groundwork for what will eventually become the TalentLayer SDK.
+
+View a video demo of the Indie Frontend [here](https://youtu.be/8Y6E282Nwtc). 
+
 
 ## Stacks
 
@@ -23,7 +26,7 @@
 - [ESLint](https://eslint.org)
 - [Prettier](https://prettier.io)
 
-## Steps
+## Steps for setup
 
 - Init the react app with typescript using Vite: `npm create vite@latest dapp -- --template react-ts`
 - Install ESLint: `npm install --save-dev @typescript-eslint/parser @typescript-eslint/eslint-plugin eslint typescript`
