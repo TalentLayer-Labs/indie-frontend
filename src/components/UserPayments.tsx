@@ -30,7 +30,7 @@ function UserPayments({ user }: { user: IUser }) {
                   <path
                     fillRule='evenodd'
                     d='M3.293 9.707a1 1 0 010-1.414l6-6a1 1 0 011.414 0l6 6a1 1 0 01-1.414 1.414L11 5.414V17a1 1 0 11-2 0V5.414L4.707 9.707a1 1 0 01-1.414 0z'
-                    clip-rule='evenodd'
+                    clipRule='evenodd'
                   />
                 </svg>
               </div>
@@ -39,7 +39,7 @@ function UserPayments({ user }: { user: IUser }) {
                   {renderTokenAmount(payment.rateToken, payment.amount)}
                 </span>
                 <div className='flex items-center justify-between'>
-                  <span className='text-gray-500'>receive the 11/10 at 18:11</span>
+                  <span className='text-gray-500'>receive the 11/10 at 08:03</span>
                 </div>
               </div>
             </NavLink>
