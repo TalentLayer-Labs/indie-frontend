@@ -61,7 +61,7 @@ function PourcentRelease({
     }
   };
 
-  const amount = useMemo(() => {
+  const amountSelected = useMemo(() => {
     return pourcent ? totalInEscrow.mul(pourcent).div(100) : '';
   }, [pourcent]);
 
@@ -114,8 +114,8 @@ function PourcentRelease({
               </div>
               {
                 <div className='pr-2 text-base font-semibold leading-4 text-gray-400  '>
-                  {amount && renderTokenAmount(rateToken, amount.toString())}
-                  {!amount && '0 ' + `${symbol}`}
+                  {amountSelected && renderTokenAmount(rateToken, amountSelected.toString())}
+                  {!amountSelected && '0 ' + `${symbol}`}
                 </div>
               }
             </div>
