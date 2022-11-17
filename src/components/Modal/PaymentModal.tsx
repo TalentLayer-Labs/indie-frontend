@@ -4,7 +4,7 @@ import { ethers } from 'ethers';
 import { useEffect, useState } from 'react';
 import { renderTokenAmount } from '../../utils/conversion';
 import { IPayment, IService, PaymentTypeEnum, ServiceStatusEnum } from '../../types';
-import PourcentRelease from '../Form/PourcentRelease';
+import ReleaseForm from '../Form/ReleaseForm';
 
 interface IPaymentModalProps {
   service: IService;
@@ -128,7 +128,7 @@ function PaymentModal({ service, payments, isBuyer }: IPaymentModalProps) {
             </div>
 
             {isBuyer && totalInEscrow.gt(0) && (
-              <PourcentRelease
+              <ReleaseForm
                 min={1}
                 max={100}
                 totalInEscrow={totalInEscrow}
