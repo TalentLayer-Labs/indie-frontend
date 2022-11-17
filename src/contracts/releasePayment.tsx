@@ -35,7 +35,7 @@ export const releasePayment = async (
           );
         },
       },
-      success: 'Payment realse validated',
+      success: 'Payment release validated',
       error: 'An error occurred while validating your transaction',
     });
     if (receipt.status !== 1) {
