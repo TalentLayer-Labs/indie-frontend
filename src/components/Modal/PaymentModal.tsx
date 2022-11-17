@@ -1,7 +1,6 @@
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
-import { useProvider, useSigner } from '@web3modal/react';
 import { ethers } from 'ethers';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { renderTokenAmount } from '../../utils/conversion';
 import { IPayment, IService, PaymentTypeEnum, ServiceStatusEnum } from '../../types';
 import ReleaseForm from '../Form/ReleaseForm';
@@ -13,18 +12,9 @@ interface IPaymentModalProps {
 }
 
 function PaymentModal({ service, payments, isBuyer }: IPaymentModalProps) {
-  const { data: signer, refetch: refetchSigner } = useSigner();
-  const { provider } = useProvider();
   const [show, setShow] = useState(false);
-
   const rateToken = service.validatedProposal[0].rateToken;
   const rateAmount = service.validatedProposal[0].rateAmount;
-
-  useEffect(() => {
-    (async () => {
-      await refetchSigner({ chainId: 5 });
-    })();
-  }, []);
 
   const totalPayments = payments.reduce((acc, payment) => {
     return acc.add(ethers.BigNumber.from(payment.amount));
@@ -127,14 +117,10 @@ function PaymentModal({ service, payments, isBuyer }: IPaymentModalProps) {
               )}
             </div>
 
-            {isBuyer && totalInEscrow.gt(0) && (
+            {isBuyer && totalInEscrow.gt(0) && show && (
               <ReleaseForm
-                min={1}
-                max={100}
                 totalInEscrow={totalInEscrow}
                 rateToken={rateToken}
-                signer={signer}
-                provider={provider}
                 service={service}
                 isBuyer={isBuyer}
                 closeModal={() => setShow(false)}
