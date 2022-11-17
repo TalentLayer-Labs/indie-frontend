@@ -1,35 +1,24 @@
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
 import { useProvider, useSigner } from '@web3modal/react';
-import { BigNumber, ethers } from 'ethers';
-import { useEffect, useMemo, useState } from 'react';
-import { releasePayment } from '../../contracts/releasePayment';
+import { ethers } from 'ethers';
+import { useEffect, useState } from 'react';
 import { renderTokenAmount } from '../../utils/conversion';
 import { IPayment, IService, PaymentTypeEnum, ServiceStatusEnum } from '../../types';
-import { Field, Form, Formik } from 'formik';
-import * as Yup from 'yup';
-import { config } from '../../config';
+import PourcentRelease from '../Form/PourcentRelease';
 
-interface IFormValues {
-  pourcentField: number | '';
-}
-
-function PaymentModal({
-  service,
-  payments,
-  isBuyer,
-}: {
+interface IPaymentModalProps {
   service: IService;
   payments: IPayment[];
   isBuyer: boolean;
-}) {
+}
+
+function PaymentModal({ service, payments, isBuyer }: IPaymentModalProps) {
   const { data: signer, refetch: refetchSigner } = useSigner();
   const { provider } = useProvider();
   const [show, setShow] = useState(false);
-  const [pourcentage, setPourcentage] = useState(0);
 
   const rateToken = service.validatedProposal[0].rateToken;
   const rateAmount = service.validatedProposal[0].rateAmount;
-  const symbol = config.tokens[rateToken].symbol;
 
   useEffect(() => {
     (async () => {
@@ -43,47 +32,6 @@ function PaymentModal({
 
   const totalInEscrow = ethers.BigNumber.from(rateAmount).sub(totalPayments);
 
-  /* ------------------------------ */
-
-  const handleSubmit = async (values: any) => {
-    if (!signer || !provider) {
-      return;
-    }
-
-    console.log('selectedAmount', pourcentage);
-
-    const pourcentToToken = totalInEscrow.mul(pourcentage).div(100);
-    console.log('amount', pourcentToToken);
-
-    await releasePayment(signer, provider, service.transactionId, pourcentToToken);
-    setShow(false);
-  };
-
-  const releaseMax = () => {
-    setPourcentage(100);
-  };
-
-  const releaseMin = () => {
-    setPourcentage(1);
-  };
-
-  const onChange = (e: any) => {
-    const pourcentOnChange = e.target.value;
-    console.log('pourcent', pourcentOnChange);
-    if (pourcentOnChange <= 100 && pourcentOnChange >= 0) {
-      setPourcentage(pourcentOnChange);
-    }
-  };
-
-  const amount = useMemo(() => {
-    return pourcentage ? totalInEscrow.mul(pourcentage).div(100) : '';
-  }, [pourcentage]);
-
-  const initialValues: IFormValues = {
-    pourcentField: '',
-  };
-
-  /* ------------------------------ */
   return (
     <>
       <button
@@ -180,75 +128,17 @@ function PaymentModal({
             </div>
 
             {isBuyer && totalInEscrow.gt(0) && (
-              <div className='p-6 space-y-6'>
-                <div className='flex flex-col px-4 py-6 md:p-6 xl:p-6 w-full bg-gray-50 space-y-6'>
-                  {service.status === ServiceStatusEnum.Confirmed && (
-                    <h3 className='text-xl font-semibold leading-5 text-gray-800'>
-                      Select the pourcentage to release
-                    </h3>
-                  )}
-                  <div className='flex space-x-2 flex-row'>
-                    <div className='items-center rounded-b border-gray-200 '>
-                      <button
-                        type='button'
-                        onClick={releaseMin}
-                        className='text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 '>
-                        Min
-                      </button>
-                    </div>
-                    <div className='items-center  rounded-b border-gray-200 '>
-                      <button
-                        type='button'
-                        onClick={releaseMax}
-                        className='text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 '>
-                        Max
-                      </button>
-                    </div>
-                  </div>
-                  <Formik initialValues={initialValues} onSubmit={handleSubmit}>
-                    <Form>
-                      <div className='sm:px-6 justify-between bg-white flex flex-row items-center gap-2'>
-                        <div>
-                          <span className='text-base font-semibold leading-4 text-gray-800'>
-                            %{' '}
-                          </span>
-                          <Field
-                            type='string'
-                            className='text-gray-500 py-2 focus:outline-none text-sm sm:text-lg border-0'
-                            placeholder='between 0 and 100'
-                            id='pourcentField'
-                            name='pourcentField'
-                            required
-                            value={pourcentage ? pourcentage : ''}
-                            onChange={onChange}
-                          />
-                        </div>
-                        {
-                          <div className='pr-2 text-base font-semibold leading-4 text-gray-400  '>
-                            {amount && renderTokenAmount(rateToken, amount.toString())}
-                            {!amount && '0 ' + `${symbol}`}
-                          </div>
-                        }
-                      </div>
-                      <div className='flex items-center pt-6 space-x-2 rounded-b border-gray-200 '>
-                        {isBuyer && totalInEscrow.gt(0) && (
-                          <button
-                            type='submit'
-                            className='text-green-600 bg-green-50 hover:bg-green-500 hover:text-white px-5 py-2 rounded-lg'>
-                            Release the selected amount
-                          </button>
-                        )}
-                        <button
-                          onClick={() => setShow(false)}
-                          type='button'
-                          className='text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 '>
-                          Close
-                        </button>
-                      </div>
-                    </Form>
-                  </Formik>
-                </div>
-              </div>
+              <PourcentRelease
+                min={1}
+                max={100}
+                totalInEscrow={totalInEscrow}
+                rateToken={rateToken}
+                signer={signer}
+                provider={provider}
+                service={service}
+                isBuyer={isBuyer}
+                closeModal={() => setShow(false)}
+              />
             )}
           </div>
         </div>
