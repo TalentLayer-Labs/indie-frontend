@@ -1,5 +1,6 @@
 import { Contract, ethers, Signer } from 'ethers';
 import TalentLayerMultipleArbitrableTransaction from './ABI/TalentLayerMultipleArbitrableTransaction.json';
+import ServiceRegistry from './ABI/ServiceRegistry.json';
 import ERC20 from './ABI/ERC20.json';
 import { toast } from 'react-toastify';
 import { Provider } from '@web3modal/ethereum';
@@ -17,7 +18,7 @@ export const validateProposal = async (
   value: ethers.BigNumber,
 ): Promise<void> => {
   const talentLayerMultipleArbitrableTransaction = new Contract(
-    '0x64A705B5121F005431574d3F23159adc230B0041',
+    config.contracts.TalentLayerMultipleArbitrableTransaction,
     TalentLayerMultipleArbitrableTransaction.abi,
     signer,
   );

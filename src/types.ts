@@ -128,7 +128,7 @@ export enum PaymentTypeEnum {
 }
 
 export enum NetworkEnum {
-  LOCAL = 0,
+  LOCAL = 1337,
   GOERLI = 5,
 }
 
