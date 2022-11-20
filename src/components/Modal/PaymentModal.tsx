@@ -34,8 +34,8 @@ function PaymentModal({ service, payments, isBuyer }: IPaymentModalProps) {
         type='button'
         data-modal-toggle='defaultModal'>
         {service.status === ServiceStatusEnum.Confirmed && !isBuyer
-          ? 'Release payment'
-          : 'Payment summary'}
+          ? 'Payment summary'
+          : 'Release payment'}
       </button>
 
       <div
