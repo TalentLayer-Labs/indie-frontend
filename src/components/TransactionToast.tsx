@@ -1,5 +1,3 @@
-import { useNetwork } from '@web3modal/react';
-
 function TransactionToast({
   message,
   transactionHash,
@@ -7,8 +5,6 @@ function TransactionToast({
   message: string;
   transactionHash: string;
 }) {
-  const { network } = useNetwork();
-  console.log(network);
   return (
     <a
       className='flex flex-col text-sm font-normal'
