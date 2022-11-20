@@ -27,13 +27,15 @@ function PaymentModal({ service, payments, isBuyer }: IPaymentModalProps) {
       <button
         onClick={() => setShow(true)}
         className={`block ${
-          service.status === ServiceStatusEnum.Confirmed && !isBuyer
+          (service.status === ServiceStatusEnum.Confirmed && !isBuyer) ||
+          service.status === ServiceStatusEnum.Finished
             ? 'text-green-600 bg-green-50 hover:bg-green-500'
             : 'text-indigo-600 bg-indigo-50 hover:bg-indigo-500'
         } hover:text-white rounded-lg px-5 py-2.5 text-center`}
         type='button'
         data-modal-toggle='defaultModal'>
-        {service.status === ServiceStatusEnum.Confirmed && !isBuyer
+        {(service.status === ServiceStatusEnum.Confirmed && !isBuyer) ||
+        service.status === ServiceStatusEnum.Finished
           ? 'Payment summary'
           : 'Release payment'}
       </button>
@@ -41,7 +43,7 @@ function PaymentModal({ service, payments, isBuyer }: IPaymentModalProps) {
       <div
         className={`${
           !show ? 'hidden' : ''
-        } overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal md:h-full bg-black/75 flex flex-col items-center justify-center`}>
+        } overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal h-full bg-black/75 flex flex-col items-center justify-center`}>
         <div className='relative p-4 w-full max-w-2xl h-auto'>
           <div className='relative bg-white rounded-lg shadow '>
             <div className='flex justify-between items-start p-4 rounded-t border-b '>
