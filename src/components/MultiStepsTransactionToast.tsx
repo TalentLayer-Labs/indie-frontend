@@ -43,8 +43,8 @@ function MultiStepsTransactionToast({
     <div className='py-6 px-2'>
       <nav className='flex' aria-label='Progress'>
         <ol role='list' className='space-y-6'>
-          {steps.map(step => (
-            <ToastStep title={step.title} status={step.status}>
+          {steps.map((step, index) => (
+            <ToastStep key={index} title={step.title} status={step.status}>
               {step.render || null}
             </ToastStep>
           ))}

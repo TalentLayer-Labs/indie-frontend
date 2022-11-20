@@ -5,22 +5,8 @@ import { Provider } from '@web3modal/ethereum';
 import { Transaction } from 'ethers';
 import { toast } from 'react-toastify';
 import MultiStepsTransactionToast from '../components/MultiStepsTransactionToast';
-
-export const graphIsSynced = async (): Promise<boolean> => {
-  return new Promise<boolean>(async (resolve, reject) => {
-    setTimeout(() => {
-      resolve(true);
-    }, 5000);
-  });
-};
-
-export const IpfsIsSynced = async (): Promise<boolean> => {
-  return new Promise<boolean>(async (resolve, reject) => {
-    setTimeout(() => {
-      resolve(true);
-    }, 15000);
-  });
-};
+import { checkEntityByUri, graphIsSynced } from '../queries/global';
+import { IpfsIsSynced } from './ipfs';
 
 interface IMessages {
   pending: string;
@@ -28,11 +14,13 @@ interface IMessages {
   error: string;
 }
 
-export const createTransactionToast = async (
+export const createMultiStepsTransactionToast = async (
   messages: IMessages,
   provider: Provider,
   tx: Transaction,
-): Promise<TransactionReceipt | undefined> => {
+  entity: string,
+  newUri: string,
+): Promise<number | undefined> => {
   let currentStep = 1;
   const toastId = toast(
     <MultiStepsTransactionToast
@@ -46,8 +34,6 @@ export const createTransactionToast = async (
   let receipt;
   try {
     receipt = await provider.waitForTransaction(tx.hash as string);
-    console.log('transactionDone', receipt);
-
     currentStep = 2;
     toast.update(toastId, {
       render: (
@@ -59,9 +45,7 @@ export const createTransactionToast = async (
       ),
     });
 
-    await graphIsSynced();
-    console.log('graphIsSynced');
-
+    const entityId = await graphIsSynced(entity, newUri);
     currentStep = 3;
     toast.update(toastId, {
       render: (
@@ -73,15 +57,15 @@ export const createTransactionToast = async (
       ),
     });
 
-    await IpfsIsSynced();
-    console.log('IpfsIsSynced');
-
+    await IpfsIsSynced(newUri);
     toast.update(toastId, {
       type: toast.TYPE.SUCCESS,
       render: messages.success,
-      autoClose: true,
+      autoClose: 5000,
       closeOnClick: true,
     });
+
+    return entityId;
   } catch (error) {
     const parsedEthersError = getParsedEthersError(error as EthersError);
     console.error(error);
@@ -90,6 +74,5 @@ export const createTransactionToast = async (
       render: `${messages.error}: ${parsedEthersError.errorCode} - ${parsedEthersError.context}`,
     });
   }
-
-  return receipt;
+  return;
 };
