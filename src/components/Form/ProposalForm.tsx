@@ -1,20 +1,17 @@
-import { getParsedEthersError } from '@enzoferey/ethers-error-parser';
-import { EthersError } from '@enzoferey/ethers-error-parser/dist/types';
 import { useProvider, useSigner } from '@web3modal/react';
 import { ethers } from 'ethers';
 import { Field, Form, Formik } from 'formik';
 import { useEffect } from 'react';
-import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import { config } from '../../config';
 import ServiceRegistry from '../../contracts/ABI/ServiceRegistry.json';
-import postToIPFS from '../../utils/ipfs';
-import { parseRateAmount } from '../../utils/web3';
 import { IService } from '../../types';
+import { postToIPFS } from '../../utils/ipfs';
+import { createMultiStepsTransactionToast } from '../../utils/toast';
+import { parseRateAmount } from '../../utils/web3';
 import ServiceItem from '../ServiceItem';
 import SubmitButton from './SubmitButton';
-import TransactionToast from '../TransactionToast';
-import { useNavigate } from 'react-router-dom';
 
 interface IFormValues {
   description: string;
@@ -77,31 +74,21 @@ function ProposalForm({ service }: { service: IService }) {
           parsedRateAmountString,
           uri,
         );
-        const receipt = await toast.promise(provider.waitForTransaction(tx.hash), {
-          pending: {
-            render() {
-              return (
-                <TransactionToast
-                  message='Your proposal creation is in progress'
-                  transactionHash={tx.hash}
-                />
-              );
-            },
+        await createMultiStepsTransactionToast(
+          {
+            pending: 'Creating your proposal...',
+            success: 'Congrats! Your proposal has been added',
+            error: 'An error occurred while creating your proposal',
           },
-          success: 'Congrats! Your new proposal has been added',
-          error: 'An error occurred while creating your proposal',
-        });
+          provider,
+          tx,
+          'proposals',
+          uri,
+        );
         setSubmitting(false);
-
-        if (receipt.status === 1) {
-          resetForm();
-          navigate(-1);
-        } else {
-          console.log('error');
-        }
+        resetForm();
+        navigate(-1);
       } catch (error) {
-        const parsedEthersError = getParsedEthersError(error as EthersError);
-        toast.error(`${parsedEthersError.errorCode} - ${parsedEthersError.context}`);
         console.error(error);
       }
     }

@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import { create, IPFSHTTPClient } from 'ipfs-http-client';
 
-const postToIPFS = async (data: any): Promise<string> => {
+export const postToIPFS = async (data: any): Promise<string> => {
   let ipfs: IPFSHTTPClient | undefined;
   let path = '';
   try {
@@ -14,11 +14,22 @@ const postToIPFS = async (data: any): Promise<string> => {
       },
     });
     const result = await (ipfs as IPFSHTTPClient).add(data);
-    path = `https://infura-ipfs.io/ipfs/${result.path}`;
+    path = `https://ipfs.io/ipfs/${result.path}`;
   } catch (error) {
     console.error('IPFS error ', error);
   }
   return path;
 };
 
-export default postToIPFS;
+export const IpfsIsSynced = async (uri: string): Promise<boolean> => {
+  return new Promise<boolean>(async (resolve, reject) => {
+    const interval = setInterval(async () => {
+      const response = await fetch(uri);
+      const data = await response.json();
+      if (data) {
+        clearInterval(interval);
+        resolve(true);
+      }
+    }, 5000);
+  });
+};
