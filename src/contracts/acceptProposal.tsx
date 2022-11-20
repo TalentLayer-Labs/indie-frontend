@@ -1,13 +1,12 @@
-import { Contract, ethers, Signer } from 'ethers';
-import TalentLayerMultipleArbitrableTransaction from './ABI/TalentLayerMultipleArbitrableTransaction.json';
-import ServiceRegistry from './ABI/ServiceRegistry.json';
-import ERC20 from './ABI/ERC20.json';
-import { toast } from 'react-toastify';
-import { Provider } from '@web3modal/ethereum';
 import { getParsedEthersError } from '@enzoferey/ethers-error-parser';
 import { EthersError } from '@enzoferey/ethers-error-parser/dist/types';
-import { config } from '../config';
+import { Provider } from '@web3modal/ethereum';
+import { Contract, ethers, Signer } from 'ethers';
+import { toast } from 'react-toastify';
 import TransactionToast from '../components/TransactionToast';
+import { config } from '../config';
+import ERC20 from './ABI/ERC20.json';
+import TalentLayerMultipleArbitrableTransaction from './ABI/TalentLayerMultipleArbitrableTransaction.json';
 
 export const validateProposal = async (
   signer: Signer,
@@ -18,7 +17,7 @@ export const validateProposal = async (
   rateAmount: string,
 ): Promise<void> => {
   const talentLayerMultipleArbitrableTransaction = new Contract(
-    config.contracts.TalentLayerMultipleArbitrableTransaction,
+    config.contracts.talentLayerEscrow,
     TalentLayerMultipleArbitrableTransaction.abi,
     signer,
   );
