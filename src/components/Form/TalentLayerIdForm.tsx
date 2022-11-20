@@ -84,10 +84,6 @@ function TalentLayerIdForm() {
               pending: 'Refreshing your data',
             },
           );
-
-          setTimeout(() => {
-            navigate(0);
-          }, 3000);
         } else {
           console.log('error');
         }

@@ -12,22 +12,13 @@ export const maxDecimals = {
   ETH: 2,
 };
 
-export const FEE_RATE_DIVIDER = 10_000;
-
 const goerli: Config = {
   networkId: NetworkEnum.GOERLI,
   contracts: {
     talentLayerId: '0x20a9A5e013376173C220e9c7AcC8e55137b6C5b1',
     serviceRegistry: '0xfc2560b8DbC0c52537fEC0399B12B0cd343e71bd',
     talentLayerReview: '0xE778f68e279D7b618061E9b0387ab6e87F5AE810',
-    TalentLayerMultipleArbitrableTransaction: '0xfD06e6F16017Cd32D6E6610B9477169f38B54583',
-    talentLayerPlatformId: '0x319DDC7776024228be0408288B196b81dcaE7383',
-    talentLayerArbitrator: '0x05420c52e5f014758ef0faCC9cAB904E75728675',
-    // talentLayerId: '0xA05Cc3BF8d883224652B372AbdB344207B548e7A',
-    // serviceRegistry: '0x770C25495064AFd1704f94a696Ff148581FaD730',
-    // talentLayerReview: '0x22d3Bd4995B47C020D7b1dC0Cde7450cBfcE3c52',
-    // TalentLayerMultipleArbitrableTransaction: '0x26066680C88Fc55Db2F2fCc3F6a2F9E94AC64390',
-    // talentLayerPlatformId: '0xb9Cd8f33B29b7f793b1E9B7C1b9F30f390e82E78',
+    talentLayerEscrow: '0xfD06e6F16017Cd32D6E6610B9477169f38B54583',
   },
   escrowConfig: {
     timeoutPayment: 3600 * 24 * 7,
@@ -56,7 +47,30 @@ const goerli: Config = {
   },
 };
 
-const local = {};
+const local = {
+  networkId: NetworkEnum.LOCAL,
+  contracts: {
+    talentLayerId: '0x97aa4622Aeda18CAF5c797C1E5285Bd5c6fc145D',
+    serviceRegistry: '0xE5054E2e59B284CA09713418451709E0CEb4116b',
+    talentLayerReview: '0x67EE2a1f75788794f516b8F9919496D63109A380',
+    talentLayerEscrow: '0xfD06e6F16017Cd32D6E6610B9477169f38B54583',
+  },
+  escrowConfig: {
+    timeoutPayment: 3600 * 24 * 7,
+  },
+  tokens: {
+    [ethers.constants.AddressZero]: {
+      symbol: 'ETH',
+      name: 'ETH',
+      decimals: 18,
+    },
+    '0x67EE2a1f75788794f516b8F9919496D63109A380': {
+      symbol: 'ERC20',
+      name: 'Simple ERC20',
+      decimals: 18,
+    },
+  },
+};
 
 const chains: { [networkId in NetworkEnum]: Config } = {
   [NetworkEnum.LOCAL]: local as Config,

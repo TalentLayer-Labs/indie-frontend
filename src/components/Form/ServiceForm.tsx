@@ -1,17 +1,15 @@
-import { getParsedEthersError } from '@enzoferey/ethers-error-parser';
-import { EthersError } from '@enzoferey/ethers-error-parser/dist/types';
 import { useConnectModal, useProvider, useSigner } from '@web3modal/react';
 import { ethers } from 'ethers';
 import { Field, Form, Formik } from 'formik';
 import { useContext, useEffect } from 'react';
-import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import { config } from '../../config';
 import TalentLayerContext from '../../context/talentLayer';
 import ServiceRegistry from '../../contracts/ABI/ServiceRegistry.json';
-import postToIPFS from '../../utils/ipfs';
+import { postToIPFS } from '../../utils/ipfs';
+import { createMultiStepsTransactionToast } from '../../utils/toast';
 import { parseRateAmount } from '../../utils/web3';
-import TransactionToast from '../TransactionToast';
 import SubmitButton from './SubmitButton';
 
 interface IFormValues {
@@ -43,6 +41,7 @@ function ServiceForm() {
   const { account } = useContext(TalentLayerContext);
   const { provider } = useProvider();
   const { data: signer, refetch: refetchSigner } = useSigner();
+  const navigate = useNavigate();
 
   useEffect(() => {
     (async () => {
@@ -81,31 +80,24 @@ function ServiceForm() {
           signer,
         );
         const tx = await contract.createOpenServiceFromBuyer('1', uri);
-        const receipt = await toast.promise(provider.waitForTransaction(tx.hash), {
-          pending: {
-            render() {
-              return (
-                <TransactionToast
-                  message='Your job creation is in progress'
-                  transactionHash={tx.hash}
-                />
-              );
-            },
+        const newId = await createMultiStepsTransactionToast(
+          {
+            pending: 'Creating your job...',
+            success: 'Congrats! Your job has been added',
+            error: 'An error occurred while creating your job',
           },
-          success:
-            'Congrats! Your new job has been added, it will be visible in a few minutes in the dedicated section.',
-          error: 'An error occurred while creating your job',
-        });
+          provider,
+          tx,
+          'services',
+          uri,
+        );
         setSubmitting(false);
-
-        if (receipt.status === 1) {
-          resetForm();
-        } else {
-          console.log('error');
+        resetForm();
+        if (newId) {
+          navigate(`/services/${newId}`);
         }
       } catch (error) {
-        const parsedEthersError = getParsedEthersError(error as EthersError);
-        toast.error(`${parsedEthersError.errorCode} - ${parsedEthersError.context}`);
+        console.error(error);
       }
     } else {
       openConnectModal();
