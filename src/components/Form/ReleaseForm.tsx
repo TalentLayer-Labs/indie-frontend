@@ -1,11 +1,11 @@
-import { BigNumber, Signer } from 'ethers';
-import { useMemo, useState, useEffect } from 'react';
-import { releasePayment } from '../../contracts/releasePayment';
-import { renderTokenAmount } from '../../utils/conversion';
 import { useProvider, useSigner } from '@web3modal/react';
-import { IService, ServiceStatusEnum } from '../../types';
+import { BigNumber } from 'ethers';
 import { Field, Form, Formik } from 'formik';
+import { useEffect, useMemo, useState } from 'react';
 import { config } from '../../config';
+import { releasePayment } from '../../contracts/releasePayment';
+import { IService, ServiceStatusEnum } from '../../types';
+import { renderTokenAmount } from '../../utils/conversion';
 
 interface IFormValues {
   pourcentField: string;

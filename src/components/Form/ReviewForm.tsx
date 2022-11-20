@@ -1,16 +1,13 @@
-import { getParsedEthersError } from '@enzoferey/ethers-error-parser';
-import { EthersError } from '@enzoferey/ethers-error-parser/dist/types';
 import { useConnectModal, useProvider, useSigner } from '@web3modal/react';
 import { ethers } from 'ethers';
 import { Field, Form, Formik } from 'formik';
 import { useContext, useEffect } from 'react';
-import { toast } from 'react-toastify';
 import * as Yup from 'yup';
 import { config } from '../../config';
 import TalentLayerContext from '../../context/talentLayer';
 import TalentLayerReview from '../../contracts/ABI/TalentLayerReview.json';
-import postToIPFS from '../../utils/ipfs';
-import TransactionToast from '../TransactionToast';
+import { postToIPFS } from '../../utils/ipfs';
+import { createMultiStepsTransactionToast } from '../../utils/toast';
 import SubmitButton from './SubmitButton';
 
 interface IFormValues {
@@ -62,30 +59,20 @@ function ReviewForm({ serviceId }: { serviceId: string }) {
           signer,
         );
         const tx = await contract.addReview(serviceId, uri, values.rating, '1');
-        const receipt = await toast.promise(provider.waitForTransaction(tx.hash), {
-          pending: {
-            render() {
-              return (
-                <TransactionToast
-                  message='Your review creation is in progress'
-                  transactionHash={tx.hash}
-                />
-              );
-            },
+        await createMultiStepsTransactionToast(
+          {
+            pending: 'Creating your review...',
+            success: 'Congrats! Your review has been posted',
+            error: 'An error occurred while creating your review',
           },
-          success: 'Congrats! Your review has been posted',
-          error: 'An error occurred while creating your review',
-        });
+          provider,
+          tx,
+          'reviews',
+          uri,
+        );
         setSubmitting(false);
-
-        if (receipt.status === 1) {
-          resetForm();
-        } else {
-          console.log('error');
-        }
+        resetForm();
       } catch (error) {
-        const parsedEthersError = getParsedEthersError(error as EthersError);
-        toast.error(`${parsedEthersError.errorCode} - ${parsedEthersError.context}`);
         console.error(error);
       }
     } else {

@@ -10,8 +10,8 @@ import { config } from '../../config';
 import TalentLayerContext from '../../context/talentLayer';
 import TalentLayerID from '../../contracts/ABI/TalentLayerID.json';
 import useUserDetails from '../../hooks/useUserDetails';
-import postToIPFS from '../../utils/ipfs';
-import { createTransactionToast } from '../../utils/toast';
+import { postToIPFS } from '../../utils/ipfs';
+import { createMultiStepsTransactionToast } from '../../utils/toast';
 import Loading from '../Loading';
 import TransactionToast from '../TransactionToast';
 import SubmitButton from './SubmitButton';
@@ -69,8 +69,7 @@ function ProfileForm() {
           signer,
         );
         const tx = await contract.updateProfileData(user.id, uri);
-
-        const receipt = await createTransactionToast(
+        await createMultiStepsTransactionToast(
           {
             pending: 'Updating profile...',
             success: 'Congrats! Your profile has been updated',
@@ -78,16 +77,12 @@ function ProfileForm() {
           },
           provider,
           tx,
+          'users',
+          uri,
         );
 
         setSubmitting(false);
-
-        if (receipt.status !== 1) {
-          console.log('error');
-        }
       } catch (error) {
-        const parsedEthersError = getParsedEthersError(error as EthersError);
-        toast.error(`${parsedEthersError.errorCode} - ${parsedEthersError.context}`);
         console.error(error);
       }
     } else {
