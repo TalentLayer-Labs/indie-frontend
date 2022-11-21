@@ -41,7 +41,7 @@ const goerli: Config = {
       name: 'USDC Stablecoin',
       decimals: 6,
     },
-    '0xD58e9Cf29fA1d561604F1dC4FCbf41830D769152': {
+    '0x3B25E43c2E07063E6e3A562Fb74b32A0500dF227': {
       symbol: 'SERC20',
       name: 'Simple ERC20',
       decimals: 18,
