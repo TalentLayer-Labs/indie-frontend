@@ -1,7 +1,7 @@
 import { getParsedEthersError } from '@enzoferey/ethers-error-parser';
 import { EthersError } from '@enzoferey/ethers-error-parser/dist/types';
 import { TransactionReceipt } from '@ethersproject/abstract-provider';
-import { Provider } from '@web3modal/ethereum';
+import { Provider } from '@wagmi/core';
 import { Transaction } from 'ethers';
 import { toast } from 'react-toastify';
 import MultiStepsTransactionToast from '../components/MultiStepsTransactionToast';

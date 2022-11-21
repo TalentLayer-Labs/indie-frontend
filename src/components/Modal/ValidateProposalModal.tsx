@@ -1,4 +1,3 @@
-import { useBalance, useProvider, useSigner } from '@web3modal/react';
 import { ethers } from 'ethers';
 import { Check, X } from 'heroicons-react';
 import { useEffect, useState } from 'react';
@@ -8,26 +7,20 @@ import { IAccount, IProposal } from '../../types';
 import Step from '../Step';
 import useFees from '../../hooks/useFees';
 import { FEE_RATE_DIVIDER } from '../../config';
+import { useBalance, useProvider, useSigner } from 'wagmi';
 
 function ValidateProposalModal({ proposal, account }: { proposal: IProposal; account: IAccount }) {
-  const { data: signer, refetch: refetchSigner } = useSigner();
-  const { provider } = useProvider();
+  const { data: signer } = useSigner({ chainId: 5 });
+  const provider = useProvider({ chainId: 5 });
   const [show, setShow] = useState(false);
-  const { data: ethBalance } = useBalance({ addressOrName: account.address });
+  const { data: ethBalance } = useBalance();
   const isProposalUseEth: boolean = proposal.rateToken === ethers.constants.AddressZero;
   const { data: tokenBalance } = useBalance({
-    addressOrName: account.address,
     enabled: !isProposalUseEth,
     token: proposal.rateToken,
   });
 
   const { protocolFeeRate, originPlatformFeeRate, platformFeeRate } = useFees();
-
-  useEffect(() => {
-    (async () => {
-      await refetchSigner({ chainId: 5 });
-    })();
-  }, []);
 
   const onSubmit = async () => {
     if (!signer || !provider) {
@@ -45,16 +38,12 @@ function ValidateProposalModal({ proposal, account }: { proposal: IProposal; acc
   };
 
   const jobRateAmount = ethers.BigNumber.from(proposal.rateAmount);
-  const protocolFee = jobRateAmount
-    .mul(ethers.BigNumber.from(protocolFeeRate))
-    .div(FEE_RATE_DIVIDER);
-  const originPlatformFee = jobRateAmount
-    .mul(ethers.BigNumber.from(originPlatformFeeRate))
-    .div(FEE_RATE_DIVIDER);
-  const platformFee = jobRateAmount
-    .mul(ethers.BigNumber.from(platformFeeRate))
-    .div(FEE_RATE_DIVIDER);
+  const protocolFee = jobRateAmount.mul(protocolFeeRate).div(FEE_RATE_DIVIDER);
+  const originPlatformFee = jobRateAmount.mul(originPlatformFeeRate).div(FEE_RATE_DIVIDER);
+  const platformFee = jobRateAmount.mul(platformFeeRate).div(FEE_RATE_DIVIDER);
   const totalAmount = jobRateAmount.add(originPlatformFee).add(platformFee).add(protocolFee);
+
+  console.log({ jobRateAmount, protocolFee, originPlatformFee, platformFee, totalAmount });
 
   const hasEnoughBalance = () => {
     if (isProposalUseEth) {

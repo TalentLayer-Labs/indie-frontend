@@ -1,8 +1,9 @@
-import { useConnectModal, useProvider, useSigner } from '@web3modal/react';
+import { useWeb3Modal } from '@web3modal/react';
 import { ethers } from 'ethers';
 import { Field, Form, Formik } from 'formik';
 import { useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useProvider, useSigner } from 'wagmi';
 import * as Yup from 'yup';
 import { config } from '../../config';
 import TalentLayerContext from '../../context/talentLayer';
@@ -37,17 +38,11 @@ const validationSchema = Yup.object({
 });
 
 function ServiceForm() {
-  const { open: openConnectModal } = useConnectModal();
+  const { open: openConnectModal } = useWeb3Modal();
   const { account } = useContext(TalentLayerContext);
-  const { provider } = useProvider();
-  const { data: signer, refetch: refetchSigner } = useSigner();
+  const provider = useProvider({ chainId: 5 });
+  const { data: signer } = useSigner({ chainId: 5 });
   const navigate = useNavigate();
-
-  useEffect(() => {
-    (async () => {
-      await refetchSigner({ chainId: 5 });
-    })();
-  }, []);
 
   const onSubmit = async (
     values: IFormValues,
@@ -56,7 +51,7 @@ function ServiceForm() {
       resetForm,
     }: { setSubmitting: (isSubmitting: boolean) => void; resetForm: () => void },
   ) => {
-    if (account?.isConnected === true && provider !== undefined && signer !== undefined) {
+    if (account?.isConnected === true && provider && signer) {
       try {
         const parsedRateAmount = await parseRateAmount(
           values.rateAmount.toString(),

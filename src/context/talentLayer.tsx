@@ -1,5 +1,5 @@
-import { useAccount } from '@web3modal/react';
 import { createContext, ReactNode, useEffect, useMemo, useState } from 'react';
+import { useAccount } from 'wagmi';
 import { getUserByAddress } from '../queries/users';
 import { IAccount, IUser } from '../types';
 
@@ -13,11 +13,11 @@ const TalentLayerContext = createContext<{
 
 const TalentLayerProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<IUser | undefined>();
-  const { account } = useAccount();
+  const account = useAccount();
 
   useEffect(() => {
     const fetchData = async () => {
-      if (account.address === '' || account?.isConnected !== true) {
+      if (!account.address || !account.isConnected) {
         return;
       }
 
@@ -37,7 +37,7 @@ const TalentLayerProvider = ({ children }: { children: ReactNode }) => {
   const value = useMemo(() => {
     return {
       user,
-      account,
+      account: account ? account : undefined,
     };
   }, [account.address, user?.id]);
 

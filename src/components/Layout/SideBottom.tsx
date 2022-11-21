@@ -1,9 +1,9 @@
-import { useBlockNumber, useFeeData, useNetwork } from '@web3modal/react';
+import { useBlockNumber, useFeeData, useNetwork } from 'wagmi';
 
 function SideBottom() {
   const { data: blockNumber } = useBlockNumber({ watch: true });
   const { data: feeData } = useFeeData({ watch: true });
-  const { network } = useNetwork();
+  const network = useNetwork();
 
   return (
     <div className='flex flex-shrink-0 p-4 border-r border-gray-200'>

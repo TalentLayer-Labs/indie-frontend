@@ -1,6 +1,5 @@
 import { ServiceStatusEnum } from '../types';
 import { processRequest } from '../utils/graphql';
-import { ServiceStatusEnum } from '../types';
 
 export const getServices = (
   serviceStatus?: ServiceStatusEnum,

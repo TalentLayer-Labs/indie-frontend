@@ -1,7 +1,8 @@
-import { useConnectModal, useProvider, useSigner } from '@web3modal/react';
+import { useWeb3Modal } from '@web3modal/react';
 import { ethers } from 'ethers';
 import { Field, Form, Formik } from 'formik';
 import { useContext, useEffect } from 'react';
+import { useProvider, useSigner } from 'wagmi';
 import * as Yup from 'yup';
 import { config } from '../../config';
 import TalentLayerContext from '../../context/talentLayer';
@@ -26,16 +27,10 @@ const initialValues: IFormValues = {
 };
 
 function ReviewForm({ serviceId }: { serviceId: string }) {
-  const { open: openConnectModal } = useConnectModal();
+  const { open: openConnectModal } = useWeb3Modal();
   const { user } = useContext(TalentLayerContext);
-  const { provider } = useProvider();
-  const { data: signer, refetch: refetchSigner } = useSigner();
-
-  useEffect(() => {
-    (async () => {
-      await refetchSigner({ chainId: 5 });
-    })();
-  }, []);
+  const provider = useProvider({ chainId: 5 });
+  const { data: signer } = useSigner({ chainId: 5 });
 
   const onSubmit = async (
     values: IFormValues,
@@ -44,7 +39,7 @@ function ReviewForm({ serviceId }: { serviceId: string }) {
       resetForm,
     }: { setSubmitting: (isSubmitting: boolean) => void; resetForm: () => void },
   ) => {
-    if (user !== undefined && provider !== undefined && signer !== undefined) {
+    if (user && provider && signer) {
       try {
         const uri = await postToIPFS(
           JSON.stringify({

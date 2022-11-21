@@ -9,7 +9,6 @@ function ToastStep({
   title: string;
   children: (() => JSX.Element) | null;
 }) {
-  console.log({ children });
   return (
     <li>
       {status === 'complete' ? (
