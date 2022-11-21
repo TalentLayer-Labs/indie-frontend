@@ -14,7 +14,12 @@ export const getAllProposalsbyServiceId = (id: string): Promise<any> => {
         uri
         id
         status
-        rateToken
+        rateToken {
+          address
+          decimals
+          name
+          symbol
+        }
         rateAmount
         createdAt
         updatedAt
@@ -39,7 +44,12 @@ export const getAllProposalsByUser = (id: string): Promise<any> => {
         proposals(where: {seller: "${id}", status: "Pending"}) {
           id
           rateAmount
-          rateToken
+          rateToken {
+            address
+            decimals
+            name
+            symbol
+          }
           status
           uri
           createdAt
