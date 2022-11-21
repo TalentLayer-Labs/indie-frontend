@@ -1,11 +1,12 @@
 import { getParsedEthersError } from '@enzoferey/ethers-error-parser';
 import { EthersError } from '@enzoferey/ethers-error-parser/dist/types';
-import { useConnectModal, useNetwork, useProvider, useSigner } from '@web3modal/react';
+import { useWeb3Modal } from '@web3modal/react';
 import { ethers } from 'ethers';
 import { Field, Form, Formik } from 'formik';
 import { useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { useNetwork, useProvider, useSigner } from 'wagmi';
 import * as Yup from 'yup';
 import { config } from '../../config';
 import TalentLayerContext from '../../context/talentLayer';
@@ -22,19 +23,12 @@ const initialValues: IFormValues = {
 };
 
 function TalentLayerIdForm() {
-  const { open: openConnectModal } = useConnectModal();
+  const { open: openConnectModal } = useWeb3Modal();
   const { account } = useContext(TalentLayerContext);
-  const { data: signer, refetch: refetchSigner } = useSigner();
-  const { provider } = useProvider();
+  const { data: signer } = useSigner({ chainId: 5 });
+  const network = useNetwork();
+  const provider = useProvider({ chainId: 5 });
   const navigate = useNavigate();
-
-  useEffect(() => {
-    (async () => {
-      setTimeout(async () => {
-        await refetchSigner({ chainId: 5 });
-      }, 1000);
-    })();
-  }, []);
 
   const validationSchema = Yup.object().shape({
     handle: Yup.string()
@@ -50,13 +44,14 @@ function TalentLayerIdForm() {
     submittedValues: IFormValues,
     { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void },
   ) => {
-    if (account && account.isConnected === true && provider) {
+    if (account && account.isConnected === true && provider && signer) {
       try {
         const contract = new ethers.Contract(
           config.contracts.talentLayerId,
           TalentLayerID.abi,
           signer,
         );
+
         const tx = await contract.mint('1', submittedValues.handle);
         const receipt = await toast.promise(provider.waitForTransaction(tx.hash), {
           pending: {
@@ -78,7 +73,7 @@ function TalentLayerIdForm() {
               setTimeout(() => {
                 navigate(0);
                 resolve(true);
-              }, 3000),
+              }, 20000),
             ),
             {
               pending: 'Refreshing your data',

@@ -1,10 +1,8 @@
-import { getParsedEthersError } from '@enzoferey/ethers-error-parser';
-import { EthersError } from '@enzoferey/ethers-error-parser/dist/types';
-import { useConnectModal, useProvider, useSigner } from '@web3modal/react';
+import { useWeb3Modal } from '@web3modal/react';
 import { ethers } from 'ethers';
 import { Field, Form, Formik } from 'formik';
-import { useContext, useEffect } from 'react';
-import { toast } from 'react-toastify';
+import { useContext } from 'react';
+import { useProvider, useSigner } from 'wagmi';
 import * as Yup from 'yup';
 import { config } from '../../config';
 import TalentLayerContext from '../../context/talentLayer';
@@ -13,7 +11,6 @@ import useUserDetails from '../../hooks/useUserDetails';
 import { postToIPFS } from '../../utils/ipfs';
 import { createMultiStepsTransactionToast } from '../../utils/toast';
 import Loading from '../Loading';
-import TransactionToast from '../TransactionToast';
 import SubmitButton from './SubmitButton';
 
 interface IFormValues {
@@ -27,17 +24,11 @@ const validationSchema = Yup.object({
 });
 
 function ProfileForm() {
-  const { open: openConnectModal } = useConnectModal();
+  const { open: openConnectModal } = useWeb3Modal();
   const { user } = useContext(TalentLayerContext);
-  const { provider } = useProvider();
+  const provider = useProvider({ chainId: 5 });
   const userDetails = useUserDetails(user?.uri);
-  const { data: signer, refetch: refetchSigner } = useSigner();
-
-  useEffect(() => {
-    (async () => {
-      await refetchSigner({ chainId: 5 });
-    })();
-  }, []);
+  const { data: signer } = useSigner({ chainId: 5 });
 
   if (user?.uri && !userDetails) {
     return <Loading />;
@@ -53,7 +44,7 @@ function ProfileForm() {
     values: IFormValues,
     { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void; resetForm: () => void },
   ) => {
-    if (user !== undefined && provider !== undefined && signer !== undefined) {
+    if (user && provider && signer) {
       try {
         const uri = await postToIPFS(
           JSON.stringify({
@@ -68,6 +59,7 @@ function ProfileForm() {
           TalentLayerID.abi,
           signer,
         );
+
         const tx = await contract.updateProfileData(user.id, uri);
         await createMultiStepsTransactionToast(
           {

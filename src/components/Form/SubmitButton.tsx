@@ -1,4 +1,5 @@
-import { useAccount, useConnectModal } from '@web3modal/react';
+import { useWeb3Modal } from '@web3modal/react';
+import { useAccount } from 'wagmi';
 
 function SubmitButton({
   isSubmitting,
@@ -7,8 +8,8 @@ function SubmitButton({
   isSubmitting: boolean;
   label?: string;
 }) {
-  const { account } = useAccount();
-  const { open: openConnectModal } = useConnectModal();
+  const { isConnected } = useAccount();
+  const { open: openConnectModal } = useWeb3Modal();
 
   return (
     <div className='flex flex-row justify-between items-center'>
@@ -34,7 +35,7 @@ function SubmitButton({
           </svg>
           Loading...
         </button>
-      ) : account.isConnected === true ? (
+      ) : isConnected === true ? (
         <button
           type='submit'
           className='px-5 py-2 border border-indigo-600 rounded-md hover:text-indigo-600 hover:bg-white text-white bg-indigo-700'>

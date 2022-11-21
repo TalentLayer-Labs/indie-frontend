@@ -1,8 +1,7 @@
-import { useProvider, useSigner } from '@web3modal/react';
 import { ethers } from 'ethers';
 import { Field, Form, Formik } from 'formik';
-import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useProvider, useSigner } from 'wagmi';
 import * as Yup from 'yup';
 import { config } from '../../config';
 import ServiceRegistry from '../../contracts/ABI/ServiceRegistry.json';
@@ -32,15 +31,9 @@ const validationSchema = Yup.object({
 });
 
 function ProposalForm({ service }: { service: IService }) {
-  const { provider } = useProvider();
-  const { data: signer, refetch: refetchSigner } = useSigner();
+  const provider = useProvider({ chainId: 5 });
+  const { data: signer } = useSigner({ chainId: 5 });
   const navigate = useNavigate();
-
-  useEffect(() => {
-    (async () => {
-      await refetchSigner({ chainId: 5 });
-    })();
-  }, []);
 
   const onSubmit = async (
     values: IFormValues,
@@ -49,7 +42,7 @@ function ProposalForm({ service }: { service: IService }) {
       resetForm,
     }: { setSubmitting: (isSubmitting: boolean) => void; resetForm: () => void },
   ) => {
-    if (provider !== undefined && signer !== undefined) {
+    if (provider && signer) {
       try {
         const parsedRateAmount = await parseRateAmount(
           values.rateAmount.toString(),

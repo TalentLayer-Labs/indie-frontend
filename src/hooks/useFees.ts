@@ -1,25 +1,23 @@
-import { useState, useEffect } from 'react';
-import { IFees } from '../types';
 import { ethers } from 'ethers';
+import { useEffect, useState } from 'react';
+import { useSigner } from 'wagmi';
 import { config } from '../config';
 import TalentLayerMultipleArbitrableTransaction from '../contracts/ABI/TalentLayerMultipleArbitrableTransaction.json';
 import TalentLayerPlatformID from '../contracts/ABI/TalentLayerPlatformID.json';
-import { useSigner } from '@web3modal/react';
+import { IFees } from '../types';
 
 const useFees = (): IFees => {
-  const [signerLoaded, setSignerLoaded] = useState(false);
   const [fees, setFees] = useState({
-    // protocolFeeRate: '',
-    // originPlatformFeeRate: '',
-    // platformFeeRate: '',
     protocolFeeRate: ethers.BigNumber.from('0'),
     originPlatformFeeRate: ethers.BigNumber.from('0'),
     platformFeeRate: ethers.BigNumber.from('0'),
   });
-  const { data: signer, refetch: refetchSigner } = useSigner();
+  const { data: signer } = useSigner({ chainId: 5 });
 
-  const klerosContract = new ethers.Contract(
-    config.contracts.TalentLayerMultipleArbitrableTransaction,
+  if (!signer) return fees;
+
+  const escrowContract = new ethers.Contract(
+    config.contracts.talentLayerEscrow,
     TalentLayerMultipleArbitrableTransaction.abi,
     signer,
   );
@@ -31,30 +29,16 @@ const useFees = (): IFees => {
   );
 
   useEffect(() => {
-    const loadContracts = async () => {
-      await refetchSigner({ chainId: 5 });
-      console.log('Signer Loaded');
-      setSignerLoaded(true);
-      // }
-    };
-    loadContracts();
-  }, []);
-
-  useEffect(() => {
     const fetchData = async () => {
       try {
-        if (klerosContract && talentLayerPlatformIdContract && signerLoaded) {
-          const protocolFee = await klerosContract.protocolFee();
-          const originPlatformFee = await klerosContract.originPlatformFee();
+        if (escrowContract && talentLayerPlatformIdContract) {
+          const protocolFee = await escrowContract.protocolFee();
+          const originPlatformFee = await escrowContract.originPlatformFee();
           const platformData = await talentLayerPlatformIdContract.platforms(
             import.meta.env.VITE_NETWORK_ID,
           );
           if (!!protocolFee && !!originPlatformFee && !!platformData) {
-            // console.log('all true', protocolFee && originPlatformFee && platformData);
             setFees({
-              // protocolFeeRate: protocolFee,
-              // originPlatformFeeRate: originPlatformFee,
-              // platformFeeRate: platformData.fee,
               protocolFeeRate: ethers.BigNumber.from(protocolFee),
               originPlatformFeeRate: ethers.BigNumber.from(originPlatformFee),
               platformFeeRate: ethers.BigNumber.from(platformData.fee),
@@ -67,9 +51,8 @@ const useFees = (): IFees => {
       }
     };
     fetchData();
-  }, [signerLoaded]);
-  //TODO: Why does this get called so many times ?
-  // console.log('return');
+  }, []);
+
   return fees;
 };
 

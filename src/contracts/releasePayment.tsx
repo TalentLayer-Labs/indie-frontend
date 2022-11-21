@@ -1,6 +1,6 @@
 import { getParsedEthersError } from '@enzoferey/ethers-error-parser';
 import { EthersError } from '@enzoferey/ethers-error-parser/dist/types';
-import { Provider } from '@web3modal/ethereum';
+import { Provider } from '@wagmi/core';
 import { BigNumber, Contract, Signer } from 'ethers';
 import { toast } from 'react-toastify';
 import TransactionToast from '../components/TransactionToast';
