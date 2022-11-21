@@ -13,6 +13,7 @@ const navigation = [
   { name: 'Find jobs', href: '/services', icon: MagnifyingGlassIcon, current: false },
   { name: 'Post a job', href: '/services/create', icon: PlusIcon, current: false },
   { name: 'Find talents', href: '/talents', icon: SparklesIcon, current: false },
+  { name: 'Transactions', href: '/transactions', icon: SparklesIcon, current: false },
 ];
 
 function SideMenu() {
