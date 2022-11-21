@@ -14,29 +14,27 @@ const useFees = (): IFees => {
   });
   const { data: signer } = useSigner({ chainId: 5 });
 
-  if (!signer) return fees;
-
-  const escrowContract = new ethers.Contract(
-    config.contracts.talentLayerEscrow,
-    TalentLayerMultipleArbitrableTransaction.abi,
-    signer,
-  );
-
-  const talentLayerPlatformIdContract = new ethers.Contract(
-    config.contracts.talentLayerPlatformId,
-    TalentLayerPlatformID.abi,
-    signer,
-  );
-
   useEffect(() => {
     const fetchData = async () => {
+      if (!signer) return fees;
+
+      const escrowContract = new ethers.Contract(
+        config.contracts.talentLayerEscrow,
+        TalentLayerMultipleArbitrableTransaction.abi,
+        signer,
+      );
+
+      const talentLayerPlatformIdContract = new ethers.Contract(
+        config.contracts.talentLayerPlatformId,
+        TalentLayerPlatformID.abi,
+        signer,
+      );
+
       try {
         if (escrowContract && talentLayerPlatformIdContract) {
           const protocolFee = await escrowContract.protocolFee();
           const originPlatformFee = await escrowContract.originPlatformFee();
-          const platformData = await talentLayerPlatformIdContract.platforms(
-            import.meta.env.VITE_NETWORK_ID,
-          );
+          const platformData = await talentLayerPlatformIdContract.platforms('1');
           if (!!protocolFee && !!originPlatformFee && !!platformData) {
             setFees({
               protocolFeeRate: ethers.BigNumber.from(protocolFee),

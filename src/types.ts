@@ -18,7 +18,7 @@ export type IUserDetails = {
 };
 
 export type IAccount = {
-  address?: string;
+  address?: `0x${string}`;
   connector?: Connector;
   isConnecting: boolean;
   isReconnecting: boolean;
@@ -100,7 +100,7 @@ export type IProposal = {
   uri: string;
   status: ProposalStatusEnum;
   seller: IUser;
-  rateToken: `0x${string}`;
+  rateToken: IToken;
   rateAmount: string;
   service: IService;
   createdAt: string;
@@ -136,6 +136,7 @@ export enum NetworkEnum {
 
 export type IToken = {
   name: string;
+  address: `0x${string}`;
   symbol: string;
   decimals: number;
 };
@@ -148,7 +149,7 @@ export type ITokenFormattedValues = {
 export type IPayment = {
   id: string;
   amount: string;
-  rateToken: string;
+  rateToken: IToken;
   paymentType: PaymentTypeEnum;
   transactionHash: string;
   service: IService;

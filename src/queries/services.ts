@@ -63,7 +63,12 @@ export const getServiceById = (id: string): Promise<any> => {
         }
         validatedProposal: proposals(where: {status: "Validated"}){
           id,
-          rateToken,
+          rateToken {
+            address
+            decimals
+            name
+            symbol
+          },
           rateAmount,
         }
       }
