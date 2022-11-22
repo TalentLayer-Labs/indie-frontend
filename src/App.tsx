@@ -17,7 +17,7 @@ import Profile from './pages/Profile';
 import Service from './pages/Service';
 import Services from './pages/Services';
 import Talents from './pages/Talents';
-import Transactions from './pages/Transactions';
+import Incomes from './pages/Incomes';
 
 const config: ConfigOptions = {
   projectId: `${import.meta.env.VITE_WALLECT_CONNECT_PROJECT_ID}`,
@@ -49,7 +49,7 @@ function App() {
                 <Route path='/about' element={<About />} />
                 <Route path='/profile/:id' element={<Profile />} />
                 <Route path='/profile/edit' element={<EditProfile />} />
-                <Route path='/transactions' element={<Transactions />} />
+                <Route path='/incomes/:id' element={<Incomes />} />
               </Route>
             </Routes>
           </TalentLayerProvider>
