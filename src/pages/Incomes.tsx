@@ -1,9 +1,7 @@
 import { useContext } from 'react';
 import Steps from '../components/Steps';
-import UserDetail from '../components/UserDetail';
-import UserPayments from '../components/UserPayments';
-import UserProposals from '../components/UserProposals';
-import UserServices from '../components/UserServices';
+import { IUser } from '../types';
+import UserIncomes from '../components/UserIncomes';
 import TalentLayerContext from '../context/talentLayer';
 
 function Incomes() {
@@ -19,9 +17,9 @@ function Incomes() {
 
       {account?.isConnected && user && (
         <div>
-          {/* <div className='mb-6'>
-            <UserPayments user={user} />
-          </div> */}
+          <div className='mb-6'>
+            <UserIncomes user={user} type='seller' />
+          </div>
         </div>
       )}
     </div>
