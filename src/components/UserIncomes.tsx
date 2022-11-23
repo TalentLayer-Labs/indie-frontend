@@ -1,10 +1,7 @@
-import usePaymentsForUser from '../hooks/usePaymentsForUser';
-import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
 import useServices from '../hooks/useServices';
-import useServiceDetails from '../hooks/useServiceDetails';
-import { IPayment, IService, PaymentTypeEnum, ServiceStatusEnum } from '../types';
-import UserServiceItem from './UserServiceItem';
 import { IUser } from '../types';
+import ServiceRate from './ServiceDetails/ServiceRate';
+import ServiceTitle from './ServiceDetails/ServiceTitle';
 
 interface IProps {
   user: IUser;
@@ -59,32 +56,34 @@ function UserIncomes({ user, type }: IProps) {
                       className='py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pr-6'>
                       Release
                     </th>
+                    <th
+                      scope='col'
+                      className='py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pr-6'>
+                      Release
+                    </th>
+                    <th
+                      scope='col'
+                      className='py-3.5 pl-4 pr-4 text-left text-sm font-semibold text-gray-900 sm:pr-6'>
+                      Release
+                    </th>
                   </tr>
                 </thead>
                 <tbody className='divide-y divide-gray-200 bg-white'>
                   {services.map((service, index) => (
                     <tr key={index} className='divide-x divide-gray-200'>
                       <td className='whitespace-nowrap py-4 pl-4 pr-4 text-sm font-medium text-gray-900 sm:pl-6'>
-                        {/* {services.map((service, i) => {
-                          const serviceDetail = useServiceDetails(service.uri);
-                          if (!serviceDetail) {
-                            return null;
-                          }
-                          return (
-                            <div key={i}>
-                              <a
-                                href={`/services/${service.id}`}
-                                className='text-indigo-600 hover:text-indigo-900'>
-                                {serviceDetail.title}
-                              </a>
-                            </div>
-                          );
-                        })} */}
+                        <ServiceTitle service={service} />
+                      </td>
+                      <td className='whitespace-nowrap p-4 text-sm text-gray-500'>
+                        <ServiceRate service={service} />
                       </td>
                       <td className='whitespace-nowrap p-4 text-sm text-gray-500'>
                         <p>Release</p>
                       </td>
-                      <td className='whitespace-nowrap p-4 text-sm text-gray-500'>
+                      <td className='whitespace-nowrap py-4 pl-4 pr-4 text-sm text-gray-500 sm:pr-6'>
+                        <p>Release</p>
+                      </td>
+                      <td className='whitespace-nowrap py-4 pl-4 pr-4 text-sm text-gray-500 sm:pr-6'>
                         <p>Release</p>
                       </td>
                       <td className='whitespace-nowrap py-4 pl-4 pr-4 text-sm text-gray-500 sm:pr-6'>
