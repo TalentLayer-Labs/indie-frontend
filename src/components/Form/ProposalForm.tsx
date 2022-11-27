@@ -7,7 +7,7 @@ import { config } from '../../config';
 import ServiceRegistry from '../../contracts/ABI/ServiceRegistry.json';
 import { IService } from '../../types';
 import { postToIPFS } from '../../utils/ipfs';
-import { createMultiStepsTransactionToast } from '../../utils/toast';
+import { createMultiStepsTransactionToast, showErrorTransactionToast } from '../../utils/toast';
 import { parseRateAmount } from '../../utils/web3';
 import ServiceItem from '../ServiceItem';
 import SubmitButton from './SubmitButton';
@@ -31,8 +31,8 @@ const validationSchema = Yup.object({
 });
 
 function ProposalForm({ service }: { service: IService }) {
-  const provider = useProvider({ chainId: 5 });
-  const { data: signer } = useSigner({ chainId: 5 });
+  const provider = useProvider({ chainId: import.meta.env.VITE_NETWORK_ID });
+  const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
   const navigate = useNavigate();
 
   const onSubmit = async (
@@ -82,7 +82,7 @@ function ProposalForm({ service }: { service: IService }) {
         resetForm();
         navigate(-1);
       } catch (error) {
-        console.error(error);
+        showErrorTransactionToast(error);
       }
     }
   };

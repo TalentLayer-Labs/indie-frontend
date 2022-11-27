@@ -9,7 +9,7 @@ import TalentLayerContext from '../../context/talentLayer';
 import TalentLayerID from '../../contracts/ABI/TalentLayerID.json';
 import useUserDetails from '../../hooks/useUserDetails';
 import { postToIPFS } from '../../utils/ipfs';
-import { createMultiStepsTransactionToast } from '../../utils/toast';
+import { createMultiStepsTransactionToast, showErrorTransactionToast } from '../../utils/toast';
 import Loading from '../Loading';
 import SubmitButton from './SubmitButton';
 
@@ -26,9 +26,9 @@ const validationSchema = Yup.object({
 function ProfileForm() {
   const { open: openConnectModal } = useWeb3Modal();
   const { user } = useContext(TalentLayerContext);
-  const provider = useProvider({ chainId: 5 });
+  const provider = useProvider({ chainId: import.meta.env.VITE_NETWORK_ID });
   const userDetails = useUserDetails(user?.uri);
-  const { data: signer } = useSigner({ chainId: 5 });
+  const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
 
   if (user?.uri && !userDetails) {
     return <Loading />;
@@ -75,7 +75,7 @@ function ProfileForm() {
 
         setSubmitting(false);
       } catch (error) {
-        console.error(error);
+        showErrorTransactionToast(error);
       }
     } else {
       openConnectModal();
