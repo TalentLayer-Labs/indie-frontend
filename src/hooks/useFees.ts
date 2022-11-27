@@ -12,7 +12,7 @@ const useFees = (): IFees => {
     originPlatformFeeRate: ethers.BigNumber.from('0'),
     platformFeeRate: ethers.BigNumber.from('0'),
   });
-  const { data: signer } = useSigner({ chainId: 5 });
+  const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
 
   useEffect(() => {
     const fetchData = async () => {

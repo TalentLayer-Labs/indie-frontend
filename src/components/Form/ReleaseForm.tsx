@@ -26,8 +26,8 @@ function ReleaseForm({
   closeModal,
   isBuyer,
 }: IReleaseFormProps) {
-  const { data: signer } = useSigner({ chainId: 5 });
-  const provider = useProvider({ chainId: 5 });
+  const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
+  const provider = useProvider({ chainId: import.meta.env.VITE_NETWORK_ID });
   const [pourcent, setPourcentage] = useState(0);
   const symbol = config.tokens[rateToken].symbol;
 

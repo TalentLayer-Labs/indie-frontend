@@ -9,7 +9,7 @@ import { config } from '../../config';
 import TalentLayerContext from '../../context/talentLayer';
 import ServiceRegistry from '../../contracts/ABI/ServiceRegistry.json';
 import { postToIPFS } from '../../utils/ipfs';
-import { createMultiStepsTransactionToast } from '../../utils/toast';
+import { createMultiStepsTransactionToast, showErrorTransactionToast } from '../../utils/toast';
 import { parseRateAmount } from '../../utils/web3';
 import SubmitButton from './SubmitButton';
 
@@ -40,8 +40,8 @@ const validationSchema = Yup.object({
 function ServiceForm() {
   const { open: openConnectModal } = useWeb3Modal();
   const { account } = useContext(TalentLayerContext);
-  const provider = useProvider({ chainId: 5 });
-  const { data: signer } = useSigner({ chainId: 5 });
+  const provider = useProvider({ chainId: import.meta.env.VITE_NETWORK_ID });
+  const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
   const navigate = useNavigate();
 
   const onSubmit = async (
@@ -92,7 +92,7 @@ function ServiceForm() {
           navigate(`/services/${newId}`);
         }
       } catch (error) {
-        console.error(error);
+        showErrorTransactionToast(error);
       }
     } else {
       openConnectModal();

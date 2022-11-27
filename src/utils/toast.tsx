@@ -76,3 +76,9 @@ export const createMultiStepsTransactionToast = async (
   }
   return;
 };
+
+export const showErrorTransactionToast = (error: any) => {
+  console.error(error);
+  const parsedEthersError = getParsedEthersError(error as EthersError);
+  toast.error(`${parsedEthersError.errorCode} - ${parsedEthersError.context}`);
+};

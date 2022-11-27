@@ -25,9 +25,9 @@ const initialValues: IFormValues = {
 function TalentLayerIdForm() {
   const { open: openConnectModal } = useWeb3Modal();
   const { account } = useContext(TalentLayerContext);
-  const { data: signer } = useSigner({ chainId: 5 });
+  const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
   const network = useNetwork();
-  const provider = useProvider({ chainId: 5 });
+  const provider = useProvider({ chainId: import.meta.env.VITE_NETWORK_ID });
   const navigate = useNavigate();
 
   const validationSchema = Yup.object().shape({
