@@ -1,15 +1,14 @@
 import { Menu, Transition } from '@headlessui/react';
-import { ConnectButton, useEnsAvatar } from '@web3modal/react';
+import { ConnectButton } from '@web3modal/react';
 import { Fragment, useContext } from 'react';
+import { useEnsAvatar } from 'wagmi';
 import TalentLayerContext from '../context/talentLayer';
 import { truncateAddress } from '../utils';
 import UserSubMenu from './UserSubMenu';
 
 function UserAccount() {
   const { account, user } = useContext(TalentLayerContext);
-  const { data: avatarImage } = useEnsAvatar({
-    addressOrName: 'vitalik.eth',
-  });
+  const { data: avatarImage } = useEnsAvatar();
 
   return (
     <div className='flex justify-between'>
@@ -21,15 +20,13 @@ function UserAccount() {
               <div className='flex items-center'>
                 <Menu.Button className='flex max-w-xs items-center rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2'>
                   <span className='sr-only'>Open user menu</span>
-                  {avatarImage !== undefined ? (
+                  {avatarImage ? (
                     <img className='h-8 w-8 rounded-full' alt='' src={avatarImage} />
                   ) : (
                     <img
                       className='h-8 w-8 rounded-full'
                       alt=''
-                      src={`/default-avatar-${
-                        Number(user?.id !== undefined ? user.id : '1') % 11
-                      }.jpeg`}
+                      src={`/default-avatar-${Number(user?.id ? user.id : '1') % 11}.jpeg`}
                     />
                   )}
                 </Menu.Button>
@@ -38,10 +35,10 @@ function UserAccount() {
                   <p
                     className='text-sm font-medium text-gray-700 group-hover:text-gray-900'
                     style={{ marginBottom: '-3px' }}>
-                    {user?.handle !== undefined ? user.handle : ''}
+                    {user?.handle ? user.handle : ''}
                   </p>
                   <p className='text-xs font-medium text-gray-500 group-hover:text-gray-700'>
-                    {truncateAddress(account.address)}
+                    {account.address && truncateAddress(account.address)}
                   </p>
                 </Menu.Button>
               </div>

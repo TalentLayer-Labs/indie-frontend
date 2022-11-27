@@ -6,6 +6,12 @@ export const getPaymentsByService = (serviceId: string): Promise<any> => {
       payments(where: { service: "${serviceId}" }, orderBy: id, orderDirection: asc) {
         id
         amount
+        rateToken {
+          address
+          decimals
+          name
+          symbol
+        }
         paymentType
         transactionHash
       }
@@ -19,7 +25,12 @@ export const getPaymentsForUser = (userId: string): Promise<any> => {
     {
       payments(where: {service_: {seller: "${userId}"} }){
         id, 
-        rateToken
+        rateToken {
+          address
+          decimals
+          name
+          symbol
+        }
         amount
         transactionHash
         paymentType

@@ -1,14 +1,13 @@
-import { useProvider, useSigner } from '@web3modal/react';
 import { ethers } from 'ethers';
 import { Field, Form, Formik } from 'formik';
-import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useProvider, useSigner } from 'wagmi';
 import * as Yup from 'yup';
 import { config } from '../../config';
 import ServiceRegistry from '../../contracts/ABI/ServiceRegistry.json';
 import { IService } from '../../types';
 import { postToIPFS } from '../../utils/ipfs';
-import { createMultiStepsTransactionToast } from '../../utils/toast';
+import { createMultiStepsTransactionToast, showErrorTransactionToast } from '../../utils/toast';
 import { parseRateAmount } from '../../utils/web3';
 import ServiceItem from '../ServiceItem';
 import SubmitButton from './SubmitButton';
@@ -32,15 +31,9 @@ const validationSchema = Yup.object({
 });
 
 function ProposalForm({ service }: { service: IService }) {
-  const { provider } = useProvider();
-  const { data: signer, refetch: refetchSigner } = useSigner();
+  const provider = useProvider({ chainId: import.meta.env.VITE_NETWORK_ID });
+  const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
   const navigate = useNavigate();
-
-  useEffect(() => {
-    (async () => {
-      await refetchSigner({ chainId: 5 });
-    })();
-  }, []);
 
   const onSubmit = async (
     values: IFormValues,
@@ -49,7 +42,7 @@ function ProposalForm({ service }: { service: IService }) {
       resetForm,
     }: { setSubmitting: (isSubmitting: boolean) => void; resetForm: () => void },
   ) => {
-    if (provider !== undefined && signer !== undefined) {
+    if (provider && signer) {
       try {
         const parsedRateAmount = await parseRateAmount(
           values.rateAmount.toString(),
@@ -89,7 +82,7 @@ function ProposalForm({ service }: { service: IService }) {
         resetForm();
         navigate(-1);
       } catch (error) {
-        console.error(error);
+        showErrorTransactionToast(error);
       }
     }
   };
