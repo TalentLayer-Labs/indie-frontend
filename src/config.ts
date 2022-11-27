@@ -12,33 +12,44 @@ export const maxDecimals = {
   ETH: 2,
 };
 
+export const FEE_RATE_DIVIDER = 10_000;
+
 const goerli: Config = {
   networkId: NetworkEnum.GOERLI,
   contracts: {
-    talentLayerId: '0x97aa4622Aeda18CAF5c797C1E5285Bd5c6fc145D',
-    serviceRegistry: '0xE5054E2e59B284CA09713418451709E0CEb4116b',
-    talentLayerReview: '0x67EE2a1f75788794f516b8F9919496D63109A380',
+    talentLayerId: '0x2F9EBAc36cc020B81c4c624AbcfeC7DC8958Cf54',
+    serviceRegistry: '0x8E86d82214c391281a908e3e31a766fcb9FaB3cA',
+    talentLayerReview: '0x66676968c176aA328124f04f53F8653db6b35ff9',
+    talentLayerEscrow: '0x182980458E0F93167Fab56c494776b694A07C030',
+    talentLayerPlatformId: '0xc0aB487a8e374807B86291CE5BE4b0dE4540529d',
   },
   escrowConfig: {
-    adminFee: '0',
-    adminWallet: '0x4B3380d3A8C1AF85e47dBC1Fc6C3f4e0c8F78fEa',
     timeoutPayment: 3600 * 24 * 7,
   },
   tokens: {
     [ethers.constants.AddressZero]: {
+      address: ethers.constants.AddressZero,
       symbol: 'ETH',
       name: 'ETH',
       decimals: 18,
     },
     '0x73967c6a0904aa032c103b4104747e88c566b1a2': {
+      address: '0x73967c6a0904aa032c103b4104747e88c566b1a2',
       symbol: 'DAI',
       name: 'DAI Stablecoin',
       decimals: 18,
     },
     '0x07865c6e87b9f70255377e024ace6630c1eaa37f': {
+      address: '0x07865c6e87b9f70255377e024ace6630c1eaa37f',
       symbol: 'USDC',
       name: 'USDC Stablecoin',
       decimals: 6,
+    },
+    '0x3B25E43c2E07063E6e3A562Fb74b32A0500dF227': {
+      address: '0x3B25E43c2E07063E6e3A562Fb74b32A0500dF227',
+      symbol: 'SERC20',
+      name: 'Simple ERC20',
+      decimals: 18,
     },
   },
 };
@@ -46,13 +57,13 @@ const goerli: Config = {
 const local = {
   networkId: NetworkEnum.LOCAL,
   contracts: {
-    talentLayerId: '0x97aa4622Aeda18CAF5c797C1E5285Bd5c6fc145D',
-    serviceRegistry: '0xE5054E2e59B284CA09713418451709E0CEb4116b',
-    talentLayerReview: '0x67EE2a1f75788794f516b8F9919496D63109A380',
+    talentLayerId: '0x2F9EBAc36cc020B81c4c624AbcfeC7DC8958Cf54',
+    serviceRegistry: '0x8E86d82214c391281a908e3e31a766fcb9FaB3cA',
+    talentLayerReview: '0x66676968c176aA328124f04f53F8653db6b35ff9',
+    talentLayerEscrow: '0x182980458E0F93167Fab56c494776b694A07C030',
+    talentLayerPlatformId: '0xc0aB487a8e374807B86291CE5BE4b0dE4540529d',
   },
   escrowConfig: {
-    adminFee: '0',
-    adminWallet: '0x4B3380d3A8C1AF85e47dBC1Fc6C3f4e0c8F78fEa',
     timeoutPayment: 3600 * 24 * 7,
   },
   tokens: {

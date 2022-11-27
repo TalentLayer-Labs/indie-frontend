@@ -1,10 +1,10 @@
 import { Menu } from '@headlessui/react';
-import { useDisconnect } from '@web3modal/react';
 import { NavLink, useNavigate } from 'react-router-dom';
+import { useDisconnect } from 'wagmi';
 
 function UserSubMenu() {
   const navigate = useNavigate();
-  const disconnect = useDisconnect();
+  const { disconnect } = useDisconnect();
 
   return (
     <>

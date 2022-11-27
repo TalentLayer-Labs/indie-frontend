@@ -20,7 +20,7 @@ function UserDetail({ user }: { user: IUser }) {
         <div className='flex flex-col justify-start items-start gap-4'>
           <div className='flex items-center justify-start mb-4'>
             <img
-              src={`/default-avatar-${Number(user?.id !== undefined ? user.id : '1') % 11}.jpeg`}
+              src={`/default-avatar-${Number(user?.id ? user.id : '1') % 11}.jpeg`}
               className='w-10 mr-4 rounded-full'
             />
             <div className='flex flex-col'>

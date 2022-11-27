@@ -1,3 +1,6 @@
+import { ethers } from 'ethers';
+import { Connector } from 'wagmi';
+
 export type IUser = {
   id: string;
   handle: string;
@@ -15,12 +18,13 @@ export type IUserDetails = {
 };
 
 export type IAccount = {
-  address: string;
-  isConnected: boolean | undefined;
-  isReconnecting: boolean | undefined;
-  isConnecting: boolean | undefined;
-  isDisconnected: boolean | undefined;
-  status: 'connected' | 'reconnecting' | 'connecting' | 'disconnected' | undefined;
+  address?: `0x${string}`;
+  connector?: Connector;
+  isConnecting: boolean;
+  isReconnecting: boolean;
+  isConnected: boolean;
+  isDisconnected: boolean;
+  status: 'connecting' | 'reconnecting' | 'connected' | 'disconnected';
 };
 
 export type IService = {
@@ -96,11 +100,17 @@ export type IProposal = {
   uri: string;
   status: ProposalStatusEnum;
   seller: IUser;
-  rateToken: `0x${string}`;
+  rateToken: IToken;
   rateAmount: string;
   service: IService;
   createdAt: string;
   updatedAt: string;
+};
+
+export type IFees = {
+  protocolFeeRate: ethers.BigNumber;
+  originPlatformFeeRate: ethers.BigNumber;
+  platformFeeRate: ethers.BigNumber;
 };
 
 export enum ProposalTypeEnum {
@@ -120,12 +130,13 @@ export enum PaymentTypeEnum {
 }
 
 export enum NetworkEnum {
-  LOCAL = 0,
+  LOCAL = 1337,
   GOERLI = 5,
 }
 
 export type IToken = {
   name: string;
+  address: `0x${string}`;
   symbol: string;
   decimals: number;
 };
@@ -138,7 +149,7 @@ export type ITokenFormattedValues = {
 export type IPayment = {
   id: string;
   amount: string;
-  rateToken: string;
+  rateToken: IToken;
   paymentType: PaymentTypeEnum;
   transactionHash: string;
   service: IService;

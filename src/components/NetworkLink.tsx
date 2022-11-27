@@ -1,10 +1,14 @@
-import { useNetwork, useSwitchNetwork } from '@web3modal/react';
+import { useNetwork, useSwitchNetwork } from 'wagmi';
 
 function NetworkLink({ chaindId, chainName }: { chaindId: number; chainName: string }) {
   const { switchNetwork } = useSwitchNetwork({
     chainId: chaindId,
   });
-  const { network } = useNetwork();
+  const network = useNetwork();
+
+  if (!switchNetwork) {
+    return null;
+  }
 
   return (
     <a

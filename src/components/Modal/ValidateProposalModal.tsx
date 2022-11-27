@@ -1,4 +1,3 @@
-import { useBalance, useProvider, useSigner } from '@web3modal/react';
 import { ethers } from 'ethers';
 import { Check, X } from 'heroicons-react';
 import { useEffect, useState } from 'react';
@@ -6,24 +5,29 @@ import { validateProposal } from '../../contracts/acceptProposal';
 import { renderTokenAmount } from '../../utils/conversion';
 import { IAccount, IProposal } from '../../types';
 import Step from '../Step';
+import useFees from '../../hooks/useFees';
+import { FEE_RATE_DIVIDER } from '../../config';
+import { useBalance, useProvider, useSigner } from 'wagmi';
 
 function ValidateProposalModal({ proposal, account }: { proposal: IProposal; account: IAccount }) {
-  const { data: signer, refetch: refetchSigner } = useSigner();
-  const { provider } = useProvider();
+  const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
+  const provider = useProvider({ chainId: import.meta.env.VITE_NETWORK_ID });
   const [show, setShow] = useState(false);
-  const { data: ethBalance } = useBalance({ addressOrName: account.address });
-  const isProposalUseEth: boolean = proposal.rateToken === ethers.constants.AddressZero;
+  const { data: ethBalance } = useBalance({ address: account.address });
+  const isProposalUseEth: boolean = proposal.rateToken.address === ethers.constants.AddressZero;
   const { data: tokenBalance } = useBalance({
-    addressOrName: account.address,
+    address: account.address,
     enabled: !isProposalUseEth,
-    token: proposal.rateToken,
+    token: proposal.rateToken.address,
   });
 
-  useEffect(() => {
-    (async () => {
-      await refetchSigner({ chainId: 5 });
-    })();
-  }, []);
+  const { protocolFeeRate, originPlatformFeeRate, platformFeeRate } = useFees();
+
+  const jobRateAmount = ethers.BigNumber.from(proposal.rateAmount);
+  const protocolFee = jobRateAmount.mul(protocolFeeRate).div(FEE_RATE_DIVIDER);
+  const originPlatformFee = jobRateAmount.mul(originPlatformFeeRate).div(FEE_RATE_DIVIDER);
+  const platformFee = jobRateAmount.mul(platformFeeRate).div(FEE_RATE_DIVIDER);
+  const totalAmount = jobRateAmount.add(originPlatformFee).add(platformFee).add(protocolFee);
 
   const onSubmit = async () => {
     if (!signer || !provider) {
@@ -34,24 +38,19 @@ function ValidateProposalModal({ proposal, account }: { proposal: IProposal; acc
       provider,
       proposal.service.id,
       proposal.seller.id,
-      proposal.rateToken,
-      proposal.rateAmount,
+      proposal.rateToken.address,
+      totalAmount,
     );
     setShow(false);
   };
 
-  const jobRateAmount = ethers.BigNumber.from(proposal.rateAmount);
-  const marketplaceFee = jobRateAmount.mul(5).div(100);
-  const platformFee = jobRateAmount.mul(1).div(100);
-  const total = jobRateAmount.add(marketplaceFee).add(platformFee);
-
   const hasEnoughBalance = () => {
     if (isProposalUseEth) {
       if (!ethBalance) return;
-      return ethBalance.value.gte(total);
+      return ethBalance.value.gte(totalAmount);
     } else {
       if (!tokenBalance) return;
-      return tokenBalance.value.gte(total);
+      return tokenBalance.value.gte(totalAmount);
     }
   };
 
@@ -113,36 +112,47 @@ function ValidateProposalModal({ proposal, account }: { proposal: IProposal; acc
                   <div className='flex justify-between w-full'>
                     <p className='text-base leading-4 text-gray-800'>Job rate</p>
                     <p className='text-base  leading-4 text-gray-600'>
-                      {renderTokenAmount(proposal.rateToken, proposal.rateAmount)}
+                      {renderTokenAmount(proposal.rateToken.address, proposal.rateAmount)}
                     </p>
                   </div>
                   <div className='flex justify-between items-center w-full'>
                     <p className='text-base leading-4 text-gray-800'>
                       Marketplace fees{' '}
                       <span className='bg-gray-200 p-1 text-xs font-medium leading-3 text-gray-800'>
-                        5%
+                        {(Number(platformFeeRate) / FEE_RATE_DIVIDER).toString()} %
                       </span>
                     </p>
                     <p className='text-base  leading-4 text-gray-600'>
-                      +{renderTokenAmount(proposal.rateToken, marketplaceFee.toString())}
+                      +{renderTokenAmount(proposal.rateToken.address, platformFee.toString())}
                     </p>
                   </div>
                   <div className='flex justify-between items-center w-full'>
                     <p className='text-base leading-4 text-gray-800'>
-                      Platform fees{' '}
+                      Origin Marketplace fees{' '}
                       <span className='bg-gray-200 p-1 text-xs font-medium leading-3 text-gray-800'>
-                        1%
+                        {(Number(originPlatformFeeRate) / FEE_RATE_DIVIDER).toString()} %
                       </span>
                     </p>
                     <p className='text-base  leading-4 text-gray-600'>
-                      +{renderTokenAmount(proposal.rateToken, platformFee.toString())}
+                      +{renderTokenAmount(proposal.rateToken.address, originPlatformFee.toString())}
+                    </p>
+                  </div>
+                  <div className='flex justify-between items-center w-full'>
+                    <p className='text-base leading-4 text-gray-800'>
+                      Protocol fees{' '}
+                      <span className='bg-gray-200 p-1 text-xs font-medium leading-3 text-gray-800'>
+                        {(Number(protocolFeeRate) / FEE_RATE_DIVIDER).toString()} %
+                      </span>
+                    </p>
+                    <p className='text-base  leading-4 text-gray-600'>
+                      +{renderTokenAmount(proposal.rateToken.address, protocolFee.toString())}
                     </p>
                   </div>
                 </div>
                 <div className='flex justify-between items-center w-full'>
                   <p className='text-base font-semibold leading-4 text-gray-800'>Total</p>
                   <p className='text-base  font-semibold leading-4 text-gray-600'>
-                    {renderTokenAmount(proposal.rateToken, total.toString())}
+                    {renderTokenAmount(proposal.rateToken.address, totalAmount.toString())}
                   </p>
                 </div>
               </div>

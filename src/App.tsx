@@ -1,6 +1,4 @@
-import type { ConfigOptions } from '@web3modal/core';
-import { chains } from '@web3modal/ethereum';
-import { Web3Modal } from '@web3modal/react';
+import { EthereumClient, modalConnectors, walletConnectProvider } from '@web3modal/ethereum';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -18,41 +16,57 @@ import Service from './pages/Service';
 import Services from './pages/Services';
 import Talents from './pages/Talents';
 
-const config: ConfigOptions = {
-  projectId: `${import.meta.env.VITE_WALLECT_CONNECT_PROJECT_ID}`,
-  theme: 'dark',
-  accentColor: 'default',
-  ethereum: {
-    appName: 'TalentLayer indie',
-    chains: [chains.goerli],
-  },
-};
+import { Web3Modal } from '@web3modal/react';
+
+import { chain, configureChains, createClient, WagmiConfig } from 'wagmi';
+
+const chains = [chain.goerli];
+
+// Wagmi client
+const { provider } = configureChains(chains, [
+  walletConnectProvider({ projectId: `${import.meta.env.VITE_WALLECT_CONNECT_PROJECT_ID}` }),
+]);
+const wagmiClient = createClient({
+  autoConnect: true,
+  connectors: modalConnectors({ appName: 'web3Modal', chains }),
+  provider,
+});
+
+// Web3Modal Ethereum Client
+const ethereumClient = new EthereumClient(wagmiClient, chains);
 
 function App() {
   return (
     <>
       <ToastContainer position='bottom-right' />
-      <div className='antialiased'>
+      <WagmiConfig client={wagmiClient}>
         <BrowserRouter>
           <TalentLayerProvider>
-            <Web3Modal config={config} />
-            <Routes>
-              <Route path='/' element={<Layout />}>
-                <Route index element={<Home />} />
-                <Route path='/dashboard' element={<Dashboard />} />
-                <Route path='/services' element={<Services />} />
-                <Route path='/services/:id' element={<Service />} />
-                <Route path='/services/create' element={<CreateService />} />
-                <Route path='/services/:id/create-proposal' element={<CreateProposal />} />
-                <Route path='/talents' element={<Talents />} />
-                <Route path='/about' element={<About />} />
-                <Route path='/profile/:id' element={<Profile />} />
-                <Route path='/profile/edit' element={<EditProfile />} />
-              </Route>
-            </Routes>
+            <div className='antialiased'>
+              <Routes>
+                <Route path='/' element={<Layout />}>
+                  <Route index element={<Home />} />
+                  <Route path='/dashboard' element={<Dashboard />} />
+                  <Route path='/services' element={<Services />} />
+                  <Route path='/services/:id' element={<Service />} />
+                  <Route path='/services/create' element={<CreateService />} />
+                  <Route path='/services/:id/create-proposal' element={<CreateProposal />} />
+                  <Route path='/talents' element={<Talents />} />
+                  <Route path='/about' element={<About />} />
+                  <Route path='/profile/:id' element={<Profile />} />
+                  <Route path='/profile/edit' element={<EditProfile />} />
+                </Route>
+              </Routes>
+            </div>
           </TalentLayerProvider>
         </BrowserRouter>
-      </div>
+        <Web3Modal
+          projectId={`${import.meta.env.VITE_WALLECT_CONNECT_PROJECT_ID}`}
+          theme='dark'
+          accentColor='default'
+          ethereumClient={ethereumClient}
+        />
+      </WagmiConfig>
     </>
   );
 }

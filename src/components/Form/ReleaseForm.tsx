@@ -1,7 +1,7 @@
-import { useProvider, useSigner } from '@web3modal/react';
 import { BigNumber } from 'ethers';
 import { Field, Form, Formik } from 'formik';
 import { useEffect, useMemo, useState } from 'react';
+import { useProvider, useSigner } from 'wagmi';
 import { config } from '../../config';
 import { releasePayment } from '../../contracts/releasePayment';
 import { IService, ServiceStatusEnum } from '../../types';
@@ -26,16 +26,10 @@ function ReleaseForm({
   closeModal,
   isBuyer,
 }: IReleaseFormProps) {
-  const { data: signer, refetch: refetchSigner } = useSigner();
-  const { provider } = useProvider();
+  const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
+  const provider = useProvider({ chainId: import.meta.env.VITE_NETWORK_ID });
   const [pourcent, setPourcentage] = useState(0);
   const symbol = config.tokens[rateToken].symbol;
-
-  useEffect(() => {
-    (async () => {
-      await refetchSigner({ chainId: 5 });
-    })();
-  }, []);
 
   const handleSubmit = async (values: any) => {
     if (!signer || !provider) {
