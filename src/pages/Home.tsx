@@ -6,6 +6,8 @@ function Home() {
   return (
     <>
       <CreateId />
+      <SearchService />
+      <SearchTalent />
     </>
   );
 }
