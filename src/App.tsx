@@ -62,8 +62,6 @@ function App() {
         </BrowserRouter>
         <Web3Modal
           projectId={`${import.meta.env.VITE_WALLECT_CONNECT_PROJECT_ID}`}
-          theme='dark'
-          accentColor='default'
           ethereumClient={ethereumClient}
         />
       </WagmiConfig>
