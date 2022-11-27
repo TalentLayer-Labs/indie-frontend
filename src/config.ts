@@ -54,7 +54,7 @@ const goerli: Config = {
   },
 };
 
-const local = {
+const local: Config = {
   networkId: NetworkEnum.LOCAL,
   contracts: {
     talentLayerId: '0x2F9EBAc36cc020B81c4c624AbcfeC7DC8958Cf54',
@@ -68,11 +68,13 @@ const local = {
   },
   tokens: {
     [ethers.constants.AddressZero]: {
+      address: ethers.constants.AddressZero,
       symbol: 'ETH',
       name: 'ETH',
       decimals: 18,
     },
     '0x67EE2a1f75788794f516b8F9919496D63109A380': {
+      address: '0x67EE2a1f75788794f516b8F9919496D63109A380',
       symbol: 'ERC20',
       name: 'Simple ERC20',
       decimals: 18,
@@ -81,7 +83,7 @@ const local = {
 };
 
 const chains: { [networkId in NetworkEnum]: Config } = {
-  [NetworkEnum.LOCAL]: local as Config,
+  [NetworkEnum.LOCAL]: local,
   [NetworkEnum.GOERLI]: goerli,
 };
 
