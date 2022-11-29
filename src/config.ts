@@ -54,6 +54,34 @@ const goerli: Config = {
   },
 };
 
+const fuji: Config = {
+  networkId: NetworkEnum.FUJI,
+  contracts: {
+    talentLayerId: '0xD1B87CCe7f9FA272c6643Fa89085F135A2AbB234',
+    serviceRegistry: '0x9Af3080e73FB1054896e3799a786F0063965bA46',
+    talentLayerReview: '0xc9c87d5b85fd88d375000f9e3e26195690934F50',
+  },
+  escrowConfig: {
+    adminFee: '0',
+    adminWallet: '0x96573C632c88996711de69389b501F4D9005Ff4e',
+    timeoutPayment: 3600 * 24 * 7,
+  },
+  tokens: {
+    [ethers.constants.AddressZero]: {
+      address: ethers.constants.AddressZero,
+      symbol: 'AVAX',
+      name: 'AVAX',
+      decimals: 18,
+    },
+    '0xAF82969ECF299c1f1Bb5e1D12dDAcc9027431160': {
+      address: '0xAF82969ECF299c1f1Bb5e1D12dDAcc9027431160',
+      symbol: 'USDC',
+      name: 'USDC Stablecoin',
+      decimals: 6,
+    },
+  },
+};
+
 const local: Config = {
   networkId: NetworkEnum.LOCAL,
   contracts: {
@@ -85,6 +113,7 @@ const local: Config = {
 const chains: { [networkId in NetworkEnum]: Config } = {
   [NetworkEnum.LOCAL]: local,
   [NetworkEnum.GOERLI]: goerli,
+  [NetworkEnum.FUJI]: fuji,
 };
 
 export const config = chains[+import.meta.env.VITE_NETWORK_ID as NetworkEnum];
