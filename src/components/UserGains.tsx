@@ -9,7 +9,6 @@ interface IProps {
 
 function UserGains({ user }: IProps) {
   const userGains = useTotalGainByUser(user.id);
-  console.log('Hehhe', userGains);
   if (userGains.length === 0) {
     return null;
   }
