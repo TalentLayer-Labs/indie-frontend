@@ -11,8 +11,8 @@ const useTotalGainByUser = (id?: string | undefined): IUserGain[] => {
         try {
           const response = await getUserTotalGains(id);
 
-          if (response?.data?.data?.proposals) {
-            setUserGains(response.data.data.proposals);
+          if (response?.data?.data?.user?.totalGains) {
+            setUserGains(response.data.data.user.totalGains);
           }
         } catch (error: any) {
           // eslint-disable-next-line no-console
