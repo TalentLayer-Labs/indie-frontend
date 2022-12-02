@@ -50,3 +50,21 @@ export const getUserByAddress = (address: string): Promise<any> => {
     `;
   return processRequest(query);
 };
+
+export const getUserTotalGains = (id: string): Promise<any> => {
+  const query = `
+    {
+      user(id: "${id}") {
+        totalGains{
+          id
+          totalGain
+          token {
+            id
+            name
+          }
+        }
+      }
+    }
+    `;
+  return processRequest(query);
+};

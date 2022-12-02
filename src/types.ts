@@ -154,3 +154,10 @@ export type IPayment = {
   transactionHash: string;
   service: IService;
 };
+
+export type IUserGain = {
+  id: string;
+  user: IUser;
+  token: IToken;
+  totalGain: string;
+};
