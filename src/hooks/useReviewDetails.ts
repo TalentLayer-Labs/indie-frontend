@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { IReviewDetails } from '../types';
-import { isValidHttpsUrl } from '../utils';
 
 const useReviewDetails = (uri: string): IReviewDetails | null => {
   const [reviewDetails, setReviewDetails] = useState<IReviewDetails | null>(null);
@@ -8,11 +7,9 @@ const useReviewDetails = (uri: string): IReviewDetails | null => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        if (!isValidHttpsUrl(uri)) {
-          throw new Error('Uri not valid: ' + uri);
-        }
+        const fullReviewDetailsUri = `${import.meta.env.VITE_IPFS_BASE_URL}${uri}`;
 
-        const response = await fetch(uri);
+        const response = await fetch(fullReviewDetailsUri);
         const data: IReviewDetails = await response.json();
         if (data) {
           setReviewDetails(data);

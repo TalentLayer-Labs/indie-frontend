@@ -132,6 +132,7 @@ export enum PaymentTypeEnum {
 export enum NetworkEnum {
   LOCAL = 1337,
   GOERLI = 5,
+  FUJI = 43113,
 }
 
 export type IToken = {

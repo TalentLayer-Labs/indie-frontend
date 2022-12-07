@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { IServiceDetails } from '../types';
-import { isValidHttpsUrl } from '../utils';
 
 const useServiceDetails = (uri: string): IServiceDetails | null => {
   const [serviceDetails, setServiceDetails] = useState<IServiceDetails | null>(null);
@@ -8,11 +7,10 @@ const useServiceDetails = (uri: string): IServiceDetails | null => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        if (!isValidHttpsUrl(uri)) {
-          throw new Error('Uri not valid: ' + uri);
-        }
+        const fullSeviceDetailsUri = `${import.meta.env.VITE_IPFS_BASE_URL}${uri}`;
 
-        const response = await fetch(uri);
+        const response = await fetch(fullSeviceDetailsUri);
+
         const data: IServiceDetails = await response.json();
         if (data) {
           setServiceDetails(data);
