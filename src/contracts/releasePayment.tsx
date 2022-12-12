@@ -4,7 +4,8 @@ import { Provider } from '@wagmi/core';
 import { BigNumber, Contract, Signer } from 'ethers';
 import { toast } from 'react-toastify';
 import TransactionToast from '../components/TransactionToast';
-import TalentLayerMultipleArbitrableTransaction from './ABI/TalentLayerMultipleArbitrableTransaction.json';
+import TalentLayerEscrow from './ABI/TalentLayerEscrow.json';
+import { config } from '../config';
 
 export const releasePayment = async (
   signer: Signer,
@@ -12,17 +13,14 @@ export const releasePayment = async (
   transactionId: string,
   amount: BigNumber,
 ): Promise<void> => {
-  const talentLayerMultipleArbitrableTransaction = new Contract(
-    '0x64A705B5121F005431574d3F23159adc230B0041',
-    TalentLayerMultipleArbitrableTransaction.abi,
+  const talentLayerEscrow = new Contract(
+    config.contracts.talentLayerEscrow,
+    TalentLayerEscrow.abi,
     signer,
   );
 
   try {
-    const tx = await talentLayerMultipleArbitrableTransaction.release(
-      parseInt(transactionId, 10),
-      amount.toString(),
-    );
+    const tx = await talentLayerEscrow.release(parseInt(transactionId, 10), amount.toString());
 
     const receipt = await toast.promise(provider.waitForTransaction(tx.hash), {
       pending: {
