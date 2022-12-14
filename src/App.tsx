@@ -19,6 +19,8 @@ import Talents from './pages/Talents';
 import { Web3Modal } from '@web3modal/react';
 
 import { chain, configureChains, createClient, WagmiConfig } from 'wagmi';
+import Messaging from './pages/Messaging';
+import { XmtpContextProvider } from './context/XmtpContext';
 
 const chains = [chain.goerli];
 
@@ -42,22 +44,25 @@ function App() {
       <WagmiConfig client={wagmiClient}>
         <BrowserRouter>
           <TalentLayerProvider>
-            <div className='antialiased'>
-              <Routes>
-                <Route path='/' element={<Layout />}>
-                  <Route index element={<Home />} />
-                  <Route path='/dashboard' element={<Dashboard />} />
-                  <Route path='/services' element={<Services />} />
-                  <Route path='/services/:id' element={<Service />} />
-                  <Route path='/services/create' element={<CreateService />} />
-                  <Route path='/services/:id/create-proposal' element={<CreateProposal />} />
-                  <Route path='/talents' element={<Talents />} />
-                  <Route path='/about' element={<About />} />
-                  <Route path='/profile/:id' element={<Profile />} />
-                  <Route path='/profile/edit' element={<EditProfile />} />
-                </Route>
-              </Routes>
-            </div>
+            <XmtpContextProvider>
+              <div className='antialiased'>
+                <Routes>
+                  <Route path='/' element={<Layout />}>
+                    <Route index element={<Home />} />
+                    <Route path='/dashboard' element={<Dashboard />} />
+                    <Route path='/services' element={<Services />} />
+                    <Route path='/services/:id' element={<Service />} />
+                    <Route path='/services/create' element={<CreateService />} />
+                    <Route path='/services/:id/create-proposal' element={<CreateProposal />} />
+                    <Route path='/talents' element={<Talents />} />
+                    <Route path='/messaging' element={<Messaging />} />
+                    <Route path='/about' element={<About />} />
+                    <Route path='/profile/:id' element={<Profile />} />
+                    <Route path='/profile/edit' element={<EditProfile />} />
+                  </Route>
+                </Routes>
+              </div>
+            </XmtpContextProvider>
           </TalentLayerProvider>
         </BrowserRouter>
         <Web3Modal
