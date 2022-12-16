@@ -17,7 +17,7 @@ const ConversationCard = ({ setSelectedConversation, address }: IConversationCar
   return (
     <div
       onClick={() => setSelectedConversation(address)}
-      className={`flex justify-start py-4 px-2 justify-center items-center border-b-2 border-r-2 cursor-pointer `}>
+      className={`flex justify-start py-4 px-2 justify-center items-center border-b-2 cursor-pointer `}>
       <div className='w-1/4'>
         <img
           src={`/default-avatar-${Number(user?.id ? user.id : '1') % 11}.jpeg`}

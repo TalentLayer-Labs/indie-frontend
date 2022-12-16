@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import TalentLayerContext from '../context/talentLayer';
 import usePaymentsByService from '../hooks/usePaymentsByService';
 import useProposalsByService from '../hooks/useProposalsByService';
@@ -14,13 +14,18 @@ import ProposalItem from './ProposalItem';
 import ReviewItem from './ReviewItem';
 import ServiceStatus from './ServiceStatus';
 import Stars from './Stars';
+import { XmtpContext } from '../context/XmtpContext';
+import { useSigner } from 'wagmi';
 
 function ServiceDetail({ service }: { service: IService }) {
+  const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
   const { account, user } = useContext(TalentLayerContext);
+  const { providerState } = useContext(XmtpContext);
   const serviceDetail = useServiceDetails(service.uri);
   const { reviews } = useReviewsByService(service.id);
   const proposals = useProposalsByService(service.id);
   const payments = usePaymentsByService(service.id);
+  const navigate = useNavigate();
 
   if (!serviceDetail) {
     return null;
@@ -34,6 +39,15 @@ function ServiceDetail({ service }: { service: IService }) {
   const userProposal = proposals.find(proposal => {
     return proposal.seller.id === user?.id;
   });
+
+  const handleMessageUser = async () => {
+    console.log('handleMessageUser', providerState);
+    if (signer && providerState && providerState.initClient) {
+      console.log('handleMessageUser inside');
+      await providerState.initClient(signer);
+    }
+    navigate('/messaging');
+  };
 
   return (
     <>
@@ -94,11 +108,20 @@ function ServiceDetail({ service }: { service: IService }) {
 
           <div className='flex flex-row gap-4 items-center border-t border-gray-100 pt-4'>
             {!isBuyer && service.status == ServiceStatusEnum.Opened && (
-              <NavLink
-                className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg'
-                to={`/services/${service.id}/create-proposal`}>
-                Create proposal
-              </NavLink>
+              <>
+                <NavLink
+                  className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg'
+                  to={`/services/${service.id}/create-proposal`}>
+                  Create proposal
+                </NavLink>
+                <button
+                  className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg'
+                  onClick={() => {
+                    handleMessageUser();
+                  }}>
+                  Contact {service.buyer.handle}
+                </button>
+              </>
             )}
             {(isBuyer || isSeller) &&
               service.status === ServiceStatusEnum.Finished &&

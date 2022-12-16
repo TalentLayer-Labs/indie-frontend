@@ -10,6 +10,8 @@ import ConversationList from '../components/ConversationList';
 import CardHeader from '../components/CardHeader';
 import MessageList from '../components/MessageList';
 import useStreamConversations from '../hooks/useStreamConversations';
+import useSendMessage from '../hooks/useSendMessage';
+import MessageComposer from '../components/MessageComposer';
 
 //TODO: Finalize listeners
 //TODO: Finalize UX
@@ -18,11 +20,12 @@ import useStreamConversations from '../hooks/useStreamConversations';
 
 function Messaging() {
   const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
-  // @Romain: I didn't fully understand how I made the context work
   const { providerState } = useContext(XmtpContext);
   const { users } = useUsers();
   const [selectedConversation, setSelectedConversation] = useState<string>('');
+  const { sendMessage } = useSendMessage(selectedConversation);
   const [isNewMessage, setIsNewMessage] = useState(false);
+  const [messageContent, setMessageContent] = useState<string>('');
 
   // Listens to new conversations ? ==> Yes, & sets them in "xmtp context". Stream stops "onDestroy"
   useStreamConversations();
@@ -39,8 +42,13 @@ function Messaging() {
     }
   };
 
+  const sendNewMessage = () => {
+    sendMessage(messageContent);
+    setMessageContent('');
+  };
+
   return (
-    <div className='max-w-7xl mx-auto text-gray-900 sm:px-4 lg:px-0'>
+    <div className='mx-auto text-gray-900 sm:px-4 lg:px-0'>
       <p className='text-5xl font-medium tracking-wider mb-8'>
         Indie <span className='text-indigo-600'>Chat </span>
       </p>
@@ -58,20 +66,25 @@ function Messaging() {
         <>
           <CardHeader setIsNewMsg={setIsNewMessage} />
           <div className='flex flex-row'>
-            <div className='basis-1/4'>
+            <div className='basis-1/4 border-r-2'>
               <ConversationList
                 conversationMessages={providerState.conversationMessages}
                 setSelectedConversation={setSelectedConversation}
               />
             </div>
-            {providerState?.client && selectedConversation.length > 0 && (
-              <div className='basis-3/4'>
+            {providerState?.client && selectedConversation.length > 0 && !isNewMessage && (
+              <div className='basis-3/4 w-full px-5 flex flex-col justify-between'>
                 <MessageList
                   isNewMsg={isNewMessage}
                   conversationMessages={
                     providerState.conversationMessages.get(selectedConversation) ?? []
                   }
                   selectedConversationPeerAddress={selectedConversation}
+                />
+                <MessageComposer
+                  messageContent={messageContent}
+                  setMessageContent={setMessageContent}
+                  sendNewMessage={sendNewMessage}
                 />
               </div>
             )}

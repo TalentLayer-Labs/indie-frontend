@@ -1,11 +1,11 @@
 import { XmtpContext } from '../context/XmtpContext';
 import { useContext, useEffect, useState } from 'react';
 import { Conversation, DecodedMessage, Stream } from '@xmtp/xmtp-js';
-import { useSigner } from 'wagmi';
+import TalentLayerContext from '../context/talentLayer';
 
 const useStreamMessages = (peerAddress: string) => {
-  const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
-  // const walletAddress = signer?.getAddress();
+  const { account } = useContext(TalentLayerContext);
+  const walletAddress = account?.address;
   const { providerState, setProviderState } = useContext(XmtpContext);
   const [stream, setStream] = useState<Stream<DecodedMessage>>();
   const [conversation, setConversation] = useState<Conversation>();
@@ -51,11 +51,7 @@ const useStreamMessages = (peerAddress: string) => {
       };
       closeStream();
     };
-    // eslint-disable-next-line
-  }, [providerState?.conversationMessages,
-    // walletAddress,
-    conversation,
-  ]);
+  }, [providerState?.conversationMessages, walletAddress, conversation]);
 };
 
 export default useStreamMessages;

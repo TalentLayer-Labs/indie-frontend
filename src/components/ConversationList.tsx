@@ -23,7 +23,6 @@ const ConversationList = ({
   return (
     <>
       {Array.from(sortedConversations.keys()).map(address => {
-        console.log('Conversation for address', sortedConversations.get(address));
         // if (sortedConversations.get(address).length > 0) {
         return (
           // <MessageCard peerAddress={address} />
