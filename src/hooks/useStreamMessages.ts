@@ -24,16 +24,19 @@ const useStreamMessages = (peerAddress: string) => {
     if (!conversation) return;
 
     const streamMessages = async () => {
-      const newStream = await conversation.streamMessages();
-      setStream(newStream);
-      for await (const msg of newStream) {
+      const newMessageStream = await conversation.streamMessages();
+      setStream(newMessageStream);
+      for await (const msg of newMessageStream) {
         if (providerState && setProviderState) {
           const newMessages =
             providerState.conversationMessages.get(conversation.peerAddress) ?? [];
           newMessages.push(msg);
+          console.log('newMessages', newMessages);
+          //TODO not sure this is useful
           const uniqueMessages = [
             ...Array.from(new Map(newMessages.map(item => [item['id'], item])).values()),
           ];
+          console.log('uniqueMessages', uniqueMessages);
           providerState.conversationMessages.set(conversation.peerAddress, uniqueMessages);
           setProviderState({
             ...providerState,

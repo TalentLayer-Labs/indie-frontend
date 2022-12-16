@@ -1,3 +1,5 @@
+import { DecodedMessage } from '@xmtp/xmtp-js';
+
 export const shortAddress = (addr: string) =>
   addr.length > 10 && addr.startsWith('0x')
     ? `${addr.substring(0, 6)}...${addr.substring(addr.length - 4)}`
@@ -13,5 +15,6 @@ export const truncate = (str: string, length: number) => {
   return str;
 };
 
-export const getLatestMessage = (messages: any) =>
-  messages?.length ? messages[messages.length - 1] : null;
+export const getLatestMessage = (
+  messages: DecodedMessage[] | undefined,
+): DecodedMessage | undefined => (messages?.length ? messages[messages.length - 1] : undefined);
