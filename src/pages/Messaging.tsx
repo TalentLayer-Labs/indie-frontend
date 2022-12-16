@@ -64,7 +64,7 @@ function Messaging() {
       {providerState?.client && (
         // <div className='border-2 rounded-md'>
         <>
-          <CardHeader setIsNewMsg={setIsNewMessage} />
+          <CardHeader setIsNewMsg={setIsNewMessage} peerAddress={selectedConversationPeerAddress} />
           <div className='flex flex-row'>
             <div className='basis-1/4 border-r-2'>
               <ConversationList
