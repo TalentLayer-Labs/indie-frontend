@@ -13,7 +13,6 @@ import useStreamConversations from '../hooks/useStreamConversations';
 import useSendMessage from '../hooks/useSendMessage';
 import MessageComposer from '../components/MessageComposer';
 
-//TODO: Finalize listeners
 //TODO: Finalize UX
 //TODO: Integrate "New message" + update when new conversation created
 //TODO: Register user to XMTP when profile being created
@@ -22,8 +21,9 @@ function Messaging() {
   const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
   const { providerState } = useContext(XmtpContext);
   const { users } = useUsers();
-  const [selectedConversation, setSelectedConversation] = useState<string>('');
-  const { sendMessage } = useSendMessage(selectedConversation);
+  const [selectedConversationPeerAddress, setSelectedConversationPeerAddress] =
+    useState<string>('');
+  const { sendMessage } = useSendMessage(selectedConversationPeerAddress);
   const [isNewMessage, setIsNewMessage] = useState(false);
   const [messageContent, setMessageContent] = useState<string>('');
 
@@ -69,17 +69,17 @@ function Messaging() {
             <div className='basis-1/4 border-r-2'>
               <ConversationList
                 conversationMessages={providerState.conversationMessages}
-                setSelectedConversation={setSelectedConversation}
+                setSelectedConversationPeerAddress={setSelectedConversationPeerAddress}
               />
             </div>
-            {providerState?.client && selectedConversation.length > 0 && !isNewMessage && (
+            {providerState?.client && selectedConversationPeerAddress.length > 0 && !isNewMessage && (
               <div className='basis-3/4 w-full px-5 flex flex-col justify-between'>
                 <MessageList
                   isNewMsg={isNewMessage}
                   conversationMessages={
-                    providerState.conversationMessages.get(selectedConversation) ?? []
+                    providerState.conversationMessages.get(selectedConversationPeerAddress) ?? []
                   }
-                  selectedConversationPeerAddress={selectedConversation}
+                  selectedConversationPeerAddress={selectedConversationPeerAddress}
                 />
                 <MessageComposer
                   messageContent={messageContent}
