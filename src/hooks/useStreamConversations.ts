@@ -39,7 +39,6 @@ const useStreamConversations = () => {
       };
       closeStream();
     };
-    // eslint-disable-next-line
   }, [providerState?.conversations]);
 };
 

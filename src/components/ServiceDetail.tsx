@@ -18,15 +18,24 @@ import ServiceStatus from './ServiceStatus';
 import Stars from './Stars';
 import PushContext from '../messaging/push/context/pushUser';
 import { ethers } from 'ethers';
+import { XmtpContext } from '../context/XmtpContext';
+import { useSigner } from 'wagmi';
 
 function ServiceDetail({ service }: { service: IService }) {
+  const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
   const { account, user } = useContext(TalentLayerContext);
+  const { providerState } = useContext(XmtpContext);
   const { initPush } = useContext(PushContext);
   const serviceDetail = useServiceDetails(service.uri);
   const { reviews } = useReviewsByService(service.id);
   const proposals = useProposalsByService(service.id);
   const payments = usePaymentsByService(service.id);
   const navigate = useNavigate();
+  const navigate = useNavigate();
+
+  if (!serviceDetail) {
+    return null;
+  }
 
   const isBuyer = user?.id === service.buyer.id;
   const isSeller = user?.id === service.seller?.id;
@@ -48,6 +57,15 @@ function ServiceDetail({ service }: { service: IService }) {
         )}`,
       );
     }
+  };
+
+  const handleMessageUser = async () => {
+    console.log('handleMessageUser', providerState);
+    if (signer && providerState && providerState.initClient) {
+      console.log('handleMessageUser inside');
+      await providerState.initClient(signer);
+    }
+    navigate('/messaging');
   };
 
   return (

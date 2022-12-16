@@ -16,7 +16,7 @@ const MessageList = ({
   useStreamMessages(selectedConversationPeerAddress);
 
   return (
-    <div className='w-full px-5 flex flex-col justify-between'>
+    <div className=''>
       <div className='flex flex-col mt-5'>
         {!isNewMsg &&
           conversationMessages.map(msg => {
