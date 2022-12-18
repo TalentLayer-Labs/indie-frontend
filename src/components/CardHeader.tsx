@@ -1,8 +1,7 @@
 interface ICardHeaderProps {
-  setIsNewMsg: React.Dispatch<React.SetStateAction<boolean>>;
   peerAddress: string;
 }
-const CardHeader = ({ setIsNewMsg, peerAddress }: ICardHeaderProps) => {
+const CardHeader = ({ peerAddress }: ICardHeaderProps) => {
   return (
     <div className='flex flex-row'>
       <div className='basis-1/4 flex justify-start py-4 px-2 justify-center items-center border-b-2 border-t-2 border-r-2 cursor-pointer'>
