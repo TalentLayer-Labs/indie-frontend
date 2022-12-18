@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
 import { Check, X } from 'heroicons-react';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { validateProposal } from '../../contracts/acceptProposal';
 import { renderTokenAmount } from '../../utils/conversion';
 import { IAccount, IProposal } from '../../types';
@@ -8,10 +8,13 @@ import Step from '../Step';
 import useFees from '../../hooks/useFees';
 import { FEE_RATE_DIVIDER } from '../../config';
 import { useBalance, useProvider, useSigner } from 'wagmi';
+import { XmtpContext } from '../../context/XmtpContext';
+import { useNavigate } from 'react-router-dom';
 
 function ValidateProposalModal({ proposal, account }: { proposal: IProposal; account: IAccount }) {
   const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
   const provider = useProvider({ chainId: import.meta.env.VITE_NETWORK_ID });
+  const { providerState } = useContext(XmtpContext);
   const [show, setShow] = useState(false);
   const { data: ethBalance } = useBalance({ address: account.address });
   const isProposalUseEth: boolean = proposal.rateToken.address === ethers.constants.AddressZero;
@@ -20,6 +23,7 @@ function ValidateProposalModal({ proposal, account }: { proposal: IProposal; acc
     enabled: !isProposalUseEth,
     token: proposal.rateToken.address,
   });
+  const navigate = useNavigate();
 
   const { protocolFeeRate, originPlatformFeeRate, platformFeeRate } = useFees();
 
@@ -54,8 +58,22 @@ function ValidateProposalModal({ proposal, account }: { proposal: IProposal; acc
     }
   };
 
+  const handleMessageUser = async () => {
+    if (signer && providerState && providerState.initClient) {
+      await providerState.initClient(signer);
+    }
+    navigate(`/messaging/${ethers.utils.getAddress(proposal.seller?.address)}`);
+  };
+
   return (
     <>
+      <button
+        className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg'
+        onClick={() => {
+          handleMessageUser();
+        }}>
+        Contact {proposal.seller.handle}
+      </button>
       <button
         onClick={() => setShow(true)}
         className='block text-green-600 bg-green-50 hover:bg-green-500 hover:text-white rounded-lg px-5 py-2.5 text-center'

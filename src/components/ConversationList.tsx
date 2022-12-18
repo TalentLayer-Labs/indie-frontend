@@ -5,13 +5,13 @@ import { DecodedMessage } from '@xmtp/xmtp-js';
 
 interface IConversationListProps {
   conversationMessages: Map<string, DecodedMessage[]>;
-  setSelectedConversationPeerAddress: React.Dispatch<React.SetStateAction<string>>;
+  // setSelectedConversationPeerAddress: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const ConversationList = ({
   conversationMessages,
-  setSelectedConversationPeerAddress,
-}: IConversationListProps) => {
+}: // setSelectedConversationPeerAddress,
+IConversationListProps) => {
   const sortedConversations: Map<string, DecodedMessage[]> | undefined = new Map(
     [...conversationMessages.entries()].sort((convA, convB) => {
       return getLatestMessage(convA[1])?.sent < getLatestMessage(convB[1])?.sent ? 1 : -1;
@@ -28,7 +28,7 @@ const ConversationList = ({
           // <MessageCard peerAddress={address} />
           <ConversationCard
             key={address}
-            setSelectedConversationPeerAddress={setSelectedConversationPeerAddress}
+            // setSelectedConversationPeerAddress={setSelectedConversationPeerAddress}
             address={address}
             latestMessage={getLatestMessage(sortedConversations.get(address))}
           />

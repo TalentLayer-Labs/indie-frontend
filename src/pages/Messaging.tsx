@@ -12,6 +12,7 @@ import MessageList from '../components/MessageList';
 import useStreamConversations from '../hooks/useStreamConversations';
 import useSendMessage from '../hooks/useSendMessage';
 import MessageComposer from '../components/MessageComposer';
+import { useNavigate, useParams } from 'react-router-dom';
 
 //TODO: Finalize UX
 //TODO: Integrate "New message" + update when new conversation created
@@ -20,12 +21,14 @@ import MessageComposer from '../components/MessageComposer';
 function Messaging() {
   const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
   const { providerState } = useContext(XmtpContext);
-  const { users } = useUsers();
-  const [selectedConversationPeerAddress, setSelectedConversationPeerAddress] =
-    useState<string>('');
-  const { sendMessage } = useSendMessage(selectedConversationPeerAddress);
-  const [isNewMessage, setIsNewMessage] = useState(false);
+  // const [selectedConversationPeerAddress, setSelectedConversationPeerAddress] =
+  //   useState<string>('');
   const [messageContent, setMessageContent] = useState<string>('');
+  const { address: selectedConversationPeerAddress = '' } = useParams();
+  const { sendMessage } = useSendMessage(
+    selectedConversationPeerAddress ? selectedConversationPeerAddress : '',
+    // user?.id ? user.id : '',
+  );
 
   // Listens to new conversations ? ==> Yes, & sets them in "xmtp context". Stream stops "onDestroy"
   useStreamConversations();
@@ -34,8 +37,8 @@ function Messaging() {
 
   const handleXmtpConnect = async () => {
     if (providerState && providerState.initClient && signer) {
-      console.log('providerState.conversationMessages', providerState.conversationMessages);
-      console.log('providerState.conversations', providerState.conversations);
+      // console.log('providerState.conversationMessages', providerState.conversationMessages);
+      // console.log('providerState.conversations', providerState.conversations);
       //Conversations ===> Data sur les convers
       //conversationMessages ===> Messages Map address / Array Objets(messages)
       await providerState.initClient(signer);
@@ -64,18 +67,17 @@ function Messaging() {
       {providerState?.client && (
         // <div className='border-2 rounded-md'>
         <>
-          <CardHeader setIsNewMsg={setIsNewMessage} peerAddress={selectedConversationPeerAddress} />
+          <CardHeader peerAddress={selectedConversationPeerAddress} />
           <div className='flex flex-row'>
             <div className='basis-1/4 border-r-2'>
               <ConversationList
                 conversationMessages={providerState.conversationMessages}
-                setSelectedConversationPeerAddress={setSelectedConversationPeerAddress}
+                // setSelectedConversationPeerAddress={setSelectedConversationPeerAddress}
               />
             </div>
-            {providerState?.client && selectedConversationPeerAddress.length > 0 && !isNewMessage && (
+            {providerState?.client && selectedConversationPeerAddress && (
               <div className='basis-3/4 w-full px-5 flex flex-col justify-between'>
                 <MessageList
-                  isNewMsg={isNewMessage}
                   conversationMessages={
                     providerState.conversationMessages.get(selectedConversationPeerAddress) ?? []
                   }

@@ -56,6 +56,7 @@ function App() {
                     <Route path='/services/:id/create-proposal' element={<CreateProposal />} />
                     <Route path='/talents' element={<Talents />} />
                     <Route path='/messaging' element={<Messaging />} />
+                    <Route path='/messaging/:address' element={<Messaging />} />
                     <Route path='/about' element={<About />} />
                     <Route path='/profile/:id' element={<Profile />} />
                     <Route path='/profile/edit' element={<EditProfile />} />

@@ -1,15 +1,14 @@
 import useStreamMessages from '../hooks/useStreamMessages';
 import MessageCard from './MessageCard';
 import { DecodedMessage } from '@xmtp/xmtp-js';
+import useUserByAddress from '../hooks/useUserByAddress';
 
 interface IMessageListProps {
-  isNewMsg: boolean;
   conversationMessages: DecodedMessage[];
   selectedConversationPeerAddress: string;
 }
 
 const MessageList = ({
-  isNewMsg,
   conversationMessages,
   selectedConversationPeerAddress,
 }: IMessageListProps) => {
@@ -18,10 +17,9 @@ const MessageList = ({
   return (
     <div className=''>
       <div className='flex flex-col mt-5'>
-        {!isNewMsg &&
-          conversationMessages.map(msg => {
-            return <MessageCard key={msg.id} message={msg} />;
-          })}
+        {conversationMessages.map(msg => {
+          return <MessageCard key={msg.id} message={msg} />;
+        })}
       </div>
     </div>
   );

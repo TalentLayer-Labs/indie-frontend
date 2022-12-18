@@ -16,6 +16,7 @@ import ServiceStatus from './ServiceStatus';
 import Stars from './Stars';
 import { XmtpContext } from '../context/XmtpContext';
 import { useSigner } from 'wagmi';
+import { ethers } from 'ethers';
 
 function ServiceDetail({ service }: { service: IService }) {
   const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
@@ -46,7 +47,8 @@ function ServiceDetail({ service }: { service: IService }) {
       console.log('handleMessageUser inside');
       await providerState.initClient(signer);
     }
-    navigate('/messaging');
+    console.log('service.seller', service.buyer);
+    navigate(`/messaging/${ethers.utils.getAddress(service.buyer?.address)}`);
   };
 
   return (
