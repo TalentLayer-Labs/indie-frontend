@@ -1,11 +1,8 @@
-import useUsers from '../hooks/useUsers';
-import MessageCard from '../components/MessageCard';
-import ConversationCard from '../components/ConversationCard';
 import { useContext, useState } from 'react';
 import { XmtpContext } from '../context/XmtpContext';
-import SubmitButton from '../components/Form/SubmitButton';
 import TalentLayerContext from '../context/talentLayer';
 import { useSigner } from 'wagmi';
+import { watchAccount } from '@wagmi/core';
 import ConversationList from '../components/ConversationList';
 import CardHeader from '../components/CardHeader';
 import MessageList from '../components/MessageList';
@@ -13,22 +10,31 @@ import useStreamConversations from '../hooks/useStreamConversations';
 import useSendMessage from '../hooks/useSendMessage';
 import MessageComposer from '../components/MessageComposer';
 import { useNavigate, useParams } from 'react-router-dom';
+import useUserByAddress from '../hooks/useUserByAddress';
 
 //TODO: Finalize UX
 //TODO: Integrate "New message" + update when new conversation created
 //TODO: Register user to XMTP when profile being created
 
 function Messaging() {
+  const { user } = useContext(TalentLayerContext);
   const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
   const { providerState } = useContext(XmtpContext);
-  // const [selectedConversationPeerAddress, setSelectedConversationPeerAddress] =
-  //   useState<string>('');
   const [messageContent, setMessageContent] = useState<string>('');
   const { address: selectedConversationPeerAddress = '' } = useParams();
+  const navigate = useNavigate();
+  // Apparently the context handles this as a sigher change, and disconnects the user
+  // if (selectedConversationPeerAddress === user?.address) navigate('/messaging');
   const { sendMessage } = useSendMessage(
     selectedConversationPeerAddress ? selectedConversationPeerAddress : '',
-    // user?.id ? user.id : '',
+    user?.id,
   );
+  const peerUser = useUserByAddress(selectedConversationPeerAddress);
+
+  watchAccount(() => {
+    providerState?.disconnect?.();
+    navigate(`/messaging`);
+  });
 
   // Listens to new conversations ? ==> Yes, & sets them in "xmtp context". Stream stops "onDestroy"
   useStreamConversations();
@@ -37,10 +43,6 @@ function Messaging() {
 
   const handleXmtpConnect = async () => {
     if (providerState && providerState.initClient && signer) {
-      // console.log('providerState.conversationMessages', providerState.conversationMessages);
-      // console.log('providerState.conversations', providerState.conversations);
-      //Conversations ===> Data sur les convers
-      //conversationMessages ===> Messages Map address / Array Objets(messages)
       await providerState.initClient(signer);
     }
   };
@@ -64,7 +66,7 @@ function Messaging() {
           Connect to XMTP
         </button>
       )}
-      {providerState?.client && (
+      {providerState?.client && !providerState?.loadingConversations && (
         // <div className='border-2 rounded-md'>
         <>
           <CardHeader peerAddress={selectedConversationPeerAddress} />
@@ -72,16 +74,20 @@ function Messaging() {
             <div className='basis-1/4 border-r-2'>
               <ConversationList
                 conversationMessages={providerState.conversationMessages}
+                selectedConversationPeerAddress={selectedConversationPeerAddress}
+                peerAddress={peerUser?.address ? peerUser.address : ''}
                 // setSelectedConversationPeerAddress={setSelectedConversationPeerAddress}
               />
             </div>
-            {providerState?.client && selectedConversationPeerAddress && (
+            {providerState?.client && selectedConversationPeerAddress && user?.id && peerUser?.id && (
               <div className='basis-3/4 w-full px-5 flex flex-col justify-between'>
                 <MessageList
                   conversationMessages={
                     providerState.conversationMessages.get(selectedConversationPeerAddress) ?? []
                   }
                   selectedConversationPeerAddress={selectedConversationPeerAddress}
+                  userId={user?.id}
+                  peerUserId={peerUser?.id}
                 />
                 <MessageComposer
                   messageContent={messageContent}

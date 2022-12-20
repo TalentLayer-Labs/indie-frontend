@@ -22,7 +22,7 @@ const MessageCard = ({ message }: IMessageCardProps) => {
   return (
     <>
       {peerUser && (
-        <div className={`flex ${isSender ? 'justify-start' : 'justify-end'} mb-4`}>
+        <div className={`flex ${isSender ? 'justify-end' : 'justify-start'} mb-4`}>
           {isSender && user && (
             <img
               src={`/default-avatar-${Number(user?.id ? user.id : '1') % 11}.jpeg`}
@@ -33,8 +33,8 @@ const MessageCard = ({ message }: IMessageCardProps) => {
           <div
             className={`py-3 px-4 ${
               isSender
-                ? 'ml-2 bg-gray-400 rounded-br-3xl rounded-tr-3xl rounded-tl-xl'
-                : 'mr-2 bg-indigo-500 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl'
+                ? 'ml-2 bg-indigo-500 rounded-br-3xl rounded-tr-3xl rounded-tl-xl'
+                : 'mr-2 bg-gray-400 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl'
             } text-white`}>
             <div>
               <b>{peerUser.handle}</b>
