@@ -2,6 +2,7 @@ import React, { useState, createContext, useEffect, useContext, ReactNode, useMe
 import { Client, Conversation, DecodedMessage } from '@xmtp/xmtp-js';
 import { Signer } from 'ethers';
 import { useAccount, useSigner } from 'wagmi';
+import { CONVERSATION_PREFIX } from '../utils/messaging';
 
 interface IProviderProps {
   client: Client | undefined;
@@ -9,6 +10,7 @@ interface IProviderProps {
   loadingConversations: boolean;
   conversations: Map<string, Conversation>;
   conversationMessages: Map<string, DecodedMessage[]>;
+  disconnect: (() => void) | undefined;
 }
 
 export const XmtpContext = createContext<{
@@ -28,9 +30,20 @@ export const XmtpContextProvider = ({ children }: { children: ReactNode }) => {
     loadingConversations: false,
     conversations: new Map<string, Conversation>(),
     conversationMessages: new Map<string, DecodedMessage[]>(),
+    disconnect: undefined,
   });
 
+  const disconnect = (): void => {
+    setProviderState({
+      ...providerState,
+      client: undefined,
+      conversations: new Map(),
+      conversationMessages: new Map(),
+    });
+  };
+
   const initClient = async (wallet: Signer) => {
+    console.log('initClient w signer: ', wallet);
     if (wallet && !providerState.client && signer) {
       try {
         const keys = await Client.getKeys(signer, { env: 'dev' });
@@ -41,6 +54,7 @@ export const XmtpContextProvider = ({ children }: { children: ReactNode }) => {
         setProviderState({
           ...providerState,
           client,
+          disconnect,
         });
       } catch (e) {
         console.error(e);
@@ -52,17 +66,9 @@ export const XmtpContextProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const disconnect = () => {
-    setProviderState({
-      ...providerState,
-      client: undefined,
-      conversations: new Map(),
-      conversationMessages: new Map(),
-    });
-  };
-
   useEffect(() => {
-    // console.log('initClient');
+    console.log('xmtp on signer change');
+    //Not disconnecting, did it manually in Messenging.tsx with Wagmi
     signer ? setProviderState({ ...providerState, initClient }) : disconnect();
     // console.log(providerState);
     // eslint-disable-next-line
@@ -72,19 +78,29 @@ export const XmtpContextProvider = ({ children }: { children: ReactNode }) => {
     if (!providerState.client) return;
 
     const listConversations = async () => {
+      console.log('listConversations triggered by providerState.client: ', providerState.client);
       setProviderState({ ...providerState, loadingConversations: true });
       const { client, conversationMessages, conversations } = providerState;
       if (client) {
-        const convos = (await client.conversations.list()).filter(
-          conversation => !conversation.context?.conversationId,
+        // (await client.conversations.list()).forEach(conv =>
+        //   console.log(conv.context?.conversationId),
+        // );
+        const conv = (await client.conversations.list()).filter(conversation =>
+          conversation.context?.conversationId.startsWith(CONVERSATION_PREFIX),
         );
+        console.log('TLV2 conv', conv);
         Promise.all(
-          convos.map(async conversation => {
+          conv.map(async conversation => {
             if (conversation.peerAddress !== walletAddress) {
               // Returns a list of all messages to/from the peerAddress
               const messages = await conversation.messages();
-              conversationMessages.set(conversation.peerAddress, messages);
-              conversations.set(conversation.peerAddress, conversation);
+              //Temp fix for conversation duplicates
+              if (messages.length > 0) {
+                console.log('xmpt context - conversation', conversation);
+                console.log('xmpt context - messages', messages);
+                conversationMessages.set(conversation.peerAddress, messages);
+                conversations.set(conversation.peerAddress, conversation);
+              }
               setProviderState({
                 ...providerState,
                 conversationMessages,
@@ -98,7 +114,6 @@ export const XmtpContextProvider = ({ children }: { children: ReactNode }) => {
       }
     };
     listConversations();
-    // eslint-disable-next-line
   }, [providerState.client]);
 
   const value = useMemo(() => {

@@ -1,18 +1,21 @@
 import useStreamMessages from '../hooks/useStreamMessages';
 import MessageCard from './MessageCard';
 import { DecodedMessage } from '@xmtp/xmtp-js';
-import useUserByAddress from '../hooks/useUserByAddress';
 
 interface IMessageListProps {
   conversationMessages: DecodedMessage[];
   selectedConversationPeerAddress: string;
+  peerUserId: string;
+  userId: string;
 }
 
 const MessageList = ({
   conversationMessages,
   selectedConversationPeerAddress,
+  peerUserId,
+  userId,
 }: IMessageListProps) => {
-  useStreamMessages(selectedConversationPeerAddress);
+  useStreamMessages(selectedConversationPeerAddress, userId, peerUserId);
 
   return (
     <div className=''>
