@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 import TransactionToast from '../components/TransactionToast';
 import { config } from '../config';
 import ERC20 from './ABI/ERC20.json';
-import TalentLayerMultipleArbitrableTransaction from './ABI/TalentLayerMultipleArbitrableTransaction.json';
+import TalentLayerMultipleArbitrableTransaction from './ABI/TalentLayerEscrow.json';
 
 export const validateProposal = async (
   signer: Signer,

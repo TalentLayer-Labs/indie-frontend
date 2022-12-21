@@ -2,7 +2,7 @@ import { ethers } from 'ethers';
 import { useEffect, useState } from 'react';
 import { useSigner } from 'wagmi';
 import { config } from '../config';
-import TalentLayerMultipleArbitrableTransaction from '../contracts/ABI/TalentLayerMultipleArbitrableTransaction.json';
+import TalentLayerMultipleArbitrableTransaction from '../contracts/ABI/TalentLayerEscrow.json';
 import TalentLayerPlatformID from '../contracts/ABI/TalentLayerPlatformID.json';
 import { IFees } from '../types';
 

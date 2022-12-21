@@ -4,7 +4,7 @@ import { Provider } from '@wagmi/core';
 import { BigNumber, Contract, Signer } from 'ethers';
 import { toast } from 'react-toastify';
 import TransactionToast from '../components/TransactionToast';
-import TalentLayerMultipleArbitrableTransaction from './ABI/TalentLayerMultipleArbitrableTransaction.json';
+import TalentLayerMultipleArbitrableTransaction from './ABI/TalentLayerEscrow.json';
 
 export const releasePayment = async (
   signer: Signer,
