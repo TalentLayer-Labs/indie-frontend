@@ -25,7 +25,6 @@ export const validateProposal = async (
   try {
     if (rateToken === ethers.constants.AddressZero) {
       const tx1 = await talentLayerEscrow.createETHTransaction(
-        config.escrowConfig.timeoutPayment,
         'meta_evidence',
         parseInt(serviceId, 10),
         parseInt(proposalId, 10),
@@ -87,7 +86,6 @@ export const validateProposal = async (
       }
 
       const tx2 = await talentLayerEscrow.createTokenTransaction(
-        config.escrowConfig.timeoutPayment,
         'meta_evidence',
         parseInt(serviceId, 10),
         parseInt(proposalId, 10),
