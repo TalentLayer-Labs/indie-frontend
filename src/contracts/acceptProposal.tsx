@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 import TransactionToast from '../components/TransactionToast';
 import { config } from '../config';
 import ERC20 from './ABI/ERC20.json';
-import TalentLayerMultipleArbitrableTransaction from './ABI/TalentLayerEscrow.json';
+import TalentLayerEscrow from './ABI/TalentLayerEscrow.json';
 
 export const validateProposal = async (
   signer: Signer,
@@ -16,15 +16,15 @@ export const validateProposal = async (
   rateToken: string,
   value: ethers.BigNumber,
 ): Promise<void> => {
-  const talentLayerMultipleArbitrableTransaction = new Contract(
+  const talentLayerEscrow = new Contract(
     config.contracts.talentLayerEscrow,
-    TalentLayerMultipleArbitrableTransaction.abi,
+    TalentLayerEscrow.abi,
     signer,
   );
 
   try {
     if (rateToken === ethers.constants.AddressZero) {
-      const tx1 = await talentLayerMultipleArbitrableTransaction.createETHTransaction(
+      const tx1 = await talentLayerEscrow.createETHTransaction(
         config.escrowConfig.timeoutPayment,
         'meta_evidence',
         parseInt(serviceId, 10),
@@ -86,7 +86,7 @@ export const validateProposal = async (
         }
       }
 
-      const tx2 = await talentLayerMultipleArbitrableTransaction.createTokenTransaction(
+      const tx2 = await talentLayerEscrow.createTokenTransaction(
         config.escrowConfig.timeoutPayment,
         'meta_evidence',
         parseInt(serviceId, 10),
