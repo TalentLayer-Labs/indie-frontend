@@ -1,10 +1,10 @@
 import { XmtpContext } from '../context/XmtpContext';
 import { useContext, useEffect, useState } from 'react';
 import { Conversation, DecodedMessage, Stream } from '@xmtp/xmtp-js';
-import TalentLayerContext from '../context/talentLayer';
+import TalentLayerContext from '../../context/talentLayer';
 import { buildConversationId } from '../utils/messaging';
 import { InvitationContext } from '@xmtp/xmtp-js/dist/types/src/Invitation';
-import useUserByAddress from './useUserByAddress';
+import useUserByAddress from '../../hooks/useUserByAddress';
 
 const useStreamMessages = (peerAddress: string, userId: string, peerUserId: string) => {
   const { account, user } = useContext(TalentLayerContext);

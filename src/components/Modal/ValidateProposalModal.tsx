@@ -8,7 +8,7 @@ import Step from '../Step';
 import useFees from '../../hooks/useFees';
 import { FEE_RATE_DIVIDER } from '../../config';
 import { useBalance, useProvider, useSigner } from 'wagmi';
-import { XmtpContext } from '../../context/XmtpContext';
+import { XmtpContext } from '../../messaging/context/XmtpContext';
 import { useNavigate } from 'react-router-dom';
 
 function ValidateProposalModal({ proposal, account }: { proposal: IProposal; account: IAccount }) {
