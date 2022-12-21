@@ -19,6 +19,7 @@ import Stars from './Stars';
 import PushContext from '../messaging/push/context/pushUser';
 import { ethers } from 'ethers';
 import { XmtpContext } from '../context/XmtpContext';
+import { XmtpContext } from '../messaging/context/XmtpContext';
 import { useSigner } from 'wagmi';
 import { ethers } from 'ethers';
 

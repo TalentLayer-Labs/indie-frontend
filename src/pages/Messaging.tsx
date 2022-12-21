@@ -1,20 +1,20 @@
 import { useContext, useState } from 'react';
-import { XmtpContext } from '../context/XmtpContext';
+import { XmtpContext } from '../messaging/context/XmtpContext';
 import TalentLayerContext from '../context/talentLayer';
 import { useSigner } from 'wagmi';
 import { watchAccount } from '@wagmi/core';
-import ConversationList from '../components/ConversationList';
-import CardHeader from '../components/CardHeader';
-import MessageList from '../components/MessageList';
-import useStreamConversations from '../hooks/useStreamConversations';
-import useSendMessage from '../hooks/useSendMessage';
-import MessageComposer from '../components/MessageComposer';
+import ConversationList from '../messaging/components/ConversationList';
+import CardHeader from '../messaging/components/CardHeader';
+import MessageList from '../messaging/components/MessageList';
+import useStreamConversations from '../messaging/hooks/useStreamConversations';
+import useSendMessage from '../messaging/hooks/useSendMessage';
+import MessageComposer from '../messaging/components/MessageComposer';
 import { useNavigate, useParams } from 'react-router-dom';
 import useUserByAddress from '../hooks/useUserByAddress';
 
 //TODO: Finalize UX
 //TODO: Integrate "New message" + update when new conversation created
-//TODO: Register user to XMTP when profile being created
+//TODO: Register user to XMTP when profile being created ? When proposal + job being created + button if want before?
 
 function Messaging() {
   const { user } = useContext(TalentLayerContext);

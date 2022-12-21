@@ -1,10 +1,10 @@
 import { XmtpContext } from '../context/XmtpContext';
 import { useContext } from 'react';
 import { InvitationContext } from '@xmtp/xmtp-js/dist/types/src/Invitation';
-import useUserByAddress from './useUserByAddress';
+import useUserByAddress from '../../hooks/useUserByAddress';
 import { buildConversationId } from '../utils/messaging';
 
-const useSendMessage = (peerAddress: string, senderId: string) => {
+const useSendMessage = (peerAddress: string, senderId: string | undefined) => {
   const { providerState } = useContext(XmtpContext);
   const peerUser = useUserByAddress(peerAddress);
   const { client } = providerState || {};
@@ -14,7 +14,8 @@ const useSendMessage = (peerAddress: string, senderId: string) => {
   // console.log('client', client);
 
   //Normally returns a Promise<DecodedMessage>
-  const sendMessage = async (message: any): Promise<void> => {
+  //TODO if implement contentType, check if it's a string or an object
+  const sendMessage = async (message: string): Promise<void> => {
     if (!client || !peerAddress || !peerUser?.id || !senderId) {
       console.log('really?');
       return;
