@@ -61,11 +61,11 @@ export const validateProposal = async (
 
       const allowance = await ERC20Token.allowance(
         signer.getAddress(),
-        '0x64A705B5121F005431574d3F23159adc230B0041',
+        config.contracts.talentLayerEscrow,
       );
 
       if (allowance.lt(value)) {
-        const tx1 = await ERC20Token.approve('0x64A705B5121F005431574d3F23159adc230B0041', value);
+        const tx1 = await ERC20Token.approve(config.contracts.talentLayerEscrow, value);
         const receipt1 = await toast.promise(provider.waitForTransaction(tx1.hash), {
           pending: {
             render() {

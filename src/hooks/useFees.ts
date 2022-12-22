@@ -18,7 +18,7 @@ const useFees = (): IFees => {
     const fetchData = async () => {
       if (!signer) return fees;
 
-      const escrowContract = new ethers.Contract(
+      const talentLayerEscrow = new ethers.Contract(
         config.contracts.talentLayerEscrow,
         TalentLayerEscrow.abi,
         signer,
@@ -31,9 +31,9 @@ const useFees = (): IFees => {
       );
 
       try {
-        if (escrowContract && talentLayerPlatformIdContract) {
-          const protocolFee = await escrowContract.protocolFee();
-          const originPlatformFee = await escrowContract.originPlatformFee();
+        if (talentLayerEscrow && talentLayerPlatformIdContract) {
+          const protocolFee = await talentLayerEscrow.protocolFee();
+          const originPlatformFee = await talentLayerEscrow.originPlatformFee();
           const platformData = await talentLayerPlatformIdContract.platforms('1');
           if (!!protocolFee && !!originPlatformFee && !!platformData) {
             setFees({
