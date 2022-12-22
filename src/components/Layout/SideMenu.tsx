@@ -1,18 +1,14 @@
 import {
-  HomeIcon,
-  MagnifyingGlassIcon,
-  PlusIcon,
+  Cog6ToothIcon,
+  ExclamationCircleIcon,
   PresentationChartBarIcon,
-  SparklesIcon,
 } from '@heroicons/react/24/outline';
 import { NavLink } from 'react-router-dom';
 
 const navigation = [
-  { name: 'Presentation', href: '/', icon: HomeIcon, current: false },
-  { name: 'Your dashboard', href: '/dashboard', icon: PresentationChartBarIcon, current: true },
-  { name: 'Find jobs', href: '/services', icon: MagnifyingGlassIcon, current: false },
-  { name: 'Post a job', href: '/services/create', icon: PlusIcon, current: false },
-  { name: 'Find talents', href: '/talents', icon: SparklesIcon, current: false },
+  { name: 'Your dashboard', href: '/', icon: PresentationChartBarIcon, current: true },
+  { name: 'Configuration', href: '/configuration', icon: Cog6ToothIcon, current: false },
+  { name: 'Dispute', href: '/dispute', icon: ExclamationCircleIcon, current: false },
 ];
 
 function SideMenu() {

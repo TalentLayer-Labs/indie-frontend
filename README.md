@@ -1,12 +1,8 @@
-# Indie Frontend for a TalentLayer-Integrated Job Marketplace
+# Platform Frontend to manage platform on talentlayer
 
-## About Indie
-Indie is an open-source fork-able codebase that is available for marketplaces and other platforms integrating with [TalentLayer](https://docs.talentlayer.org/) to borrow from and use to get inspired. 
+## About Platform Frontend
 
-Indie lays the groundwork for what will eventually become the TalentLayer SDK.
-
-View a video demo of the Indie Frontend [here](https://youtu.be/8Y6E282Nwtc). 
-
+Platform Frontend is an open-source fork-able codebase that is available for marketplaces and other platforms integrating with [TalentLayer](https://docs.talentlayer.org/) to borrow from and use to get inspired.
 
 ## Stacks
 
@@ -26,19 +22,10 @@ View a video demo of the Indie Frontend [here](https://youtu.be/8Y6E282Nwtc).
 - [ESLint](https://eslint.org)
 - [Prettier](https://prettier.io)
 
-## Steps for setup
+## Steps to run in local
 
-- Init the react app with typescript using Vite: `npm create vite@latest dapp -- --template react-ts`
-- Install ESLint: `npm install --save-dev @typescript-eslint/parser @typescript-eslint/eslint-plugin eslint typescript`
-- Install Tailwind:
-  - `npm install -D tailwindcss postcss autoprefixer`
-  - `npx tailwindcss init -p`
-- Install React Router: `npm install react-router-dom@6`
-- Install Wagmi: `npm i wagmi ethers`
-- Install web3modal: `npm install @web3modal/react @web3modal/ethereum ethers`
-  - Create env file: `touch .env`
-  - Define the wallect connect project Id: `VITE_WALLECT_CONNECT_PROJECT_ID`
-- Install Heroicons: `npm i `
+- `npm install`
+- `npm run dev`
 
 ## VSCode useful plugins
 
