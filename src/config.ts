@@ -17,11 +17,11 @@ export const FEE_RATE_DIVIDER = 10_000;
 const goerli: Config = {
   networkId: NetworkEnum.GOERLI,
   contracts: {
-    talentLayerId: '0x67c3AC531084aB5E6E04d4bB0FC7766e27b81546',
-    serviceRegistry: '0x6f97FB242d2D3bCA9d19c05c975F6Ec8caB4d1a4',
-    talentLayerReview: '0x59ff1f3ff159c17C48558cCf8269FF17aA0B8C8D',
-    talentLayerEscrow: '0x4A6F0208a0b636E3A4918cb0A5B1367E4B338aD8',
-    talentLayerPlatformId: '0x29AcBBbfAb5e1AF98557C53CCcEF0C050FA18Bc8',
+    talentLayerId: '0x58E30982A38ec1f4432A80338c1c720fE8cdF813',
+    serviceRegistry: '0x42c6532581aBb12A2C7b099caD398Ccbd818b9b8',
+    talentLayerReview: '0xFBc8e88190E80e5fA427ee780ac55b1a9f8aa93f',
+    talentLayerEscrow: '0x5a2498aD599fE801E055d9C94b1Cc5FaBf1768b2',
+    talentLayerPlatformId: '0xAC61364Ee74298cB5E96cCe46D281327Fd204740',
   },
   escrowConfig: {
     timeoutPayment: 3600 * 24 * 7,
@@ -45,8 +45,8 @@ const goerli: Config = {
       name: 'USDC Stablecoin',
       decimals: 6,
     },
-    '0x652e712fD63D8AcB14FA7d2b2b5aCA0413E8E705': {
-      address: '0x652e712fD63D8AcB14FA7d2b2b5aCA0413E8E705',
+    '0xdc4f5012a2C2B6a9ACf2A0423E122787B8ABd5C0': {
+      address: '0xdc4f5012a2C2B6a9ACf2A0423E122787B8ABd5C0',
       symbol: 'SERC20',
       name: 'Simple ERC20',
       decimals: 18,
