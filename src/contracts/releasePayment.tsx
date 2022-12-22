@@ -4,6 +4,7 @@ import { Provider } from '@wagmi/core';
 import { BigNumber, Contract, Signer } from 'ethers';
 import { toast } from 'react-toastify';
 import TransactionToast from '../components/TransactionToast';
+import { config } from '../config';
 import TalentLayerEscrow from './ABI/TalentLayerEscrow.json';
 
 export const releasePayment = async (
@@ -13,7 +14,7 @@ export const releasePayment = async (
   amount: BigNumber,
 ): Promise<void> => {
   const talentLayerEscrow = new Contract(
-    '0x64A705B5121F005431574d3F23159adc230B0041',
+    config.contracts.talentLayerEscrow,
     TalentLayerEscrow.abi,
     signer,
   );
