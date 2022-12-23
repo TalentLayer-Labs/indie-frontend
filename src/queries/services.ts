@@ -47,7 +47,9 @@ export const getServiceById = (id: string): Promise<any> => {
         status
         createdAt
         uri
-        transactionId
+        transaction {
+          id
+        }
         buyer {
           id
           handle

@@ -37,7 +37,7 @@ function ReleaseForm({
     }
     const pourcentToToken = totalInEscrow.mul(pourcent).div(100);
 
-    await releasePayment(signer, provider, service.transactionId, pourcentToToken);
+    await releasePayment(signer, provider, service.transaction.id, pourcentToToken);
     closeModal();
   };
 
