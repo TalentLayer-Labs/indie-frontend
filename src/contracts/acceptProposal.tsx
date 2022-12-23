@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 import TransactionToast from '../components/TransactionToast';
 import { config } from '../config';
 import ERC20 from './ABI/ERC20.json';
-import TalentLayerMultipleArbitrableTransaction from './ABI/TalentLayerMultipleArbitrableTransaction.json';
+import TalentLayerEscrow from './ABI/TalentLayerEscrow.json';
 
 export const validateProposal = async (
   signer: Signer,
@@ -16,16 +16,15 @@ export const validateProposal = async (
   rateToken: string,
   value: ethers.BigNumber,
 ): Promise<void> => {
-  const talentLayerMultipleArbitrableTransaction = new Contract(
+  const talentLayerEscrow = new Contract(
     config.contracts.talentLayerEscrow,
-    TalentLayerMultipleArbitrableTransaction.abi,
+    TalentLayerEscrow.abi,
     signer,
   );
 
   try {
     if (rateToken === ethers.constants.AddressZero) {
-      const tx1 = await talentLayerMultipleArbitrableTransaction.createETHTransaction(
-        config.escrowConfig.timeoutPayment,
+      const tx1 = await talentLayerEscrow.createETHTransaction(
         'meta_evidence',
         parseInt(serviceId, 10),
         parseInt(proposalId, 10),
@@ -62,11 +61,11 @@ export const validateProposal = async (
 
       const allowance = await ERC20Token.allowance(
         signer.getAddress(),
-        '0x64A705B5121F005431574d3F23159adc230B0041',
+        config.contracts.talentLayerEscrow,
       );
 
       if (allowance.lt(value)) {
-        const tx1 = await ERC20Token.approve('0x64A705B5121F005431574d3F23159adc230B0041', value);
+        const tx1 = await ERC20Token.approve(config.contracts.talentLayerEscrow, value);
         const receipt1 = await toast.promise(provider.waitForTransaction(tx1.hash), {
           pending: {
             render() {
@@ -86,8 +85,7 @@ export const validateProposal = async (
         }
       }
 
-      const tx2 = await talentLayerMultipleArbitrableTransaction.createTokenTransaction(
-        config.escrowConfig.timeoutPayment,
+      const tx2 = await talentLayerEscrow.createTokenTransaction(
         'meta_evidence',
         parseInt(serviceId, 10),
         parseInt(proposalId, 10),
