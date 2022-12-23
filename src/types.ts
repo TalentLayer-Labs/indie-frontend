@@ -27,6 +27,11 @@ export type IAccount = {
   status: 'connecting' | 'reconnecting' | 'connected' | 'disconnected';
 };
 
+// TODO: add the rest of the fields
+export type ITransaction = {
+  id: string;
+};
+
 export type IService = {
   id: string;
   status: ServiceStatusEnum;
@@ -37,7 +42,7 @@ export type IService = {
   uri: string;
   createdAt: string;
   updatedAt: string;
-  transactionId: string;
+  transaction: ITransaction;
   proposals: IProposal[];
   validatedProposal: IProposal[];
 };
