@@ -1,4 +1,4 @@
-import React, { useState, createContext, useEffect, useContext, ReactNode, useMemo } from 'react';
+import React, { useState, createContext, useEffect, ReactNode, useMemo } from 'react';
 import { Client, Conversation, DecodedMessage } from '@xmtp/xmtp-js';
 import { Signer } from 'ethers';
 import { useAccount, useSigner } from 'wagmi';
