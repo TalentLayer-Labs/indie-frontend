@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 interface IConversationCardProps {
   peerAddress: string;
   // isConvSelected: boolean;
-  latestMessage?: DecodedMessage;
+  latestMessage?: string;
 }
 
 const ConversationCard = ({
@@ -16,6 +16,8 @@ const ConversationCard = ({
 }: IConversationCardProps) => {
   const user = useUserByAddress(peerAddress);
   const navigate = useNavigate();
+  console.log('peerAddress', peerAddress);
+  console.log('latestMessage', latestMessage);
 
   // Display or not non TL profiles
   // if (!user?.id) return;
@@ -44,7 +46,7 @@ const ConversationCard = ({
       <div className='w-full'>
         {user && user.handle ? <b>{user.handle}</b> : <b>{shortAddress(peerAddress)}</b>}
         <p className='text-s font-medium text-gray-500'>
-          {latestMessage && truncate(latestMessage.content, 75)}
+          {latestMessage && truncate(latestMessage, 75)}
         </p>
       </div>
     </div>
