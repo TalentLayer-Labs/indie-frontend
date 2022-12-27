@@ -16,8 +16,8 @@ const ConversationCard = ({
 }: IConversationCardProps) => {
   const user = useUserByAddress(peerAddress);
   const navigate = useNavigate();
-  console.log('peerAddress', peerAddress);
-  console.log('latestMessage', latestMessage);
+  // console.log('peerAddress', peerAddress);
+  // console.log('latestMessage', latestMessage);
 
   // Display or not non TL profiles
   // if (!user?.id) return;

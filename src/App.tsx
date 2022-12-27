@@ -22,6 +22,7 @@ import { Web3Modal } from '@web3modal/react';
 import { Chain, configureChains, createClient, WagmiConfig } from 'wagmi';
 import { customChains } from './chains';
 import Messaging from './pages/Messaging';
+import { PushProvider } from './messaging/context/pushUser';
 
 const chains: Chain[] = [customChains.polygonMumbai];
 
@@ -49,24 +50,26 @@ function App() {
       <WagmiConfig client={wagmiClient}>
         <BrowserRouter>
           <TalentLayerProvider>
-            <div className='antialiased'>
-              <Routes>
-                <Route path='/' element={<Layout />}>
-                  <Route index element={<Home />} />
-                  <Route path='/dashboard' element={<Dashboard />} />
-                  <Route path='/services' element={<Services />} />
-                  <Route path='/services/:id' element={<Service />} />
-                  <Route path='/services/create' element={<CreateService />} />
-                  <Route path='/services/:id/create-proposal' element={<CreateProposal />} />
-                  <Route path='/talents' element={<Talents />} />
-                  <Route path='/messaging' element={<Messaging />} />
-                  <Route path='/messaging/:address' element={<Messaging />} />
-                  <Route path='/about' element={<About />} />
-                  <Route path='/profile/:id' element={<Profile />} />
-                  <Route path='/profile/edit' element={<EditProfile />} />
-                </Route>
-              </Routes>
-            </div>
+            <PushProvider>
+              <div className='antialiased'>
+                <Routes>
+                  <Route path='/' element={<Layout />}>
+                    <Route index element={<Home />} />
+                    <Route path='/dashboard' element={<Dashboard />} />
+                    <Route path='/services' element={<Services />} />
+                    <Route path='/services/:id' element={<Service />} />
+                    <Route path='/services/create' element={<CreateService />} />
+                    <Route path='/services/:id/create-proposal' element={<CreateProposal />} />
+                    <Route path='/talents' element={<Talents />} />
+                    <Route path='/messaging' element={<Messaging />} />
+                    <Route path='/messaging/:address' element={<Messaging />} />
+                    <Route path='/about' element={<About />} />
+                    <Route path='/profile/:id' element={<Profile />} />
+                    <Route path='/profile/edit' element={<EditProfile />} />
+                  </Route>
+                </Routes>
+              </div>
+            </PushProvider>
           </TalentLayerProvider>
         </BrowserRouter>
         <Web3Modal
