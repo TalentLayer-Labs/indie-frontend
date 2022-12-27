@@ -4,17 +4,21 @@ import TalentLayerContext from '../../context/talentLayer';
 import { useContext } from 'react';
 import { getUserByAddress } from '../../queries/users';
 import useUserByAddress from '../../hooks/useUserByAddress';
+import { IMessageIPFS } from '@pushprotocol/uiweb/lib/types';
+import { pCAIP10ToWallet } from '@pushprotocol/restapi/src/lib/helpers';
 // import { shortAddress } from '../utils/utils';
 
 interface IMessageCardProps {
-  message: DecodedMessage;
+  message: IMessageIPFS;
 }
 
 const MessageCard = ({ message }: IMessageCardProps) => {
   const { user } = useContext(TalentLayerContext);
-  const peerUser = useUserByAddress(message.senderAddress);
+  const senderAddress = pCAIP10ToWallet(message.fromCAIP10);
+  const peerUser = useUserByAddress(senderAddress);
+  console.log('MessageCard - message: ', message.messageContent);
 
-  const isSender = message.senderAddress.toLowerCase() === user?.address.toLowerCase();
+  const isSender = senderAddress.toLowerCase() === user?.address.toLowerCase();
 
   // let activeUser;
   // isSender ? (activeUser = user) : (activeUser = useUserByAddress(message.senderAddress));
@@ -40,7 +44,7 @@ const MessageCard = ({ message }: IMessageCardProps) => {
               <b>{peerUser.handle}</b>
               {/*<b>{shortAddress(message.senderAddress)}</b>*/}
             </div>
-            <div>{message.content}</div>
+            <div>{message.messageContent}</div>
           </div>
           {!isSender && (
             <img

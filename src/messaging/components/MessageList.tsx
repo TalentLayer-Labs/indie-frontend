@@ -1,22 +1,17 @@
 import MessageCard from './MessageCard';
+import { IMessageIPFS } from '@pushprotocol/uiweb/lib/types';
 
 interface IMessageListProps {
-  selectedConversationPeerAddress: string;
-  peerUserId: string;
-  userId: string;
+  conversationMessages: IMessageIPFS[];
 }
 
-const MessageList = ({
-  selectedConversationPeerAddress,
-  peerUserId,
-  userId,
-}: IMessageListProps) => {
+const MessageList = ({ conversationMessages }: IMessageListProps) => {
   return (
     <div className=''>
       <div className='flex flex-col mt-5'>
-        {/*{conversationMessages.map(msg => {*/}
-        {/*  return <MessageCard key={msg.id} message={msg} />;*/}
-        {/*})}*/}
+        {conversationMessages.map((msg, index) => {
+          return <MessageCard key={index} message={msg} />;
+        })}
       </div>
     </div>
   );
