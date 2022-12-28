@@ -5,6 +5,7 @@ import { Message } from '@pushprotocol/restapi/src/lib/chat/ipfs';
 import { user as userApi, chat as chatApi } from '@pushprotocol/restapi/src/lib';
 import { pCAIP10ToWallet } from '@pushprotocol/restapi/src/lib/helpers';
 import { IMessageIPFS } from '@pushprotocol/uiweb/lib/types';
+import { createUserIfNecessary } from '@pushprotocol/restapi/src/lib/chat/helpers';
 
 const PushContext = createContext<{
   pushUser?: IUser;
@@ -50,7 +51,7 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
   const init = async (account: string) => {
     console.log('init');
     try {
-      const pushUserData = await userApi.get({ account });
+      const pushUserData = await createUserIfNecessary({ account });
       if (pushUserData) {
         setPushUser(pushUserData);
         // setGetConversations(listConversation);
@@ -70,16 +71,22 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     console.log('Decode Private key');
     try {
-      const decodePrivateKey = async (): Promise<void> => {
-        if (pushUser) {
-          const pgpPrivateKey = await chatApi.decryptWithWalletRPCMethod(
-            pushUser.encryptedPrivateKey,
-            pCAIP10ToWallet(pushUser.wallets),
-          );
-          setPrivateKey(pgpPrivateKey);
-        }
-      };
-      decodePrivateKey();
+      const pushPrivateKey = sessionStorage.getItem('push-private-key');
+      if (pushPrivateKey) {
+        setPrivateKey(pushPrivateKey);
+      } else {
+        const decodePrivateKey = async (): Promise<void> => {
+          if (pushUser) {
+            console.log('pushUser: ', pushUser);
+            const pgpPrivateKey = await chatApi.decryptWithWalletRPCMethod(
+              pushUser.encryptedPrivateKey,
+              pCAIP10ToWallet(pushUser.wallets),
+            );
+            setPrivateKey(pgpPrivateKey);
+          }
+        };
+        decodePrivateKey();
+      }
     } catch (e) {
       console.error(e);
     }
