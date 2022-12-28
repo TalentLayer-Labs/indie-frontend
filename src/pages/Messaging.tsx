@@ -64,9 +64,9 @@ function Messaging() {
     }
   };
 
-  watchAccount(() => {
-    navigate(`/messaging`);
-  });
+  // watchAccount(() => {
+  //   navigate(`/messaging`);
+  // });
 
   return (
     <div className='mx-auto text-gray-900 sm:px-4 lg:px-0'>
