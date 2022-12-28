@@ -1,10 +1,22 @@
 import { processRequest } from '../utils/graphql';
 
-export const getPlatformFee = (id: string): Promise<any> => {
+export const getPlatformFee = (platformId: string): Promise<any> => {
   const query = `
     {
-      platform(id: ${id}) {
-       fee
+      platform(id: ${platformId}) {
+        fee
+      }
+    }
+    `;
+  return processRequest(query);
+};
+
+export const getFeesFromTransaction = (transactionId: string): Promise<any> => {
+  const query = `
+    {
+      transaction(id: ${transactionId}) {
+        protocolFee
+        originPlatformFee
       }
     }
     `;
