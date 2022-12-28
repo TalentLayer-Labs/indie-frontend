@@ -113,9 +113,9 @@ export type IProposal = {
 };
 
 export type IFees = {
-  protocolFeeRate: ethers.BigNumber;
-  originPlatformFeeRate: ethers.BigNumber;
-  platformFeeRate: ethers.BigNumber;
+  protocolFeeRate: number;
+  originPlatformFeeRate: number;
+  platformFeeRate: number;
 };
 
 export enum ProposalTypeEnum {
