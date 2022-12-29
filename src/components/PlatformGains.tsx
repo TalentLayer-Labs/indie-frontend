@@ -7,6 +7,10 @@ function PlatformGains({ platformId }: { platformId: string }) {
   if (!platformGains) {
     return null;
   }
+  const totalPlatformFeeGain =
+    Math.round(parseInt(platformGains?.totalPlatformFeeGain) / 10 ** 8) / 10;
+  const totalOriginPlatformFeeGain =
+    Math.round(parseInt(platformGains?.totalOriginPlatformFeeGain) / 10 ** 8) / 10;
 
   return (
     <>
@@ -15,13 +19,13 @@ function PlatformGains({ platformId }: { platformId: string }) {
       </h2>
       <div className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4'>
         <StatisticBlockSingleValue
-          value={`${platformGains.totalPlatformFeeGain} ${platformGains.token.symbol}`}
-          label='Total fee gains on the platform'
+          value={`${totalPlatformFeeGain} ${platformGains.token.symbol}`}
+          label='Total fee gain on the platform'
           isGrowing={true}
         />
         <StatisticBlockSingleValue
-          value={`${platformGains.totalOriginPlatformFeeGain} ${platformGains.token.symbol}`}
-          label='Total fee gains as an origin platform'
+          value={`${totalOriginPlatformFeeGain} ${platformGains.token.symbol}`}
+          label='Total fee gain as an origin platform'
           isGrowing={true}
         />
       </div>

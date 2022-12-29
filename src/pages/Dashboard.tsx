@@ -1,8 +1,8 @@
 import { useContext } from 'react';
 import Steps from '../components/Steps';
-import UserDetail from '../components/UserDetail';
 import TalentLayerContext from '../context/talentLayer';
 import PlatformGains from '../components/PlatformGains';
+import PlatformDetail from '../components/PlatformDetail';
 
 function Dashboard() {
   const { account, user } = useContext(TalentLayerContext);
@@ -21,13 +21,12 @@ function Dashboard() {
 
       {account?.isConnected && user && (
         <div>
-          {/*TODO: add platform details here*/}
-          {/*<div className='mb-6'>*/}
-          {/*  <h2 className='mb-6 pb-4 border-b border-gray-gray-200 text-gray-900 font-medium'>*/}
-          {/*    Your platform*/}
-          {/*  </h2>*/}
-          {/*  <UserDetail user={user} />*/}
-          {/*</div>*/}
+          <div className='mb-6'>
+            <h2 className='mb-6 pb-4 border-b border-gray-gray-200 text-gray-900 font-medium'>
+              Your platform
+            </h2>
+            <PlatformDetail platformId={import.meta.env.VITE_PLATFORM_ID} />
+          </div>
           <div className='mb-6'>
             <PlatformGains platformId={import.meta.env.VITE_PLATFORM_ID} />
           </div>
