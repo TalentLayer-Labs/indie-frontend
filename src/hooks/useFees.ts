@@ -8,9 +8,9 @@ import { IFees } from '../types';
 
 const useFees = (): IFees => {
   const [fees, setFees] = useState({
-    protocolFeeRate: ethers.BigNumber.from('0'),
-    originPlatformFeeRate: ethers.BigNumber.from('0'),
-    platformFeeRate: ethers.BigNumber.from('0'),
+    protocolFeeRate: 0,
+    originPlatformFeeRate: 0,
+    platformFeeRate: 0,
   });
   const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
 
@@ -37,9 +37,9 @@ const useFees = (): IFees => {
           const platformData = await talentLayerPlatformIdContract.platforms('1');
           if (!!protocolFee && !!originPlatformFee && !!platformData) {
             setFees({
-              protocolFeeRate: ethers.BigNumber.from(protocolFee),
-              originPlatformFeeRate: ethers.BigNumber.from(originPlatformFee),
-              platformFeeRate: ethers.BigNumber.from(platformData.fee),
+              protocolFeeRate: protocolFee,
+              originPlatformFeeRate: originPlatformFee,
+              platformFeeRate: platformData.fee,
             });
           }
         }
@@ -49,7 +49,7 @@ const useFees = (): IFees => {
       }
     };
     fetchData();
-  }, []);
+  }, [signer]);
 
   return fees;
 };
