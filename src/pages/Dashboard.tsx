@@ -3,6 +3,7 @@ import Steps from '../components/Steps';
 import TalentLayerContext from '../context/talentLayer';
 import PlatformGains from '../components/PlatformGains';
 import PlatformDetail from '../components/PlatformDetail';
+import PlatformServices from '../components/PlatformServices';
 
 function Dashboard() {
   const { account, user } = useContext(TalentLayerContext);
@@ -26,6 +27,9 @@ function Dashboard() {
               Your platform
             </h2>
             <PlatformDetail platformId={import.meta.env.VITE_PLATFORM_ID} />
+          </div>
+          <div className='mb-6'>
+            <PlatformServices platformId={import.meta.env.VITE_PLATFORM_ID} />
           </div>
           <div className='mb-6'>
             <PlatformGains platformId={import.meta.env.VITE_PLATFORM_ID} />

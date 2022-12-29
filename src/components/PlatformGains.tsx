@@ -15,7 +15,7 @@ function PlatformGains({ platformId }: { platformId: string }) {
   return (
     <>
       <h2 className='mb-6 pb-4 border-b border-gray-gray-200 text-gray-900 font-medium'>
-        Your total gains
+        Gains
       </h2>
       <div className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4'>
         <StatisticBlockSingleValue
