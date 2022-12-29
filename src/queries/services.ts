@@ -55,6 +55,7 @@ export const getServiceById = (id: string): Promise<any> => {
           handle
           rating
           numReviews
+          address
         }
         seller {
           id
