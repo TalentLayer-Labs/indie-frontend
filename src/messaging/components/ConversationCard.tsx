@@ -41,7 +41,7 @@ const ConversationCard = ({
   // const isActiveConversation = () => return key === address;
 
   const handleSelectConversation = () => {
-    navigate(`/messaging/${peerAddress}`);
+    navigate(`/messaging/${pCAIP10ToWallet(peerAddress)}`);
   };
 
   //${isConvSelected ? 'border-indigo-500 border-2' : 'border-b-2'}
