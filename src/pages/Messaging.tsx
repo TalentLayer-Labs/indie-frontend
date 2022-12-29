@@ -1,31 +1,37 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import TalentLayerContext from '../context/talentLayer';
-import { useSigner } from 'wagmi';
-import { watchAccount } from '@wagmi/core';
 import { useNavigate, useParams } from 'react-router-dom';
 import useUserByAddress from '../hooks/useUserByAddress';
-import { user as userApi, chat as chatApi, ChatOptionsType, IUser } from '@pushprotocol/restapi';
-import { ChatsOptionsType } from '@pushprotocol/restapi/src/lib/chat';
-import { pCAIP10ToWallet } from '@pushprotocol/restapi/src/lib/helpers';
-import { Message } from '@pushprotocol/restapi/src/lib/chat/ipfs';
-import { IMessageIPFS } from '@pushprotocol/uiweb/lib/types';
+import { chat as chatApi, IMessageIPFS } from '@pushprotocol/restapi';
 import CardHeader from '../messaging/components/CardHeader';
 import MessageComposer from '../messaging/components/MessageComposer';
 import MessageList from '../messaging/components/MessageList';
 import ConversationList from '../messaging/components/ConversationList';
 import PushContext from '../messaging/context/pushUser';
 import { walletToPCAIP10 } from '@pushprotocol/restapi/src/lib/helpers/address';
-
-//TODO: Implement crreateUserIfNecessary: helpers/chat.ts
+import { watchAccount } from '@wagmi/core';
+import { ConversationDisplayType } from '../types';
 
 function Messaging() {
   const { user } = useContext(TalentLayerContext);
-  const { pushUser, initPush, conversations, conversationMessages, privateKey } =
-    useContext(PushContext);
+  const {
+    pushUser,
+    initPush,
+    conversations,
+    conversationMessages,
+    requests,
+    privateKey,
+    disconnect,
+  } = useContext(PushContext);
   const { address: selectedConversationPeerAddress = '' } = useParams();
   const navigate = useNavigate();
   const peerUser = useUserByAddress(selectedConversationPeerAddress);
   const [messageContent, setMessageContent] = useState('');
+  const [conversationDisplayType, setConversationDisplayType] = useState(
+    ConversationDisplayType.CONVERSATION,
+  );
+  const [activeConversation, setActiveConversation] = useState<IMessageIPFS[]>();
+  const [isConvSelected, setIsConvSelected] = useState(false);
 
   //TODO: Add redirect to sign in if not TL user
 
@@ -37,6 +43,11 @@ function Messaging() {
     } catch (e) {
       console.error(e);
     }
+  };
+
+  const handleDisplayChange = (conversationDisplayType: ConversationDisplayType) => {
+    setConversationDisplayType(conversationDisplayType);
+    setIsConvSelected(false);
   };
 
   const sendNewMessage = async () => {
@@ -51,6 +62,15 @@ function Messaging() {
         //   pgpPrivateKey: privateKey,
         // };
         // await chatApi.send(chatOptions);
+        console.log(
+          'BeforeSend',
+          chatApi.send({
+            account: pushUser?.wallets,
+            messageContent,
+            receiverAddress: walletToPCAIP10(selectedConversationPeerAddress),
+            pgpPrivateKey: privateKey,
+          }),
+        );
         await chatApi.send({
           account: pushUser?.wallets,
           messageContent,
@@ -64,9 +84,13 @@ function Messaging() {
     }
   };
 
-  // watchAccount(() => {
-  //   navigate(`/messaging`);
-  // });
+  watchAccount(() => {
+    if (disconnect && initPush && user?.address) {
+      disconnect();
+      // initPush(user?.address);
+    }
+    navigate(`/messaging`);
+  });
 
   return (
     <div className='mx-auto text-gray-900 sm:px-4 lg:px-0'>
@@ -82,17 +106,22 @@ function Messaging() {
           Connect to Push
         </button>
       )}
-      {conversations && (
+      {conversations && requests && (
         // <div className='border-2 rounded-md'>
         <>
-          <CardHeader peerAddress={selectedConversationPeerAddress} />
+          <CardHeader
+            peerAddress={selectedConversationPeerAddress}
+            handleDisplayChange={handleDisplayChange}
+          />
           <div className='flex flex-row'>
             <div className='basis-1/4 border-r-2'>
               <ConversationList
-                conversations={conversations}
-                selectedConversationPeerAddress={selectedConversationPeerAddress}
-                peerAddress={peerUser?.address ? peerUser.address : ''}
-                // setSelectedConversationPeerAddress={setSelectedConversationPeerAddress}
+                conversations={
+                  conversationDisplayType == ConversationDisplayType.CONVERSATION
+                    ? conversations
+                    : requests
+                }
+                conversationDisplayType={conversationDisplayType}
               />
             </div>
             {selectedConversationPeerAddress && conversationMessages && (

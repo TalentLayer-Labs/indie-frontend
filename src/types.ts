@@ -96,6 +96,7 @@ export enum ProposalStatusEnum {
   Validated = 'Validated',
   Rejected = 'Rejected',
 }
+
 export type IProposalDetails = {
   description: string;
 };
@@ -167,3 +168,8 @@ export type IUserGain = {
   token: IToken;
   totalGain: string;
 };
+
+export enum ConversationDisplayType {
+  CONVERSATION,
+  REQUEST,
+}
