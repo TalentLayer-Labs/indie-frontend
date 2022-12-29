@@ -16,7 +16,6 @@ const MessageCard = ({ message }: IMessageCardProps) => {
   const { user } = useContext(TalentLayerContext);
   const senderAddress = pCAIP10ToWallet(message.fromCAIP10);
   const peerUser = useUserByAddress(senderAddress);
-  console.log('MessageCard - message: ', message.messageContent);
 
   const isSender = senderAddress.toLowerCase() === user?.address.toLowerCase();
 
@@ -25,36 +24,37 @@ const MessageCard = ({ message }: IMessageCardProps) => {
 
   return (
     <>
-      {peerUser && (
-        <div className={`flex ${isSender ? 'justify-end' : 'justify-start'} mb-4`}>
-          {isSender && user && (
-            <img
-              src={`/default-avatar-${Number(user?.id ? user.id : '1') % 11}.jpeg`}
-              className='object-cover h-12 w-12 rounded-full'
-              alt=''
-            />
-          )}
-          <div
-            className={`py-3 px-4 ${
-              isSender
-                ? 'ml-2 bg-indigo-500 rounded-br-3xl rounded-tr-3xl rounded-tl-xl'
-                : 'mr-2 bg-gray-400 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl'
-            } text-white`}>
-            <div>
+      <div className={`flex ${isSender ? 'justify-end' : 'justify-start'} mb-4`}>
+        {isSender && user && (
+          <img
+            src={`/default-avatar-${Number(user?.id ? user.id : '1') % 11}.jpeg`}
+            className='object-cover h-12 w-12 rounded-full'
+            alt=''
+          />
+        )}
+        <div
+          className={`py-3 px-4 ${
+            isSender
+              ? 'ml-2 bg-indigo-500 rounded-br-3xl rounded-tr-3xl rounded-tl-xl'
+              : 'mr-2 bg-gray-400 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl'
+          } text-white`}>
+          <div>
+            {peerUser && peerUser.handle ? (
               <b>{peerUser.handle}</b>
-              {/*<b>{shortAddress(message.senderAddress)}</b>*/}
-            </div>
-            <div>{message.messageContent}</div>
+            ) : (
+              <b>{shortAddress(senderAddress)}</b>
+            )}
           </div>
-          {!isSender && (
-            <img
-              src={`/default-avatar-${Number(peerUser?.id ? peerUser.id : '1') % 11}.jpeg`}
-              className='object-cover h-12 w-12 rounded-full'
-              alt=''
-            />
-          )}
+          <div>{message.messageContent}</div>
         </div>
-      )}
+        {!isSender && (
+          <img
+            src={`/default-avatar-${Number(peerUser?.id ? peerUser.id : '1') % 11}.jpeg`}
+            className='object-cover h-12 w-12 rounded-full'
+            alt=''
+          />
+        )}
+      </div>
     </>
   );
 };

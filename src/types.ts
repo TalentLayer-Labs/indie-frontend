@@ -190,3 +190,8 @@ export type IUserGain = {
   token: IToken;
   totalGain: string;
 };
+
+export enum ConversationDisplayType {
+  CONVERSATION,
+  REQUEST,
+}

@@ -10,8 +10,9 @@ import { createUserIfNecessary } from '@pushprotocol/restapi/src/lib/chat/helper
 const PushContext = createContext<{
   pushUser?: IUser;
   conversations?: Message[];
+  requests?: Message[];
   conversationMessages?: Map<string, IMessageIPFS[]>;
-  getConversations?: (pushUser: IUser) => Promise<void>;
+  getConversations?: () => Promise<void>;
   setConversations?: React.Dispatch<React.SetStateAction<Message[] | undefined>>;
   setConversationMessages?: React.Dispatch<
     React.SetStateAction<Map<string, IMessageIPFS[]> | undefined>
@@ -22,6 +23,7 @@ const PushContext = createContext<{
 }>({
   pushUser: undefined,
   conversations: undefined,
+  requests: undefined,
   conversationMessages: undefined,
   getConversations: undefined,
   setConversations: undefined,
@@ -33,13 +35,11 @@ const PushContext = createContext<{
 
 const PushProvider = ({ children }: { children: ReactNode }) => {
   // const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
-  const { address } = useAccount();
   const [pushUser, setPushUser] = useState<IUser | undefined>();
   const [privateKey, setPrivateKey] = useState<string | undefined>();
   const [conversations, setConversations] = useState<Message[] | undefined>();
+  const [requests, setRequests] = useState<Message[] | undefined>();
   const [conversationMessages, setConversationMessages] = useState<Map<string, IMessageIPFS[]>>();
-  const [getConversations, setGetConversations] = useState<(pushUser: IUser) => Promise<void>>();
-  const [initPush, setInitPush] = useState<(address: string) => Promise<void>>();
 
   const disconnect = (): void => {
     setConversations(undefined);
@@ -68,25 +68,47 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
   //   }
   // }, [address]);
 
+  const getConversations = async (): Promise<void> => {
+    if (pushUser && privateKey) {
+      const conversations = await chatApi.chats({
+        pgpPrivateKey: privateKey,
+        account: pushUser.wallets,
+      });
+      console.log('conversations: ', conversations);
+      setConversations(conversations);
+    }
+  };
+
+  const getRequests = async (): Promise<void> => {
+    if (pushUser && privateKey) {
+      const requests = await chatApi.requests({
+        pgpPrivateKey: privateKey,
+        account: pushUser.wallets,
+      });
+      console.log('requests: ', requests);
+      setRequests(requests);
+    }
+  };
+
   useEffect(() => {
     console.log('Decode Private key');
     try {
-      const pushPrivateKey = sessionStorage.getItem('push-private-key');
-      if (pushPrivateKey) {
-        setPrivateKey(pushPrivateKey);
-      } else {
-        const decodePrivateKey = async (): Promise<void> => {
-          if (pushUser) {
-            console.log('pushUser: ', pushUser);
-            const pgpPrivateKey = await chatApi.decryptWithWalletRPCMethod(
-              pushUser.encryptedPrivateKey,
-              pCAIP10ToWallet(pushUser.wallets),
-            );
-            setPrivateKey(pgpPrivateKey);
-          }
-        };
-        decodePrivateKey();
-      }
+      // const pushPrivateKey = sessionStorage.getItem('push-private-key');
+      // if (pushPrivateKey) {
+      //   setPrivateKey(pushPrivateKey);
+      // } else {
+      const decodePrivateKey = async (): Promise<void> => {
+        if (pushUser) {
+          console.log('pushUser: ', pushUser);
+          const pgpPrivateKey = await chatApi.decryptWithWalletRPCMethod(
+            pushUser.encryptedPrivateKey,
+            pCAIP10ToWallet(pushUser.wallets),
+          );
+          setPrivateKey(pgpPrivateKey);
+        }
+      };
+      decodePrivateKey();
+      // }
     } catch (e) {
       console.error(e);
     }
@@ -99,17 +121,8 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
     //TODO Gets the first message of the conversation
     console.log('Get conversations');
     try {
-      const listConversation = async (): Promise<void> => {
-        if (pushUser && privateKey) {
-          const conversations = await chatApi.chats({
-            pgpPrivateKey: privateKey,
-            account: pushUser.wallets,
-          });
-          console.log('conversations: ', conversations);
-          setConversations(conversations);
-        }
-      };
-      listConversation();
+      getConversations();
+      getRequests();
     } catch (e) {
       console.error(e);
     }
@@ -121,27 +134,30 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     console.log('Get conversation messages');
     //TODO Gets all messages  of the conversation except the first message
+    const messagesMap = new Map<string, IMessageIPFS[]>();
     const getMessages = async (): Promise<void> => {
       // const messages = ...conversationMessages;
-      const messagesMap = new Map<string, IMessageIPFS[]>();
       try {
         if (conversations && pushUser) {
           for (const conversation of conversations) {
+            const messages = [];
             if (conversation.link) {
-              const messages = await chatApi.history({
+              const historicalMessages = await chatApi.history({
                 threadhash: conversation.link,
                 account: pushUser.wallets,
                 pgpPrivateKey: privateKey,
               });
-              // Add here the first message of the conversation the mesages array
-              messages.push(conversation);
-              messages.sort((messageA, messageB) => {
-                return messageA.timestamp - messageB.timestamp;
-              });
-              //TODO pCAIP10ToWallet(conversation.toCAIP10) ?
-              messagesMap.set(conversation.toCAIP10, messages);
+              messages.push(...historicalMessages);
             }
+            // Add here the first message of the conversation the mesages array
+            messages.push(conversation);
+            messages.sort((messageA, messageB) => {
+              return messageA.timestamp - messageB.timestamp;
+            });
+            //TODO pCAIP10ToWallet(conversation.toCAIP10) ?
+            messagesMap.set(conversation.toCAIP10, messages);
           }
+          console.log('Messages: ', messagesMap);
           setConversationMessages(messagesMap);
         }
       } catch (e) {
@@ -154,32 +170,15 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
     };
   }, [conversations]);
 
-  // const listConversation = async (pushUser: IUser) => {
-  //   try {
-  //     const privateKey = await chatApi.decryptWithWalletRPCMethod(
-  //       pushUser.encryptedPrivateKey,
-  //       pCAIP10ToWallet(pushUser.wallets),
-  //     );
-  //
-  //     const msgs = await chatApi.chats({
-  //       pgpPrivateKey: privateKey,
-  //       account: pushUser.wallets,
-  //     });
-  //     setConversations(msgs);
-  //     console.log('msgs', msgs);
-  //   } catch (e) {
-  //     console.error(e);
-  //   }
-  // };
-
   const value = useMemo(() => {
     return {
       pushUser: pushUser ? pushUser : undefined,
       conversations: conversations ? conversations : undefined,
+      requests: requests ? requests : undefined,
       conversationMessages: conversationMessages ? conversationMessages : undefined,
-      setConversations: setConversations,
-      setConversationMessages: setConversationMessages,
-      getConversations: getConversations,
+      setConversations,
+      setConversationMessages,
+      getConversations,
       privateKey: privateKey ? privateKey : undefined,
       disconnect: disconnect,
       initPush: init,
