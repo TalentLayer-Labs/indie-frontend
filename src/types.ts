@@ -167,3 +167,50 @@ export type IUserGain = {
   token: IToken;
   totalGain: string;
 };
+
+export type IFeeClaim = {
+  id: string;
+  amount: string;
+  createdAt: string;
+  platform: IPlatform;
+  token: IToken;
+  transactionHash: string;
+};
+
+export type IFeePayments = {
+  id: string;
+  amount: string;
+  createdAt: string;
+  platform: IPlatform;
+  service: IService;
+  token: IToken;
+  type: IFeeTypeEnum;
+};
+
+export enum IFeeTypeEnum {
+  Platform = 'Platform',
+  OriginPlatform = 'OriginPlatform',
+}
+
+export type IPlatform = {
+  id: string;
+  address: `0x${string}`;
+  arbitrationFeeTimeout: string;
+  arbitrator: `0x${string}`;
+  arbitratorExtraData: `0x${string}`;
+  createdAt: string;
+  fee: number;
+  feeClaims: IFeeClaim[];
+  feePayments: IFeePayments;
+  name: string;
+  totalPlatformGains: IPlatformGain;
+  uri: string;
+};
+
+export type IPlatformGain = {
+  id: string;
+  platform: IPlatform;
+  token: IToken;
+  totalPlatformFeeGain: string;
+  totalOriginPlatformFeeGain: string;
+};
