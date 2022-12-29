@@ -49,7 +49,7 @@ const useFees = (): IFees => {
       }
     };
     fetchData();
-  });
+  }, [signer]);
 
   return fees;
 };
