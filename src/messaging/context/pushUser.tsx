@@ -3,9 +3,10 @@ import { useAccount, useSigner } from 'wagmi';
 import { IUser } from '@pushprotocol/restapi';
 import { Message } from '@pushprotocol/restapi/src/lib/chat/ipfs';
 import { user as userApi, chat as chatApi } from '@pushprotocol/restapi/src/lib';
-import { pCAIP10ToWallet } from '@pushprotocol/restapi/src/lib/helpers';
+import { decryptMessage, pCAIP10ToWallet } from '@pushprotocol/restapi/src/lib/helpers';
 import { IMessageIPFS } from '@pushprotocol/uiweb/lib/types';
 import { createUserIfNecessary } from '@pushprotocol/restapi/src/lib/chat/helpers';
+import { walletToPCAIP10 } from '@pushprotocol/restapi/src/lib/helpers/address';
 
 const PushContext = createContext<{
   pushUser?: IUser;
@@ -17,6 +18,10 @@ const PushContext = createContext<{
   setConversationMessages?: React.Dispatch<
     React.SetStateAction<Map<string, IMessageIPFS[]> | undefined>
   >;
+  updateAfterSend?: (
+    selectedConversationPeerAddress: string,
+    latestEncryptedMessage: IMessageIPFS,
+  ) => Promise<void>;
   disconnect?: () => void;
   initPush?: (address: string) => void;
   privateKey?: string;
@@ -28,6 +33,7 @@ const PushContext = createContext<{
   getConversations: undefined,
   setConversations: undefined,
   setConversationMessages: undefined,
+  updateAfterSend: undefined,
   disconnect: undefined,
   initPush: undefined,
   privateKey: undefined,
@@ -61,6 +67,16 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const decodePrivateKey = async (): Promise<void> => {
+    if (pushUser) {
+      const pgpPrivateKey = await chatApi.decryptWithWalletRPCMethod(
+        pushUser.encryptedPrivateKey,
+        pCAIP10ToWallet(pushUser.wallets),
+      );
+      setPrivateKey(pgpPrivateKey);
+    }
+  };
+
   //TODO set a reset of init for address change
   // useEffect(() => {
   //   if (address) {
@@ -74,7 +90,6 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
         pgpPrivateKey: privateKey,
         account: pushUser.wallets,
       });
-      console.log('conversations: ', conversations);
       setConversations(conversations);
     }
   };
@@ -85,8 +100,97 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
         pgpPrivateKey: privateKey,
         account: pushUser.wallets,
       });
-      console.log('requests: ', requests);
       setRequests(requests);
+    }
+  };
+
+  async function updateAfterSend(
+    selectedConversationPeerAddress: string,
+    latestEncryptedMessage: IMessageIPFS,
+  ) {
+    try {
+      if (pushUser && privateKey) {
+        //Decrypt sent message content (could also get from the "messageContent" state)
+        const latestDecryptedMessage = await decryptMessage({
+          encryptedMessage: latestEncryptedMessage.messageContent as string,
+          signature: latestEncryptedMessage.signature as string,
+          encryptedSecret: latestEncryptedMessage.encryptedSecret as string,
+          encryptionType: latestEncryptedMessage.encType as string,
+          signatureValidationPubliKey: pushUser.publicKey,
+          pgpPrivateKey: privateKey,
+        });
+        //Create new IMessageIPFS object
+        const latestMessage: IMessageIPFS = {
+          ...latestEncryptedMessage,
+          messageContent: latestDecryptedMessage,
+        };
+        //Update conversationMessages state with new message
+        const messages = conversationMessages?.get(
+          walletToPCAIP10(selectedConversationPeerAddress),
+        );
+        if (messages && setConversationMessages) {
+          messages.push(latestMessage);
+          conversationMessages?.set(selectedConversationPeerAddress, messages);
+          setConversationMessages(conversationMessages);
+        }
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  async function getMessagesFromOneConversation(
+    conversation: Message,
+    messagesMap: Map<string, IMessageIPFS[]>,
+  ) {
+    const messages = [];
+    if (conversation.link && pushUser) {
+      const historicalMessages = await chatApi.history({
+        threadhash: conversation.link,
+        account: pushUser.wallets,
+        pgpPrivateKey: privateKey,
+      });
+      messages.push(...historicalMessages);
+      console.log('messages: ', messages);
+    }
+    // Add here the first message of the conversation the messages array
+    messages.push(conversation);
+    messages.sort((messageA, messageB) => {
+      return messageA.timestamp - messageB.timestamp;
+    });
+    //TODO pCAIP10ToWallet(conversation.toCAIP10) ?
+    messagesMap.set(conversation.toCAIP10, messages);
+  }
+
+  const getMessages = async (): Promise<void> => {
+    // const messages = ...conversationMessages;
+    const messagesMap = new Map<string, IMessageIPFS[]>();
+    try {
+      if (conversations && pushUser) {
+        for (const conversation of conversations) {
+          const messages = [];
+          if (conversation.link && pushUser) {
+            const historicalMessages = await chatApi.history({
+              threadhash: conversation.link,
+              account: pushUser.wallets,
+              pgpPrivateKey: privateKey,
+            });
+            messages.push(...historicalMessages);
+            console.log('messages: ', messages);
+          }
+          // Add here the first message of the conversation the messages array
+          messages.push(conversation);
+          messages.sort((messageA, messageB) => {
+            return messageA.timestamp - messageB.timestamp;
+          });
+          //TODO pCAIP10ToWallet(conversation.toCAIP10) ?
+          messagesMap.set(conversation.toCAIP10, messages);
+        }
+        console.log('Messages: ', messagesMap);
+        setConversationMessages(messagesMap);
+      }
+    } catch (e) {
+      console.error(e);
     }
   };
 
@@ -97,16 +201,6 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
       // if (pushPrivateKey) {
       //   setPrivateKey(pushPrivateKey);
       // } else {
-      const decodePrivateKey = async (): Promise<void> => {
-        if (pushUser) {
-          console.log('pushUser: ', pushUser);
-          const pgpPrivateKey = await chatApi.decryptWithWalletRPCMethod(
-            pushUser.encryptedPrivateKey,
-            pCAIP10ToWallet(pushUser.wallets),
-          );
-          setPrivateKey(pgpPrivateKey);
-        }
-      };
       decodePrivateKey();
       // }
     } catch (e) {
@@ -134,36 +228,6 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     console.log('Get conversation messages');
     //TODO Gets all messages  of the conversation except the first message
-    const messagesMap = new Map<string, IMessageIPFS[]>();
-    const getMessages = async (): Promise<void> => {
-      // const messages = ...conversationMessages;
-      try {
-        if (conversations && pushUser) {
-          for (const conversation of conversations) {
-            const messages = [];
-            if (conversation.link) {
-              const historicalMessages = await chatApi.history({
-                threadhash: conversation.link,
-                account: pushUser.wallets,
-                pgpPrivateKey: privateKey,
-              });
-              messages.push(...historicalMessages);
-            }
-            // Add here the first message of the conversation the mesages array
-            messages.push(conversation);
-            messages.sort((messageA, messageB) => {
-              return messageA.timestamp - messageB.timestamp;
-            });
-            //TODO pCAIP10ToWallet(conversation.toCAIP10) ?
-            messagesMap.set(conversation.toCAIP10, messages);
-          }
-          console.log('Messages: ', messagesMap);
-          setConversationMessages(messagesMap);
-        }
-      } catch (e) {
-        console.error(e);
-      }
-    };
     getMessages();
     return () => {
       setConversationMessages(undefined);
@@ -179,6 +243,7 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
       setConversations,
       setConversationMessages,
       getConversations,
+      updateAfterSend,
       privateKey: privateKey ? privateKey : undefined,
       disconnect: disconnect,
       initPush: init,

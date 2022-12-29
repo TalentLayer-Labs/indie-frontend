@@ -11,6 +11,7 @@ import PushContext from '../messaging/context/pushUser';
 import { walletToPCAIP10 } from '@pushprotocol/restapi/src/lib/helpers/address';
 import { watchAccount } from '@wagmi/core';
 import { ConversationDisplayType } from '../types';
+import { decryptMessage } from '@pushprotocol/restapi/src/lib/helpers';
 
 function Messaging() {
   const { user } = useContext(TalentLayerContext);
@@ -19,6 +20,8 @@ function Messaging() {
     initPush,
     conversations,
     conversationMessages,
+    updateAfterSend,
+    setConversationMessages,
     requests,
     privateKey,
     disconnect,
@@ -52,31 +55,38 @@ function Messaging() {
 
   const sendNewMessage = async () => {
     try {
-      if (pushUser?.wallets && messageContent && privateKey) {
-        // const chatOptions: ChatOptionsType = {
-        //   //TODO consider using getConnectedUser from chat/helper/users
-        //   connectedUser: { ...pushUser, privateKey },
-        //   account: pushUser?.wallets,
-        //   messageContent,
-        //   receiverAddress: walletToPCAIP10(selectedConversationPeerAddress),
-        //   pgpPrivateKey: privateKey,
-        // };
-        // await chatApi.send(chatOptions);
-        console.log(
-          'BeforeSend',
-          chatApi.send({
-            account: pushUser?.wallets,
-            messageContent,
-            receiverAddress: walletToPCAIP10(selectedConversationPeerAddress),
-            pgpPrivateKey: privateKey,
-          }),
-        );
-        await chatApi.send({
+      if (pushUser?.wallets && messageContent && privateKey && updateAfterSend) {
+        //Send message
+        const response: IMessageIPFS = await chatApi.send({
           account: pushUser?.wallets,
           messageContent,
           receiverAddress: walletToPCAIP10(selectedConversationPeerAddress),
           pgpPrivateKey: privateKey,
         });
+        await updateAfterSend(selectedConversationPeerAddress, response);
+        // //Decrypt sent message content (could get from the state)
+        // const latestDecryptedMessage = await decryptMessage({
+        //   encryptedMessage: response.messageContent as string,
+        //   signature: response.signature as string,
+        //   encryptedSecret: response.encryptedSecret as string,
+        //   encryptionType: response.encType as string,
+        //   signatureValidationPubliKey: pushUser.publicKey,
+        //   pgpPrivateKey: privateKey,
+        // });
+        // //Create new IMessageIPFS object
+        // const latestMessage: IMessageIPFS = {
+        //   ...response,
+        //   messageContent: latestDecryptedMessage,
+        // };
+        // //Update conversationMessages state with new message
+        // const messages = conversationMessages?.get(
+        //   walletToPCAIP10(selectedConversationPeerAddress),
+        // );
+        // if (messages && setConversationMessages) {
+        //   messages.push(latestMessage);
+        //   conversationMessages?.set(selectedConversationPeerAddress, messages);
+        //   setConversationMessages(conversationMessages);
+        // }
         setMessageContent('');
       }
     } catch (e) {
