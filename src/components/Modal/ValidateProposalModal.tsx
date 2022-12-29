@@ -119,7 +119,7 @@ function ValidateProposalModal({ proposal, account }: { proposal: IProposal; acc
                     <p className='text-base leading-4 text-gray-800'>
                       Marketplace fees{' '}
                       <span className='bg-gray-200 p-1 text-xs font-medium leading-3 text-gray-800'>
-                        {(Number(platformFeeRate) / FEE_RATE_DIVIDER).toString()} %
+                        {((Number(platformFeeRate) / FEE_RATE_DIVIDER) * 100).toString()} %
                       </span>
                     </p>
                     <p className='text-base  leading-4 text-gray-600'>
@@ -130,7 +130,7 @@ function ValidateProposalModal({ proposal, account }: { proposal: IProposal; acc
                     <p className='text-base leading-4 text-gray-800'>
                       Origin Marketplace fees{' '}
                       <span className='bg-gray-200 p-1 text-xs font-medium leading-3 text-gray-800'>
-                        {(Number(originPlatformFeeRate) / FEE_RATE_DIVIDER).toString()} %
+                        {((Number(originPlatformFeeRate) / FEE_RATE_DIVIDER) * 100).toString()} %
                       </span>
                     </p>
                     <p className='text-base  leading-4 text-gray-600'>
@@ -141,7 +141,7 @@ function ValidateProposalModal({ proposal, account }: { proposal: IProposal; acc
                     <p className='text-base leading-4 text-gray-800'>
                       Protocol fees{' '}
                       <span className='bg-gray-200 p-1 text-xs font-medium leading-3 text-gray-800'>
-                        {(Number(protocolFeeRate) / FEE_RATE_DIVIDER).toString()} %
+                        {((Number(protocolFeeRate) / FEE_RATE_DIVIDER) * 100).toString()} %
                       </span>
                     </p>
                     <p className='text-base  leading-4 text-gray-600'>
