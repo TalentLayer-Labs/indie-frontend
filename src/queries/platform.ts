@@ -30,6 +30,7 @@ export const getTotalPlatformGains = (id: string): Promise<any> => {
             id
             symbol
             name
+            decimals
           }
         }
       }
