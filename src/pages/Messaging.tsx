@@ -35,9 +35,6 @@ function Messaging() {
   const navigate = useNavigate();
   // const peerUser = useUserByAddress(selectedConversationPeerAddress);
   const [messageContent, setMessageContent] = useState('');
-  const [conversationDisplayType, setConversationDisplayType] = useState(
-    ConversationDisplayType.CONVERSATION,
-  );
   const [activeConversation, setActiveConversation] = useState<IMessageIPFS[]>();
   const [isConvSelected, setIsConvSelected] = useState(false);
 
@@ -54,7 +51,6 @@ function Messaging() {
   };
 
   const handleDisplayChange = (conversationDisplayType: ConversationDisplayType) => {
-    setConversationDisplayType(conversationDisplayType);
     conversationDisplayType === ConversationDisplayType.REQUEST
       ? navigate('/messaging/requests')
       : navigate('/messaging/conversations');
@@ -116,16 +112,18 @@ function Messaging() {
             handleDisplayChange={handleDisplayChange}
           />
           <div className='flex flex-row'>
-            <div className='basis-1/4 border-r-2'>
-              <ConversationList
-                conversations={
-                  conversationDisplayType == ConversationDisplayType.CONVERSATION
-                    ? conversations
-                    : requests
-                }
-                conversationDisplayType={conversationDisplayType}
-              />
-            </div>
+            {conversationType && (
+              <div className='basis-1/4 border-r-2'>
+                <ConversationList
+                  conversations={
+                    conversationType == ConversationDisplayType.CONVERSATION
+                      ? conversations
+                      : requests
+                  }
+                  conversationDisplayType={conversationType}
+                />
+              </div>
+            )}
             {selectedConversationPeerAddress && conversationMessages && (
               <div className='basis-3/4 w-full px-5 flex flex-col justify-between'>
                 <MessageList
