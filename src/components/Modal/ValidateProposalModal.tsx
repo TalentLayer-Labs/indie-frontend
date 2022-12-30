@@ -1,9 +1,9 @@
 import { ethers } from 'ethers';
 import { Check, X } from 'heroicons-react';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { validateProposal } from '../../contracts/acceptProposal';
 import { renderTokenAmount } from '../../utils/conversion';
-import { IAccount, IProposal } from '../../types';
+import { ConversationDisplayType, IAccount, IProposal } from '../../types';
 import Step from '../Step';
 import useFees from '../../hooks/useFees';
 import { FEE_RATE_DIVIDER } from '../../config';
@@ -64,7 +64,11 @@ function ValidateProposalModal({ proposal, account }: { proposal: IProposal; acc
       console.log('handleMessageUser inside');
       await initPush(account.address as string);
     }
-    navigate(`/messaging/${ethers.utils.getAddress(proposal.seller?.address)}`);
+    navigate(
+      `/messaging/${ConversationDisplayType.CONVERSATION}/${ethers.utils.getAddress(
+        proposal.seller?.address,
+      )}`,
+    );
   };
 
   return (
