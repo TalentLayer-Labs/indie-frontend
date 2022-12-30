@@ -10,7 +10,7 @@ interface IConversationCardProps {
   address: string;
   latestMessage?: string;
   peerAddress: string;
-  conversationDisplayType: ConversationDisplayType;
+  conversationDisplayType: string;
 }
 
 const ConversationCard = ({

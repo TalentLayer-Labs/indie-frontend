@@ -4,7 +4,7 @@ import { ConversationDisplayType } from '../../types';
 
 interface IConversationListProps {
   conversations: Message[];
-  conversationDisplayType: ConversationDisplayType;
+  conversationDisplayType: string;
 }
 
 const ConversationList = ({ conversations, conversationDisplayType }: IConversationListProps) => {
