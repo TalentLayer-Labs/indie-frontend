@@ -25,13 +25,13 @@ const ConversationCard = ({
   const approveRequest = () => {
     const approve = async () => {
       await chatApi.approve({ account: address, senderAddress: peerAddress });
+      navigate(
+        `/messaging/${ConversationDisplayType.CONVERSATION}/${pCAIP10ToWallet(peerAddress)}`,
+      );
     };
     if (peerAddress) {
       try {
         approve();
-        navigate(
-          `/messaging/${ConversationDisplayType.CONVERSATION}/${pCAIP10ToWallet(peerAddress)}`,
-        );
       } catch (e) {
         console.error(e);
       }
@@ -72,7 +72,7 @@ const ConversationCard = ({
           </div>
           <div className='basis-1/4'>
             <CheckCircle
-              className='h-12 w-12 text-green-500 cursor-pointer'
+              className='h-12 w-12 text-indigo-500 cursor-pointer'
               onClick={approveRequest}
             />
           </div>

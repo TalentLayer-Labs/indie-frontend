@@ -68,6 +68,7 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const decodePrivateKey = async (): Promise<void> => {
+    console.log('Decode Private key');
     if (pushUser) {
       const pgpPrivateKey = await chatApi.decryptWithWalletRPCMethod(
         pushUser.encryptedPrivateKey,
@@ -85,6 +86,7 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
   // }, [address]);
 
   const getConversations = async (): Promise<void> => {
+    console.log('Get conversations');
     if (pushUser && privateKey) {
       const conversations = await chatApi.chats({
         pgpPrivateKey: privateKey,
@@ -95,11 +97,13 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const getRequests = async (): Promise<void> => {
+    console.log('Get requests');
     if (pushUser && privateKey) {
       const requests = await chatApi.requests({
         pgpPrivateKey: privateKey,
         account: pushUser.wallets,
       });
+      console.log('requests', requests);
       setRequests(requests);
     }
   };
@@ -128,6 +132,10 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
         const messages = conversationMessages?.get(
           walletToPCAIP10(selectedConversationPeerAddress),
         );
+        if (!messages) {
+          // If first message in conversation, Re-fetch conversation data
+          await getConversations();
+        }
         if (messages && setConversationMessages) {
           messages.push(latestMessage);
           conversationMessages?.set(selectedConversationPeerAddress, messages);
@@ -186,7 +194,7 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
           //TODO pCAIP10ToWallet(conversation.toCAIP10) ?
           messagesMap.set(conversation.toCAIP10, messages);
         }
-        console.log('Messages: ', messagesMap);
+        console.log('MessagesMap: ', messagesMap);
         setConversationMessages(messagesMap);
       }
     } catch (e) {
@@ -195,7 +203,6 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
-    console.log('Decode Private key');
     try {
       // const pushPrivateKey = sessionStorage.getItem('push-private-key');
       // if (pushPrivateKey) {
@@ -213,7 +220,6 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     //TODO Gets the first message of the conversation
-    console.log('Get conversations');
     try {
       getConversations();
       getRequests();

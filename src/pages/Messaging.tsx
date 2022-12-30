@@ -13,6 +13,7 @@ import { watchAccount } from '@wagmi/core';
 import { ConversationDisplayType } from '../types';
 import { decryptMessage } from '@pushprotocol/restapi/src/lib/helpers';
 import Steps from '../components/Steps';
+import useConversationListener from '../messaging/hooks/useConversationListener';
 
 function Messaging() {
   const { account, user } = useContext(TalentLayerContext);
@@ -40,7 +41,7 @@ function Messaging() {
   const [activeConversation, setActiveConversation] = useState<IMessageIPFS[]>();
   const [isConvSelected, setIsConvSelected] = useState(false);
 
-  //TODO: Add redirect to sign in if not TL user
+  useConversationListener();
 
   const handleDecryptConversations = async () => {
     try {
@@ -69,7 +70,8 @@ function Messaging() {
           messageContent,
           receiverAddress: walletToPCAIP10(selectedConversationPeerAddress),
           pgpPrivateKey: privateKey,
-          env: import.meta.env.PUSH_ENV,
+          // env: import.meta.env.VITE_PUSH_ENV,
+          apiKey: import.meta.env.VITE_PUSH_API_KEY,
         });
         await updateAfterSend(selectedConversationPeerAddress, response);
         setMessageContent('');
