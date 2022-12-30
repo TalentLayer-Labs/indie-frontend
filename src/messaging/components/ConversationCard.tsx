@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { ConversationDisplayType } from '../../types';
 import { chat as chatApi } from '@pushprotocol/restapi/src/lib';
 import { pCAIP10ToWallet } from '@pushprotocol/restapi/src/lib/helpers';
+import { CheckCircle } from 'heroicons-react';
 
 interface IConversationCardProps {
   address: string;
@@ -28,7 +29,9 @@ const ConversationCard = ({
     if (peerAddress) {
       try {
         approve();
-        navigate(`/messaging/${peerAddress}`);
+        navigate(
+          `/messaging/${ConversationDisplayType.CONVERSATION}/${pCAIP10ToWallet(peerAddress)}`,
+        );
       } catch (e) {
         console.error(e);
       }
@@ -41,15 +44,13 @@ const ConversationCard = ({
   // const isActiveConversation = () => return key === address;
 
   const handleSelectConversation = () => {
-    navigate(`/messaging/${pCAIP10ToWallet(peerAddress)}`);
+    navigate(`/messaging/${conversationDisplayType}/${pCAIP10ToWallet(peerAddress)}`);
   };
 
   //${isConvSelected ? 'border-indigo-500 border-2' : 'border-b-2'}
 
   return conversationDisplayType === ConversationDisplayType.REQUEST ? (
-    <div
-      className={`flex justify-start py-4 px-2 justify-center items-center border-b-2 cursor-pointer 
-      `}>
+    <div className={`flex justify-start py-4 px-2 justify-center items-center border-b-2 `}>
       <div className='w-1/4'>
         <img
           src={`/default-avatar-${Number(user?.id ? user.id : '1') % 11}.jpeg`}
@@ -58,8 +59,8 @@ const ConversationCard = ({
         />
       </div>
       <div className='w-full'>
-        <div className='flex'>
-          <div className='basis-1/4'>
+        <div className='flex items-center'>
+          <div className='basis-3/4'>
             {user && user.handle ? (
               <b>{user.handle}</b>
             ) : (
@@ -70,12 +71,10 @@ const ConversationCard = ({
             </p>
           </div>
           <div className='basis-1/4'>
-            <button
-              type='submit'
-              className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
-              onClick={() => approveRequest()}>
-              Approve
-            </button>
+            <CheckCircle
+              className='h-12 w-12 text-green-500 cursor-pointer'
+              onClick={approveRequest}
+            />
           </div>
         </div>
       </div>

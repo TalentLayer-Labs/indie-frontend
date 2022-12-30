@@ -12,9 +12,10 @@ import { walletToPCAIP10 } from '@pushprotocol/restapi/src/lib/helpers/address';
 import { watchAccount } from '@wagmi/core';
 import { ConversationDisplayType } from '../types';
 import { decryptMessage } from '@pushprotocol/restapi/src/lib/helpers';
+import Steps from '../components/Steps';
 
 function Messaging() {
-  const { user } = useContext(TalentLayerContext);
+  const { account, user } = useContext(TalentLayerContext);
   const {
     pushUser,
     initPush,
@@ -26,9 +27,12 @@ function Messaging() {
     privateKey,
     disconnect,
   } = useContext(PushContext);
-  const { address: selectedConversationPeerAddress = '' } = useParams();
+  const {
+    address: selectedConversationPeerAddress = '',
+    conversationType = ConversationDisplayType.CONVERSATION,
+  } = useParams();
   const navigate = useNavigate();
-  const peerUser = useUserByAddress(selectedConversationPeerAddress);
+  // const peerUser = useUserByAddress(selectedConversationPeerAddress);
   const [messageContent, setMessageContent] = useState('');
   const [conversationDisplayType, setConversationDisplayType] = useState(
     ConversationDisplayType.CONVERSATION,
@@ -50,6 +54,9 @@ function Messaging() {
 
   const handleDisplayChange = (conversationDisplayType: ConversationDisplayType) => {
     setConversationDisplayType(conversationDisplayType);
+    conversationDisplayType === ConversationDisplayType.REQUEST
+      ? navigate('/messaging/requests')
+      : navigate('/messaging/conversations');
     setIsConvSelected(false);
   };
 
@@ -62,31 +69,9 @@ function Messaging() {
           messageContent,
           receiverAddress: walletToPCAIP10(selectedConversationPeerAddress),
           pgpPrivateKey: privateKey,
+          env: import.meta.env.PUSH_ENV,
         });
         await updateAfterSend(selectedConversationPeerAddress, response);
-        // //Decrypt sent message content (could get from the state)
-        // const latestDecryptedMessage = await decryptMessage({
-        //   encryptedMessage: response.messageContent as string,
-        //   signature: response.signature as string,
-        //   encryptedSecret: response.encryptedSecret as string,
-        //   encryptionType: response.encType as string,
-        //   signatureValidationPubliKey: pushUser.publicKey,
-        //   pgpPrivateKey: privateKey,
-        // });
-        // //Create new IMessageIPFS object
-        // const latestMessage: IMessageIPFS = {
-        //   ...response,
-        //   messageContent: latestDecryptedMessage,
-        // };
-        // //Update conversationMessages state with new message
-        // const messages = conversationMessages?.get(
-        //   walletToPCAIP10(selectedConversationPeerAddress),
-        // );
-        // if (messages && setConversationMessages) {
-        //   messages.push(latestMessage);
-        //   conversationMessages?.set(selectedConversationPeerAddress, messages);
-        //   setConversationMessages(conversationMessages);
-        // }
         setMessageContent('');
       }
     } catch (e) {
@@ -96,10 +81,13 @@ function Messaging() {
 
   watchAccount(() => {
     if (disconnect && initPush && user?.address) {
-      disconnect();
-      // initPush(user?.address);
+      const changeUser = async () => {
+        disconnect();
+        // await initPush(user?.address);
+        navigate(`/messaging`);
+      };
+      changeUser();
     }
-    navigate(`/messaging`);
   });
 
   return (
@@ -108,7 +96,9 @@ function Messaging() {
         Indie <span className='text-indigo-600'>Chat </span>
       </p>
 
-      {user && !conversations && (
+      <Steps targetTitle={'Access messaging'} />
+
+      {account?.isConnected && user && !conversations && (
         <button
           type='submit'
           className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'

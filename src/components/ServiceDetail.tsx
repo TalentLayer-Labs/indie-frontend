@@ -4,6 +4,9 @@ import TalentLayerContext from '../context/talentLayer';
 import usePaymentsByService from '../hooks/usePaymentsByService';
 import useProposalsByService from '../hooks/useProposalsByService';
 import useReviewsByService from '../hooks/useReviewsByService';
+import useServiceDetails from '../hooks/useServiceDetails';
+import { renderTokenAmount } from '../utils/conversion';
+import { ConversationDisplayType, IService, ProposalStatusEnum, ServiceStatusEnum } from '../types';
 import { renderTokenAmount, renderTokenAmountFromConfig } from '../utils/conversion';
 import { IService, ProposalStatusEnum, ServiceStatusEnum } from '../types';
 import { formatDate } from '../utils/dates';
@@ -39,7 +42,11 @@ function ServiceDetail({ service }: { service: IService }) {
     if (user && initPush) {
       console.log('handleMessageUser inside');
       await initPush(user.address);
-      navigate(`/messaging/${ethers.utils.getAddress(service.buyer?.address)}`);
+      navigate(
+        `/messaging/${ConversationDisplayType.CONVERSATION}/${ethers.utils.getAddress(
+          service.buyer?.address,
+        )}`,
+      );
     }
   };
 

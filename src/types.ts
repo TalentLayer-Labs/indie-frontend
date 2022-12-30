@@ -192,6 +192,6 @@ export type IUserGain = {
 };
 
 export enum ConversationDisplayType {
-  CONVERSATION,
-  REQUEST,
+  CONVERSATION = 'conversation',
+  REQUEST = 'request',
 }
