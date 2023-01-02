@@ -12,12 +12,17 @@ const useConversationListener = () => {
     privateKey,
   } = useContext(PushContext);
 
+  // useEffect(() => {
+  //   console.log('useConversationListener: conversations updated', conversations);
+  // }, [conversations]);
+
   useEffect(() => {
-    console.log('useConversationListener: ', conversations);
+    console.log('useConversationListener');
     let conversationFetcher: NodeJS.Timer;
     const fetchData = async () => {
       if (
-        conversations &&
+        //TODO Why this first check ?
+        // conversations &&
         setConversations &&
         conversationMessages &&
         setConversationMessages &&
@@ -27,7 +32,7 @@ const useConversationListener = () => {
           conversationFetcher = setInterval(async () => {
             await getConversations();
             console.log('tick', Date.now());
-          }, 2000);
+          }, 5000);
           console.log('dataStreamId: ', conversationFetcher);
         } catch (err: any) {
           console.error(err);
@@ -42,7 +47,7 @@ const useConversationListener = () => {
         clearInterval(conversationFetcher);
       }
     };
-  }, []);
+  }, [conversations]);
 
   const getConversations = async (): Promise<void> => {
     if (pushUser && privateKey && setConversations) {
@@ -50,8 +55,15 @@ const useConversationListener = () => {
         pgpPrivateKey: privateKey,
         account: pushUser.wallets,
       });
-      setConversations(newConversations);
-      console.log('newConversations', newConversations);
+      console.log('newConversations: ', newConversations);
+      const stateConversations = JSON.parse(JSON.stringify(conversations));
+      console.log('conversations: ', stateConversations);
+      const hasConversationsChanged =
+        JSON.stringify(newConversations) !== JSON.stringify(stateConversations);
+      if (hasConversationsChanged) {
+        console.log('conversations changed');
+        setConversations(newConversations);
+      }
     }
   };
 };

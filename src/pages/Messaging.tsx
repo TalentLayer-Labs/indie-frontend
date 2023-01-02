@@ -38,6 +38,7 @@ function Messaging() {
   const [activeConversation, setActiveConversation] = useState<IMessageIPFS[]>();
   const [isConvSelected, setIsConvSelected] = useState(false);
 
+  //TODO Need to have this launched on push login
   useConversationListener();
 
   const handleDecryptConversations = async () => {
