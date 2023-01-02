@@ -99,12 +99,12 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
   const getRequests = async (): Promise<void> => {
     console.log('Get requests');
     if (pushUser && privateKey) {
-      const requests = await chatApi.requests({
+      const latestRequests = await chatApi.requests({
         pgpPrivateKey: privateKey,
         account: pushUser.wallets,
       });
-      console.log('requests', requests);
-      setRequests(requests);
+      console.log('requests', latestRequests);
+      setRequests(latestRequests);
     }
   };
 
@@ -184,18 +184,34 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
               pgpPrivateKey: privateKey,
             });
             messages.push(...historicalMessages);
-            console.log('messages: ', messages);
+            // console.log('messages: ', messages);
           }
           // Add here the first message of the conversation the messages array
           messages.push(conversation);
           messages.sort((messageA, messageB) => {
             return messageA.timestamp - messageB.timestamp;
           });
-          //TODO pCAIP10ToWallet(conversation.toCAIP10) ?
           messagesMap.set(conversation.toCAIP10, messages);
         }
-        console.log('MessagesMap: ', messagesMap);
+        //TODO: Not really useful as if this function is called, it means a message has been added somewhere
+
+        // let isContentSame = false;
+        // console.log('conversationMessages', conversationMessages);
+        // if (conversationMessages) {
+        //   for (const [address, messages] of conversationMessages.entries()) {
+        //     if (messages.length !== messagesMap.get(address)?.length) {
+        //       console.log('messages.length', messages.length);
+        //       console.log('messagesMap.get(address)?.length', messagesMap.get(address)?.length);
+        //       // isContentSame = false;
+        //       break;
+        //     }
+        //     isContentSame = true;
+        //   }
+        // }
+        // if (!isContentSame) {
+        //   console.log('setConversationMessages', isContentSame);
         setConversationMessages(messagesMap);
+        // }
       }
     } catch (e) {
       console.error(e);
