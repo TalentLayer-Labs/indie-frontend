@@ -5,9 +5,14 @@ import { ConversationDisplayType } from '../../types';
 interface IConversationListProps {
   conversations: Message[];
   conversationDisplayType: string;
+  selectedConversationPeerAddress: string;
 }
 
-const ConversationList = ({ conversations, conversationDisplayType }: IConversationListProps) => {
+const ConversationList = ({
+  conversations,
+  conversationDisplayType,
+  selectedConversationPeerAddress,
+}: IConversationListProps) => {
   return (
     <>
       {conversations.map(message => {
@@ -20,12 +25,14 @@ const ConversationList = ({ conversations, conversationDisplayType }: IConversat
                 : message.fromCAIP10
             }
             latestMessage={message.messageContent}
+            latestMessageTimestamp={message.timestamp}
             address={
               conversationDisplayType == ConversationDisplayType.CONVERSATION
                 ? message.fromCAIP10
                 : message.toCAIP10
             }
             conversationDisplayType={conversationDisplayType}
+            selectedConversationPeerAddress={selectedConversationPeerAddress}
           />
         );
       })}

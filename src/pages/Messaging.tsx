@@ -11,9 +11,7 @@ import PushContext from '../messaging/context/pushUser';
 import { walletToPCAIP10 } from '@pushprotocol/restapi/src/lib/helpers/address';
 import { watchAccount } from '@wagmi/core';
 import { ConversationDisplayType } from '../types';
-import { decryptMessage } from '@pushprotocol/restapi/src/lib/helpers';
 import Steps from '../components/Steps';
-import useConversationListener from '../messaging/hooks/useConversationListener';
 
 function Messaging() {
   const { account, user } = useContext(TalentLayerContext);
@@ -23,7 +21,6 @@ function Messaging() {
     conversations,
     conversationMessages,
     updateAfterSend,
-    setConversationMessages,
     requests,
     privateKey,
     disconnect,
@@ -34,13 +31,10 @@ function Messaging() {
     conversationType = ConversationDisplayType.CONVERSATION,
   } = useParams();
   const navigate = useNavigate();
-  // const peerUser = useUserByAddress(selectedConversationPeerAddress);
   const [messageContent, setMessageContent] = useState('');
-  const [activeConversation, setActiveConversation] = useState<IMessageIPFS[]>();
-  const [isConvSelected, setIsConvSelected] = useState(false);
 
   //TODO Need to have this launched on push login
-  useConversationListener();
+  // useConversationListener();
 
   const handleDecryptConversations = async () => {
     try {
@@ -56,7 +50,6 @@ function Messaging() {
     conversationDisplayType === ConversationDisplayType.REQUEST
       ? navigate('/messaging/requests')
       : navigate('/messaging/conversations');
-    setIsConvSelected(false);
   };
 
   const sendNewMessage = async () => {
@@ -115,10 +108,7 @@ function Messaging() {
           />
           <div className='flex flex-row'>
             {conversationType && (
-              <div
-                className='basis-1/4 border-r-2 overflow-y-auto h-[calc(100vh-16rem)]'
-                // style={{ height: '500px' }}
-              >
+              <div className='basis-1/4 h-[calc(100vh-16rem)] flex-no-wrap flex-none overflow-y-auto border-r-2'>
                 <ConversationList
                   conversations={
                     conversationType == ConversationDisplayType.CONVERSATION
@@ -126,6 +116,7 @@ function Messaging() {
                       : requests
                   }
                   conversationDisplayType={conversationType}
+                  selectedConversationPeerAddress={selectedConversationPeerAddress}
                 />
               </div>
             )}
