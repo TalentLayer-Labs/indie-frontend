@@ -25,6 +25,7 @@ const PushContext = createContext<{
   disconnect?: () => void;
   initPush?: (address: string) => void;
   privateKey?: string;
+  conversationsLoaded: boolean;
 }>({
   pushUser: undefined,
   conversations: undefined,
@@ -37,6 +38,7 @@ const PushContext = createContext<{
   disconnect: undefined,
   initPush: undefined,
   privateKey: undefined,
+  conversationsLoaded: false,
 });
 
 const PushProvider = ({ children }: { children: ReactNode }) => {
@@ -46,6 +48,7 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
   const [conversations, setConversations] = useState<Message[] | undefined>();
   const [requests, setRequests] = useState<Message[] | undefined>();
   const [conversationMessages, setConversationMessages] = useState<Map<string, IMessageIPFS[]>>();
+  const [conversationsLoaded, setConversationsLoaded] = useState(false);
 
   const disconnect = (): void => {
     setConversations(undefined);
@@ -87,12 +90,18 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
 
   const getConversations = async (): Promise<void> => {
     console.log('Get conversations');
+    setConversationsLoaded(false);
     if (pushUser && privateKey) {
-      const conversations = await chatApi.chats({
-        pgpPrivateKey: privateKey,
-        account: pushUser.wallets,
-      });
-      setConversations(conversations);
+      try {
+        const conversations = await chatApi.chats({
+          pgpPrivateKey: privateKey,
+          account: pushUser.wallets,
+        });
+        setConversations(conversations);
+      } catch (e) {
+        console.error(e);
+        setConversationsLoaded(true);
+      }
     }
   };
 
@@ -215,6 +224,7 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
       }
     } catch (e) {
       console.error(e);
+      setConversationsLoaded(true);
     }
   };
 
@@ -256,6 +266,10 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
     };
   }, [conversations]);
 
+  useEffect(() => {
+    setConversationsLoaded(true);
+  }, [conversationsLoaded]);
+
   const value = useMemo(() => {
     return {
       pushUser: pushUser ? pushUser : undefined,
@@ -269,6 +283,7 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
       privateKey: privateKey ? privateKey : undefined,
       disconnect: disconnect,
       initPush: init,
+      conversationsLoaded,
     };
   }, [pushUser, conversations, getConversations, conversationMessages]);
 

@@ -28,3 +28,12 @@ export const buildConversationId = (talentLayerId1: string, talentLayerId2: stri
     ? `${CONVERSATION_PREFIX}/${talentLayerId1}-${talentLayerId2}`
     : `${CONVERSATION_PREFIX}/${talentLayerId2}-${talentLayerId1}`;
 };
+
+export const formatTime = (timestamp: number | undefined): string =>
+  timestamp
+    ? new Date(timestamp).toLocaleTimeString(undefined, {
+        hour12: true,
+        hour: 'numeric',
+        minute: '2-digit',
+      })
+    : '';

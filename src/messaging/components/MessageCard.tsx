@@ -1,5 +1,5 @@
 import { DecodedMessage } from '@xmtp/xmtp-js';
-import { shortAddress } from '../utils/messaging';
+import { formatTime, shortAddress } from '../utils/messaging';
 import TalentLayerContext from '../../context/talentLayer';
 import { useContext } from 'react';
 import { getUserByAddress } from '../../queries/users';
@@ -24,13 +24,18 @@ const MessageCard = ({ message }: IMessageCardProps) => {
 
   return (
     <>
-      <div className={`flex ${isSender ? 'justify-end' : 'justify-start'} mb-4`}>
+      <div className={`flex ${isSender ? 'justify-end pr-5' : 'justify-start'} mb-4 items-center`}>
         {isSender && user && (
-          <img
-            src={`/default-avatar-${Number(user?.id ? user.id : '1') % 11}.jpeg`}
-            className='object-cover h-12 w-12 rounded-full'
-            alt=''
-          />
+          <>
+            <span className='text-sm font-normal text-n-300 text-md uppercase pr-3 text-gray-500'>
+              {formatTime(message.timestamp)}
+            </span>
+            <img
+              src={`/default-avatar-${Number(user?.id ? user.id : '1') % 11}.jpeg`}
+              className='object-cover h-12 w-12 rounded-full'
+              alt=''
+            />
+          </>
         )}
         <div
           className={`py-3 px-4 ${
@@ -48,11 +53,14 @@ const MessageCard = ({ message }: IMessageCardProps) => {
           <div>{message.messageContent}</div>
         </div>
         {!isSender && (
-          <img
-            src={`/default-avatar-${Number(peerUser?.id ? peerUser.id : '1') % 11}.jpeg`}
-            className='object-cover h-12 w-12 rounded-full'
-            alt=''
-          />
+          <>
+            <img
+              src={`/default-avatar-${Number(peerUser?.id ? peerUser.id : '1') % 11}.jpeg`}
+              className='object-cover h-12 w-12 rounded-full'
+              alt=''
+            />
+            <span className='text-sm pl-3 text-gray-500'>{formatTime(message.timestamp)}</span>
+          </>
         )}
       </div>
     </>
