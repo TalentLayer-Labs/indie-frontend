@@ -27,6 +27,7 @@ function Messaging() {
     requests,
     privateKey,
     disconnect,
+    conversationsLoaded,
   } = useContext(PushContext);
   const {
     address: selectedConversationPeerAddress = '',
@@ -105,7 +106,7 @@ function Messaging() {
           Connect to Push
         </button>
       )}
-      {conversations && requests && (
+      {conversations && requests && conversationsLoaded && (
         // <div className='border-2 rounded-md'>
         <>
           <CardHeader
@@ -114,7 +115,7 @@ function Messaging() {
           />
           <div className='flex flex-row'>
             {conversationType && (
-              <div className='basis-1/4 border-r-2'>
+              <div className='basis-1/4 border-r-2 overflow-y-auto' style={{ height: '500px' }}>
                 <ConversationList
                   conversations={
                     conversationType == ConversationDisplayType.CONVERSATION
@@ -125,20 +126,27 @@ function Messaging() {
                 />
               </div>
             )}
-            {selectedConversationPeerAddress && conversationMessages && (
-              <div className='basis-3/4 w-full px-5 flex flex-col justify-between'>
+
+            <div
+              className='basis-3/4 w-full pl-5 flex flex-col justify-between h-16'
+              style={{ height: '500px' }}>
+              {/*{selectedConversationPeerAddress && conversationMessages && conversationsLoaded && (*/}
+              <div className='overflow-y-auto'>
                 <MessageList
                   conversationMessages={
-                    conversationMessages.get(walletToPCAIP10(selectedConversationPeerAddress)) ?? []
+                    conversationMessages?.get(walletToPCAIP10(selectedConversationPeerAddress)) ??
+                    []
                   }
                 />
-                <MessageComposer
-                  messageContent={messageContent}
-                  setMessageContent={setMessageContent}
-                  sendNewMessage={sendNewMessage}
-                />
               </div>
-            )}
+
+              {/*)}*/}
+              <MessageComposer
+                messageContent={messageContent}
+                setMessageContent={setMessageContent}
+                sendNewMessage={sendNewMessage}
+              />
+            </div>
           </div>
         </>
       )}
