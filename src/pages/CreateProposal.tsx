@@ -7,20 +7,17 @@ import Steps from '../components/Steps';
 import TalentLayerContext from '../context/talentLayer';
 import useServiceById from '../hooks/useServiceById';
 import PushContext from '../messaging/context/pushUser';
-import { IUser } from '@pushprotocol/restapi';
 
 function CreateProposal() {
   const { account, user } = useContext(TalentLayerContext);
-  const { getOrCreateUser } = useContext(PushContext);
-  const [pushUser, setPushUser] = useState<IUser>();
+  const { pushUserExists, checkPushUserExistence } = useContext(PushContext);
   const { id } = useParams<{ id: string }>();
   const service = useServiceById(id || '1');
 
-  const handleGetOrCreatePushUser = async () => {
+  const handleCheckUserExistence = async () => {
     try {
-      if (getOrCreateUser && user?.address) {
-        const pushUser = await getOrCreateUser(user?.address);
-        setPushUser(pushUser);
+      if (checkPushUserExistence && user?.address) {
+        await checkPushUserExistence(user?.address);
       }
     } catch (e) {
       console.error(e);
@@ -41,7 +38,7 @@ function CreateProposal() {
       <Steps targetTitle={'Filled the proposal form'} />
       {account?.isConnected && user && <ProposalForm user={user} service={service} />}
       <Steps targetTitle={'Fill the proposal form'} />
-      {!pushUser && account?.isConnected && user && (
+      {!pushUserExists && account?.isConnected && user && (
         <div className='border border-gray-200 rounded-md p-8'>
           <p className='text-gray-500 py-4'>
             In order to create a proposal, you need to be registered to our decentralized messaging
@@ -50,12 +47,12 @@ function CreateProposal() {
           <button
             type='submit'
             className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
-            onClick={() => handleGetOrCreatePushUser()}>
+            onClick={() => handleCheckUserExistence()}>
             Connect to Push
           </button>
         </div>
       )}
-      {account?.isConnected && user && pushUser && <ProposalForm service={service} />}
+      {account?.isConnected && user && pushUserExists && <ProposalForm service={service} />}
     </div>
   );
 }

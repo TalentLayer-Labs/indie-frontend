@@ -1,7 +1,6 @@
 import { useContext, useState } from 'react';
 import TalentLayerContext from '../context/talentLayer';
 import { useNavigate, useParams } from 'react-router-dom';
-import useUserByAddress from '../hooks/useUserByAddress';
 import { chat as chatApi, IMessageIPFS } from '@pushprotocol/restapi';
 import CardHeader from '../messaging/components/CardHeader';
 import MessageComposer from '../messaging/components/MessageComposer';
@@ -25,6 +24,7 @@ function Messaging() {
     privateKey,
     disconnect,
     conversationsLoaded,
+    messagesLoaded,
   } = useContext(PushContext);
   const {
     address: selectedConversationPeerAddress = '',
@@ -32,9 +32,6 @@ function Messaging() {
   } = useParams();
   const navigate = useNavigate();
   const [messageContent, setMessageContent] = useState('');
-
-  //TODO Need to have this launched on push login
-  // useConversationListener();
 
   const handleDecryptConversations = async () => {
     try {
@@ -82,7 +79,6 @@ function Messaging() {
       changeUser();
     }
   });
-
   return (
     <div className='mx-auto text-gray-900 sm:px-4 lg:px-0 h-full'>
       <p className='text-5xl font-medium tracking-wider mb-8'>
@@ -99,7 +95,7 @@ function Messaging() {
           Connect to Push
         </button>
       )}
-      {conversations && requests && conversationsLoaded && (
+      {conversations && requests && (
         // <div className='border-2 rounded-md'>
         <>
           <CardHeader
@@ -117,6 +113,7 @@ function Messaging() {
                   }
                   conversationDisplayType={conversationType}
                   selectedConversationPeerAddress={selectedConversationPeerAddress}
+                  conversationsLoaded={conversationsLoaded}
                 />
               </div>
             )}
@@ -132,6 +129,8 @@ function Messaging() {
                     conversationMessages?.get(walletToPCAIP10(selectedConversationPeerAddress)) ??
                     []
                   }
+                  messagesLoaded={messagesLoaded}
+                  selectedConversationPeerAddress={!!selectedConversationPeerAddress}
                 />
               </div>
 
