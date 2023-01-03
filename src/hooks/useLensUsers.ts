@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react';
 import { getLensProfileInfo } from '../queries/lensCheck';
+import { IlensUser } from '../types';
 
-const useLensUser = (lensId: string) => {
+const useLensUser = (lensId: string): { lensUser: IlensUser | undefined } => {
   const [lensUser, setLensUser] = useState();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await getLensProfileInfo(lensId);
-        console.log('TOTO', response.data.data.profile);
 
         if (response?.data?.data?.profile) {
           setLensUser(response.data.data.profile);

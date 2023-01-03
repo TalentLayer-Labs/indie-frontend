@@ -12,7 +12,6 @@ function UserDetail({ user }: { user: IUser }) {
   const userDetails = useUserDetails(user?.uri);
 
   const { lensUser } = useLensUser('0x01a1ee');
-  console.log('bloup', lensUser);
 
   if (user.uri && !userDetails) {
     return <Loading />;
