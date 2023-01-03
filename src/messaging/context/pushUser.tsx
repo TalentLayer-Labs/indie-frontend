@@ -7,6 +7,7 @@ import { decryptMessage, pCAIP10ToWallet } from '@pushprotocol/restapi/src/lib/h
 import { IMessageIPFS } from '@pushprotocol/uiweb/lib/types';
 import { createUserIfNecessary } from '@pushprotocol/restapi/src/lib/chat/helpers';
 import { walletToPCAIP10 } from '@pushprotocol/restapi/src/lib/helpers/address';
+import useConversationListener from '../hooks/useConversationListener';
 
 const PushContext = createContext<{
   pushUser?: IUser;
@@ -26,6 +27,7 @@ const PushContext = createContext<{
   initPush?: (address: string) => void;
   privateKey?: string;
   conversationsLoaded: boolean;
+  getOrCreateUser?: (address: string) => Promise<IUser | undefined>;
 }>({
   pushUser: undefined,
   conversations: undefined,
@@ -39,6 +41,7 @@ const PushContext = createContext<{
   initPush: undefined,
   privateKey: undefined,
   conversationsLoaded: false,
+  getOrCreateUser: undefined,
 });
 
 const PushProvider = ({ children }: { children: ReactNode }) => {
@@ -55,6 +58,16 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
     setConversationMessages(undefined);
     setPrivateKey(undefined);
     setPushUser(undefined);
+  };
+
+  const getOrCreateUser = async (account: string): Promise<IUser | undefined> => {
+    console.log('Get or create Push User');
+    try {
+      const pushUserData = await createUserIfNecessary({ account });
+      return pushUserData;
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   const init = async (account: string) => {
@@ -268,6 +281,7 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     setConversationsLoaded(true);
+    // useConversationListener();
   }, [conversationsLoaded]);
 
   const value = useMemo(() => {
@@ -284,6 +298,7 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
       disconnect: disconnect,
       initPush: init,
       conversationsLoaded,
+      getOrCreateUser,
     };
   }, [pushUser, conversations, getConversations, conversationMessages]);
 
