@@ -10,23 +10,21 @@ const MessageList = ({ conversationMessages }: IMessageListProps) => {
   let lastMessageDate: number | undefined;
 
   return (
-    <div className=''>
-      <div className='flex flex-col mt-5'>
-        {conversationMessages.map((msg, index) => {
-          const messageCard = (
-            <>
-              {index === 0 && <ConversationBeginningNotice />}
-              <MessageCard
-                key={index}
-                message={msg}
-                dateHasChanged={!isOnSameDay(msg.timestamp, lastMessageDate)}
-              />
-            </>
-          );
-          lastMessageDate = msg.timestamp;
-          return messageCard;
-        })}
-      </div>
+    <div className='flex flex-col mt-5'>
+      {conversationMessages.map((msg, index) => {
+        const messageCard = (
+          <>
+            {index === 0 && <ConversationBeginningNotice />}
+            <MessageCard
+              key={index}
+              message={msg}
+              dateHasChanged={!isOnSameDay(msg.timestamp, lastMessageDate)}
+            />
+          </>
+        );
+        lastMessageDate = msg.timestamp;
+        return messageCard;
+      })}
     </div>
   );
 };

@@ -186,7 +186,8 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
     // Add here the first message of the conversation the messages array
     messages.push(conversation);
     messages.sort((messageA, messageB) => {
-      return messageA.timestamp - messageB.timestamp;
+      if (messageA.timestamp && messageB.timestamp) return messageA.timestamp - messageB.timestamp;
+      return 1;
     });
     //TODO pCAIP10ToWallet(conversation.toCAIP10) ?
     messagesMap.set(conversation.toCAIP10, messages);
@@ -211,7 +212,9 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
           // Add here the first message of the conversation the messages array
           messages.push(conversation);
           messages.sort((messageA, messageB) => {
-            return messageA.timestamp - messageB.timestamp;
+            if (messageA.timestamp && messageB.timestamp)
+              return messageA.timestamp - messageB.timestamp;
+            return 1;
           });
           messagesMap.set(conversation.toCAIP10, messages);
         }

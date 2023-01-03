@@ -14,3 +14,12 @@ export const formatDateDivider = (timestamp: number | undefined) => {
     day: 'numeric',
   });
 };
+
+export const formatDateConversationCard = (timestamp: number | undefined) => {
+  if (!timestamp) return '';
+  return new Date(timestamp)?.toLocaleString('en-US', {
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
+  });
+};

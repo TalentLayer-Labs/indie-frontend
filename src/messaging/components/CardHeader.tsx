@@ -1,10 +1,13 @@
 import { ConversationDisplayType } from '../../types';
+import useConversationListener from '../hooks/useConversationListener';
 
 interface ICardHeaderProps {
   peerAddress: string;
   handleDisplayChange: (conversationDisplayType: ConversationDisplayType) => void;
 }
 const CardHeader = ({ peerAddress, handleDisplayChange }: ICardHeaderProps) => {
+  useConversationListener();
+
   return (
     <div className='flex flex-row'>
       <div className='basis-1/4'>

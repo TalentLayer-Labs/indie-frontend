@@ -5,22 +5,28 @@ import { ConversationDisplayType } from '../../types';
 import { chat as chatApi } from '@pushprotocol/restapi/src/lib';
 import { pCAIP10ToWallet } from '@pushprotocol/restapi/src/lib/helpers';
 import { CheckCircle } from 'heroicons-react';
+import { formatDateConversationCard } from '../../utils/dates';
 
 interface IConversationCardProps {
   address: string;
   latestMessage?: string;
+  latestMessageTimestamp?: number;
   peerAddress: string;
   conversationDisplayType: string;
+  selectedConversationPeerAddress: string;
 }
 
 const ConversationCard = ({
   peerAddress,
   latestMessage,
+  latestMessageTimestamp,
   address,
   conversationDisplayType,
+  selectedConversationPeerAddress,
 }: IConversationCardProps) => {
   const user = useUserByAddress(pCAIP10ToWallet(peerAddress));
   const navigate = useNavigate();
+  const isConvSelected = pCAIP10ToWallet(peerAddress) === selectedConversationPeerAddress;
 
   const approveRequest = () => {
     const approve = async () => {
@@ -84,7 +90,10 @@ const ConversationCard = ({
     <div
       onClick={() => handleSelectConversation()}
       // onClick={() => setSelectedConversationPeerAddress(address)}
-      className={`flex justify-start py-4 px-2 justify-center items-center border-b-2 cursor-pointer 
+      className={`flex justify-start py-4 px-2 justify-center items-center border-b-2 cursor-pointer ${
+        isConvSelected ? 'bg-gray-200 ' : 'border-b-2'
+        // isConvSelected ? 'bg-gray-200 border border-gray-500/75' : 'border-b-2'
+      }
       `}>
       <div className='w-1/4'>
         <img
@@ -93,11 +102,16 @@ const ConversationCard = ({
           alt=''
         />
       </div>
-      <div className='w-full'>
+      <div className='w-1/2'>
         {user && user.handle ? <b>{user.handle}</b> : <b>{shortAddress(peerAddress)}</b>}
-        <p className='text-s font-medium text-gray-500'>
+        <p className='text-s font-medium text-gray-500 text-ellipsis overflow-hidden whitespace-nowrap'>
           {latestMessage && truncate(latestMessage, 75)}
         </p>
+      </div>
+      <div className='basis-1/4'>
+        <span className='text-sm pl-3 text-gray-400 bas'>
+          {formatDateConversationCard(latestMessageTimestamp)}
+        </span>
       </div>
     </div>
   );

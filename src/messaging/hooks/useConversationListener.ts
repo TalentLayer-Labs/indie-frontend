@@ -3,14 +3,7 @@ import PushContext from '../context/pushUser';
 import { chat as chatApi } from '@pushprotocol/restapi/src/lib';
 
 const useConversationListener = () => {
-  const {
-    conversations,
-    setConversations,
-    conversationMessages,
-    setConversationMessages,
-    pushUser,
-    privateKey,
-  } = useContext(PushContext);
+  const { conversations, setConversations, pushUser, privateKey } = useContext(PushContext);
 
   // useEffect(() => {
   //   console.log('useConversationListener: conversations updated', conversations);
@@ -24,8 +17,6 @@ const useConversationListener = () => {
         //TODO Why this first check ?
         // conversations &&
         setConversations &&
-        conversationMessages &&
-        setConversationMessages &&
         pushUser
       ) {
         try {
@@ -40,6 +31,8 @@ const useConversationListener = () => {
       }
     };
     fetchData();
+
+    //TODO set interval to fetch conversations in Push Context when Store initiated
 
     return () => {
       if (conversationFetcher) {
