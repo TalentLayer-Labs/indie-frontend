@@ -2,6 +2,7 @@ import { useContext } from 'react';
 import { NavLink } from 'react-router-dom';
 import TalentLayerContext from '../context/talentLayer';
 import useUserDetails from '../hooks/useUserDetails';
+import useLensUser from '../hooks/useLensUsers';
 import { IUser } from '../types';
 import Loading from './Loading';
 import Stars from './Stars';
@@ -9,6 +10,9 @@ import Stars from './Stars';
 function UserDetail({ user }: { user: IUser }) {
   const { user: currentUser } = useContext(TalentLayerContext);
   const userDetails = useUserDetails(user?.uri);
+
+  const { lensUser } = useLensUser('0x01a1ee');
+  console.log('bloup', lensUser);
 
   if (user.uri && !userDetails) {
     return <Loading />;
@@ -36,6 +40,12 @@ function UserDetail({ user }: { user: IUser }) {
         </p>
         <p className='text-sm text-gray-500 mt-4'>
           <strong>About:</strong> {userDetails?.about}
+        </p>
+        <p className='text-sm text-gray-500 mt-4'>
+          <strong>Lens Id:</strong> {lensUser?.id}
+        </p>
+        <p className='text-sm text-gray-500 mt-4'>
+          <strong>Lens profile:</strong> {lensUser?.name}
         </p>
       </div>
       {currentUser?.id === user.id && (

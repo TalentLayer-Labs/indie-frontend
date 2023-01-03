@@ -11,6 +11,11 @@ export type IUser = {
   numReviews: string;
 };
 
+export type IlensUser = {
+  name: string;
+  id: string;
+};
+
 export type IUserDetails = {
   title: string;
   about: string;
