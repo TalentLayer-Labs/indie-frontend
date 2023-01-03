@@ -1,5 +1,3 @@
-import { DecodedMessage } from '@xmtp/xmtp-js';
-
 export const shortAddress = (addr: string) =>
   addr.length > 10 && addr.startsWith('0x')
     ? `${addr.substring(0, 6)}...${addr.substring(addr.length - 4)}`
@@ -15,20 +13,6 @@ export const truncate = (str: string, length: number) => {
   return str;
 };
 
-export const getLatestMessage = (
-  messages: DecodedMessage[] | undefined,
-): DecodedMessage | undefined => (messages?.length ? messages[messages.length - 1] : undefined);
-
-export const CONVERSATION_PREFIX = 'talentLayer/dmV5';
-export const buildConversationId = (talentLayerId1: string, talentLayerId2: string) => {
-  const profileIdAParsed = parseInt(talentLayerId1, 16);
-  const profileIdBParsed = parseInt(talentLayerId2, 16);
-
-  return profileIdAParsed < profileIdBParsed
-    ? `${CONVERSATION_PREFIX}/${talentLayerId1}-${talentLayerId2}`
-    : `${CONVERSATION_PREFIX}/${talentLayerId2}-${talentLayerId1}`;
-};
-
 export const formatTime = (timestamp: number | undefined): string =>
   timestamp
     ? new Date(timestamp).toLocaleTimeString(undefined, {
@@ -37,3 +21,12 @@ export const formatTime = (timestamp: number | undefined): string =>
         minute: '2-digit',
       })
     : '';
+
+export const isOnSameDay = (
+  timestamp1: number | undefined,
+  timestamp2: number | undefined,
+): boolean => {
+  //TODO not sure what to do if no timestamp
+  if (!timestamp1 || !timestamp2) return true;
+  return new Date(timestamp1)?.toDateString() === new Date(timestamp2)?.toDateString();
+};

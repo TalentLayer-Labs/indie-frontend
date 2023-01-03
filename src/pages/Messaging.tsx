@@ -91,7 +91,7 @@ function Messaging() {
   });
 
   return (
-    <div className='mx-auto text-gray-900 sm:px-4 lg:px-0'>
+    <div className='mx-auto text-gray-900 sm:px-4 lg:px-0 h-full'>
       <p className='text-5xl font-medium tracking-wider mb-8'>
         Indie <span className='text-indigo-600'>Chat </span>
       </p>
@@ -115,7 +115,10 @@ function Messaging() {
           />
           <div className='flex flex-row'>
             {conversationType && (
-              <div className='basis-1/4 border-r-2 overflow-y-auto' style={{ height: '500px' }}>
+              <div
+                className='basis-1/4 border-r-2 overflow-y-auto h-[calc(100vh-16rem)]'
+                // style={{ height: '500px' }}
+              >
                 <ConversationList
                   conversations={
                     conversationType == ConversationDisplayType.CONVERSATION
@@ -128,8 +131,9 @@ function Messaging() {
             )}
 
             <div
-              className='basis-3/4 w-full pl-5 flex flex-col justify-between h-16'
-              style={{ height: '500px' }}>
+              className='basis-3/4 w-full pl-5 flex flex-col justify-between h-[calc(100vh-16rem)]'
+              // style={{ height: '100vh' }}
+            >
               {/*{selectedConversationPeerAddress && conversationMessages && conversationsLoaded && (*/}
               <div className='overflow-y-auto'>
                 <MessageList
