@@ -1,6 +1,6 @@
 import { processRequest } from '../utils/graphql';
 
-export const getAllProposalsbyServiceId = (id: string): Promise<any> => {
+export const getAllProposalsByServiceId = (id: string): Promise<any> => {
   const query = `
     {
       proposals(where: {service_: {id: "${id}"}}) {
