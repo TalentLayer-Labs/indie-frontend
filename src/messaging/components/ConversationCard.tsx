@@ -83,8 +83,7 @@ const ConversationCard = ({
       onClick={() => handleSelectConversation()}
       className={`flex justify-start py-4 px-2 justify-center items-center border-b-2 cursor-pointer ${
         isConvSelected ? 'bg-gray-200 ' : 'border-b-2'
-        // isConvSelected ? 'bg-gray-200 border border-gray-500/75' : 'border-b-2'
-      }
+      }qq
       `}>
       <div className='w-1/4'>
         <img
