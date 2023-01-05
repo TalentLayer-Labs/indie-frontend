@@ -32,9 +32,6 @@ function Messaging() {
   } = useParams();
   const navigate = useNavigate();
   const [messageContent, setMessageContent] = useState('');
-  const bottomRef = useRef<HTMLDivElement>(null);
-
-  console.log('conversationMessages', conversationMessages);
 
   const handleDecryptConversations = async () => {
     try {
@@ -115,7 +112,6 @@ function Messaging() {
                   selectedConversationPeerAddress={selectedConversationPeerAddress}
                   conversationsLoaded={conversationsLoaded}
                 />
-                <div ref={bottomRef}></div>
               </div>
             )}
 
