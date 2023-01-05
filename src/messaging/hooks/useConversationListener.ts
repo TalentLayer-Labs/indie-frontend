@@ -1,30 +1,18 @@
-import { useEffect, useState, FC, useContext } from 'react';
+import { useEffect, useContext } from 'react';
 import PushContext from '../context/pushUser';
 import { chat as chatApi } from '@pushprotocol/restapi/src/lib';
 
 const useConversationListener = () => {
   const { conversations, setConversations, pushUser, privateKey } = useContext(PushContext);
 
-  // useEffect(() => {
-  //   console.log('useConversationListener: conversations updated', conversations);
-  // }, [conversations]);
-
   useEffect(() => {
-    console.log('useConversationListener');
     let conversationFetcher: NodeJS.Timer;
     const fetchData = async () => {
-      if (
-        //TODO Why this first check ?
-        // conversations &&
-        setConversations &&
-        pushUser
-      ) {
+      if (setConversations && pushUser) {
         try {
           conversationFetcher = setInterval(async () => {
             await getConversations();
-            console.log('tick', Date.now());
           }, 5000);
-          console.log('dataStreamId: ', conversationFetcher);
         } catch (err: any) {
           console.error(err);
         }
@@ -32,11 +20,8 @@ const useConversationListener = () => {
     };
     fetchData();
 
-    //TODO set interval to fetch conversations in Push Context when Store initiated
-
     return () => {
       if (conversationFetcher) {
-        console.log('useConversationListener: cleanup', conversationFetcher);
         clearInterval(conversationFetcher);
       }
     };
