@@ -100,13 +100,6 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  //TODO set a reset of init for address change
-  // useEffect(() => {
-  //   if (address) {
-  //     init(address);
-  //   }
-  // }, [address]);
-
   const getConversations = async (): Promise<void> => {
     console.log('Get conversations');
     setConversationsLoaded(false);
@@ -169,7 +162,7 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
         }
         if (messages && setConversationMessages) {
           messages.push(latestMessage);
-          conversationMessages?.set(selectedConversationPeerAddress, messages);
+          conversationMessages?.set(walletToPCAIP10(selectedConversationPeerAddress), messages);
           setConversationMessages(conversationMessages);
         }
       }
@@ -190,7 +183,6 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
         pgpPrivateKey: privateKey,
       });
       messages.push(...historicalMessages);
-      console.log('messages: ', messages);
     }
     // Add here the first message of the conversation the messages array
     messages.push(conversation);
@@ -198,11 +190,11 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
       if (messageA.timestamp && messageB.timestamp) return messageA.timestamp - messageB.timestamp;
       return 1;
     });
-    //TODO pCAIP10ToWallet(conversation.toCAIP10) ?
     messagesMap.set(conversation.toCAIP10, messages);
   }
 
   const getMessages = async (): Promise<void> => {
+    setMessagesLoaded(false);
     // const messages = ...conversationMessages;
     const messagesMap = new Map<string, IMessageIPFS[]>();
     try {
@@ -226,7 +218,6 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
           });
           messagesMap.set(conversation.toCAIP10, messages);
         }
-        //TODO: Not really useful as if this function is called, it means a message has been added somewhere
 
         // let isContentSame = false;
         // console.log('conversationMessages', conversationMessages);
@@ -255,12 +246,7 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     try {
-      // const pushPrivateKey = sessionStorage.getItem('push-private-key');
-      // if (pushPrivateKey) {
-      //   setPrivateKey(pushPrivateKey);
-      // } else {
       decodePrivateKey();
-      // }
     } catch (e) {
       console.error(e);
     }
@@ -270,7 +256,7 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
   }, [pushUser]);
 
   useEffect(() => {
-    //TODO Gets the first message of the conversation
+    // Gets the first message of the conversation
     try {
       getConversations();
       getRequests();
@@ -283,8 +269,7 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
   }, [privateKey]);
 
   useEffect(() => {
-    console.log('Get conversation messages');
-    //TODO Gets all messages  of the conversation except the first message
+    // Gets all messages  of the conversation except the first message
     getMessages();
     return () => {
       setConversationMessages(undefined);

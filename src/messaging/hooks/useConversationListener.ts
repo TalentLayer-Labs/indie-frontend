@@ -48,13 +48,10 @@ const useConversationListener = () => {
         pgpPrivateKey: privateKey,
         account: pushUser.wallets,
       });
-      console.log('newConversations: ', newConversations);
       const stateConversations = JSON.parse(JSON.stringify(conversations));
-      console.log('conversations: ', stateConversations);
       const hasConversationsChanged =
         JSON.stringify(newConversations) !== JSON.stringify(stateConversations);
       if (hasConversationsChanged) {
-        console.log('conversations changed');
         setConversations(newConversations);
       }
     }

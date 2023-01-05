@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import TalentLayerContext from '../context/talentLayer';
 import { useNavigate, useParams } from 'react-router-dom';
 import { chat as chatApi, IMessageIPFS } from '@pushprotocol/restapi';
