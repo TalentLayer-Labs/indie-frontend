@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useRef, useState } from 'react';
 import TalentLayerContext from '../context/talentLayer';
 import { useNavigate, useParams } from 'react-router-dom';
 import { chat as chatApi, IMessageIPFS } from '@pushprotocol/restapi';
@@ -32,6 +32,9 @@ function Messaging() {
   } = useParams();
   const navigate = useNavigate();
   const [messageContent, setMessageContent] = useState('');
+  const bottomRef = useRef<HTMLDivElement>(null);
+
+  console.log('conversationMessages', conversationMessages);
 
   const handleDecryptConversations = async () => {
     try {
@@ -52,13 +55,11 @@ function Messaging() {
   const sendNewMessage = async () => {
     try {
       if (pushUser?.wallets && messageContent && privateKey && updateAfterSend) {
-        //Send message
         const response: IMessageIPFS = await chatApi.send({
           account: pushUser?.wallets,
           messageContent,
           receiverAddress: walletToPCAIP10(selectedConversationPeerAddress),
           pgpPrivateKey: privateKey,
-          // env: import.meta.env.VITE_PUSH_ENV,
           apiKey: import.meta.env.VITE_PUSH_API_KEY,
         });
         await updateAfterSend(selectedConversationPeerAddress, response);
@@ -73,12 +74,12 @@ function Messaging() {
     if (disconnect && initPush && user?.address) {
       const changeUser = async () => {
         disconnect();
-        // await initPush(user?.address);
         navigate(`/messaging`);
       };
       changeUser();
     }
   });
+
   return (
     <div className='mx-auto text-gray-900 sm:px-4 lg:px-0 h-full'>
       <p className='text-5xl font-medium tracking-wider mb-8'>
@@ -96,7 +97,6 @@ function Messaging() {
         </button>
       )}
       {conversations && requests && (
-        // <div className='border-2 rounded-md'>
         <>
           <CardHeader
             peerAddress={selectedConversationPeerAddress}
@@ -115,14 +115,11 @@ function Messaging() {
                   selectedConversationPeerAddress={selectedConversationPeerAddress}
                   conversationsLoaded={conversationsLoaded}
                 />
+                <div ref={bottomRef}></div>
               </div>
             )}
 
-            <div
-              className='basis-3/4 w-full pl-5 flex flex-col justify-between h-[calc(100vh-16rem)]'
-              // style={{ height: '100vh' }}
-            >
-              {/*{selectedConversationPeerAddress && conversationMessages && conversationsLoaded && (*/}
+            <div className='basis-3/4 w-full pl-5 flex flex-col justify-between h-[calc(100vh-16rem)]'>
               <div className='overflow-y-auto'>
                 <MessageList
                   conversationMessages={
@@ -134,7 +131,6 @@ function Messaging() {
                 />
               </div>
 
-              {/*)}*/}
               <MessageComposer
                 messageContent={messageContent}
                 setMessageContent={setMessageContent}

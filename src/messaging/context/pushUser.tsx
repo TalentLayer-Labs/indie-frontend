@@ -195,7 +195,6 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
 
   const getMessages = async (): Promise<void> => {
     setMessagesLoaded(false);
-    // const messages = ...conversationMessages;
     const messagesMap = new Map<string, IMessageIPFS[]>();
     try {
       if (conversations && pushUser) {
@@ -219,21 +218,6 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
           messagesMap.set(conversation.toCAIP10, messages);
         }
 
-        // let isContentSame = false;
-        // console.log('conversationMessages', conversationMessages);
-        // if (conversationMessages) {
-        //   for (const [address, messages] of conversationMessages.entries()) {
-        //     if (messages.length !== messagesMap.get(address)?.length) {
-        //       console.log('messages.length', messages.length);
-        //       console.log('messagesMap.get(address)?.length', messagesMap.get(address)?.length);
-        //       // isContentSame = false;
-        //       break;
-        //     }
-        //     isContentSame = true;
-        //   }
-        // }
-        // if (!isContentSame) {
-        //   console.log('setConversationMessages', isContentSame);
         setConversationMessages(messagesMap);
         setMessagesLoaded(true);
         // }

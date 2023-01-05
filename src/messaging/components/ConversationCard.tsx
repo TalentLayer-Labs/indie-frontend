@@ -48,7 +48,6 @@ const ConversationCard = ({
     navigate(`/messaging/${conversationDisplayType}/${pCAIP10ToWallet(peerAddress)}`);
   };
 
-  //TODO: Add a check on "user && user.id" for avatar & "user && user.name" for handle, if we want to display a loader (limited to only TL profiles)
   return conversationDisplayType === ConversationDisplayType.REQUEST ? (
     <div className={`flex justify-start py-4 px-2 justify-center items-center border-b-2`}>
       <div className='w-1/4'>
