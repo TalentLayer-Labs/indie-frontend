@@ -44,16 +44,9 @@ const ConversationCard = ({
     }
   };
 
-  // Display or not non TL profiles
-  // if (!user?.id) return;
-
-  // const isActiveConversation = () => return key === address;
-
   const handleSelectConversation = () => {
     navigate(`/messaging/${conversationDisplayType}/${pCAIP10ToWallet(peerAddress)}`);
   };
-
-  //${isConvSelected ? 'border-indigo-500 border-2' : 'border-b-2'}
 
   //TODO: Add a check on "user && user.id" for avatar & "user && user.name" for handle, if we want to display a loader (limited to only TL profiles)
   return conversationDisplayType === ConversationDisplayType.REQUEST ? (
@@ -89,7 +82,6 @@ const ConversationCard = ({
   ) : (
     <div
       onClick={() => handleSelectConversation()}
-      // onClick={() => setSelectedConversationPeerAddress(address)}
       className={`flex justify-start py-4 px-2 justify-center items-center border-b-2 cursor-pointer ${
         isConvSelected ? 'bg-gray-200 ' : 'border-b-2'
         // isConvSelected ? 'bg-gray-200 border border-gray-500/75' : 'border-b-2'

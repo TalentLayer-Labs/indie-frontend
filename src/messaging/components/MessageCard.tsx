@@ -18,9 +18,6 @@ const MessageCard = ({ message, dateHasChanged }: IMessageCardProps) => {
 
   const isSender = senderAddress.toLowerCase() === user?.address.toLowerCase();
 
-  // let activeUser;
-  // isSender ? (activeUser = user) : (activeUser = useUserByAddress(message.senderAddress));
-
   return (
     <>
       {dateHasChanged && <DateDivider timestamp={message.timestamp} />}
