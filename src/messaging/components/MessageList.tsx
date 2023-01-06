@@ -2,6 +2,7 @@ import MessageCard from './MessageCard';
 import { IMessageIPFS } from '@pushprotocol/uiweb/lib/types';
 import { isOnSameDay } from '../utils/messaging';
 import Loading from '../../components/Loading';
+import { useEffect, useRef } from 'react';
 
 interface IMessageListProps {
   conversationMessages: IMessageIPFS[];
@@ -15,6 +16,12 @@ const MessageList = ({
   selectedConversationPeerAddress,
 }: IMessageListProps) => {
   let lastMessageDate: number | undefined;
+  const bottomRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    console.log('scrolling to bottom');
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messagesLoaded]);
 
   return (
     <>
@@ -35,6 +42,7 @@ const MessageList = ({
           lastMessageDate = msg.timestamp;
           return messageCard;
         })}
+        <div ref={bottomRef}></div>
       </div>
     </>
   );
