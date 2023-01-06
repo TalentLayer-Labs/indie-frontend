@@ -19,7 +19,6 @@ const MessageList = ({
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    console.log('scrolling to bottom');
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messagesLoaded]);
 

@@ -19,7 +19,6 @@ const useConversationListener = () => {
       if (setConversations && pushUser) {
         try {
           conversationFetcher = setInterval(async () => {
-            console.log('tick');
             await checkStateUpdate();
           }, 5000);
         } catch (err: any) {
@@ -46,9 +45,6 @@ const useConversationListener = () => {
       const stateConversations = JSON.parse(JSON.stringify(conversations));
       const hasConversationsChanged =
         JSON.stringify(newConversations) != JSON.stringify(stateConversations);
-      // console.log('newConv', JSON.stringify(newConversations));
-      // console.log('stateConv', JSON.stringify(stateConversations));
-      // console.log('hasConversationsChanged', hasConversationsChanged);
 
       // Call the API to get the latest requests & check it against the state
       const latestRequests = await chatApi.requests({
@@ -59,11 +55,9 @@ const useConversationListener = () => {
       const hasRequestsChanged = JSON.stringify(latestRequests) !== JSON.stringify(stateRequests);
 
       if (hasConversationsChanged) {
-        console.log('conversations changed');
         await getConversations();
       }
       if (hasRequestsChanged) {
-        console.log('Requests changed');
         await getRequests();
       }
     }
