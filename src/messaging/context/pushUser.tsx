@@ -196,9 +196,10 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
   const getMessages = async (): Promise<void> => {
     setMessagesLoaded(false);
     const messagesMap = new Map<string, IMessageIPFS[]>();
-    try {
-      if (conversations && pushUser) {
-        for (const conversation of conversations) {
+
+    if (conversations && pushUser) {
+      for (const conversation of conversations) {
+        try {
           const messages = [];
           if (conversation.link && pushUser) {
             const historicalMessages = await chatApi.history({
@@ -216,15 +217,17 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
             return 1;
           });
           messagesMap.set(conversation.toCAIP10, messages);
-        }
+          // }
 
-        setConversationMessages(messagesMap);
-        setMessagesLoaded(true);
-        // }
+          setConversationMessages(messagesMap);
+          setMessagesLoaded(true);
+        } catch (e) {
+          // }
+          // }
+          console.error(e);
+          setMessagesLoaded(true);
+        }
       }
-    } catch (e) {
-      console.error(e);
-      setMessagesLoaded(true);
     }
   };
 
@@ -252,6 +255,7 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
     };
   }, [privateKey]);
 
+  //TODO: Remove this useEffect, it's gonna be problematic when listeners are implemented. No need to fetch messages every time the conversations change
   useEffect(() => {
     // Gets all messages  of the conversation except the first message
     getMessages();
