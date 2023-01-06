@@ -1,4 +1,4 @@
-import { formatTime, isOnSameDay, shortAddress } from '../utils/messaging';
+import { formatTime, shortAddress } from '../utils/messaging';
 import TalentLayerContext from '../../context/talentLayer';
 import { useContext } from 'react';
 import useUserByAddress from '../../hooks/useUserByAddress';

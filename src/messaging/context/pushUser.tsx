@@ -2,10 +2,9 @@ import { createContext, ReactNode, useEffect, useMemo, useState } from 'react';
 import { IUser } from '@pushprotocol/restapi';
 import { Message } from '@pushprotocol/restapi/src/lib/chat/ipfs';
 import { chat as chatApi } from '@pushprotocol/restapi/src/lib';
-import { decryptMessage, pCAIP10ToWallet } from '@pushprotocol/restapi/src/lib/helpers';
+import { pCAIP10ToWallet } from '@pushprotocol/restapi/src/lib/helpers';
 import { IMessageIPFS } from '@pushprotocol/uiweb/lib/types';
 import { createUserIfNecessary } from '@pushprotocol/restapi/src/lib/chat/helpers';
-import { walletToPCAIP10 } from '@pushprotocol/restapi/src/lib/helpers/address';
 
 const PushContext = createContext<{
   pushUser?: IUser;
@@ -19,10 +18,6 @@ const PushContext = createContext<{
   setConversationMessages?: React.Dispatch<
     React.SetStateAction<Map<string, IMessageIPFS[]> | undefined>
   >;
-  updateAfterSend?: (
-    selectedConversationPeerAddress: string,
-    latestEncryptedMessage: IMessageIPFS,
-  ) => Promise<void>;
   disconnect?: () => void;
   initPush?: (address: string) => void;
   privateKey?: string;
@@ -39,7 +34,6 @@ const PushContext = createContext<{
   getRequests: undefined,
   setConversations: undefined,
   setConversationMessages: undefined,
-  updateAfterSend: undefined,
   disconnect: undefined,
   initPush: undefined,
   privateKey: undefined,
@@ -104,10 +98,9 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
 
   const getConversations = async (): Promise<void> => {
     console.log('Get conversations');
-    // setConversationsLoaded(false);
-    // setMessagesLoaded(false);
     if (pushUser && privateKey) {
       try {
+        // Gets the first message of the conversation
         const conversations = await chatApi.chats({
           pgpPrivateKey: privateKey,
           account: pushUser.wallets,
@@ -130,91 +123,11 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
         pgpPrivateKey: privateKey,
         account: pushUser.wallets,
       });
-      console.log('requests', latestRequests);
       setRequests(latestRequests);
     }
   };
 
-  async function updateAfterSend(
-    selectedConversationPeerAddress: string,
-    latestEncryptedMessage: IMessageIPFS,
-  ) {
-    try {
-      if (pushUser && privateKey) {
-        //Decrypt sent message content (could also get from the "messageContent" state)
-        const latestDecryptedMessageContent = await decryptMessage({
-          encryptedMessage: latestEncryptedMessage.messageContent as string,
-          signature: latestEncryptedMessage.signature as string,
-          encryptedSecret: latestEncryptedMessage.encryptedSecret as string,
-          encryptionType: latestEncryptedMessage.encType as string,
-          signatureValidationPubliKey: pushUser.publicKey,
-          pgpPrivateKey: privateKey,
-        });
-        //Create new IMessageIPFS object
-        const latestDecryptedMessage: IMessageIPFS = {
-          ...latestEncryptedMessage,
-          messageContent: latestDecryptedMessageContent,
-        };
-        //Update conversationMessages state with new message
-        const messages = conversationMessages?.get(
-          walletToPCAIP10(selectedConversationPeerAddress),
-        );
-        if (!messages) {
-          // If first message in conversation, Re-fetch conversation data
-          await getConversations();
-        }
-        if (messages && setConversationMessages) {
-          // Update conversationMessages state with new message
-          messages.push(latestDecryptedMessage);
-          conversationMessages?.set(walletToPCAIP10(selectedConversationPeerAddress), messages);
-          setConversationMessages(conversationMessages);
-          console.log('response', latestDecryptedMessage);
-          console.log(
-            'updatesend messages',
-            conversationMessages?.get(walletToPCAIP10(selectedConversationPeerAddress)),
-          );
-        }
-        //TODO deep copy ?
-        // const convs = [...conversations];
-        conversations?.map((conv, index) => {
-          if (conv.toCAIP10 === latestEncryptedMessage.toCAIP10) {
-            conversations[index] = latestDecryptedMessage;
-          }
-        });
-        // TODO Cid en trop pour les messages | message doit etre décrypté pour conversations (et sans le cid aussi)
-        setConversations(conversations);
-        console.log('message added to conversations', latestDecryptedMessage);
-        console.log('updatesend conversations', conversations);
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  }
-
-  async function getMessagesFromOneConversation(
-    conversation: Message,
-    messagesMap: Map<string, IMessageIPFS[]>,
-  ) {
-    const messages = [];
-    if (conversation.link && pushUser) {
-      const historicalMessages = await chatApi.history({
-        threadhash: conversation.link,
-        account: pushUser.wallets,
-        pgpPrivateKey: privateKey,
-      });
-      messages.push(...historicalMessages);
-    }
-    // Add here the first message of the conversation the messages array
-    messages.push(conversation);
-    messages.sort((messageA, messageB) => {
-      if (messageA.timestamp && messageB.timestamp) return messageA.timestamp - messageB.timestamp;
-      return 1;
-    });
-    messagesMap.set(conversation.toCAIP10, messages);
-  }
-
   const getMessages = async (conversations: Message[]): Promise<void> => {
-    // setMessagesLoaded(false);
     const messagesMap = new Map<string, IMessageIPFS[]>();
 
     if (conversations && pushUser) {
@@ -222,6 +135,7 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
         try {
           const messages = [];
           if (conversation.link && pushUser) {
+            // Gets all historical messages of the conversation except the first one
             const historicalMessages = await chatApi.history({
               threadhash: conversation.link,
               account: pushUser.wallets,
@@ -260,7 +174,6 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
   }, [pushUser]);
 
   useEffect(() => {
-    // Gets the first message of the conversation
     try {
       getConversations();
       getRequests();
@@ -273,27 +186,17 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
     };
   }, [privateKey]);
 
-  //TODO: Remove this useEffect, it's gonna be problematic when listeners are implemented. No need to fetch messages every time the conversations change
-  // useEffect(() => {
-  //   // Gets all messages  of the conversation except the first message
-  //   getMessages();
-  //   return () => {
-  //     setConversationMessages(undefined);
-  //   };
-  // }, [conversations]);
-
   const value = useMemo(() => {
     return {
       pushUser: pushUser ? pushUser : undefined,
       conversations: conversations ? conversations : undefined,
       requests: requests ? requests : undefined,
       conversationMessages: conversationMessages ? conversationMessages : undefined,
+      privateKey: privateKey ? privateKey : undefined,
       setConversations,
       setConversationMessages,
       getConversations,
       getRequests,
-      updateAfterSend,
-      privateKey: privateKey ? privateKey : undefined,
       disconnect: disconnect,
       initPush: init,
       conversationsLoaded,
