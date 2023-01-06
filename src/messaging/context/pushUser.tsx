@@ -14,6 +14,7 @@ const PushContext = createContext<{
   requests?: Message[];
   conversationMessages?: Map<string, IMessageIPFS[]>;
   getConversations?: () => Promise<void>;
+  getRequests?: () => Promise<void>;
   setConversations?: React.Dispatch<React.SetStateAction<Message[] | undefined>>;
   setConversationMessages?: React.Dispatch<
     React.SetStateAction<Map<string, IMessageIPFS[]> | undefined>
@@ -35,6 +36,7 @@ const PushContext = createContext<{
   requests: undefined,
   conversationMessages: undefined,
   getConversations: undefined,
+  getRequests: undefined,
   setConversations: undefined,
   setConversationMessages: undefined,
   updateAfterSend: undefined,
@@ -102,8 +104,8 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
 
   const getConversations = async (): Promise<void> => {
     console.log('Get conversations');
-    setConversationsLoaded(false);
-    setMessagesLoaded(false);
+    // setConversationsLoaded(false);
+    // setMessagesLoaded(false);
     if (pushUser && privateKey) {
       try {
         const conversations = await chatApi.chats({
@@ -112,6 +114,7 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
         });
         setConversations(conversations);
         setConversationsLoaded(true);
+        await getMessages(conversations);
       } catch (e) {
         console.error(e);
         setConversationsLoaded(true);
@@ -139,7 +142,7 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
     try {
       if (pushUser && privateKey) {
         //Decrypt sent message content (could also get from the "messageContent" state)
-        const latestDecryptedMessage = await decryptMessage({
+        const latestDecryptedMessageContent = await decryptMessage({
           encryptedMessage: latestEncryptedMessage.messageContent as string,
           signature: latestEncryptedMessage.signature as string,
           encryptedSecret: latestEncryptedMessage.encryptedSecret as string,
@@ -148,9 +151,9 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
           pgpPrivateKey: privateKey,
         });
         //Create new IMessageIPFS object
-        const latestMessage: IMessageIPFS = {
+        const latestDecryptedMessage: IMessageIPFS = {
           ...latestEncryptedMessage,
-          messageContent: latestDecryptedMessage,
+          messageContent: latestDecryptedMessageContent,
         };
         //Update conversationMessages state with new message
         const messages = conversationMessages?.get(
@@ -161,10 +164,27 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
           await getConversations();
         }
         if (messages && setConversationMessages) {
-          messages.push(latestMessage);
+          // Update conversationMessages state with new message
+          messages.push(latestDecryptedMessage);
           conversationMessages?.set(walletToPCAIP10(selectedConversationPeerAddress), messages);
           setConversationMessages(conversationMessages);
+          console.log('response', latestDecryptedMessage);
+          console.log(
+            'updatesend messages',
+            conversationMessages?.get(walletToPCAIP10(selectedConversationPeerAddress)),
+          );
         }
+        //TODO deep copy ?
+        // const convs = [...conversations];
+        conversations?.map((conv, index) => {
+          if (conv.toCAIP10 === latestEncryptedMessage.toCAIP10) {
+            conversations[index] = latestDecryptedMessage;
+          }
+        });
+        // TODO Cid en trop pour les messages | message doit etre décrypté pour conversations (et sans le cid aussi)
+        setConversations(conversations);
+        console.log('message added to conversations', latestDecryptedMessage);
+        console.log('updatesend conversations', conversations);
       }
     } catch (e) {
       console.error(e);
@@ -193,8 +213,8 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
     messagesMap.set(conversation.toCAIP10, messages);
   }
 
-  const getMessages = async (): Promise<void> => {
-    setMessagesLoaded(false);
+  const getMessages = async (conversations: Message[]): Promise<void> => {
+    // setMessagesLoaded(false);
     const messagesMap = new Map<string, IMessageIPFS[]>();
 
     if (conversations && pushUser) {
@@ -249,17 +269,18 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
     }
     return () => {
       setConversations(undefined);
+      setConversationMessages(undefined);
     };
   }, [privateKey]);
 
   //TODO: Remove this useEffect, it's gonna be problematic when listeners are implemented. No need to fetch messages every time the conversations change
-  useEffect(() => {
-    // Gets all messages  of the conversation except the first message
-    getMessages();
-    return () => {
-      setConversationMessages(undefined);
-    };
-  }, [conversations]);
+  // useEffect(() => {
+  //   // Gets all messages  of the conversation except the first message
+  //   getMessages();
+  //   return () => {
+  //     setConversationMessages(undefined);
+  //   };
+  // }, [conversations]);
 
   const value = useMemo(() => {
     return {
@@ -270,6 +291,7 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
       setConversations,
       setConversationMessages,
       getConversations,
+      getRequests,
       updateAfterSend,
       privateKey: privateKey ? privateKey : undefined,
       disconnect: disconnect,

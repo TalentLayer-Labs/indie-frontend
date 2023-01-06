@@ -1,4 +1,4 @@
-import { useContext, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import TalentLayerContext from '../context/talentLayer';
 import { useNavigate, useParams } from 'react-router-dom';
 import { chat as chatApi, IMessageIPFS } from '@pushprotocol/restapi';
@@ -25,6 +25,7 @@ function Messaging() {
     disconnect,
     conversationsLoaded,
     messagesLoaded,
+    getConversations,
   } = useContext(PushContext);
   const {
     address: selectedConversationPeerAddress = '',
@@ -32,6 +33,9 @@ function Messaging() {
   } = useParams();
   const navigate = useNavigate();
   const [messageContent, setMessageContent] = useState('');
+  const bottomRef = useRef<HTMLDivElement>(null);
+
+  // console.log('conversationMessages', conversationMessages);
 
   const handleDecryptConversations = async () => {
     try {
@@ -50,17 +54,44 @@ function Messaging() {
   };
 
   const sendNewMessage = async () => {
+    //TODO add throbber on send + error messages
     try {
-      if (pushUser?.wallets && messageContent && privateKey && updateAfterSend) {
-        const response: IMessageIPFS = await chatApi.send({
+      // setScroller(false);
+      if (
+        pushUser?.wallets &&
+        messageContent &&
+        privateKey &&
+        updateAfterSend &&
+        getConversations
+      ) {
+        //Send message
+        const response: any = await chatApi.send({
           account: pushUser?.wallets,
           messageContent,
           receiverAddress: walletToPCAIP10(selectedConversationPeerAddress),
           pgpPrivateKey: privateKey,
           apiKey: import.meta.env.VITE_PUSH_API_KEY,
         });
-        await updateAfterSend(selectedConversationPeerAddress, response);
+        // await getConversations();
+        if (response) {
+          const formattedResponse: IMessageIPFS = {
+            messageContent: response.messageContent,
+            toCAIP10: response.toCAIP10,
+            timestamp: response.timestamp,
+            encType: response.encType,
+            encryptedSecret: response.encryptedSecret,
+            signature: response.signature,
+            fromDID: response.fromDID,
+            messageType: response.messageType,
+            link: response.link,
+            sigType: response.sigType,
+            toDID: response.toDID,
+            fromCAIP10: response.fromCAIP10,
+          };
+          await updateAfterSend(selectedConversationPeerAddress, formattedResponse);
+        }
         setMessageContent('');
+        // setScroller(true);
       }
     } catch (e) {
       console.error(e);
@@ -71,6 +102,7 @@ function Messaging() {
     if (disconnect && initPush && user?.address) {
       const changeUser = async () => {
         disconnect();
+        // await initPush(user?.address);
         navigate(`/messaging`);
       };
       changeUser();
@@ -94,6 +126,7 @@ function Messaging() {
         </button>
       )}
       {conversations && requests && (
+        // <div className='border-2 rounded-md'>
         <>
           <CardHeader
             peerAddress={selectedConversationPeerAddress}
@@ -112,6 +145,7 @@ function Messaging() {
                   selectedConversationPeerAddress={selectedConversationPeerAddress}
                   conversationsLoaded={conversationsLoaded}
                 />
+                <div ref={bottomRef}></div>
               </div>
             )}
 
@@ -127,6 +161,7 @@ function Messaging() {
                 />
               </div>
 
+              {/*)}*/}
               <MessageComposer
                 messageContent={messageContent}
                 setMessageContent={setMessageContent}
