@@ -217,13 +217,10 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
             return 1;
           });
           messagesMap.set(conversation.toCAIP10, messages);
-          // }
 
           setConversationMessages(messagesMap);
           setMessagesLoaded(true);
         } catch (e) {
-          // }
-          // }
           console.error(e);
           setMessagesLoaded(true);
         }
