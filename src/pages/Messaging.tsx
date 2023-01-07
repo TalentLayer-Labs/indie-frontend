@@ -32,6 +32,8 @@ function Messaging() {
   } = useParams();
   const navigate = useNavigate();
   const [messageContent, setMessageContent] = useState('');
+  const [sendingPending, setSendingPending] = useState(false);
+  const [messageSendingErrorMsg, setMessageSendingErrorMsg] = useState('');
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const handleDecryptConversations = async () => {
@@ -51,10 +53,11 @@ function Messaging() {
   };
 
   const sendNewMessage = async () => {
-    //TODO add throbber on send + error messages
     try {
       if (pushUser?.wallets && messageContent && privateKey && getConversations) {
         //Send message
+        setSendingPending(true);
+        setMessageSendingErrorMsg('');
         await chatApi.send({
           account: pushUser?.wallets,
           messageContent,
@@ -64,8 +67,13 @@ function Messaging() {
         });
         await getConversations();
         setMessageContent('');
+        setSendingPending(false);
       }
-    } catch (e) {
+    } catch (e: any) {
+      setSendingPending(false);
+      setMessageSendingErrorMsg(
+        'An error occurred while sending the message. Please try again later.',
+      );
       console.error(e);
     }
   };
@@ -137,6 +145,8 @@ function Messaging() {
                 messageContent={messageContent}
                 setMessageContent={setMessageContent}
                 sendNewMessage={sendNewMessage}
+                sendingPending={sendingPending}
+                messageSendingErrorMsg={messageSendingErrorMsg}
               />
             </div>
           </div>

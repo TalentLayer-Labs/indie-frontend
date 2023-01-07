@@ -96,7 +96,7 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const getConversations = async (): Promise<void> => {
+  const getConversationsAndMessages = async (): Promise<void> => {
     console.log('Get conversations');
     if (pushUser && privateKey) {
       try {
@@ -131,8 +131,12 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
     const messagesMap = new Map<string, IMessageIPFS[]>();
 
     if (conversations && pushUser) {
-      for (const conversation of conversations) {
-        try {
+      try {
+        for (const conversation of conversations) {
+          let index = 0;
+          setMessagesLoaded(false);
+          index++;
+          console.log('for loop', index);
           const messages = [];
           if (conversation.link && pushUser) {
             // Gets all historical messages of the conversation except the first one
@@ -151,14 +155,13 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
             return 1;
           });
           messagesMap.set(conversation.toCAIP10, messages);
-
-          setConversationMessages(messagesMap);
-          setMessagesLoaded(true);
-        } catch (e) {
-          console.error(e);
-          setMessagesLoaded(true);
         }
+      } catch (e) {
+        console.error(e);
+        setMessagesLoaded(true);
       }
+      setMessagesLoaded(true);
+      setConversationMessages(messagesMap);
     }
   };
 
@@ -175,7 +178,7 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     try {
-      getConversations();
+      getConversationsAndMessages();
       getRequests();
     } catch (e) {
       console.error(e);
@@ -195,7 +198,7 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
       privateKey: privateKey ? privateKey : undefined,
       setConversations,
       setConversationMessages,
-      getConversations,
+      getConversations: getConversationsAndMessages,
       getRequests,
       disconnect: disconnect,
       initPush: init,
@@ -204,7 +207,7 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
       checkPushUserExistence,
       pushUserExists,
     };
-  }, [pushUser, conversations, getConversations, conversationMessages]);
+  }, [pushUser, conversations, getConversationsAndMessages, conversationMessages]);
 
   return <PushContext.Provider value={value}>{children}</PushContext.Provider>;
 };
