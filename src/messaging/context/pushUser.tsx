@@ -133,10 +133,8 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
     if (conversations && pushUser) {
       try {
         for (const conversation of conversations) {
-          let index = 0;
           setMessagesLoaded(false);
-          index++;
-          console.log('for loop', index);
+          console.log('for loop', conversation.toCAIP10);
           const messages = [];
           if (conversation.link && pushUser) {
             // Gets all historical messages of the conversation except the first one
