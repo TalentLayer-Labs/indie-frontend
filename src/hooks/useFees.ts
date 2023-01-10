@@ -14,7 +14,6 @@ const useFees = (platformId: number): IFees => {
     const fetchData = async () => {
       try {
         const response = await getProtocolAndOriginFee(platformId);
-        console.log('useFees: response', response);
 
         if (response?.data?.data?.protocols && response?.data?.data?.platforms) {
           setFees({
