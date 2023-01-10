@@ -3,25 +3,24 @@ import { useEffect, useState } from 'react';
 import { IFees } from '../types';
 import { getProtocolAndOriginFee } from '../queries/fees';
 
-const useFees = (transactionId: string): IFees => {
+const useFees = (): IFees => {
   const [fees, setFees] = useState({
     protocolFeeRate: 0,
     originPlatformFeeRate: 0,
     platformFeeRate: 0,
   });
 
-  const platformId = import.meta.env.VITE_PLATFORMID;
-
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await getProtocolAndOriginFee(platformId);
+        const response = await getProtocolAndOriginFee();
+        // console.log('useFees: response', response.data.data.protocols[0].originPlatformFee);
 
-        if (response?.data?.data?.platform) {
+        if (response?.data?.data?.protocols && response?.data?.data?.platforms) {
           setFees({
-            protocolFeeRate: response.data.data.protocols.protocolFee,
-            originPlatformFeeRate: response.data.data.protocols.originPlatformFee,
-            platformFeeRate: response.data.data.platforms.fee,
+            protocolFeeRate: response.data.data.protocols[0].escrowFee,
+            originPlatformFeeRate: response.data.data.protocols[0].originPlatformFee,
+            platformFeeRate: response.data.data.platforms[0].fee,
           });
         }
       } catch (err: any) {
