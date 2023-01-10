@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { IFees } from '../types';
 import { getProtocolAndOriginFee } from '../queries/fees';
 
-const useFees = (): IFees => {
+const useFees = (platformId: number): IFees => {
   const [fees, setFees] = useState({
     protocolFeeRate: 0,
     originPlatformFeeRate: 0,
@@ -13,8 +13,8 @@ const useFees = (): IFees => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await getProtocolAndOriginFee();
-        // console.log('useFees: response', response.data.data.protocols[0].originPlatformFee);
+        const response = await getProtocolAndOriginFee(platformId);
+        console.log('useFees: response', response);
 
         if (response?.data?.data?.protocols && response?.data?.data?.platforms) {
           setFees({
