@@ -1,13 +1,13 @@
 import { processRequest } from '../utils/graphql';
 
-export const getProtocolAndOriginFee = (): Promise<any> => {
+export const getProtocolAndOriginFee = (platformId: number): Promise<any> => {
   const query = `
   {
     protocols {
       escrowFee
       originPlatformFee
     }
-    platforms{
+    platforms(id:${platformId}){
       fee
     }
   }
