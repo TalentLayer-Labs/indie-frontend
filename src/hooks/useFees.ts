@@ -1,47 +1,26 @@
 import { ethers } from 'ethers';
 import { useEffect, useState } from 'react';
-import { useSigner } from 'wagmi';
-import { config } from '../config';
-import TalentLayerEscrow from '../contracts/ABI/TalentLayerEscrow.json';
-import TalentLayerPlatformID from '../contracts/ABI/TalentLayerPlatformID.json';
 import { IFees } from '../types';
+import { getProtocolAndOriginFee } from '../queries/fees';
 
-const useFees = (): IFees => {
+const useFees = (platformId: number): IFees => {
   const [fees, setFees] = useState({
     protocolFeeRate: 0,
     originPlatformFeeRate: 0,
     platformFeeRate: 0,
   });
-  const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
 
   useEffect(() => {
     const fetchData = async () => {
-      if (!signer) return fees;
-
-      const talentLayerEscrow = new ethers.Contract(
-        config.contracts.talentLayerEscrow,
-        TalentLayerEscrow.abi,
-        signer,
-      );
-
-      const talentLayerPlatformIdContract = new ethers.Contract(
-        config.contracts.talentLayerPlatformId,
-        TalentLayerPlatformID.abi,
-        signer,
-      );
-
       try {
-        if (talentLayerEscrow && talentLayerPlatformIdContract) {
-          const protocolFee = await talentLayerEscrow.protocolFee();
-          const originPlatformFee = await talentLayerEscrow.originPlatformFee();
-          const platformData = await talentLayerPlatformIdContract.platforms('1');
-          if (!!protocolFee && !!originPlatformFee && !!platformData) {
-            setFees({
-              protocolFeeRate: protocolFee,
-              originPlatformFeeRate: originPlatformFee,
-              platformFeeRate: platformData.fee,
-            });
-          }
+        const response = await getProtocolAndOriginFee(platformId);
+
+        if (response?.data?.data?.protocols && response?.data?.data?.platforms) {
+          setFees({
+            protocolFeeRate: response.data.data.protocols[0].escrowFee,
+            originPlatformFeeRate: response.data.data.protocols[0].originPlatformFee,
+            platformFeeRate: response.data.data.platforms[0].fee,
+          });
         }
       } catch (err: any) {
         // eslint-disable-next-line no-console
@@ -49,7 +28,7 @@ const useFees = (): IFees => {
       }
     };
     fetchData();
-  }, [signer]);
+  }, []);
 
   return fees;
 };

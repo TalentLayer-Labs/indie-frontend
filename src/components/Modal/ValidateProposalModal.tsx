@@ -21,7 +21,9 @@ function ValidateProposalModal({ proposal, account }: { proposal: IProposal; acc
     token: proposal.rateToken.address,
   });
 
-  const { protocolFeeRate, originPlatformFeeRate, platformFeeRate } = useFees();
+  const platformId = import.meta.env.VITE_PLATFORM_ID;
+
+  const { protocolFeeRate, originPlatformFeeRate, platformFeeRate } = useFees(platformId);
 
   const jobRateAmount = ethers.BigNumber.from(proposal.rateAmount);
   const protocolFee = jobRateAmount.mul(protocolFeeRate).div(FEE_RATE_DIVIDER);
