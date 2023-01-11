@@ -6,13 +6,14 @@ const useServices = (
   serviceStatus?: ServiceStatusEnum,
   buyerId?: string,
   sellerId?: string,
+  platformId?: string,
 ): IService[] => {
   const [services, setServices] = useState<IService[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await getServices(serviceStatus, buyerId, sellerId);
+        const response = await getServices(serviceStatus, buyerId, sellerId, platformId);
         if (response?.data?.data?.services.length > 0) {
           setServices(response.data.data.services);
         }

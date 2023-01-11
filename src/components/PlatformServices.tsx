@@ -16,7 +16,7 @@ import { ServiceStatusEnum } from '../types';
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 function PlatformServices({ platformId }: { platformId: string }) {
-  const services = useServices();
+  const services = useServices(undefined, undefined, undefined, platformId);
   if (services.length === 0) {
     return null;
   }

@@ -5,6 +5,7 @@ export const getServices = (
   serviceStatus?: ServiceStatusEnum,
   buyerId?: string,
   sellerId?: string,
+  platformId?: string,
 ): Promise<any> => {
   let condition = '';
 
@@ -15,10 +16,11 @@ export const getServices = (
   } else if (sellerId) {
     condition = `, where: {seller: "${sellerId}"}`;
   }
+  platformId = platformId || import.meta.env.PLATFORM_ID;
 
   const query = `
     {
-      services(orderBy: id, orderDirection: desc ${condition}) {
+      services(orderBy: id, where: {platform_: {id: ${platformId}}} orderDirection: desc ${condition}) {
         id
         status
         createdAt
