@@ -31,6 +31,25 @@ export const getTotalPlatformGains = (id: string): Promise<any> => {
             symbol
             name
             decimals
+            address
+          }
+        }
+      }
+    }
+    `;
+  return processRequest(query);
+};
+
+export const getPlatformClaimedFees = (id: string): Promise<any> => {
+  const query = `
+    {
+      platform(id: ${id}) {
+        feeClaims {
+          id
+          amount
+          token {
+            address
+            symbol
           }
         }
       }

@@ -2,17 +2,17 @@ import { useEffect, useState } from 'react';
 import { getTotalPlatformGains } from '../queries/platform';
 import { IPlatformGain } from '../types';
 
-const useTotalGainByPlatform = (id: string): IPlatformGain => {
-  const [platformGains, setPlatformGains] = useState<IPlatformGain>();
+const useTotalGainByPlatform = (platformId: string): [IPlatformGain] => {
+  const [platformGains, setPlatformGains] = useState<[IPlatformGain]>();
 
   useEffect(() => {
     const fetchData = async () => {
-      if (id) {
+      if (platformId) {
         try {
-          const response = await getTotalPlatformGains(id);
+          const response = await getTotalPlatformGains(platformId);
 
           if (response?.data?.data?.platform?.totalPlatformGains) {
-            setPlatformGains(response.data.data.platform.totalPlatformGains[0]);
+            setPlatformGains(response.data.data.platform.totalPlatformGains);
           }
         } catch (error: any) {
           // eslint-disable-next-line no-console
@@ -21,9 +21,9 @@ const useTotalGainByPlatform = (id: string): IPlatformGain => {
       }
     };
     fetchData();
-  }, [id]);
+  }, [platformId]);
 
-  return <IPlatformGain>platformGains;
+  return <[IPlatformGain]>platformGains;
 };
 
 export default useTotalGainByPlatform;

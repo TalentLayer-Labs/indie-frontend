@@ -36,6 +36,5 @@ export const getPlatformId = async (signer: Signer, provider: Provider): Promise
     }
     toast.error(errorMessage);
   }
-  console.log('associatedPlatformId', associatedPlatformId);
   return associatedPlatformId;
 };
