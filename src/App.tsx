@@ -1,4 +1,4 @@
-import { EthereumClient, modalConnectors } from '@web3modal/ethereum';
+import { EthereumClient, modalConnectors, walletConnectProvider } from '@web3modal/ethereum';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -25,18 +25,9 @@ import { customChains } from './chains';
 const chains: Chain[] = [customChains.fuji];
 
 // Wagmi client
-// const { provider } = configureChains(chains, [
-//   walletConnectProvider({ projectId: `${import.meta.env.VITE_WALLECT_CONNECT_PROJECT_ID}` }),
-// ]);
-
 const { provider } = configureChains(chains, [
-  jsonRpcProvider({
-    rpc: chain => {
-      return { http: chain.rpcUrls.default };
-    },
-  }),
+  walletConnectProvider({ projectId: `${import.meta.env.VITE_WALLECT_CONNECT_PROJECT_ID}` }),
 ]);
-
 const wagmiClient = createClient({
   autoConnect: true,
   connectors: modalConnectors({ appName: 'web3Modal', chains }),
