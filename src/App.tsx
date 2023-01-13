@@ -24,6 +24,7 @@ import { customChains } from './chains';
 
 const chains: Chain[] = [customChains.fuji];
 
+// Wagmi client
 const { provider } = configureChains(chains, [
   jsonRpcProvider({
     rpc: chain => {
@@ -31,7 +32,6 @@ const { provider } = configureChains(chains, [
     },
   }),
 ]);
-
 const wagmiClient = createClient({
   autoConnect: true,
   connectors: modalConnectors({ appName: 'web3Modal', chains }),
