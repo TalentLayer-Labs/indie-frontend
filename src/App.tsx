@@ -19,42 +19,13 @@ import Talents from './pages/Talents';
 import { Web3Modal } from '@web3modal/react';
 
 import { chain, configureChains, createClient, WagmiConfig } from 'wagmi';
-import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
 
-const local = {
-  id: 1337,
-  name: 'localhost',
-  network: 'localhost',
-  nativeCurrency: {
-    decimals: 18,
-    name: 'Ethereum',
-    symbol: 'ETH',
-  },
-  rpcUrls: {
-    default: 'https://api.avax-test.network/ext/C/rpc',
-  },
-  blockExplorers: {
-    default: { name: 'testnet.snowTrace', url: 'https://testnet.snowtrace.io/' },
-  },
-  testnet: false,
-};
-
-const chains: any = [local];
-// const chains = [chain.goerli];
+const chains = [chain.goerli];
 
 // Wagmi client
-// const { provider } = configureChains(chains, [
-//   walletConnectProvider({ projectId: `${import.meta.env.VITE_WALLECT_CONNECT_PROJECT_ID}` }),
-// ]);
-
 const { provider } = configureChains(chains, [
-  jsonRpcProvider({
-    rpc: chain => {
-      return { http: chain.rpcUrls.default };
-    },
-  }),
+  walletConnectProvider({ projectId: `${import.meta.env.VITE_WALLECT_CONNECT_PROJECT_ID}` }),
 ]);
-
 const wagmiClient = createClient({
   autoConnect: true,
   connectors: modalConnectors({ appName: 'web3Modal', chains }),
