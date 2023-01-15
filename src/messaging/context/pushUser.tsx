@@ -1,14 +1,14 @@
 import { createContext, ReactNode, useEffect, useMemo, useState } from 'react';
 import { IUser } from '@pushprotocol/restapi';
 import { Message } from '@pushprotocol/restapi/src/lib/chat/ipfs';
-import { chat as chatApi } from '@pushprotocol/restapi/src/lib';
+import { chat as chatApi, user as userApi } from '@pushprotocol/restapi/src/lib';
 import { pCAIP10ToWallet } from '@pushprotocol/restapi/src/lib/helpers';
 import { IMessageIPFS } from '@pushprotocol/uiweb/lib/types';
 import { createUserIfNecessary } from '@pushprotocol/restapi/src/lib/chat/helpers';
+import { useSigner } from 'wagmi';
 
 const PushContext = createContext<{
   pushUser?: IUser;
-  pushUserExists?: boolean;
   conversations?: Message[];
   requests?: Message[];
   conversationMessages?: Map<string, IMessageIPFS[]>;
@@ -23,10 +23,8 @@ const PushContext = createContext<{
   privateKey?: string;
   conversationsLoaded: boolean;
   messagesLoaded: boolean;
-  checkPushUserExistence?: (address: string) => Promise<IUser | undefined>;
 }>({
   pushUser: undefined,
-  pushUserExists: false,
   conversations: undefined,
   requests: undefined,
   conversationMessages: undefined,
@@ -39,10 +37,10 @@ const PushContext = createContext<{
   privateKey: undefined,
   conversationsLoaded: false,
   messagesLoaded: false,
-  checkPushUserExistence: undefined,
 });
 
 const PushProvider = ({ children }: { children: ReactNode }) => {
+  const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
   const [pushUser, setPushUser] = useState<IUser | undefined>();
   const [privateKey, setPrivateKey] = useState<string | undefined>();
   const [conversations, setConversations] = useState<Message[] | undefined>();
@@ -50,7 +48,6 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
   const [conversationMessages, setConversationMessages] = useState<Map<string, IMessageIPFS[]>>();
   const [conversationsLoaded, setConversationsLoaded] = useState(false);
   const [messagesLoaded, setMessagesLoaded] = useState(false);
-  const [pushUserExists, setPushUserExists] = useState(false);
 
   const disconnect = (): void => {
     setConversations(undefined);
@@ -58,14 +55,14 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
     setRequests(undefined);
     setPrivateKey(undefined);
     setPushUser(undefined);
-    setPushUserExists(false);
   };
 
   const checkPushUserExistence = async (account: string): Promise<IUser | undefined> => {
     console.log('Check User existence');
     try {
-      const pushUserData = await createUserIfNecessary({ account });
-      pushUserData ? setPushUserExists(true) : setPushUserExists(false);
+      const pushUserData = await userApi.get({ account });
+      // const pushUserData = await createUserIfNecessary({ account });
+      pushUserData ? setPushUser(pushUserData) : '';
       return pushUserData;
     } catch (e) {
       console.error(e);
@@ -78,7 +75,6 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
       const pushUserData = await createUserIfNecessary({ account });
       if (pushUserData) {
         setPushUser(pushUserData);
-        setPushUserExists(true);
       }
     } catch (e) {
       console.error(e);
@@ -164,6 +160,17 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
+    console.log('Fetching Push User');
+    // Checking user existence
+    const getPushUser = async (): Promise<void> => {
+      if (signer && !pushUser) {
+        checkPushUserExistence(await signer.getAddress());
+      }
+    };
+    getPushUser();
+  }, [signer]);
+
+  useEffect(() => {
     try {
       decodePrivateKey();
     } catch (e) {
@@ -202,8 +209,6 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
       initPush: init,
       conversationsLoaded,
       messagesLoaded,
-      checkPushUserExistence,
-      pushUserExists,
     };
   }, [pushUser, conversations, getConversationsAndMessages, conversationMessages]);
 

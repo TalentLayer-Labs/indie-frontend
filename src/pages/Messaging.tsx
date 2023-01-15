@@ -45,7 +45,12 @@ function Messaging() {
       console.error(e);
     }
   };
-
+  //TODO add state in message "isDelivered" comme IOS
+  //TODO lighten message data content
+  //TODO Check compare timestamp for state update
+  //TODO Create custom message type common to xmtp and push
+  //TODO Check Promise All (will need all promisses);
+  //TODO Only load one message at a time, on click
   const handleDisplayChange = (conversationDisplayType: ConversationDisplayType) => {
     conversationDisplayType === ConversationDisplayType.REQUEST
       ? navigate('/messaging/requests')
