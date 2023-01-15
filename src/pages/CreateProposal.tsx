@@ -7,17 +7,18 @@ import Steps from '../components/Steps';
 import TalentLayerContext from '../context/talentLayer';
 import useServiceById from '../hooks/useServiceById';
 import PushContext from '../messaging/context/pushUser';
+import { createUserIfNecessary } from '@pushprotocol/restapi/src/lib/chat/helpers';
 
 function CreateProposal() {
   const { account, user } = useContext(TalentLayerContext);
-  const { pushUserExists, checkPushUserExistence } = useContext(PushContext);
+  const { pushUser } = useContext(PushContext);
   const { id } = useParams<{ id: string }>();
   const service = useServiceById(id || '1');
 
-  const handleCheckUserExistence = async () => {
+  const handleRegisterToPush = async () => {
     try {
-      if (checkPushUserExistence && user?.address) {
-        await checkPushUserExistence(user?.address);
+      if (user?.address) {
+        await createUserIfNecessary({ account: user.address });
       }
     } catch (e) {
       console.error(e);
@@ -38,7 +39,7 @@ function CreateProposal() {
       <Steps targetTitle={'Filled the proposal form'} />
       {account?.isConnected && user && <ProposalForm user={user} service={service} />}
       <Steps targetTitle={'Fill the proposal form'} />
-      {!pushUserExists && account?.isConnected && user && (
+      {!pushUser && account?.isConnected && user && (
         <div className='border border-gray-200 rounded-md p-8'>
           <p className='text-gray-500 py-4'>
             In order to create a proposal, you need to be registered to our decentralized messaging
@@ -47,12 +48,12 @@ function CreateProposal() {
           <button
             type='submit'
             className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
-            onClick={() => handleCheckUserExistence()}>
+            onClick={() => handleRegisterToPush()}>
             Connect to Push
           </button>
         </div>
       )}
-      {account?.isConnected && user && pushUserExists && <ProposalForm service={service} />}
+      {account?.isConnected && user && pushUser && <ProposalForm service={service} />}
     </div>
   );
 }
