@@ -6,6 +6,8 @@ import { chat as chatApi } from '@pushprotocol/restapi/src/lib';
 import { pCAIP10ToWallet } from '@pushprotocol/restapi/src/lib/helpers';
 import { CheckCircle } from 'heroicons-react';
 import { formatDateConversationCard } from '../../utils/dates';
+import PushContext from '../context/pushUser';
+import { useContext } from 'react';
 
 interface IConversationCardProps {
   address: string;
@@ -14,6 +16,7 @@ interface IConversationCardProps {
   peerAddress: string;
   conversationDisplayType: string;
   selectedConversationPeerAddress: string;
+  setPageLoaded: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const ConversationCard = ({
@@ -23,6 +26,7 @@ const ConversationCard = ({
   address,
   conversationDisplayType,
   selectedConversationPeerAddress,
+  setPageLoaded,
 }: IConversationCardProps) => {
   const user = useUserByAddress(pCAIP10ToWallet(peerAddress));
   const navigate = useNavigate();
@@ -45,6 +49,7 @@ const ConversationCard = ({
   };
 
   const handleSelectConversation = () => {
+    setPageLoaded(false);
     navigate(`/messaging/${conversationDisplayType}/${pCAIP10ToWallet(peerAddress)}`);
   };
 

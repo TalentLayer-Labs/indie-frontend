@@ -5,15 +5,16 @@ import useUserByAddress from '../../hooks/useUserByAddress';
 import { IMessageIPFS } from '@pushprotocol/uiweb/lib/types';
 import { pCAIP10ToWallet } from '@pushprotocol/restapi/src/lib/helpers';
 import { formatDateDivider } from '../../utils/dates';
+import { ChatMessage } from '../../types';
 
 interface IMessageCardProps {
-  message: IMessageIPFS;
+  message: ChatMessage;
   dateHasChanged: boolean;
 }
 
 const MessageCard = ({ message, dateHasChanged }: IMessageCardProps) => {
   const { user } = useContext(TalentLayerContext);
-  const senderAddress = pCAIP10ToWallet(message.fromCAIP10);
+  const senderAddress = pCAIP10ToWallet(message.from);
   const peerUser = useUserByAddress(senderAddress);
 
   const isSender = senderAddress.toLowerCase() === user?.address.toLowerCase();

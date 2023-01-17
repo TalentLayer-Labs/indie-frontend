@@ -1,4 +1,4 @@
-import { useContext, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import TalentLayerContext from '../context/talentLayer';
 import { useNavigate, useParams } from 'react-router-dom';
 import { chat as chatApi } from '@pushprotocol/restapi';
@@ -11,6 +11,7 @@ import { walletToPCAIP10 } from '@pushprotocol/restapi/src/lib/helpers/address';
 import { watchAccount } from '@wagmi/core';
 import { ConversationDisplayType } from '../types';
 import Steps from '../components/Steps';
+import { pCAIP10ToWallet } from '@pushprotocol/restapi/src/lib/helpers';
 
 function Messaging() {
   const { account, user } = useContext(TalentLayerContext);
@@ -25,6 +26,7 @@ function Messaging() {
     conversationsLoaded,
     messagesLoaded,
     getConversations,
+    getOneConversationMessages,
   } = useContext(PushContext);
   const {
     address: selectedConversationPeerAddress = '',
@@ -34,7 +36,28 @@ function Messaging() {
   const [messageContent, setMessageContent] = useState('');
   const [sendingPending, setSendingPending] = useState(false);
   const [messageSendingErrorMsg, setMessageSendingErrorMsg] = useState('');
+  const [pageLoaded, setPageLoaded] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
+
+  if (selectedConversationPeerAddress && conversations && !pageLoaded) {
+    try {
+      const conversation = conversations?.find(
+        c => pCAIP10ToWallet(c.toCAIP10) === selectedConversationPeerAddress,
+      );
+      if (conversation) {
+        getOneConversationMessages(conversation);
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setPageLoaded(true);
+    }
+  }
+
+  // Not working
+  // useEffect(() => {
+  //   console.log('pageLoaded', pageLoaded);
+  // }, [pageLoaded]);
 
   const handleDecryptConversations = async () => {
     try {
@@ -45,12 +68,11 @@ function Messaging() {
       console.error(e);
     }
   };
+
   //TODO add state in message "isDelivered" comme IOS
-  //TODO lighten message data content
+  //TODO lighten conversation data content
+  //TODO Update Listener
   //TODO Check compare timestamp for state update
-  //TODO Create custom message type common to xmtp and push
-  //TODO Check Promise All (will need all promisses);
-  //TODO Only load one message at a time, on click
   const handleDisplayChange = (conversationDisplayType: ConversationDisplayType) => {
     conversationDisplayType === ConversationDisplayType.REQUEST
       ? navigate('/messaging/requests')
@@ -129,6 +151,7 @@ function Messaging() {
                   conversationDisplayType={conversationType}
                   selectedConversationPeerAddress={selectedConversationPeerAddress}
                   conversationsLoaded={conversationsLoaded}
+                  setPageLoaded={setPageLoaded}
                 />
                 <div ref={bottomRef}></div>
               </div>
@@ -142,6 +165,7 @@ function Messaging() {
                     []
                   }
                   messagesLoaded={messagesLoaded}
+                  pageLoaded={pageLoaded}
                   selectedConversationPeerAddress={!!selectedConversationPeerAddress}
                 />
               </div>

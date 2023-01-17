@@ -2,18 +2,23 @@ import MessageCard from './MessageCard';
 import { IMessageIPFS } from '@pushprotocol/uiweb/lib/types';
 import { isOnSameDay } from '../utils/messaging';
 import Loading from '../../components/Loading';
-import { useEffect, useRef } from 'react';
+import { useContext, useEffect, useRef } from 'react';
+import { ChatMessage } from '../../types';
+import { Message } from '@pushprotocol/restapi/src/lib/chat/ipfs';
+import PushContext from '../context/pushUser';
 
 interface IMessageListProps {
-  conversationMessages: IMessageIPFS[];
+  conversationMessages: ChatMessage[];
   messagesLoaded: boolean;
+  pageLoaded: boolean;
   selectedConversationPeerAddress: boolean;
 }
 
 const MessageList = ({
-  conversationMessages,
-  messagesLoaded,
   selectedConversationPeerAddress,
+  messagesLoaded,
+  pageLoaded,
+  conversationMessages,
 }: IMessageListProps) => {
   let lastMessageDate: number | undefined;
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -25,7 +30,10 @@ const MessageList = ({
   return (
     <>
       <div className='flex flex-col mt-5'>
-        {!messagesLoaded && selectedConversationPeerAddress && <Loading />}
+        {
+          // !messagesLoaded &&
+          conversationMessages.length === 0 && selectedConversationPeerAddress && <Loading />
+        }
       </div>
       <div className='flex flex-col mt-5 overflow-y-auto'>
         {conversationMessages.map((msg, index) => {

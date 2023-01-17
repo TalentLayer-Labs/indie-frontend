@@ -8,6 +8,7 @@ interface IConversationListProps {
   conversationDisplayType: string;
   selectedConversationPeerAddress: string;
   conversationsLoaded: boolean;
+  setPageLoaded: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const ConversationList = ({
@@ -15,6 +16,7 @@ const ConversationList = ({
   conversationDisplayType,
   selectedConversationPeerAddress,
   conversationsLoaded,
+  setPageLoaded,
 }: IConversationListProps) => {
   return (
     <>
@@ -38,6 +40,7 @@ const ConversationList = ({
               }
               conversationDisplayType={conversationDisplayType}
               selectedConversationPeerAddress={selectedConversationPeerAddress}
+              setPageLoaded={setPageLoaded}
             />
           );
         })}
