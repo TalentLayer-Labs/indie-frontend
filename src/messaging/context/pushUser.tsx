@@ -3,21 +3,23 @@ import { IUser } from '@pushprotocol/restapi';
 import { Message } from '@pushprotocol/restapi/src/lib/chat/ipfs';
 import { chat as chatApi, user as userApi } from '@pushprotocol/restapi/src/lib';
 import { pCAIP10ToWallet } from '@pushprotocol/restapi/src/lib/helpers';
-import { IMessageIPFS } from '@pushprotocol/uiweb/lib/types';
 import { createUserIfNecessary } from '@pushprotocol/restapi/src/lib/chat/helpers';
 import { useSigner } from 'wagmi';
+import { ChatMessage } from '../../types';
+import { buildChatMessage } from '../utils/messaging';
 
 const PushContext = createContext<{
   pushUser?: IUser;
   conversations?: Message[];
   requests?: Message[];
-  conversationMessages?: Map<string, IMessageIPFS[]>;
+  conversationMessages?: Map<string, ChatMessage[]>;
   getConversations?: () => Promise<void>;
   getRequests?: () => Promise<void>;
   setConversations?: React.Dispatch<React.SetStateAction<Message[] | undefined>>;
   setConversationMessages?: React.Dispatch<
-    React.SetStateAction<Map<string, IMessageIPFS[]> | undefined>
+    React.SetStateAction<Map<string, ChatMessage[]> | undefined>
   >;
+  getOneConversationMessages: (conversation: Message) => Promise<void>;
   disconnect?: () => void;
   initPush?: (address: string) => void;
   privateKey?: string;
@@ -35,6 +37,8 @@ const PushContext = createContext<{
   disconnect: undefined,
   initPush: undefined,
   privateKey: undefined,
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  getOneConversationMessages: async () => {},
   conversationsLoaded: false,
   messagesLoaded: false,
 });
@@ -45,9 +49,10 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
   const [privateKey, setPrivateKey] = useState<string | undefined>();
   const [conversations, setConversations] = useState<Message[] | undefined>();
   const [requests, setRequests] = useState<Message[] | undefined>();
-  const [conversationMessages, setConversationMessages] = useState<Map<string, IMessageIPFS[]>>();
+  const [conversationMessages, setConversationMessages] = useState<Map<string, ChatMessage[]>>();
   const [conversationsLoaded, setConversationsLoaded] = useState(false);
   const [messagesLoaded, setMessagesLoaded] = useState(false);
+  const [chatInitiated, setChatInitiated] = useState(false);
 
   const disconnect = (): void => {
     setConversations(undefined);
@@ -76,6 +81,7 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
       if (pushUserData) {
         setPushUser(pushUserData);
       }
+      decodePrivateKey();
     } catch (e) {
       console.error(e);
     }
@@ -89,6 +95,80 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
         pCAIP10ToWallet(pushUser.wallets),
       );
       setPrivateKey(pgpPrivateKey);
+    }
+  };
+
+  const getOneConversationMessages = async (
+    conversation: Message,
+    // conversationOrAddress: Message | string,
+  ): Promise<void> => {
+    const messagesMap = conversationMessages
+      ? conversationMessages
+      : new Map<string, ChatMessage[]>();
+    // let conversation: Message;
+    // if (typeof conversationOrAddress === 'string' && conversations) {
+    //   conversation = conversations?.find(c => c.toCAIP10 === conversationOrAddress);
+    // }
+    console.log('Getting messages for conversation', conversation.toCAIP10);
+    setMessagesLoaded(false);
+    if (pushUser) {
+      try {
+        // setMessagesLoaded(false);
+        const messages = [];
+        if (conversation.link && pushUser) {
+          // Gets all historical messages of the conversation except the first one
+          const historicalMessages = await chatApi.history({
+            threadhash: conversation.link,
+            account: pushUser.wallets,
+            pgpPrivateKey: privateKey,
+          });
+          messages.push(...historicalMessages);
+        }
+        // Add here the first message of the conversation the messages array
+        messages.push(conversation);
+        messages.sort((messageA, messageB) => {
+          if (messageA.timestamp && messageB.timestamp)
+            return messageA.timestamp - messageB.timestamp;
+          return 1;
+        });
+        const chatMessages: ChatMessage[] = messages.map(message => buildChatMessage(message));
+        messagesMap.set(conversation.toCAIP10, chatMessages);
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setMessagesLoaded(true);
+        setConversationMessages(messagesMap);
+        console.log('Messages loaded');
+      }
+    }
+  };
+
+  const getConversations = async (): Promise<void> => {
+    console.log('Get conversations');
+    if (pushUser && privateKey) {
+      try {
+        // Gets the first message of the conversation
+        const response = await chatApi.chats({
+          pgpPrivateKey: privateKey,
+          account: pushUser.wallets,
+        });
+        setConversations(response);
+        // for (const newConversation of response) {
+        //   if (
+        //     newConversation.timestamp !==
+        //     conversations?.find(conversation => conversation.toCAIP10 === newConversation.toCAIP10)
+        //       ?.timestamp
+        //   ) {
+        //     await getOneConversationMessages(newConversation);
+        //   }
+        // }
+      } catch (e) {
+        console.error(e);
+      } finally {
+        if (!conversationsLoaded) {
+          setConversationsLoaded(true);
+        }
+      }
     }
   };
 
@@ -124,7 +204,7 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const getMessages = async (conversations: Message[]): Promise<void> => {
-    const messagesMap = new Map<string, IMessageIPFS[]>();
+    const messagesMap = new Map<string, ChatMessage[]>();
 
     if (conversations && pushUser) {
       try {
@@ -148,7 +228,8 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
               return messageA.timestamp - messageB.timestamp;
             return 1;
           });
-          messagesMap.set(conversation.toCAIP10, messages);
+          const chatMessages: ChatMessage[] = messages.map(message => buildChatMessage(message));
+          messagesMap.set(conversation.toCAIP10, chatMessages);
         }
       } catch (e) {
         console.error(e);
@@ -156,6 +237,9 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
       }
       setMessagesLoaded(true);
       setConversationMessages(messagesMap);
+      if (!chatInitiated) {
+        setChatInitiated(true);
+      }
     }
   };
 
@@ -170,20 +254,20 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
     getPushUser();
   }, [signer]);
 
-  useEffect(() => {
-    try {
-      decodePrivateKey();
-    } catch (e) {
-      console.error(e);
-    }
-    return () => {
-      setPrivateKey(undefined);
-    };
-  }, [pushUser]);
+  // useEffect(() => {
+  //   try {
+  //     decodePrivateKey();
+  //   } catch (e) {
+  //     console.error(e);
+  //   }
+  //   return () => {
+  //     setPrivateKey(undefined);
+  //   };
+  // }, [pushUser]);
 
   useEffect(() => {
     try {
-      getConversationsAndMessages();
+      getConversations();
       getRequests();
     } catch (e) {
       console.error(e);
@@ -194,6 +278,15 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
     };
   }, [privateKey]);
 
+  useEffect(() => {
+    console.log('ChatInitiated');
+    // Load messages of the latest conversation on login
+    if (conversations) {
+      getOneConversationMessages(conversations[0]);
+    }
+  }, [conversationsLoaded]);
+  // }, [chatInitiated]);
+
   const value = useMemo(() => {
     return {
       pushUser: pushUser ? pushUser : undefined,
@@ -203,14 +296,15 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
       privateKey: privateKey ? privateKey : undefined,
       setConversations,
       setConversationMessages,
-      getConversations: getConversationsAndMessages,
+      getConversations,
       getRequests,
+      getOneConversationMessages,
       disconnect: disconnect,
       initPush: init,
       conversationsLoaded,
       messagesLoaded,
     };
-  }, [pushUser, conversations, getConversationsAndMessages, conversationMessages]);
+  }, [pushUser, conversations, getConversations, conversationMessages]);
 
   return <PushContext.Provider value={value}>{children}</PushContext.Provider>;
 };

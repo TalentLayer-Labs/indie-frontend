@@ -173,3 +173,10 @@ export enum ConversationDisplayType {
   CONVERSATION = 'conversations',
   REQUEST = 'requests',
 }
+
+export type ChatMessage = {
+  from: string;
+  to: string;
+  messageContent: string;
+  timestamp: number;
+};
