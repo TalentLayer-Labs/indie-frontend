@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useRef, useState } from 'react';
 import TalentLayerContext from '../context/talentLayer';
 import { useNavigate, useParams } from 'react-router-dom';
 import { chat as chatApi } from '@pushprotocol/restapi';
@@ -9,9 +9,10 @@ import ConversationList from '../messaging/components/ConversationList';
 import PushContext from '../messaging/context/pushUser';
 import { walletToPCAIP10 } from '@pushprotocol/restapi/src/lib/helpers/address';
 import { watchAccount } from '@wagmi/core';
-import { ConversationDisplayType } from '../types';
+import { ChatMessage, ChatMessageStatus, ConversationDisplayType, PushMessage } from '../types';
 import Steps from '../components/Steps';
 import { pCAIP10ToWallet } from '@pushprotocol/restapi/src/lib/helpers';
+import { buildConversationMessage } from '../messaging/utils/messaging';
 
 function Messaging() {
   const { account, user } = useContext(TalentLayerContext);
@@ -25,7 +26,8 @@ function Messaging() {
     disconnect,
     conversationsLoaded,
     messagesLoaded,
-    getConversations,
+    setConversations,
+    setConversationMessages,
     getOneConversationMessages,
   } = useContext(PushContext);
   const {
@@ -69,10 +71,10 @@ function Messaging() {
     }
   };
 
-  //TODO add state in message "isDelivered" comme IOS
   //TODO lighten conversation data content
   //TODO Update Listener
   //TODO Check compare timestamp for state update
+  //TODO Scroller when messages sent (no state update before API call)
   const handleDisplayChange = (conversationDisplayType: ConversationDisplayType) => {
     conversationDisplayType === ConversationDisplayType.REQUEST
       ? navigate('/messaging/requests')
@@ -80,28 +82,83 @@ function Messaging() {
   };
 
   const sendNewMessage = async () => {
-    try {
-      if (pushUser?.wallets && messageContent && privateKey && getConversations) {
+    if (
+      pushUser?.wallets &&
+      user &&
+      messageContent &&
+      privateKey &&
+      setConversations &&
+      conversationMessages &&
+      setConversationMessages
+    ) {
+      setSendingPending(true);
+
+      const receiverAddressCAIP10 = walletToPCAIP10(selectedConversationPeerAddress);
+
+      const refactoredMessage: ChatMessage = {
+        from: user.address,
+        to: selectedConversationPeerAddress,
+        messageContent: messageContent,
+        timestamp: new Date().getTime(),
+        status: ChatMessageStatus.PENDING,
+      };
+
+      const messages = conversationMessages.get(receiverAddressCAIP10);
+      if (messages) {
+        // If Last message in error, remove it & try to resend
+        if (messageSendingErrorMsg) {
+          messages.pop();
+          setMessageSendingErrorMsg('');
+        }
+        messages.push(refactoredMessage);
+      } else {
+        // If no messages, create new ChatMessage array
+        conversationMessages.set(receiverAddressCAIP10, [refactoredMessage]);
+      }
+      console.log('Messages updated', messages);
+      setConversationMessages(conversationMessages);
+
+      try {
         //Send message
-        setSendingPending(true);
-        setMessageSendingErrorMsg('');
-        await chatApi.send({
+        const sentMessage: PushMessage = await chatApi.send({
           account: pushUser?.wallets,
           messageContent,
-          receiverAddress: walletToPCAIP10(selectedConversationPeerAddress),
+          receiverAddress: receiverAddressCAIP10,
           pgpPrivateKey: privateKey,
           apiKey: import.meta.env.VITE_PUSH_API_KEY,
         });
-        await getConversations();
+        console.log('sentMessage', sentMessage);
+        //Replace encrypted content by decrypted content
+        sentMessage.messageContent = messageContent;
+
+        //If success, update messages with SENT status & Replace the last message in arrays
+        refactoredMessage.status = ChatMessageStatus.SENT;
+        messages?.pop();
+        messages?.push(refactoredMessage);
+
+        //Update Conversations if success
+        const refactoredConversation = buildConversationMessage(sentMessage);
+        console.log('Refactored Message', refactoredConversation);
+        conversations?.map((c, index) => {
+          if (c.toCAIP10 === refactoredConversation.toCAIP10) {
+            conversations[index] = refactoredConversation;
+          }
+        });
+        setConversations(conversations);
+
         setMessageContent('');
+      } catch (e: any) {
+        setMessageSendingErrorMsg(
+          'An error occurred while sending the message. Please try again later.',
+        );
+        // If message in error, update last message' status to ERROR
+        refactoredMessage.status = ChatMessageStatus.ERROR;
+        messages?.pop();
+        messages?.push(refactoredMessage);
+        console.error(e);
+      } finally {
         setSendingPending(false);
       }
-    } catch (e: any) {
-      setSendingPending(false);
-      setMessageSendingErrorMsg(
-        'An error occurred while sending the message. Please try again later.',
-      );
-      console.error(e);
     }
   };
 
