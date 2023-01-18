@@ -179,4 +179,27 @@ export type ChatMessage = {
   to: string;
   messageContent: string;
   timestamp: number;
+  status: ChatMessageStatus;
+};
+
+export enum ChatMessageStatus {
+  PENDING = 'pending',
+  SENT = 'sent',
+  ERROR = 'error',
+}
+
+export type PushMessage = {
+  cid: string;
+  encType: string;
+  encryptedSecret: string;
+  fromCAIP10: string;
+  fromDID: string;
+  link: string | null;
+  messageContent: string;
+  messageType: string;
+  sigType: string;
+  signature: string;
+  timestamp?: number;
+  toCAIP10: string;
+  toDID: string;
 };

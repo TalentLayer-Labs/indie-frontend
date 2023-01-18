@@ -1,6 +1,6 @@
 import { Message } from '@pushprotocol/restapi/src/lib/chat/ipfs';
 import { IMessageIPFS } from '@pushprotocol/uiweb/lib/types';
-import { ChatMessage } from '../../types';
+import { ChatMessage, ChatMessageStatus, PushMessage } from '../../types';
 
 export const shortAddress = (addr: string) =>
   addr.length > 10 && addr.startsWith('0x')
@@ -35,11 +35,31 @@ export const isOnSameDay = (
   return new Date(timestamp1)?.toDateString() === new Date(timestamp2)?.toDateString();
 };
 
-export const buildChatMessage = (pushMessage: Message | IMessageIPFS): ChatMessage => {
+export const buildChatMessage = (
+  pushMessage: Message | IMessageIPFS | PushMessage,
+): ChatMessage => {
   return {
     from: pushMessage.fromCAIP10,
     to: pushMessage.toCAIP10,
     messageContent: pushMessage.messageContent,
     timestamp: pushMessage.timestamp ? pushMessage.timestamp : 0,
+    status: ChatMessageStatus.SENT,
+  };
+};
+
+export const buildConversationMessage = (pushMessage: PushMessage): Message => {
+  return {
+    fromCAIP10: pushMessage.fromCAIP10,
+    messageContent: pushMessage.messageContent,
+    messageType: pushMessage.messageType,
+    toCAIP10: pushMessage.toCAIP10,
+    timestamp: pushMessage.timestamp ? pushMessage.timestamp : 0,
+    link: pushMessage.link,
+    fromDID: pushMessage.fromDID,
+    toDID: pushMessage.toDID,
+    encType: pushMessage.encType,
+    signature: pushMessage.signature,
+    sigType: pushMessage.sigType,
+    encryptedSecret: pushMessage.encryptedSecret,
   };
 };

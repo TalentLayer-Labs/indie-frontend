@@ -7,6 +7,7 @@ import { createUserIfNecessary } from '@pushprotocol/restapi/src/lib/chat/helper
 import { useSigner } from 'wagmi';
 import { ChatMessage } from '../../types';
 import { buildChatMessage } from '../utils/messaging';
+import { IMessageIPFS } from '@pushprotocol/uiweb/lib/types';
 
 const PushContext = createContext<{
   pushUser?: IUser;
@@ -117,7 +118,7 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
         const messages = [];
         if (conversation.link && pushUser) {
           // Gets all historical messages of the conversation except the first one
-          const historicalMessages = await chatApi.history({
+          const historicalMessages: IMessageIPFS[] = await chatApi.history({
             threadhash: conversation.link,
             account: pushUser.wallets,
             pgpPrivateKey: privateKey,

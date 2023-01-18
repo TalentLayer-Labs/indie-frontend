@@ -2,10 +2,9 @@ import { formatTime, shortAddress } from '../utils/messaging';
 import TalentLayerContext from '../../context/talentLayer';
 import { useContext } from 'react';
 import useUserByAddress from '../../hooks/useUserByAddress';
-import { IMessageIPFS } from '@pushprotocol/uiweb/lib/types';
 import { pCAIP10ToWallet } from '@pushprotocol/restapi/src/lib/helpers';
 import { formatDateDivider } from '../../utils/dates';
-import { ChatMessage } from '../../types';
+import { ChatMessage, ChatMessageStatus } from '../../types';
 
 interface IMessageCardProps {
   message: ChatMessage;
@@ -35,10 +34,13 @@ const MessageCard = ({ message, dateHasChanged }: IMessageCardProps) => {
         )}
         <div
           className={`py-3 px-4 ${
-            isSender
+            isSender && message.status !== ChatMessageStatus.ERROR
               ? 'ml-2 bg-indigo-500 rounded-br-3xl rounded-tr-3xl rounded-tl-xl'
+              : isSender && message.status === ChatMessageStatus.ERROR
+              ? 'ml-2 bg-red-600 rounded-br-3xl rounded-tr-3xl rounded-tl-xl'
               : 'mr-2 bg-gray-400 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl'
-          } text-white`}>
+          }
+          text-white`}>
           <div>
             {peerUser && peerUser.handle ? (
               <b>{peerUser.handle}</b>
