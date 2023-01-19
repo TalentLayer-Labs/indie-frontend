@@ -137,9 +137,9 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
       } catch (e) {
         console.error(e);
       } finally {
-        setMessagesLoaded(true);
         setConversationMessages(messagesMap);
         console.log('Messages loaded');
+        setMessagesLoaded(true);
       }
     }
   };

@@ -20,7 +20,7 @@ const MessageList = ({
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messagesLoaded]);
+  }, [conversationMessages, messagesLoaded]);
 
   return (
     <>

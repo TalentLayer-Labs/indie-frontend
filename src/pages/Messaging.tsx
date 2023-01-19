@@ -41,7 +41,6 @@ function Messaging() {
   const [pageLoaded, setPageLoaded] = useState(false);
 
   if (selectedConversationPeerAddress && conversations && !pageLoaded) {
-    console.log('here');
     const conversation = conversations?.find(
       c => pCAIP10ToWallet(c.toCAIP10) === selectedConversationPeerAddress,
     );
@@ -66,7 +65,6 @@ function Messaging() {
     }
   };
 
-  //TODO lighten conversation data content
   const handleDisplayChange = (conversationDisplayType: ConversationDisplayType) => {
     conversationDisplayType === ConversationDisplayType.REQUEST
       ? navigate('/messaging/requests')
