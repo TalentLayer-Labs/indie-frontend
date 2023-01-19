@@ -6,7 +6,7 @@ interface ICardHeaderProps {
   handleDisplayChange: (conversationDisplayType: ConversationDisplayType) => void;
 }
 const CardHeader = ({ peerAddress, handleDisplayChange }: ICardHeaderProps) => {
-  // useConversationListener();
+  useConversationListener();
 
   return (
     <div className='flex flex-row'>

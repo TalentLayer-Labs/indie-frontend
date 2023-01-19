@@ -154,15 +154,6 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
           account: pushUser.wallets,
         });
         setConversations(response);
-        // for (const newConversation of response) {
-        //   if (
-        //     newConversation.timestamp !==
-        //     conversations?.find(conversation => conversation.toCAIP10 === newConversation.toCAIP10)
-        //       ?.timestamp
-        //   ) {
-        //     await getOneConversationMessages(newConversation);
-        //   }
-        // }
       } catch (e) {
         console.error(e);
       } finally {
@@ -211,7 +202,6 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
       try {
         for (const conversation of conversations) {
           setMessagesLoaded(false);
-          console.log('for loop', conversation.toCAIP10);
           const messages = [];
           if (conversation.link && pushUser) {
             // Gets all historical messages of the conversation except the first one
@@ -246,7 +236,7 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     console.log('Fetching Push User');
-    // Checking user existence
+    // Checking user existence on wallet connecting
     const getPushUser = async (): Promise<void> => {
       if (signer && !pushUser) {
         checkPushUserExistence(await signer.getAddress());
@@ -254,17 +244,6 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
     };
     getPushUser();
   }, [signer]);
-
-  // useEffect(() => {
-  //   try {
-  //     decodePrivateKey();
-  //   } catch (e) {
-  //     console.error(e);
-  //   }
-  //   return () => {
-  //     setPrivateKey(undefined);
-  //   };
-  // }, [pushUser]);
 
   useEffect(() => {
     try {
@@ -286,7 +265,6 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
       getOneConversationMessages(conversations[0]);
     }
   }, [conversationsLoaded]);
-  // }, [chatInitiated]);
 
   const value = useMemo(() => {
     return {
