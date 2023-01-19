@@ -1,4 +1,4 @@
-import { useContext, useRef, useState } from 'react';
+import { useContext, useState } from 'react';
 import TalentLayerContext from '../context/talentLayer';
 import { useNavigate, useParams } from 'react-router-dom';
 import { chat as chatApi } from '@pushprotocol/restapi';
@@ -39,27 +39,22 @@ function Messaging() {
   const [sendingPending, setSendingPending] = useState(false);
   const [messageSendingErrorMsg, setMessageSendingErrorMsg] = useState('');
   const [pageLoaded, setPageLoaded] = useState(false);
-  const bottomRef = useRef<HTMLDivElement>(null);
 
   if (selectedConversationPeerAddress && conversations && !pageLoaded) {
-    try {
-      const conversation = conversations?.find(
-        c => pCAIP10ToWallet(c.toCAIP10) === selectedConversationPeerAddress,
-      );
-      if (conversation) {
+    console.log('here');
+    const conversation = conversations?.find(
+      c => pCAIP10ToWallet(c.toCAIP10) === selectedConversationPeerAddress,
+    );
+    if (conversation) {
+      try {
         getOneConversationMessages(conversation);
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setPageLoaded(true);
       }
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setPageLoaded(true);
     }
   }
-
-  // Not working
-  // useEffect(() => {
-  //   console.log('pageLoaded', pageLoaded);
-  // }, [pageLoaded]);
 
   const handleDecryptConversations = async () => {
     try {
@@ -72,9 +67,6 @@ function Messaging() {
   };
 
   //TODO lighten conversation data content
-  //TODO Update Listener
-  //TODO Check compare timestamp for state update
-  //TODO Scroller when messages sent (no state update before API call)
   const handleDisplayChange = (conversationDisplayType: ConversationDisplayType) => {
     conversationDisplayType === ConversationDisplayType.REQUEST
       ? navigate('/messaging/requests')
@@ -161,12 +153,11 @@ function Messaging() {
       }
     }
   };
-
   watchAccount(() => {
     if (disconnect && initPush && user?.address) {
       const changeUser = async () => {
         disconnect();
-        // TODO not working, maybe with a context listener on Signer change
+        //TODO not working: "The requested account and/or method has not been authorized by the user."
         // await initPush(user?.address);
         navigate(`/messaging`);
       };
@@ -210,7 +201,6 @@ function Messaging() {
                   conversationsLoaded={conversationsLoaded}
                   setPageLoaded={setPageLoaded}
                 />
-                <div ref={bottomRef}></div>
               </div>
             )}
 
@@ -222,7 +212,6 @@ function Messaging() {
                     []
                   }
                   messagesLoaded={messagesLoaded}
-                  pageLoaded={pageLoaded}
                   selectedConversationPeerAddress={!!selectedConversationPeerAddress}
                 />
               </div>
