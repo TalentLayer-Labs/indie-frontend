@@ -1,6 +1,6 @@
 import { shortAddress, truncate } from '../utils/messaging';
 import { DecodedMessage } from '@xmtp/xmtp-js';
-import useUserByAddress from '../../hooks/useUserByAddress';
+import useUserByAddress from '../../../hooks/useUserByAddress';
 import { useNavigate } from 'react-router-dom';
 
 interface IConversationCardProps {

@@ -1,7 +1,7 @@
 import { XmtpContext } from '../context/XmtpContext';
 import { useContext } from 'react';
 import { InvitationContext } from '@xmtp/xmtp-js/dist/types/src/Invitation';
-import useUserByAddress from '../../hooks/useUserByAddress';
+import useUserByAddress from '../../../hooks/useUserByAddress';
 import { buildConversationId } from '../utils/messaging';
 
 const useSendMessage = (peerAddress: string, senderId: string | undefined) => {

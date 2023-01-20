@@ -1,9 +1,9 @@
 import { DecodedMessage } from '@xmtp/xmtp-js';
 import { shortAddress } from '../utils/messaging';
-import TalentLayerContext from '../../context/talentLayer';
+import TalentLayerContext from '../../../context/talentLayer';
 import { useContext } from 'react';
-import { getUserByAddress } from '../../queries/users';
-import useUserByAddress from '../../hooks/useUserByAddress';
+import { getUserByAddress } from '../../../queries/users';
+import useUserByAddress from '../../../hooks/useUserByAddress';
 // import { shortAddress } from '../utils/utils';
 
 interface IMessageCardProps {

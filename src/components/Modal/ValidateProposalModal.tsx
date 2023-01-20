@@ -11,7 +11,6 @@ import { FEE_RATE_DIVIDER } from '../../config';
 import { useBalance, useProvider, useSigner } from 'wagmi';
 import { useNavigate } from 'react-router-dom';
 import PushContext from '../../messaging/push/context/pushUser';
-import { XmtpContext } from '../../context/XmtpContext';
 import { XmtpContext } from '../../messaging/context/XmtpContext';
 import { useNavigate } from 'react-router-dom';
 
