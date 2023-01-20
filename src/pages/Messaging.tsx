@@ -1,14 +1,14 @@
 import { useContext, useState } from 'react';
-import { XmtpContext } from '../messaging/context/XmtpContext';
+import { XmtpContext } from '../messaging/xmtp/context/XmtpContext';
 import TalentLayerContext from '../context/talentLayer';
 import { useSigner } from 'wagmi';
 import { watchAccount } from '@wagmi/core';
-import ConversationList from '../messaging/components/ConversationList';
-import CardHeader from '../messaging/components/CardHeader';
-import MessageList from '../messaging/components/MessageList';
-import useStreamConversations from '../messaging/hooks/useStreamConversations';
-import useSendMessage from '../messaging/hooks/useSendMessage';
-import MessageComposer from '../messaging/components/MessageComposer';
+import ConversationList from '../messaging/xmtp/components/ConversationList';
+import CardHeader from '../messaging/xmtp/components/CardHeader';
+import MessageList from '../messaging/xmtp/components/MessageList';
+import useStreamConversations from '../messaging/xmtp/hooks/useStreamConversations';
+import useSendMessage from '../messaging/xmtp/hooks/useSendMessage';
+import MessageComposer from '../messaging/xmtp/components/MessageComposer';
 import { useNavigate, useParams } from 'react-router-dom';
 import useUserByAddress from '../hooks/useUserByAddress';
 

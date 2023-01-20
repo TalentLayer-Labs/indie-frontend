@@ -14,7 +14,7 @@ import ProposalItem from './ProposalItem';
 import ReviewItem from './ReviewItem';
 import ServiceStatus from './ServiceStatus';
 import Stars from './Stars';
-import { XmtpContext } from '../messaging/context/XmtpContext';
+import { XmtpContext } from '../messaging/xmtp/context/XmtpContext';
 import { useSigner } from 'wagmi';
 import { ethers } from 'ethers';
 

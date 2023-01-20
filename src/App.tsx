@@ -20,7 +20,7 @@ import { Web3Modal } from '@web3modal/react';
 
 import { chain, configureChains, createClient, WagmiConfig } from 'wagmi';
 import Messaging from './pages/Messaging';
-import { XmtpContextProvider } from './messaging/context/XmtpContext';
+import { XmtpContextProvider } from './messaging/xmtp/context/XmtpContext';
 
 const chains = [chain.goerli];
 
