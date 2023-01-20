@@ -1,7 +1,7 @@
 import ConversationCard from './ConversationCard';
 import { Message } from '@pushprotocol/restapi/src/lib/chat/ipfs';
-import { ConversationDisplayType } from '../../types';
-import Loading from '../../components/Loading';
+import { ConversationDisplayType } from '../../../types';
+import Loading from '../../../components/Loading';
 
 interface IConversationListProps {
   conversations: Message[];

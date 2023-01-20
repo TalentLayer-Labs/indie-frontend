@@ -9,7 +9,7 @@ import useFees from '../../hooks/useFees';
 import { FEE_RATE_DIVIDER } from '../../config';
 import { useBalance, useProvider, useSigner } from 'wagmi';
 import { useNavigate } from 'react-router-dom';
-import PushContext from '../../messaging/context/pushUser';
+import PushContext from '../../messaging/push/context/pushUser';
 
 function ValidateProposalModal({ proposal, account }: { proposal: IProposal; account: IAccount }) {
   const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });

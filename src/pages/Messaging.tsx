@@ -2,17 +2,17 @@ import { useContext, useState } from 'react';
 import TalentLayerContext from '../context/talentLayer';
 import { useNavigate, useParams } from 'react-router-dom';
 import { chat as chatApi } from '@pushprotocol/restapi';
-import CardHeader from '../messaging/components/CardHeader';
-import MessageComposer from '../messaging/components/MessageComposer';
-import MessageList from '../messaging/components/MessageList';
-import ConversationList from '../messaging/components/ConversationList';
-import PushContext from '../messaging/context/pushUser';
+import CardHeader from '../messaging/push/components/CardHeader';
+import MessageComposer from '../messaging/push/components/MessageComposer';
+import MessageList from '../messaging/push/components/MessageList';
+import ConversationList from '../messaging/push/components/ConversationList';
+import PushContext from '../messaging/push/context/pushUser';
 import { walletToPCAIP10 } from '@pushprotocol/restapi/src/lib/helpers/address';
 import { watchAccount } from '@wagmi/core';
 import { ChatMessage, ChatMessageStatus, ConversationDisplayType, PushMessage } from '../types';
 import Steps from '../components/Steps';
 import { pCAIP10ToWallet } from '@pushprotocol/restapi/src/lib/helpers';
-import { buildConversationMessage } from '../messaging/utils/messaging';
+import { buildConversationMessage } from '../messaging/push/utils/messaging';
 
 function Messaging() {
   const { account, user } = useContext(TalentLayerContext);
