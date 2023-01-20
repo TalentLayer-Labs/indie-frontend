@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import Back from '../components/Back';
 import ProposalForm from '../components/Form/ProposalForm';
@@ -6,7 +6,7 @@ import Loading from '../components/Loading';
 import Steps from '../components/Steps';
 import TalentLayerContext from '../context/talentLayer';
 import useServiceById from '../hooks/useServiceById';
-import PushContext from '../messaging/context/pushUser';
+import PushContext from '../messaging/push/context/pushUser';
 import { createUserIfNecessary } from '@pushprotocol/restapi/src/lib/chat/helpers';
 
 function CreateProposal() {

@@ -1,8 +1,8 @@
 import MessageCard from './MessageCard';
 import { isOnSameDay } from '../utils/messaging';
-import Loading from '../../components/Loading';
+import Loading from '../../../components/Loading';
 import { useEffect, useRef } from 'react';
-import { ChatMessage } from '../../types';
+import { ChatMessage } from '../../../types';
 
 interface IMessageListProps {
   conversationMessages: ChatMessage[];

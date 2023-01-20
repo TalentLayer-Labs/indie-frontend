@@ -1,4 +1,4 @@
-import { ConversationDisplayType } from '../../types';
+import { ConversationDisplayType } from '../../../types';
 import useConversationListener from '../hooks/useConversationListener';
 
 interface ICardHeaderProps {

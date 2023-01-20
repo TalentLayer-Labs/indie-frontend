@@ -22,7 +22,7 @@ import { Web3Modal } from '@web3modal/react';
 import { Chain, configureChains, createClient, WagmiConfig } from 'wagmi';
 import { customChains } from './chains';
 import Messaging from './pages/Messaging';
-import { PushProvider } from './messaging/context/pushUser';
+import { PushProvider } from './messaging/push/context/pushUser';
 
 const chains: Chain[] = [customChains.polygonMumbai];
 

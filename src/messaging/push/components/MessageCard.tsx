@@ -1,10 +1,10 @@
 import { formatTime } from '../utils/messaging';
-import TalentLayerContext from '../../context/talentLayer';
+import TalentLayerContext from '../../../context/talentLayer';
 import { useContext } from 'react';
-import useUserByAddress from '../../hooks/useUserByAddress';
+import useUserByAddress from '../../../hooks/useUserByAddress';
 import { pCAIP10ToWallet } from '@pushprotocol/restapi/src/lib/helpers';
-import { formatDateDivider } from '../../utils/dates';
-import { ChatMessage, ChatMessageStatus } from '../../types';
+import { formatDateDivider } from '../../../utils/dates';
+import { ChatMessage, ChatMessageStatus } from '../../../types';
 
 interface IMessageCardProps {
   message: ChatMessage;

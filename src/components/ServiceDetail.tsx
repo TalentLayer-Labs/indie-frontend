@@ -16,12 +16,12 @@ import ProposalItem from './ProposalItem';
 import ReviewItem from './ReviewItem';
 import ServiceStatus from './ServiceStatus';
 import Stars from './Stars';
-import PushContext from '../messaging/context/pushUser';
+import PushContext from '../messaging/push/context/pushUser';
 import { ethers } from 'ethers';
 
 function ServiceDetail({ service }: { service: IService }) {
   const { account, user } = useContext(TalentLayerContext);
-  const { initPush, pushUser } = useContext(PushContext);
+  const { initPush } = useContext(PushContext);
   const serviceDetail = useServiceDetails(service.uri);
   const { reviews } = useReviewsByService(service.id);
   const proposals = useProposalsByService(service.id);

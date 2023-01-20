@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import ServiceForm from '../components/Form/ServiceForm';
 import Steps from '../components/Steps';
 import TalentLayerContext from '../context/talentLayer';
-import PushContext from '../messaging/context/pushUser';
+import PushContext from '../messaging/push/context/pushUser';
 import { createUserIfNecessary } from '@pushprotocol/restapi/src/lib/chat/helpers';
 
 function CreateService() {

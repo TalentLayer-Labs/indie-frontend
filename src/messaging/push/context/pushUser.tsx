@@ -5,7 +5,7 @@ import { chat as chatApi, user as userApi } from '@pushprotocol/restapi/src/lib'
 import { pCAIP10ToWallet } from '@pushprotocol/restapi/src/lib/helpers';
 import { createUserIfNecessary } from '@pushprotocol/restapi/src/lib/chat/helpers';
 import { useSigner } from 'wagmi';
-import { ChatMessage } from '../../types';
+import { ChatMessage } from '../../../types';
 import { buildChatMessage } from '../utils/messaging';
 import { IMessageIPFS } from '@pushprotocol/uiweb/lib/types';
 
