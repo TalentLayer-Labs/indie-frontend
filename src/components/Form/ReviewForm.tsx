@@ -53,7 +53,12 @@ function ReviewForm({ serviceId }: { serviceId: string }) {
           TalentLayerReview.abi,
           signer,
         );
-        const tx = await contract.addReview(serviceId, uri, values.rating, import.meta.env.VITE_PLATFORM_ID);
+        const tx = await contract.addReview(
+          serviceId,
+          uri,
+          values.rating,
+          import.meta.env.VITE_PLATFORM_ID,
+        );
         await createMultiStepsTransactionToast(
           {
             pending: 'Creating your review...',
