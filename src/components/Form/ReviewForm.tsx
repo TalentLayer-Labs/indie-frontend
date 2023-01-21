@@ -1,7 +1,7 @@
 import { useWeb3Modal } from '@web3modal/react';
 import { ethers } from 'ethers';
 import { Field, Form, Formik } from 'formik';
-import { useContext, useEffect } from 'react';
+import { useContext } from 'react';
 import { useProvider, useSigner } from 'wagmi';
 import * as Yup from 'yup';
 import { config } from '../../config';
@@ -53,7 +53,7 @@ function ReviewForm({ serviceId }: { serviceId: string }) {
           TalentLayerReview.abi,
           signer,
         );
-        const tx = await contract.addReview(serviceId, uri, values.rating, '1');
+        const tx = await contract.addReview(serviceId, uri, values.rating, import.meta.env.VITE_PLATFORM_ID);
         await createMultiStepsTransactionToast(
           {
             pending: 'Creating your review...',
