@@ -1,7 +1,7 @@
 import MessageCard from './MessageCard';
 import { isOnSameDay } from '../utils/messaging';
 import Loading from '../../../components/Loading';
-import { useEffect, useRef } from 'react';
+import { useLayoutEffect, useRef } from 'react';
 import { ChatMessage } from '../../../types';
 
 interface IMessageListProps {
@@ -12,15 +12,15 @@ interface IMessageListProps {
 
 const MessageList = ({
   selectedConversationPeerAddress,
-  messagesLoaded,
   conversationMessages,
 }: IMessageListProps) => {
   let lastMessageDate: number | undefined;
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
+    console.log('fire');
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [conversationMessages, messagesLoaded]);
+  });
 
   return (
     <>
