@@ -21,7 +21,6 @@ const useConversationListener = () => {
       if (setConversations && pushUser) {
         try {
           conversationFetcher = setInterval(async () => {
-            console.log('tick', conversationFetcher);
             await checkStateUpdate();
           }, 5000);
         } catch (err: any) {
@@ -34,7 +33,6 @@ const useConversationListener = () => {
 
     return () => {
       if (conversationFetcher) {
-        console.log('clearing interval', conversationFetcher);
         clearInterval(conversationFetcher);
       }
     };
@@ -42,7 +40,6 @@ const useConversationListener = () => {
 
   const checkStateUpdate = async (): Promise<void> => {
     if (pushUser && privateKey && setConversations && getConversations && getRequests) {
-      console.log('checking state update ');
       // Call the API to get the latest conversations & check it against the state
       const newConversations = await chatApi.chats({
         pgpPrivateKey: privateKey,
@@ -53,12 +50,6 @@ const useConversationListener = () => {
         const existingConversation = conversations?.find((conversation: Message) => {
           return conversation.toCAIP10 === newConversation.toCAIP10;
         });
-        if (
-          existingConversation?.toCAIP10 === 'eip155:0xEc0Dc36A8E593DBf7ab012305A34ee34aDEe28ac'
-        ) {
-          console.log('existingConversation', existingConversation?.toCAIP10);
-          console.log('bool', existingConversation?.timestamp !== newConversation.timestamp);
-        }
         if (existingConversation && existingConversation.timestamp !== newConversation.timestamp) {
           console.log('updating conversation', newConversation);
           getOneConversationMessages(newConversation);
