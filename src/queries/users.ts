@@ -1,9 +1,9 @@
 import { processRequest } from '../utils/graphql';
 
-export const getUsers = (): Promise<any> => {
+export const getUsers = (platformId?: string): Promise<any> => {
   const query = `
     {
-      users(orderBy: rating, orderDirection: desc) {
+      users(orderBy: rating, orderDirection: desc, where : { platform: "${platformId}" }) {
         id
         address
         uri
