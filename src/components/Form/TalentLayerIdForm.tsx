@@ -3,10 +3,10 @@ import { EthersError } from '@enzoferey/ethers-error-parser/dist/types';
 import { useWeb3Modal } from '@web3modal/react';
 import { ethers } from 'ethers';
 import { Field, Form, Formik } from 'formik';
-import { useContext, useEffect } from 'react';
+import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { useNetwork, useProvider, useSigner } from 'wagmi';
+import { useProvider, useSigner } from 'wagmi';
 import * as Yup from 'yup';
 import { config } from '../../config';
 import TalentLayerContext from '../../context/talentLayer';
@@ -26,7 +26,6 @@ function TalentLayerIdForm() {
   const { open: openConnectModal } = useWeb3Modal();
   const { account } = useContext(TalentLayerContext);
   const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
-  const network = useNetwork();
   const provider = useProvider({ chainId: import.meta.env.VITE_NETWORK_ID });
   const navigate = useNavigate();
 
@@ -44,7 +43,7 @@ function TalentLayerIdForm() {
     submittedValues: IFormValues,
     { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void },
   ) => {
-    if (account && account.isConnected === true && provider && signer) {
+    if (account && account.isConnected && provider && signer) {
       try {
         const contract = new ethers.Contract(
           config.contracts.talentLayerId,
@@ -52,7 +51,7 @@ function TalentLayerIdForm() {
           signer,
         );
 
-        const tx = await contract.mint('1', submittedValues.handle);
+        const tx = await contract.mint(import.meta.env.VITE_PLATFORM_ID, submittedValues.handle);
         const receipt = await toast.promise(provider.waitForTransaction(tx.hash), {
           pending: {
             render() {
@@ -80,7 +79,7 @@ function TalentLayerIdForm() {
             },
           );
         } else {
-          console.log('error');
+          console.error('error');
         }
       } catch (error) {
         const parsedEthersError = getParsedEthersError(error as EthersError);
@@ -96,7 +95,8 @@ function TalentLayerIdForm() {
     <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
       {({ isSubmitting }) => (
         <Form>
-          <div className='flex divide-x bg-white py-4 px-4 sm:px-0 justify-center items-center flex-row drop-shadow-lg rounded-lg'>
+          <div
+            className='flex divide-x bg-white py-4 px-4 sm:px-0 justify-center items-center flex-row drop-shadow-lg rounded-lg'>
             <div className='sm:px-6 flex flex-row items-center gap-2'>
               <span className='text-gray-500'>
                 <svg
