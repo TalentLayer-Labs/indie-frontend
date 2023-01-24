@@ -1,7 +1,7 @@
 import { useWeb3Modal } from '@web3modal/react';
 import { ethers } from 'ethers';
 import { Field, Form, Formik } from 'formik';
-import { useContext, useEffect } from 'react';
+import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useProvider, useSigner } from 'wagmi';
 import * as Yup from 'yup';
@@ -74,7 +74,7 @@ function ServiceForm() {
           ServiceRegistry.abi,
           signer,
         );
-        const tx = await contract.createOpenServiceFromBuyer('1', uri);
+        const tx = await contract.createOpenServiceFromBuyer(import.meta.env.VITE_PLATFORM_ID, uri);
         const newId = await createMultiStepsTransactionToast(
           {
             pending: 'Creating your job...',

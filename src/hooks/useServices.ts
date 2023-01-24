@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { getServices } from '../queries/services';
 import { IService, ServiceStatusEnum } from '../types';
 
@@ -12,7 +12,12 @@ const useServices = (
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await getServices(serviceStatus, buyerId, sellerId);
+        const response = await getServices(
+          serviceStatus,
+          buyerId,
+          sellerId,
+          import.meta.env.VITE_PLATFORM_ID,
+        );
         if (response?.data?.data?.services.length > 0) {
           setServices(response.data.data.services);
         }
