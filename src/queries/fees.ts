@@ -4,8 +4,8 @@ export const getProtocolAndOriginFee = (platformId: number): Promise<any> => {
   const query = `
   {
     protocols {
-      escrowFee
-      originPlatformFee
+      protocolEscrowFeeRate
+      originPlatformEscrowFeeRate
     }
     platforms(id:${platformId}){
       fee
