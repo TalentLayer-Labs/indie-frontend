@@ -23,11 +23,12 @@ function ValidateProposalModal({ proposal, account }: { proposal: IProposal; acc
 
   const platformId = import.meta.env.VITE_PLATFORM_ID;
 
-  const { protocolFeeRate, originPlatformFeeRate, platformFeeRate } = useFees(platformId);
+  const { protocolEscrowFeeRate, originPlatformEscrowFeeRate, platformFeeRate } =
+    useFees(platformId);
 
   const jobRateAmount = ethers.BigNumber.from(proposal.rateAmount);
-  const protocolFee = jobRateAmount.mul(protocolFeeRate).div(FEE_RATE_DIVIDER);
-  const originPlatformFee = jobRateAmount.mul(originPlatformFeeRate).div(FEE_RATE_DIVIDER);
+  const protocolFee = jobRateAmount.mul(protocolEscrowFeeRate).div(FEE_RATE_DIVIDER);
+  const originPlatformFee = jobRateAmount.mul(originPlatformEscrowFeeRate).div(FEE_RATE_DIVIDER);
   const platformFee = jobRateAmount.mul(platformFeeRate).div(FEE_RATE_DIVIDER);
   const totalAmount = jobRateAmount.add(originPlatformFee).add(platformFee).add(protocolFee);
 
@@ -132,7 +133,11 @@ function ValidateProposalModal({ proposal, account }: { proposal: IProposal; acc
                     <p className='text-base leading-4 text-gray-800'>
                       Origin Marketplace fees{' '}
                       <span className='bg-gray-200 p-1 text-xs font-medium leading-3 text-gray-800'>
-                        {((Number(originPlatformFeeRate) / FEE_RATE_DIVIDER) * 100).toString()} %
+                        {(
+                          (Number(originPlatformEscrowFeeRate) / FEE_RATE_DIVIDER) *
+                          100
+                        ).toString()}{' '}
+                        %
                       </span>
                     </p>
                     <p className='text-base  leading-4 text-gray-600'>
@@ -143,7 +148,7 @@ function ValidateProposalModal({ proposal, account }: { proposal: IProposal; acc
                     <p className='text-base leading-4 text-gray-800'>
                       Protocol fees{' '}
                       <span className='bg-gray-200 p-1 text-xs font-medium leading-3 text-gray-800'>
-                        {((Number(protocolFeeRate) / FEE_RATE_DIVIDER) * 100).toString()} %
+                        {((Number(protocolEscrowFeeRate) / FEE_RATE_DIVIDER) * 100).toString()} %
                       </span>
                     </p>
                     <p className='text-base  leading-4 text-gray-600'>
