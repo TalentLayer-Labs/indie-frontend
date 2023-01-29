@@ -6,7 +6,13 @@ export const getUsers = (platformId?: string): Promise<any> => {
       users(orderBy: rating, orderDirection: desc, where : { platform: "${platformId}" }) {
         id
         address
-        uri
+        description{
+          about
+          country
+          headline
+          id
+          picture
+        }
         handle
         withPoh
         numReviews
@@ -23,7 +29,13 @@ export const getUserById = (id: string): Promise<any> => {
       user(id: "${id}") {
         id
         address
-        uri
+        description{
+          about
+          country
+          headline
+          id
+          picture
+        }
         handle
         withPoh
         rating
@@ -40,7 +52,13 @@ export const getUserByAddress = (address: string): Promise<any> => {
       users(where: {address: "${address.toLocaleLowerCase()}"}, first: 1) {
         id
         address
-        uri
+        description{
+          about
+          country
+          headline
+          id
+          picture
+        }
         handle
         withPoh
         rating
