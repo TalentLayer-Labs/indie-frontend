@@ -1,9 +1,9 @@
 import { processRequest } from '../utils/graphql';
 
-export const graphIsSynced = async (entity: string, uri: string): Promise<number> => {
+export const graphIsSynced = async (entity: string, cid: string): Promise<number> => {
   return new Promise<number>(async (resolve, reject) => {
     const interval = setInterval(async () => {
-      const response = await checkEntityByUri(entity, uri);
+      const response = await checkEntityByUri(entity, cid);
       if (response?.data?.data?.[entity][0]) {
         clearInterval(interval);
         resolve(response?.data?.data?.[entity][0].id);
@@ -12,12 +12,12 @@ export const graphIsSynced = async (entity: string, uri: string): Promise<number
   });
 };
 
-export const checkEntityByUri = (entity: string, uri: string): Promise<any> => {
+export const checkEntityByUri = (entity: string, cid: string): Promise<any> => {
   const query = `
       {
-        ${entity}(where: {uri: "${uri}"}, first: 1) {
+        ${entity}(where: {cid: "${cid}"}, first: 1) {
           id
-          uri
+          cid
         }
       }
       `;

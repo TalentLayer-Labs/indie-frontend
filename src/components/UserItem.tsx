@@ -7,7 +7,7 @@ import Stars from './Stars';
 
 function UserItem({ user }: { user: IUser }) {
   const { user: currentUser } = useContext(TalentLayerContext);
-  const userDetails = useUserDetails(user?.uri);
+  const userDetails = useUserDetails(user?.cid);
 
   return (
     <div className='flex flex-row gap-2 rounded-xl p-4 border border-gray-200'>

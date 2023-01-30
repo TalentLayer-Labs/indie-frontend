@@ -76,9 +76,11 @@ export type IReview = {
   service: IService;
   to: IUser;
   uri: string;
+  description: IReviewDetails;
 };
 
 export type IReviewDetails = {
+  id: string;
   content: string;
   rating: string;
 };

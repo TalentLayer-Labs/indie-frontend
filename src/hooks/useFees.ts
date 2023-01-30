@@ -20,7 +20,7 @@ const useFees = (platformId: number): IFees => {
             protocolEscrowFeeRate: response.data.data.protocols[0].protocolEscrowFeeRate,
             originPlatformEscrowFeeRate:
               response.data.data.protocols[0].originPlatformEscrowFeeRate,
-            platformFeeRate: response.data.data.platforms[0].fee,
+            platformFeeRate: response.data.data.platforms[0].platformEscrowFeeRate,
           });
         }
       } catch (err: any) {
