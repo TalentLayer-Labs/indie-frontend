@@ -17,7 +17,7 @@ import Stars from './Stars';
 
 function ServiceDetail({ service }: { service: IService }) {
   const { account, user } = useContext(TalentLayerContext);
-  const serviceDetail = useServiceDetails(service.uri);
+  const serviceDetail = useServiceDetails(service.cid);
   const { reviews } = useReviewsByService(service.id);
   const proposals = useProposalsByService(service.id);
   const payments = usePaymentsByService(service.id);
