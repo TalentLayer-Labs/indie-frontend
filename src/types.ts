@@ -102,7 +102,7 @@ export type IProposalDetails = {
 
 export type IProposal = {
   id: string;
-  uri: string;
+  cid: string;
   status: ProposalStatusEnum;
   seller: IUser;
   rateToken: IToken;
