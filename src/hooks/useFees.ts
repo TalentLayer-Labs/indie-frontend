@@ -5,8 +5,8 @@ import { getProtocolAndOriginFee } from '../queries/fees';
 
 const useFees = (platformId: number): IFees => {
   const [fees, setFees] = useState({
-    protocolFeeRate: 0,
-    originPlatformFeeRate: 0,
+    protocolEscrowFeeRate: 0,
+    originPlatformEscrowFeeRate: 0,
     platformFeeRate: 0,
   });
 
@@ -17,8 +17,9 @@ const useFees = (platformId: number): IFees => {
 
         if (response?.data?.data?.protocols && response?.data?.data?.platforms) {
           setFees({
-            protocolFeeRate: response.data.data.protocols[0].escrowFee,
-            originPlatformFeeRate: response.data.data.protocols[0].originPlatformFee,
+            protocolEscrowFeeRate: response.data.data.protocols[0].protocolEscrowFeeRate,
+            originPlatformEscrowFeeRate:
+              response.data.data.protocols[0].originPlatformEscrowFeeRate,
             platformFeeRate: response.data.data.platforms[0].fee,
           });
         }

@@ -13,7 +13,7 @@ const chainIdToName = (chainId: number) => {
     case 1337:
       return 'Localhost';
     case 80001:
-      return 'polygonMumbai';
+      return 'Mumbai';
     case 137:
       return 'Polygon';
     default:
