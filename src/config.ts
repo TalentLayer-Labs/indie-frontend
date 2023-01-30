@@ -117,11 +117,11 @@ const mumbai: Config = {
 const local: Config = {
   networkId: NetworkEnum.LOCAL,
   contracts: {
-    talentLayerId: '0x2F9EBAc36cc020B81c4c624AbcfeC7DC8958Cf54',
-    serviceRegistry: '0x8E86d82214c391281a908e3e31a766fcb9FaB3cA',
-    talentLayerReview: '0x66676968c176aA328124f04f53F8653db6b35ff9',
-    talentLayerEscrow: '0x182980458E0F93167Fab56c494776b694A07C030',
-    talentLayerPlatformId: '0xc0aB487a8e374807B86291CE5BE4b0dE4540529d',
+    talentLayerId: '0x2475F87a2A73548b2E49351018E7f6a53D3d35A4',
+    serviceRegistry: '0x3dE39C61d4281716c458ffdb3150aa9aF4fb752a',
+    talentLayerReview: '0xa3A183D6f70217362050040Ef365923a0c1989e8',
+    talentLayerEscrow: '0x91327C01CB952a95addDa72FcA59E4151fE42Cb3',
+    talentLayerPlatformId: '0xF39e4249b6dCcca8Ec7455E524C9685d1332fCD1',
   },
   escrowConfig: {
     timeoutPayment: 3600 * 24 * 7,
@@ -133,8 +133,8 @@ const local: Config = {
       name: 'ETH',
       decimals: 18,
     },
-    '0x67EE2a1f75788794f516b8F9919496D63109A380': {
-      address: '0x67EE2a1f75788794f516b8F9919496D63109A380',
+    '0xfF695df29837B571c4DAE01B5711500f6306E93f': {
+      address: '0xfF695df29837B571c4DAE01B5711500f6306E93f',
       symbol: 'ERC20',
       name: 'Simple ERC20',
       decimals: 18,

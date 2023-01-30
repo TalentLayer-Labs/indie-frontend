@@ -113,8 +113,8 @@ export type IProposal = {
 };
 
 export type IFees = {
-  protocolFeeRate: number;
-  originPlatformFeeRate: number;
+  protocolEscrowFeeRate: number;
+  originPlatformEscrowFeeRate: number;
   platformFeeRate: number;
 };
 
