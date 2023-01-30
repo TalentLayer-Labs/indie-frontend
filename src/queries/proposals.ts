@@ -11,7 +11,7 @@ export const getAllProposalsbyServiceId = (id: string): Promise<any> => {
             id
           }
         }
-        uri
+        cid
         id
         status
         rateToken {
@@ -27,7 +27,7 @@ export const getAllProposalsbyServiceId = (id: string): Promise<any> => {
           id
           handle
           address
-          uri
+          cid
           withPoh
           rating
           numReviews
@@ -51,7 +51,7 @@ export const getAllProposalsByUser = (id: string): Promise<any> => {
             symbol
           }
           status
-          uri
+          cid
           createdAt
           seller {
             id
@@ -59,7 +59,7 @@ export const getAllProposalsByUser = (id: string): Promise<any> => {
           }
           service {
             id
-            uri
+            cid
             createdAt
             buyer {
               id
