@@ -24,7 +24,6 @@ export const getServices = (
         id
         status
         createdAt
-        uri
         buyer {
           id
           handle

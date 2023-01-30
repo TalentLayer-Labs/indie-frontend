@@ -40,7 +40,6 @@ export const getUserByAddress = (address: string): Promise<any> => {
       users(where: {address: "${address.toLocaleLowerCase()}"}, first: 1) {
         id
         address
-        uri
         handle
         withPoh
         rating

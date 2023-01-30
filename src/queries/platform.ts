@@ -12,7 +12,6 @@ export const getPlatformDetails = (id: string | undefined): Promise<any> => {
         fee
         id
         name
-        uri
       }
     }
     `;
