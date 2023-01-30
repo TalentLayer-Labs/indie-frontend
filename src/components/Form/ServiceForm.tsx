@@ -58,7 +58,7 @@ function ServiceForm() {
           values.rateToken,
         );
         const parsedRateAmountString = parsedRateAmount.toString();
-        const uri = await postToIPFS(
+        const cid = await postToIPFS(
           JSON.stringify({
             title: values.title,
             about: values.about,
@@ -74,7 +74,7 @@ function ServiceForm() {
           ServiceRegistry.abi,
           signer,
         );
-        const tx = await contract.createOpenServiceFromBuyer(import.meta.env.VITE_PLATFORM_ID, uri);
+        const tx = await contract.createOpenServiceFromBuyer(import.meta.env.VITE_PLATFORM_ID, cid);
         const newId = await createMultiStepsTransactionToast(
           {
             pending: 'Creating your job...',
@@ -84,7 +84,7 @@ function ServiceForm() {
           provider,
           tx,
           'services',
-          uri,
+          cid,
         );
         setSubmitting(false);
         resetForm();

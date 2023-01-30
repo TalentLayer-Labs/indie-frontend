@@ -6,7 +6,7 @@ import { formatDate } from '../utils/dates';
 import ServiceStatus from './ServiceStatus';
 
 function UserServiceItem({ user, service }: { user: IUser; service: IService }) {
-  const serviceDetail = useServiceDetails(service.uri);
+  const serviceDetail = useServiceDetails(service.cid);
   if (!serviceDetail) {
     return null;
   }
