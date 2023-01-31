@@ -19,7 +19,7 @@ import Talents from './pages/Talents';
 import { Web3Modal } from '@web3modal/react';
 
 import { chain, configureChains, createClient, WagmiConfig } from 'wagmi';
-import Messaging from './pages/Messaging';
+import XmtpMessaging from './pages/XmtpMessaging';
 import { XmtpContextProvider } from './messaging/xmtp/context/XmtpContext';
 
 const chains = [chain.goerli];
@@ -55,8 +55,8 @@ function App() {
                     <Route path='/services/create' element={<CreateService />} />
                     <Route path='/services/:id/create-proposal' element={<CreateProposal />} />
                     <Route path='/talents' element={<Talents />} />
-                    <Route path='/messaging' element={<Messaging />} />
-                    <Route path='/messaging/:address' element={<Messaging />} />
+                    <Route path='/messaging' element={<XmtpMessaging />} />
+                    <Route path='/messaging/:address' element={<XmtpMessaging />} />
                     <Route path='/about' element={<About />} />
                     <Route path='/profile/:id' element={<Profile />} />
                     <Route path='/profile/edit' element={<EditProfile />} />
