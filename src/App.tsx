@@ -25,7 +25,7 @@ import { customChains } from './chains';
 import Messaging from './pages/Messaging';
 import { PushProvider } from './messaging/push/context/pushUser';
 import { chain, configureChains, createClient, WagmiConfig } from 'wagmi';
-import Messaging from './pages/Messaging';
+import XmtpMessaging from './pages/XmtpMessaging';
 import { XmtpContextProvider } from './messaging/xmtp/context/XmtpContext';
 
 const chains: Chain[] = [customChains.polygonMumbai];

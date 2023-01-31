@@ -16,7 +16,7 @@ import useUserByAddress from '../hooks/useUserByAddress';
 //TODO: Integrate "New message" + update when new conversation created
 //TODO: Register user to XMTP when profile being created ? When proposal + job being created + button if want before?
 
-function Messaging() {
+function XmtpMessaging() {
   const { user } = useContext(TalentLayerContext);
   const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
   const { providerState } = useContext(XmtpContext);
@@ -103,4 +103,4 @@ function Messaging() {
   );
 }
 
-export default Messaging;
+export default XmtpMessaging;
