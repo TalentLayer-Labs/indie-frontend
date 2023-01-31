@@ -21,6 +21,8 @@ import { Web3Modal } from '@web3modal/react';
 import { chain, configureChains, createClient, WagmiConfig } from 'wagmi';
 import PushMessaging from './pages/PushMessaging';
 import { PushProvider } from './messaging/push/context/pushUser';
+import XmtpMessaging from './pages/XmtpMessaging';
+import { XmtpContextProvider } from './messaging/xmtp/context/XmtpContext';
 
 const chains = [chain.goerli];
 
@@ -44,6 +46,7 @@ function App() {
       <WagmiConfig client={wagmiClient}>
         <BrowserRouter>
           <TalentLayerProvider>
+            <XmtpContextProvider>
             <PushProvider>
               <div className='antialiased'>
                 <Routes>
@@ -67,6 +70,8 @@ function App() {
                         element={<PushMessaging />}
                       />
                     )}
+                    <Route path='/messaging' element={<XmtpMessaging />} />
+                    <Route path='/messaging/:address' element={<XmtpMessaging />} />
                     <Route path='/about' element={<About />} />
                     <Route path='/profile/:id' element={<Profile />} />
                     <Route path='/profile/edit' element={<EditProfile />} />
@@ -74,6 +79,7 @@ function App() {
                 </Routes>
               </div>
             </PushProvider>
+            </XmtpContextProvider>
           </TalentLayerProvider>
         </BrowserRouter>
         <Web3Modal

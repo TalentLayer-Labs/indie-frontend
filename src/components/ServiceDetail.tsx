@@ -16,10 +16,15 @@ import ServiceStatus from './ServiceStatus';
 import Stars from './Stars';
 import PushContext from '../messaging/push/context/pushUser';
 import { ethers } from 'ethers';
+import { XmtpContext } from '../messaging/xmtp/context/XmtpContext';
+import { useSigner } from 'wagmi';
+import { ethers } from 'ethers';
 
 function ServiceDetail({ service }: { service: IService }) {
+  const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
   const { account, user } = useContext(TalentLayerContext);
   const { initPush } = useContext(PushContext);
+  const { providerState } = useContext(XmtpContext);
   const serviceDetail = useServiceDetails(service.uri);
   const { reviews } = useReviewsByService(service.id);
   const proposals = useProposalsByService(service.id);
@@ -50,6 +55,16 @@ function ServiceDetail({ service }: { service: IService }) {
         )}`,
       );
     }
+  };
+
+  const handleMessageUser = async () => {
+    console.log('handleMessageUser', providerState);
+    if (signer && providerState && providerState.initClient) {
+      console.log('handleMessageUser inside');
+      await providerState.initClient(signer);
+    }
+    console.log('service.seller', service.buyer);
+    navigate(`/messaging/${ethers.utils.getAddress(service.buyer?.address)}`);
   };
 
   return (

@@ -1,0 +1,58 @@
+import { DecodedMessage } from '@xmtp/xmtp-js';
+import { shortAddress } from '../utils/messaging';
+import TalentLayerContext from '../../../context/talentLayer';
+import { useContext } from 'react';
+import { getUserByAddress } from '../../../queries/users';
+import useUserByAddress from '../../../hooks/useUserByAddress';
+// import { shortAddress } from '../utils/utils';
+
+interface IMessageCardProps {
+  message: DecodedMessage;
+}
+
+const MessageCard = ({ message }: IMessageCardProps) => {
+  const { user } = useContext(TalentLayerContext);
+  const peerUser = useUserByAddress(message.senderAddress);
+
+  const isSender = message.senderAddress.toLowerCase() === user?.address.toLowerCase();
+
+  // let activeUser;
+  // isSender ? (activeUser = user) : (activeUser = useUserByAddress(message.senderAddress));
+
+  return (
+    <>
+      {peerUser && (
+        <div className={`flex ${isSender ? 'justify-end' : 'justify-start'} mb-4`}>
+          {isSender && user && (
+            <img
+              src={`/default-avatar-${Number(user?.id ? user.id : '1') % 11}.jpeg`}
+              className='object-cover h-12 w-12 rounded-full'
+              alt=''
+            />
+          )}
+          <div
+            className={`py-3 px-4 ${
+              isSender
+                ? 'ml-2 bg-indigo-500 rounded-br-3xl rounded-tr-3xl rounded-tl-xl'
+                : 'mr-2 bg-gray-400 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl'
+            } text-white`}>
+            <div>
+              <b>{peerUser.handle}</b>
+              {/*<b>{shortAddress(message.senderAddress)}</b>*/}
+            </div>
+            <div>{message.content}</div>
+          </div>
+          {!isSender && (
+            <img
+              src={`/default-avatar-${Number(peerUser?.id ? peerUser.id : '1') % 11}.jpeg`}
+              className='object-cover h-12 w-12 rounded-full'
+              alt=''
+            />
+          )}
+        </div>
+      )}
+    </>
+  );
+};
+
+export default MessageCard;
