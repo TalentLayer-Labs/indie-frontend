@@ -15,8 +15,18 @@ import Profile from './pages/Profile';
 import Service from './pages/Service';
 import Services from './pages/Services';
 import Talents from './pages/Talents';
-
 import { Web3Modal } from '@web3modal/react';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+// Global chartJS register
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 import { chain, configureChains, createClient, WagmiConfig } from 'wagmi';
 

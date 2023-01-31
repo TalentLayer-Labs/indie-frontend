@@ -5,15 +5,50 @@ import { useProvider, useSigner } from 'wagmi';
 import usePlatformClaimedFees from '../hooks/usePlatformClaimedFees';
 import { ethers } from 'ethers';
 import { renderTokenAmount } from '../utils/conversion';
+import { config } from '../config';
+import { Bar } from 'react-chartjs-2';
+import useFeePayments from '../hooks/useFeePayment';
+import { getFeePaymentsByToken, getTotalAmountThisDay } from '../utils/feePaymentsManipulations';
 
 function PlatformGains({ platformId }: { platformId: string }) {
   const platformGains = useTotalGainByPlatform(platformId);
   const platformFeeClaimed = usePlatformClaimedFees(platformId);
   const { data: signer } = useSigner({ chainId: Number(platformId) });
   const provider = useProvider({ chainId: Number(platformId) });
-  if (!platformGains || !signer || !provider) {
+  const feePayments = useFeePayments(platformId);
+  if (!platformGains || !signer || !provider || !feePayments) {
     return null;
   }
+
+  const chartData = {
+    labels: ['loading'],
+    datasets: [
+      {
+        label: 'Loading',
+        data: ['loading'],
+        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+      },
+    ],
+  };
+
+  const colors = ['rgba(255, 99, 132, 0.5)', 'rgba(54, 162, 235, 0.5)', 'rgba(255, 206, 86, 0.5)'];
+  const feePaymentsByToken = getFeePaymentsByToken(config.tokens, feePayments);
+  // For each token, create a dataset
+  feePaymentsByToken.forEach((feePaymentByToken, index) => {
+    if (feePaymentByToken.length == 0) return;
+
+    const token = feePaymentByToken[0].token;
+    const dataFeePayments = getTotalAmountThisDay(feePayments, token);
+
+    // Clean the chartData and Add the dataset
+    if (chartData.datasets[0].label == 'Loading') chartData.datasets.shift();
+    chartData.labels = dataFeePayments.map(feePayment => String(feePayment.day));
+    chartData.datasets.push({
+      label: token.symbol,
+      data: dataFeePayments.map(feePayment => feePayment.amount),
+      backgroundColor: colors[index],
+    });
+  });
 
   return (
     <>
@@ -52,6 +87,11 @@ function PlatformGains({ platformId }: { platformId: string }) {
           </div>
         );
       })}
+
+      <div className='shadow-lg rounded-lg overflow-hidden'>
+        <div className='py-3 px-5 bg-gray-50'>Gains repartition on the month</div>
+        <Bar data={chartData} className='p-2' />
+      </div>
     </>
   );
 }
