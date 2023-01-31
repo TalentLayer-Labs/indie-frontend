@@ -19,6 +19,7 @@ import Talents from './pages/Talents';
 
 import { Web3Modal } from '@web3modal/react';
 
+import PushMessaging from './pages/PushMessaging';
 import { Chain, configureChains, createClient, WagmiConfig } from 'wagmi';
 import { customChains } from './chains';
 import Messaging from './pages/Messaging';
@@ -61,9 +62,18 @@ function App() {
                     <Route path='/services/create' element={<CreateService />} />
                     <Route path='/services/:id/create-proposal' element={<CreateProposal />} />
                     <Route path='/talents' element={<Talents />} />
-                    <Route path='/messaging/' element={<Messaging />} />
-                    <Route path='/messaging/:conversationType' element={<Messaging />} />
-                    <Route path='/messaging/:conversationType/:address' element={<Messaging />} />
+                    {import.meta.env.VITE_WALLECT_CONNECT_PROJECT_ID === 'push' && (
+                      <Route path='/messaging/' element={<PushMessaging />} />
+                    )}
+                    {import.meta.env.VITE_WALLECT_CONNECT_PROJECT_ID === 'push' && (
+                      <Route path='/messaging/:conversationType' element={<PushMessaging />} />
+                    )}
+                    {import.meta.env.VITE_WALLECT_CONNECT_PROJECT_ID === 'push' && (
+                      <Route
+                        path='/messaging/:conversationType/:address'
+                        element={<PushMessaging />}
+                      />
+                    )}
                     <Route path='/about' element={<About />} />
                     <Route path='/profile/:id' element={<Profile />} />
                     <Route path='/profile/edit' element={<EditProfile />} />

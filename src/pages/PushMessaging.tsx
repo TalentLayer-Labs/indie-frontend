@@ -14,7 +14,7 @@ import Steps from '../components/Steps';
 import { pCAIP10ToWallet } from '@pushprotocol/restapi/src/lib/helpers';
 import { buildConversationMessage } from '../messaging/push/utils/messaging';
 
-function Messaging() {
+function PushMessaging() {
   const { account, user } = useContext(TalentLayerContext);
   const {
     pushUser,
@@ -229,4 +229,4 @@ function Messaging() {
   );
 }
 
-export default Messaging;
+export default PushMessaging;
