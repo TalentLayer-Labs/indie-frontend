@@ -1,6 +1,7 @@
 import React from 'react';
 import useTotalGainByPlatform from '../hooks/useTotalGainByPlatform';
 import StatisticBlockSingleValue from './StatisticBlockSingleValue';
+import { claimFee } from '../contracts/claimFee';
 import { useProvider, useSigner } from 'wagmi';
 import usePlatformClaimedFees from '../hooks/usePlatformClaimedFees';
 import { ethers } from 'ethers';
@@ -9,6 +10,7 @@ import { config } from '../config';
 import { Bar } from 'react-chartjs-2';
 import useFeePayments from '../hooks/useFeePayment';
 import { getFeePaymentsByToken, getTotalAmountThisDay } from '../utils/feePaymentsManipulations';
+import { IToken } from '../types';
 
 function PlatformGains({ platformId }: { platformId: string }) {
   const platformGains = useTotalGainByPlatform(platformId);
@@ -19,6 +21,10 @@ function PlatformGains({ platformId }: { platformId: string }) {
   if (!platformGains || !signer || !provider || !feePayments) {
     return null;
   }
+
+  const submitClaimFee = async (token: IToken) => {
+    await claimFee(signer, provider, platformId, token.address);
+  };
 
   const chartData = {
     labels: ['loading'],
@@ -83,6 +89,14 @@ function PlatformGains({ platformId }: { platformId: string }) {
                 isGrowing={true}
                 hideArrow={true}
               />
+              <div>
+                <button
+                  onClick={() => submitClaimFee(token)}
+                  type='button'
+                  className='hover:text-green-600 hover:bg-green-50 bg-green-500 text-white rounded-lg px-5 py-2.5 text-center'>
+                  Claim {token.symbol} fees
+                </button>
+              </div>
             </div>
           </div>
         );
