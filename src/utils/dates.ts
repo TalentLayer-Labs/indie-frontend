@@ -6,7 +6,7 @@ export const formatDate = (timestamp: number | undefined) => {
   });
 };
 
-export const formatDateDivider = (timestamp: number | undefined) => {
+export const formatTimestampDivider = (timestamp: number | undefined) => {
   if (!timestamp) return '';
   return new Date(timestamp)?.toLocaleString('en-US', {
     year: 'numeric',
@@ -26,8 +26,21 @@ export const formatStringDate = (timestamp: string) => {
 };
 
 export const formatDateConversationCard = (timestamp: number | undefined) => {
+export const formatDateDivider = (d?: Date) =>
+  d?.toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+export const formatTimestampDateConversationCard = (timestamp: number | undefined) => {
   if (!timestamp) return '';
   return new Date(timestamp)?.toLocaleString('en-US', {
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
+  });
+};
+
+export const formatDateConversationCard = (date: Date | undefined) => {
+  if (!date) return '';
+  return date.toLocaleString('en-US', {
     year: 'numeric',
     month: 'numeric',
     day: 'numeric',
