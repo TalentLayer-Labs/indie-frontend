@@ -1,6 +1,6 @@
 import { useContext, useState } from 'react';
 import TalentLayerContext from '../context/talentLayer';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { chat as chatApi } from '@pushprotocol/restapi';
 import CardHeader from '../messaging/push/components/CardHeader';
 import MessageComposer from '../messaging/push/components/MessageComposer';
@@ -39,6 +39,8 @@ function PushMessaging() {
   const [sendingPending, setSendingPending] = useState(false);
   const [messageSendingErrorMsg, setMessageSendingErrorMsg] = useState('');
   const [pageLoaded, setPageLoaded] = useState(false);
+
+  const { state } = useLocation();
 
   if (selectedConversationPeerAddress && conversations && !pageLoaded) {
     const conversation = conversations?.find(
@@ -211,6 +213,7 @@ function PushMessaging() {
                   }
                   messagesLoaded={messagesLoaded}
                   selectedConversationPeerAddress={!!selectedConversationPeerAddress}
+                  isNewMessage={state?.newMessage}
                 />
               </div>
 

@@ -1,7 +1,6 @@
 import { ethers } from 'ethers';
 import { Check, X } from 'heroicons-react';
 import { useContext, useState } from 'react';
-import { useContext, useEffect, useState } from 'react';
 import { validateProposal } from '../../contracts/acceptProposal';
 import { renderTokenAmount } from '../../utils/conversion';
 import { ConversationDisplayType, IAccount, IProposal } from '../../types';
@@ -12,13 +11,10 @@ import { useBalance, useProvider, useSigner } from 'wagmi';
 import { useNavigate } from 'react-router-dom';
 import PushContext from '../../messaging/push/context/pushUser';
 import { XmtpContext } from '../../messaging/xmtp/context/XmtpContext';
-import { useNavigate } from 'react-router-dom';
 
 function ValidateProposalModal({ proposal, account }: { proposal: IProposal; account: IAccount }) {
   const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
-  const { initPush, pushUser } = useContext(PushContext);
   const provider = useProvider({ chainId: import.meta.env.VITE_NETWORK_ID });
-  const { providerState } = useContext(XmtpContext);
   const [show, setShow] = useState(false);
   const { data: ethBalance } = useBalance({ address: account.address });
   const isProposalUseEth: boolean = proposal.rateToken.address === ethers.constants.AddressZero;
@@ -62,25 +58,38 @@ function ValidateProposalModal({ proposal, account }: { proposal: IProposal; acc
     }
   };
 
-  const handleMessageUser = async () => {
-    console.log('handleMessageUser', pushUser);
-    if (pushUser && initPush) {
-      console.log('handleMessageUser inside');
-      await initPush(account.address as string);
-    }
-    navigate(
-      `/messaging/${ConversationDisplayType.CONVERSATION}/${ethers.utils.getAddress(
-        proposal.seller?.address,
-      )}`,
-    );
-  };
+  let handleMessageUser = async (): Promise<void> => {};
 
-  const handleMessageUser = async () => {
-    if (signer && providerState && providerState.initClient) {
-      await providerState.initClient(signer);
-    }
-    navigate(`/messaging/${ethers.utils.getAddress(proposal.seller?.address)}`);
-  };
+  if (import.meta.env.VITE_MESSENGING_TECH === 'push') {
+    const { initPush, pushUser } = useContext(PushContext);
+    handleMessageUser = async () => {
+      console.log('handleMessageUser', pushUser);
+      if (pushUser && initPush) {
+        console.log('handleMessageUser inside');
+        await initPush(account.address as string);
+      }
+      navigate(
+        `/messaging/${ConversationDisplayType.CONVERSATION}/${ethers.utils.getAddress(
+          proposal.seller?.address,
+        )}`,
+        {
+          state: { newMessage: true },
+        },
+      );
+    };
+  }
+
+  if (import.meta.env.VITE_MESSENGING_TECH === 'xmtp') {
+    const { providerState } = useContext(XmtpContext);
+    handleMessageUser = async () => {
+      if (signer && providerState && providerState.initClient) {
+        await providerState.initClient(signer);
+      }
+      navigate(`/messaging/${ethers.utils.getAddress(proposal.seller?.address)}`, {
+        state: { newMessage: true },
+      });
+    };
+  }
 
   return (
     <>

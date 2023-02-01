@@ -134,6 +134,7 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
         });
         const chatMessages: ChatMessage[] = messages.map(message => buildChatMessage(message));
         messagesMap.set(conversation.toCAIP10, chatMessages);
+        console.log('Messages', messagesMap);
       } catch (e) {
         console.error(e);
       } finally {
@@ -153,6 +154,18 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
           pgpPrivateKey: privateKey,
           account: pushUser.wallets,
         });
+        console.log('Conversations', response);
+        for (const conversation of response) {
+          if (conversation.toCAIP10 === pushUser.wallets) {
+            const from = conversation.toCAIP10;
+            const to = conversation.fromCAIP10;
+            conversation.toCAIP10 = to;
+            conversation.toDID = to;
+            conversation.fromCAIP10 = from;
+            conversation.fromDID = from;
+            console.log('de la meeeerde');
+          }
+        }
         setConversations(response);
       } catch (e) {
         console.error(e);
