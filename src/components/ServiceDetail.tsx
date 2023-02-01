@@ -21,10 +21,8 @@ import { ethers } from 'ethers';
 import { XmtpContext } from '../context/XmtpContext';
 import { XmtpContext } from '../messaging/context/XmtpContext';
 import { useSigner } from 'wagmi';
-import { ethers } from 'ethers';
 
 function ServiceDetail({ service }: { service: IService }) {
-  const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
   const { account, user } = useContext(TalentLayerContext);
   const { providerState } = useContext(XmtpContext);
   const { initPush } = useContext(PushContext);
@@ -39,6 +37,42 @@ function ServiceDetail({ service }: { service: IService }) {
     return null;
   }
 
+  let handleMessageUser = async (): Promise<void> => {};
+
+  if (import.meta.env.VITE_MESSENGING_TECH === 'push') {
+    const { initPush } = useContext(PushContext);
+    handleMessageUser = async () => {
+      console.log('handleMessageUser', initPush);
+      if (user && initPush) {
+        console.log('handleMessageUser inside');
+        await initPush(user.address);
+        navigate(
+          `/messaging/${ConversationDisplayType.CONVERSATION}/${ethers.utils.getAddress(
+            service.buyer?.address,
+          )}`,
+          { state: { newMessage: true } },
+        );
+      }
+    };
+  }
+
+  if (import.meta.env.VITE_MESSENGING_TECH === 'xmtp') {
+    handleMessageUser = async () => {
+      const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
+      const { providerState } = useContext(XmtpContext);
+
+      console.log('handleMessageUser', providerState);
+      if (signer && providerState && providerState.initClient) {
+        console.log('handleMessageUser inside');
+        await providerState.initClient(signer);
+      }
+      console.log('service.seller', service.buyer);
+      navigate(`/messaging/${ethers.utils.getAddress(service.buyer?.address)}`, {
+        state: { newMessage: true },
+      });
+    };
+  }
+
   const isBuyer = user?.id === service.buyer.id;
   const isSeller = user?.id === service.seller?.id;
   const hasReviewed = !!reviews.find(review => {
@@ -47,29 +81,6 @@ function ServiceDetail({ service }: { service: IService }) {
   const userProposal = proposals.find(proposal => {
     return proposal.seller.id === user?.id;
   });
-
-  const handleMessageUser = async () => {
-    console.log('handleMessageUser', initPush);
-    if (user && initPush) {
-      console.log('handleMessageUser inside');
-      await initPush(user.address);
-      navigate(
-        `/messaging/${ConversationDisplayType.CONVERSATION}/${ethers.utils.getAddress(
-          service.buyer?.address,
-        )}`,
-      );
-    }
-  };
-
-  const handleMessageUser = async () => {
-    console.log('handleMessageUser', providerState);
-    if (signer && providerState && providerState.initClient) {
-      console.log('handleMessageUser inside');
-      await providerState.initClient(signer);
-    }
-    console.log('service.seller', service.buyer);
-    navigate(`/messaging/${ethers.utils.getAddress(service.buyer?.address)}`);
-  };
 
   return (
     <>

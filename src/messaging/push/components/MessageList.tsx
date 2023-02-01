@@ -8,11 +8,13 @@ interface IMessageListProps {
   conversationMessages: ChatMessage[];
   messagesLoaded: boolean;
   selectedConversationPeerAddress: boolean;
+  isNewMessage?: boolean;
 }
 
 const MessageList = ({
   selectedConversationPeerAddress,
   conversationMessages,
+  isNewMessage,
 }: IMessageListProps) => {
   let lastMessageDate: number | undefined;
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -25,7 +27,9 @@ const MessageList = ({
   return (
     <>
       <div className='flex flex-col mt-5'>
-        {conversationMessages.length === 0 && selectedConversationPeerAddress && <Loading />}
+        {!isNewMessage && conversationMessages.length === 0 && selectedConversationPeerAddress && (
+          <Loading />
+        )}
       </div>
       <div className='flex flex-col mt-5 overflow-y-auto'>
         {conversationMessages.map((msg, index) => {
