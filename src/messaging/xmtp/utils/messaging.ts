@@ -28,3 +28,16 @@ export const buildConversationId = (talentLayerId1: string, talentLayerId2: stri
     ? `${CONVERSATION_PREFIX}/${talentLayerId1}-${talentLayerId2}`
     : `${CONVERSATION_PREFIX}/${talentLayerId2}-${talentLayerId1}`;
 };
+
+export const formatDateTime = (d: Date | undefined): string =>
+  d
+    ? d.toLocaleTimeString(undefined, {
+        hour12: true,
+        hour: 'numeric',
+        minute: '2-digit',
+      })
+    : '';
+
+export const isDateOnSameDay = (d1?: Date, d2?: Date): boolean => {
+  return d1?.toDateString() === d2?.toDateString();
+};
