@@ -71,7 +71,7 @@ function XmtpMessaging() {
         <>
           <CardHeader peerAddress={selectedConversationPeerAddress} />
           <div className='flex flex-row'>
-            <div className='basis-1/4 border-r-2'>
+            <div className='basis-1/4 h-[calc(100vh-16rem)] flex-no-wrap flex-none overflow-y-auto border-r-2'>
               <ConversationList
                 conversationMessages={providerState.conversationMessages}
                 selectedConversationPeerAddress={selectedConversationPeerAddress}
@@ -80,7 +80,7 @@ function XmtpMessaging() {
               />
             </div>
             {providerState?.client && selectedConversationPeerAddress && user?.id && peerUser?.id && (
-              <div className='basis-3/4 w-full px-5 flex flex-col justify-between'>
+              <div className='basis-3/4 w-full pl-5 flex flex-col justify-between h-[calc(100vh-16rem)]'>
                 <MessageList
                   conversationMessages={
                     providerState.conversationMessages.get(selectedConversationPeerAddress) ?? []

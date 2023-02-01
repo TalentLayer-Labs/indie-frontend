@@ -17,7 +17,7 @@ export const truncate = (str: string, length: number) => {
   return str;
 };
 
-export const formatTime = (timestamp: number | undefined): string =>
+export const formatTimestampTime = (timestamp: number | undefined): string =>
   timestamp
     ? new Date(timestamp).toLocaleTimeString(undefined, {
         hour12: true,
@@ -26,7 +26,7 @@ export const formatTime = (timestamp: number | undefined): string =>
       })
     : '';
 
-export const isOnSameDay = (
+export const isTimestampOnSameDay = (
   timestamp1: number | undefined,
   timestamp2: number | undefined,
 ): boolean => {

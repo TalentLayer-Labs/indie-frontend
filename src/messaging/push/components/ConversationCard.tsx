@@ -5,7 +5,7 @@ import { ConversationDisplayType } from '../../../types';
 import { chat as chatApi } from '@pushprotocol/restapi/src/lib';
 import { pCAIP10ToWallet } from '@pushprotocol/restapi/src/lib/helpers';
 import { CheckCircle } from 'heroicons-react';
-import { formatDateConversationCard } from '../../../utils/dates';
+import { formatTimestampDateConversationCard } from '../../../utils/dates';
 
 interface IConversationCardProps {
   address: string;
@@ -87,7 +87,7 @@ const ConversationCard = ({
         onClick={() => handleSelectConversation()}
         className={`flex justify-start py-4 px-2 justify-center items-center border-b-2 cursor-pointer ${
           isConvSelected ? 'bg-gray-200 ' : 'border-b-2'
-        }qq
+        }
       `}>
         <div className='w-1/4'>
           <img
@@ -104,7 +104,7 @@ const ConversationCard = ({
         </div>
         <div className='basis-1/4'>
           <span className='text-sm pl-3 text-gray-400 bas'>
-            {formatDateConversationCard(latestMessageTimestamp)}
+            {formatTimestampDateConversationCard(latestMessageTimestamp)}
           </span>
         </div>
       </div>

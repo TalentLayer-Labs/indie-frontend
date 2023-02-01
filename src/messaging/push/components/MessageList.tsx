@@ -1,5 +1,5 @@
 import MessageCard from './MessageCard';
-import { isOnSameDay } from '../utils/messaging';
+import { isTimestampOnSameDay } from '../utils/messaging';
 import Loading from '../../../components/Loading';
 import { useLayoutEffect, useRef } from 'react';
 import { ChatMessage } from '../../../types';
@@ -38,7 +38,7 @@ const MessageList = ({
               {index === 0 && <ConversationBeginningNotice />}
               <MessageCard
                 message={msg}
-                dateHasChanged={!isOnSameDay(msg.timestamp, lastMessageDate)}
+                dateHasChanged={!isTimestampOnSameDay(msg.timestamp, lastMessageDate)}
               />
             </div>
           );

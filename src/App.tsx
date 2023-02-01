@@ -39,6 +39,17 @@ const wagmiClient = createClient({
 // Web3Modal Ethereum Client
 const ethereumClient = new EthereumClient(wagmiClient, chains);
 
+const wrapInMessagingContext = (Component: JSX.Element): JSX.Element => {
+  if (import.meta.env.VITE_MESSENGING_TECH === 'xmtp') {
+    return <XmtpContextProvider>{Component}</XmtpContextProvider>;
+  }
+  if (import.meta.env.VITE_MESSENGING_TECH === 'push') {
+    return <PushProvider>{Component}</PushProvider>;
+  } else {
+    return Component;
+  }
+};
+
 function App() {
   return (
     <>
@@ -46,42 +57,40 @@ function App() {
       <WagmiConfig client={wagmiClient}>
         <BrowserRouter>
           <TalentLayerProvider>
-            <XmtpContextProvider>
-              <PushProvider>
-                <div className='antialiased'>
-                  <Routes>
-                    <Route path='/' element={<Layout />}>
-                      <Route index element={<Home />} />
-                      <Route path='/dashboard' element={<Dashboard />} />
-                      <Route path='/services' element={<Services />} />
-                      <Route path='/services/:id' element={<Service />} />
-                      <Route path='/services/create' element={<CreateService />} />
-                      <Route path='/services/:id/create-proposal' element={<CreateProposal />} />
-                      <Route path='/talents' element={<Talents />} />
-                      {import.meta.env.VITE_MESSENGING_TECH === 'push' && (
-                        <>
-                          <Route path='/messaging/' element={<PushMessaging />} />
-                          <Route path='/messaging/:conversationType' element={<PushMessaging />} />
-                          <Route
-                            path='/messaging/:conversationType/:address'
-                            element={<PushMessaging />}
-                          />
-                        </>
-                      )}
-                      {import.meta.env.VITE_MESSENGING_TECH === 'xmtp' && (
-                        <>
-                          <Route path='/messaging' element={<XmtpMessaging />} />
-                          <Route path='/messaging/:address' element={<XmtpMessaging />} />
-                        </>
-                      )}
-                      <Route path='/about' element={<About />} />
-                      <Route path='/profile/:id' element={<Profile />} />
-                      <Route path='/profile/edit' element={<EditProfile />} />
-                    </Route>
-                  </Routes>
-                </div>
-              </PushProvider>
-            </XmtpContextProvider>
+            {wrapInMessagingContext(
+              <div className='antialiased'>
+                <Routes>
+                  <Route path='/' element={<Layout />}>
+                    <Route index element={<Home />} />
+                    <Route path='/dashboard' element={<Dashboard />} />
+                    <Route path='/services' element={<Services />} />
+                    <Route path='/services/:id' element={<Service />} />
+                    <Route path='/services/create' element={<CreateService />} />
+                    <Route path='/services/:id/create-proposal' element={<CreateProposal />} />
+                    <Route path='/talents' element={<Talents />} />
+                    {import.meta.env.VITE_MESSENGING_TECH === 'push' && (
+                      <>
+                        <Route path='/messaging/' element={<PushMessaging />} />
+                        <Route path='/messaging/:conversationType' element={<PushMessaging />} />
+                        <Route
+                          path='/messaging/:conversationType/:address'
+                          element={<PushMessaging />}
+                        />
+                      </>
+                    )}
+                    {import.meta.env.VITE_MESSENGING_TECH === 'xmtp' && (
+                      <>
+                        <Route path='/messaging' element={<XmtpMessaging />} />
+                        <Route path='/messaging/:address' element={<XmtpMessaging />} />
+                      </>
+                    )}
+                    <Route path='/about' element={<About />} />
+                    <Route path='/profile/:id' element={<Profile />} />
+                    <Route path='/profile/edit' element={<EditProfile />} />
+                  </Route>
+                </Routes>
+              </div>,
+            )}
           </TalentLayerProvider>
         </BrowserRouter>
         <Web3Modal
