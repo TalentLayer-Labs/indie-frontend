@@ -12,7 +12,6 @@ import MessageComposer from '../messaging/xmtp/components/MessageComposer';
 import { useNavigate, useParams } from 'react-router-dom';
 import useUserByAddress from '../hooks/useUserByAddress';
 
-//TODO: Finalize UX
 //TODO: Integrate "New message" + update when new conversation created
 //TODO: Register user to XMTP when profile being created ? When proposal + job being created + button if want before?
 
@@ -81,14 +80,16 @@ function XmtpMessaging() {
             </div>
             {providerState?.client && selectedConversationPeerAddress && user?.id && peerUser?.id && (
               <div className='basis-3/4 w-full pl-5 flex flex-col justify-between h-[calc(100vh-16rem)]'>
-                <MessageList
-                  conversationMessages={
-                    providerState.conversationMessages.get(selectedConversationPeerAddress) ?? []
-                  }
-                  selectedConversationPeerAddress={selectedConversationPeerAddress}
-                  userId={user?.id}
-                  peerUserId={peerUser?.id}
-                />
+                <div className='overflow-y-auto'>
+                  <MessageList
+                    conversationMessages={
+                      providerState.conversationMessages.get(selectedConversationPeerAddress) ?? []
+                    }
+                    selectedConversationPeerAddress={selectedConversationPeerAddress}
+                    userId={user?.id}
+                    peerUserId={peerUser?.id}
+                  />
+                </div>
                 <MessageComposer
                   messageContent={messageContent}
                   setMessageContent={setMessageContent}

@@ -4,10 +4,10 @@ import { useContext } from 'react';
 import useUserByAddress from '../../../hooks/useUserByAddress';
 import { pCAIP10ToWallet } from '@pushprotocol/restapi/src/lib/helpers';
 import { formatTimestampDivider } from '../../../utils/dates';
-import { ChatMessage, ChatMessageStatus } from '../../../types';
+import { PushChatMessage, ChatMessageStatus } from '../../../types';
 
 interface IMessageCardProps {
-  message: ChatMessage;
+  message: PushChatMessage;
   dateHasChanged: boolean;
 }
 
