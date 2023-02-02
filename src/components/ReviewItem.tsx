@@ -2,7 +2,7 @@ import useReviewDetails from '../hooks/useReviewDetails';
 import { IReview } from '../types';
 
 function ReviewItem({ review }: { review: IReview }) {
-  const reviewDetail = useReviewDetails(review.uri);
+  const reviewDetail = useReviewDetails(review.description.id);
 
   if (!reviewDetail) {
     return null;
