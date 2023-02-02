@@ -1,33 +1,35 @@
-import { DecodedMessage } from '@xmtp/xmtp-js';
 import TalentLayerContext from '../../../context/talentLayer';
 import { useContext } from 'react';
 import useUserByAddress from '../../../hooks/useUserByAddress';
 import { formatDateDivider } from '../../../utils/dates';
 import { formatDateTime } from '../utils/messaging';
+import { XmtpChatMessage } from '../../../types';
 
 interface IMessageCardProps {
-  message: DecodedMessage;
+  message: XmtpChatMessage;
   dateHasChanged: boolean;
 }
 
 const MessageCard = ({ message, dateHasChanged }: IMessageCardProps) => {
   const { user } = useContext(TalentLayerContext);
-  const peerUser = useUserByAddress(message.senderAddress);
+  const peerUser = useUserByAddress(message.from);
 
-  const isSender = message.senderAddress.toLowerCase() === user?.address.toLowerCase();
+  const isSender = message.from.toLowerCase() === user?.address.toLowerCase();
 
   // let activeUser;
   // isSender ? (activeUser = user) : (activeUser = useUserByAddress(message.senderAddress));
 
   return (
     <>
-      {dateHasChanged && peerUser?.handle && <DateDivider date={message.sent} />}
+      {dateHasChanged && peerUser?.handle && <DateDivider date={message.timestamp} />}
       {peerUser?.handle && (
         <div
           className={`flex ${isSender ? 'justify-end pr-5' : 'justify-start'} mb-4 items-center`}>
           {isSender && user && (
             <>
-              <span className='text-sm pr-3 text-gray-400'>{formatDateTime(message.sent)}</span>
+              <span className='text-sm pr-3 text-gray-400'>
+                {formatDateTime(message.timestamp)}
+              </span>
               <img
                 src={`/default-avatar-${Number(user?.id ? user.id : '1') % 11}.jpeg`}
                 className='object-cover h-12 w-12 rounded-full'
@@ -44,7 +46,7 @@ const MessageCard = ({ message, dateHasChanged }: IMessageCardProps) => {
             <div>
               <div>{peerUser && peerUser.handle && <b>{peerUser.handle}</b>}</div>
             </div>
-            <div>{message.content}</div>
+            <div>{message.messageContent}</div>
           </div>
           {!isSender && (
             <>
@@ -53,7 +55,9 @@ const MessageCard = ({ message, dateHasChanged }: IMessageCardProps) => {
                 className='object-cover h-12 w-12 rounded-full'
                 alt=''
               />
-              <span className='text-sm pl-3 text-gray-400'>{formatDateTime(message.sent)}</span>
+              <span className='text-sm pl-3 text-gray-400'>
+                {formatDateTime(message.timestamp)}
+              </span>
             </>
           )}
         </div>

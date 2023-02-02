@@ -1,13 +1,13 @@
-import { shortAddress, truncate } from '../utils/messaging';
-import { DecodedMessage } from '@xmtp/xmtp-js';
+import { truncate } from '../utils/messaging';
 import useUserByAddress from '../../../hooks/useUserByAddress';
 import { useNavigate } from 'react-router-dom';
 import { formatDateConversationCard } from '../../../utils/dates';
+import { XmtpChatMessage } from '../../../types';
 
 interface IConversationCardProps {
   peerAddress: string;
   selectedConversationPeerAddress: string;
-  latestMessage?: DecodedMessage;
+  latestMessage?: XmtpChatMessage;
 }
 
 const ConversationCard = ({
@@ -47,12 +47,13 @@ const ConversationCard = ({
       <div className='w-1/2'>
         {user && user.handle && <b>{user.handle}</b>}
         <p className='text-s font-medium text-gray-500 text-ellipsis overflow-hidden whitespace-nowrap'>
-          {latestMessage && truncate(latestMessage.content, 75)}
+          {latestMessage && truncate(latestMessage.messageContent, 75)}
         </p>
       </div>
       <div className='basis-1/4'>
         <span className='text-sm pl-3 text-gray-400 bas'>
-          {formatDateConversationCard(latestMessage?.sent)}
+          {/*TODO: Handle typing*/}
+          {formatDateConversationCard(latestMessage?.timestamp as Date)}
         </span>
       </div>
     </div>

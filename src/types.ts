@@ -174,11 +174,19 @@ export enum ConversationDisplayType {
   REQUEST = 'requests',
 }
 
-export type ChatMessage = {
+export type PushChatMessage = {
   from: string;
   to: string;
   messageContent: string;
   timestamp: number;
+  status: ChatMessageStatus;
+};
+
+export type XmtpChatMessage = {
+  from: string;
+  to: string;
+  messageContent: string;
+  timestamp: Date;
   status: ChatMessageStatus;
 };
 

@@ -5,20 +5,20 @@ import { chat as chatApi, user as userApi } from '@pushprotocol/restapi/src/lib'
 import { pCAIP10ToWallet } from '@pushprotocol/restapi/src/lib/helpers';
 import { createUserIfNecessary } from '@pushprotocol/restapi/src/lib/chat/helpers';
 import { useSigner } from 'wagmi';
-import { ChatMessage } from '../../../types';
 import { buildChatMessage } from '../utils/messaging';
 import { IMessageIPFS } from '@pushprotocol/uiweb/lib/types';
+import { PushChatMessage } from '../../../types';
 
 const PushContext = createContext<{
   pushUser?: IUser;
   conversations?: Message[];
   requests?: Message[];
-  conversationMessages?: Map<string, ChatMessage[]>;
+  conversationMessages?: Map<string, PushChatMessage[]>;
   getConversations?: () => Promise<void>;
   getRequests?: () => Promise<void>;
   setConversations?: React.Dispatch<React.SetStateAction<Message[] | undefined>>;
   setConversationMessages?: React.Dispatch<
-    React.SetStateAction<Map<string, ChatMessage[]> | undefined>
+    React.SetStateAction<Map<string, PushChatMessage[]> | undefined>
   >;
   getOneConversationMessages: (conversation: Message) => Promise<void>;
   disconnect?: () => void;
@@ -50,7 +50,8 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
   const [privateKey, setPrivateKey] = useState<string | undefined>();
   const [conversations, setConversations] = useState<Message[] | undefined>();
   const [requests, setRequests] = useState<Message[] | undefined>();
-  const [conversationMessages, setConversationMessages] = useState<Map<string, ChatMessage[]>>();
+  const [conversationMessages, setConversationMessages] =
+    useState<Map<string, PushChatMessage[]>>();
   const [conversationsLoaded, setConversationsLoaded] = useState(false);
   const [messagesLoaded, setMessagesLoaded] = useState(false);
   const [chatInitiated, setChatInitiated] = useState(false);
@@ -105,7 +106,7 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
   ): Promise<void> => {
     const messagesMap = conversationMessages
       ? conversationMessages
-      : new Map<string, ChatMessage[]>();
+      : new Map<string, PushChatMessage[]>();
     // let conversation: Message;
     // if (typeof conversationOrAddress === 'string' && conversations) {
     //   conversation = conversations?.find(c => c.toCAIP10 === conversationOrAddress);
@@ -132,7 +133,7 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
             return messageA.timestamp - messageB.timestamp;
           return 1;
         });
-        const chatMessages: ChatMessage[] = messages.map(message => buildChatMessage(message));
+        const chatMessages: PushChatMessage[] = messages.map(message => buildChatMessage(message));
         messagesMap.set(conversation.toCAIP10, chatMessages);
         console.log('Messages', messagesMap);
       } catch (e) {
@@ -209,7 +210,7 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const getMessages = async (conversations: Message[]): Promise<void> => {
-    const messagesMap = new Map<string, ChatMessage[]>();
+    const messagesMap = new Map<string, PushChatMessage[]>();
 
     if (conversations && pushUser) {
       try {
@@ -232,7 +233,9 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
               return messageA.timestamp - messageB.timestamp;
             return 1;
           });
-          const chatMessages: ChatMessage[] = messages.map(message => buildChatMessage(message));
+          const chatMessages: PushChatMessage[] = messages.map(message =>
+            buildChatMessage(message),
+          );
           messagesMap.set(conversation.toCAIP10, chatMessages);
         }
       } catch (e) {

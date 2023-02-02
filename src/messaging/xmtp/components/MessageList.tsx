@@ -1,10 +1,10 @@
 import useStreamMessages from '../hooks/useStreamMessages';
 import MessageCard from './MessageCard';
-import { DecodedMessage } from '@xmtp/xmtp-js';
 import { isDateOnSameDay } from '../utils/messaging';
+import { XmtpChatMessage } from '../../../types';
 
 interface IMessageListProps {
-  conversationMessages: DecodedMessage[];
+  conversationMessages: XmtpChatMessage[];
   selectedConversationPeerAddress: string;
   peerUserId: string;
   userId: string;
@@ -21,7 +21,7 @@ const MessageList = ({
 
   return (
     <div className='flex flex-col mt-5'>
-      //TODO handle this
+      {/*TODO handle this*/}
       {/*{!isNewMessage && conversationMessages.length === 0 && selectedConversationPeerAddress && (*/}
       {/*  <Loading />*/}
       {/*)}*/}
@@ -30,13 +30,13 @@ const MessageList = ({
           <div key={index}>
             {index === 0 && <ConversationBeginningNotice />}
             <MessageCard
-              key={msg.id}
+              key={msg.from}
               message={msg}
-              dateHasChanged={!isDateOnSameDay(msg.sent, lastMessageDate)}
+              dateHasChanged={!isDateOnSameDay(msg.timestamp as Date, lastMessageDate)}
             />
           </div>
         );
-        lastMessageDate = msg.sent;
+        lastMessageDate = msg.timestamp as Date;
         return messageCard;
       })}
     </div>

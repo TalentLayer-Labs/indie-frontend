@@ -2,14 +2,15 @@ import React, { useState, createContext, useEffect, ReactNode, useMemo } from 'r
 import { Client, Conversation, DecodedMessage } from '@xmtp/xmtp-js';
 import { Signer } from 'ethers';
 import { useAccount, useSigner } from 'wagmi';
-import { CONVERSATION_PREFIX } from '../utils/messaging';
+import { buildChatMessage, CONVERSATION_PREFIX } from '../utils/messaging';
+import { XmtpChatMessage } from '../../../types';
 
 interface IProviderProps {
   client: Client | undefined;
   initClient: ((wallet: Signer) => Promise<void>) | undefined;
   loadingConversations: boolean;
   conversations: Map<string, Conversation>;
-  conversationMessages: Map<string, DecodedMessage[]>;
+  conversationMessages: Map<string, XmtpChatMessage[]>;
   disconnect: (() => void) | undefined;
 }
 
@@ -29,7 +30,7 @@ export const XmtpContextProvider = ({ children }: { children: ReactNode }) => {
     initClient: undefined,
     loadingConversations: false,
     conversations: new Map<string, Conversation>(),
-    conversationMessages: new Map<string, DecodedMessage[]>(),
+    conversationMessages: new Map<string, XmtpChatMessage[]>(),
     disconnect: undefined,
   });
 
@@ -85,7 +86,7 @@ export const XmtpContextProvider = ({ children }: { children: ReactNode }) => {
         // (await client.conversations.list()).forEach(conv =>
         //   console.log(conv.context?.conversationId),
         // );
-        const conv = (await client.conversations.list()).filter(conversation =>
+        const conv: Conversation[] = (await client.conversations.list()).filter(conversation =>
           conversation.context?.conversationId.startsWith(CONVERSATION_PREFIX),
         );
         console.log('TLV2 conv', conv);
@@ -93,12 +94,15 @@ export const XmtpContextProvider = ({ children }: { children: ReactNode }) => {
           conv.map(async conversation => {
             if (conversation.peerAddress !== walletAddress) {
               // Returns a list of all messages to/from the peerAddress
-              const messages = await conversation.messages();
+              const messages: DecodedMessage[] = await conversation.messages();
               //Temp fix for conversation duplicates
               if (messages.length > 0) {
                 console.log('xmpt context - conversation', conversation);
-                console.log('xmpt context - messages', messages);
-                conversationMessages.set(conversation.peerAddress, messages);
+                const chatMessages: XmtpChatMessage[] = messages.map(message =>
+                  buildChatMessage(message),
+                );
+                console.log('xmpt context - messages', chatMessages);
+                conversationMessages.set(conversation.peerAddress, chatMessages);
                 conversations.set(conversation.peerAddress, conversation);
               }
               setProviderState({

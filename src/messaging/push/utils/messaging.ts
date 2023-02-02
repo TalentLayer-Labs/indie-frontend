@@ -1,6 +1,6 @@
 import { Message } from '@pushprotocol/restapi/src/lib/chat/ipfs';
 import { IMessageIPFS } from '@pushprotocol/uiweb/lib/types';
-import { ChatMessage, ChatMessageStatus, PushMessage } from '../../../types';
+import { PushChatMessage, ChatMessageStatus, PushMessage } from '../../../types';
 
 export const shortAddress = (addr: string) =>
   addr.length > 10 && addr.startsWith('0x')
@@ -37,7 +37,7 @@ export const isTimestampOnSameDay = (
 
 export const buildChatMessage = (
   pushMessage: Message | IMessageIPFS | PushMessage,
-): ChatMessage => {
+): PushChatMessage => {
   return {
     from: pushMessage.fromCAIP10,
     to: pushMessage.toCAIP10,

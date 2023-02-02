@@ -1,4 +1,5 @@
 import { DecodedMessage } from '@xmtp/xmtp-js';
+import { ChatMessageStatus, XmtpChatMessage } from '../../../types';
 
 export const shortAddress = (addr: string) =>
   addr.length > 10 && addr.startsWith('0x')
@@ -16,8 +17,8 @@ export const truncate = (str: string, length: number) => {
 };
 
 export const getLatestMessage = (
-  messages: DecodedMessage[] | undefined,
-): DecodedMessage | undefined => (messages?.length ? messages[messages.length - 1] : undefined);
+  messages: XmtpChatMessage[] | undefined,
+): XmtpChatMessage | undefined => (messages?.length ? messages[messages.length - 1] : undefined);
 
 export const CONVERSATION_PREFIX = 'talentLayer/dmV5';
 export const buildConversationId = (talentLayerId1: string, talentLayerId2: string) => {
@@ -40,4 +41,14 @@ export const formatDateTime = (d: Date | undefined): string =>
 
 export const isDateOnSameDay = (d1?: Date, d2?: Date): boolean => {
   return d1?.toDateString() === d2?.toDateString();
+};
+
+export const buildChatMessage = (xmtpMessage: DecodedMessage): XmtpChatMessage => {
+  return {
+    from: xmtpMessage.senderAddress,
+    to: xmtpMessage.recipientAddress ? xmtpMessage.recipientAddress : '',
+    messageContent: xmtpMessage.content,
+    timestamp: xmtpMessage.sent,
+    status: ChatMessageStatus.SENT,
+  };
 };

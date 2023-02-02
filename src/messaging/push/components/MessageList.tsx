@@ -2,10 +2,10 @@ import MessageCard from './MessageCard';
 import { isTimestampOnSameDay } from '../utils/messaging';
 import Loading from '../../../components/Loading';
 import { useLayoutEffect, useRef } from 'react';
-import { ChatMessage } from '../../../types';
+import { PushChatMessage } from '../../../types';
 
 interface IMessageListProps {
-  conversationMessages: ChatMessage[];
+  conversationMessages: PushChatMessage[];
   messagesLoaded: boolean;
   selectedConversationPeerAddress: boolean;
   isNewMessage?: boolean;
