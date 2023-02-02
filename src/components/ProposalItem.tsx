@@ -9,8 +9,8 @@ import ValidateProposalModal from './Modal/ValidateProposalModal';
 
 function ProposalItem({ proposal }: { proposal: IProposal }) {
   const { user, account } = useContext(TalentLayerContext);
-  const proposalDetail = useProposalDetails(proposal.uri);
-  const serviceDetail = useServiceDetails(proposal.service.uri);
+  const proposalDetail = useProposalDetails(proposal.cid);
+  const serviceDetail = useServiceDetails(proposal.service.cid);
 
   if (!proposalDetail || !serviceDetail) {
     return null;

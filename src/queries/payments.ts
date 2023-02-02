@@ -36,7 +36,7 @@ export const getPaymentsForUser = (userId: string): Promise<any> => {
         paymentType
         service {
           id, 
-          uri
+          cid
         }
       }
     }

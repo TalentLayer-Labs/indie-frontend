@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import { IServiceDetails } from '../types';
 
-const useServiceDetails = (uri: string): IServiceDetails | null => {
+const useServiceDetails = (cid: string): IServiceDetails | null => {
   const [serviceDetails, setServiceDetails] = useState<IServiceDetails | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const fullSeviceDetailsUri = `${import.meta.env.VITE_IPFS_BASE_URL}${uri}`;
+        const fullSeviceDetailsUri = `${import.meta.env.VITE_IPFS_BASE_URL}${cid}`;
 
         const response = await fetch(fullSeviceDetailsUri);
 
@@ -21,7 +21,7 @@ const useServiceDetails = (uri: string): IServiceDetails | null => {
       }
     };
     fetchData();
-  }, [uri]);
+  }, [cid]);
 
   return serviceDetails;
 };

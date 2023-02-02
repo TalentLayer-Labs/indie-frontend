@@ -87,15 +87,15 @@ const fuji: Config = {
 const mumbai: Config = {
   networkId: NetworkEnum.MUMBAI,
   contracts: {
-    talentLayerId: '0xcfF1C0A9A78512Fb3757fF61fC794d8F77Ee535f',
-    serviceRegistry: '0x28409B9A38BF5B0897c08C5812Bd91D9313743AB',
-    talentLayerReview: '0xe33725A94e24A6808AA6351551ee96c80736e8Dc',
-    talentLayerEscrow: '0x8564BD74CFdcE620F6C89C6d5326614B24CDcbae',
-    talentLayerPlatformId: '0x2deB8a32638c99310AD84E3b335e07737F8a61aE',
+    talentLayerId: '0x2C8Bd9ebF75804CA666a086e3F78bf5a44f1E680',
+    serviceRegistry: '0xF93A58801c48e264Ace3226555E08eEF64F2Cbee',
+    talentLayerReview: '0x33FF1518b5093BF29f494352CE8Cc434825363ff',
+    talentLayerEscrow: '0x322c25E2E47f927fFfE83BaE4BBc9eEdeD781d5c',
+    talentLayerPlatformId: '0x87a5c4f7F9a62647175dC0E6C914a572E1718a05',
   },
   escrowConfig: {
     adminFee: '0',
-    adminWallet: '0x8564BD74CFdcE620F6C89C6d5326614B24CDcbae',
+    adminWallet: '0xC01FcDfDE3B2ABA1eab76731493C617FfAED2F10',
     timeoutPayment: 3600 * 24 * 7,
   },
   tokens: {

@@ -8,9 +8,9 @@ import Stars from './Stars';
 
 function UserDetail({ user }: { user: IUser }) {
   const { user: currentUser } = useContext(TalentLayerContext);
-  const userDetails = useUserDetails(user?.uri);
+  const userDetails = useUserDetails(user?.cid);
 
-  if (user.uri && !userDetails) {
+  if (user.cid && !userDetails) {
     return <Loading />;
   }
 

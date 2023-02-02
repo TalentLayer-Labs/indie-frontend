@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import { IProposalDetails } from '../types';
 
-const useProposalDetails = (uri: string): IProposalDetails | null => {
+const useProposalDetails = (cid: string): IProposalDetails | null => {
   const [proposalDetails, setProposalDetails] = useState<IProposalDetails | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const fullProposalDetailsUri = `${import.meta.env.VITE_IPFS_BASE_URL}${uri}`;
+        const fullProposalDetailsUri = `${import.meta.env.VITE_IPFS_BASE_URL}${cid}`;
 
         const response = await fetch(fullProposalDetailsUri);
         const data: IProposalDetails = await response.json();
@@ -20,7 +20,7 @@ const useProposalDetails = (uri: string): IProposalDetails | null => {
       }
     };
     fetchData();
-  }, [uri]);
+  }, [cid]);
 
   return proposalDetails;
 };
