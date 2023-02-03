@@ -117,7 +117,7 @@ function XmtpMessaging() {
           Connect to XMTP
         </button>
       )}
-      {providerState?.client && !providerState?.loadingConversations && (
+      {providerState?.client && (
         // <div className='border-2 rounded-md'>
         <>
           <CardHeader peerAddress={selectedConversationPeerAddress} />
@@ -127,6 +127,7 @@ function XmtpMessaging() {
                 conversationMessages={providerState.conversationMessages}
                 selectedConversationPeerAddress={selectedConversationPeerAddress}
                 peerAddress={peerUser?.address ? peerUser.address : ''}
+                conversationsLoading={providerState.loadingConversations}
                 // setSelectedConversationPeerAddress={setSelectedConversationPeerAddress}
               />
             </div>

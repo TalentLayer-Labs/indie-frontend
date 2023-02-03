@@ -2,7 +2,7 @@ import { useState, useEffect, useContext } from 'react';
 import { XmtpContext } from '../context/XmtpContext';
 import { useSigner } from 'wagmi';
 import { Conversation, Stream } from '@xmtp/xmtp-js';
-import { CONVERSATION_PREFIX } from '../utils/messaging';
+import { buildChatMessage, CONVERSATION_PREFIX } from '../utils/messaging';
 
 const useStreamConversations = () => {
   const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
@@ -20,12 +20,17 @@ const useStreamConversations = () => {
       for await (const conversation of newStream) {
         if (
           conversation.peerAddress !== (await signer?.getAddress()) &&
+          //TODO Check if we keep context | Could use metadata if still duplicates issue
           conversation.context?.conversationId.startsWith(CONVERSATION_PREFIX)
         ) {
           console.log('streamConvo - conversation', conversation);
+          //IF a new conversation is detected, we get its messages
           const messages = await conversation.messages();
+          const chatMessages = messages.map(msg => {
+            return buildChatMessage(msg);
+          });
           console.log('streamConvo - messages', messages);
-          providerState.conversationMessages.set(conversation.peerAddress, messages);
+          providerState.conversationMessages.set(conversation.peerAddress, chatMessages);
           providerState.conversations.set(conversation.peerAddress, conversation);
           setProviderState({
             ...providerState,
