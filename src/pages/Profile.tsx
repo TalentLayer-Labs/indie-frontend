@@ -4,6 +4,7 @@ import Loading from '../components/Loading';
 import UserDetail from '../components/UserDetail';
 import UserServices from '../components/UserServices';
 import useUserById from '../hooks/useUserById';
+import LensProfile from '../components/Layout/LensProfil';
 
 function Profile() {
   const { id } = useParams<{ id: string }>();
@@ -30,6 +31,9 @@ function Profile() {
             </div>
             <div className='mb-6'>
               <UserServices user={user} type='seller' />
+            </div>
+            <div className='mb-6'>
+              <LensProfile user={user} />
             </div>
           </div>
         </>
