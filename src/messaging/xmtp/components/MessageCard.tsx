@@ -3,7 +3,7 @@ import { useContext } from 'react';
 import useUserByAddress from '../../../hooks/useUserByAddress';
 import { formatDateDivider } from '../../../utils/dates';
 import { formatDateTime } from '../utils/messaging';
-import { XmtpChatMessage } from '../../../types';
+import { ChatMessageStatus, XmtpChatMessage } from '../../../types';
 
 interface IMessageCardProps {
   message: XmtpChatMessage;
@@ -39,10 +39,15 @@ const MessageCard = ({ message, dateHasChanged }: IMessageCardProps) => {
           )}
           <div
             className={`py-3 px-4 ${
-              isSender
+              isSender && message.status === ChatMessageStatus.SENT
                 ? 'ml-2 bg-indigo-500 rounded-br-3xl rounded-tr-3xl rounded-tl-xl'
+                : isSender && message.status === ChatMessageStatus.ERROR
+                ? 'ml-2 bg-red-600 rounded-br-3xl rounded-tr-3xl rounded-tl-xl'
+                : isSender && message.status === ChatMessageStatus.PENDING
+                ? 'ml-2 bg-gray-400 rounded-br-3xl rounded-tr-3xl rounded-tl-xl'
                 : 'mr-2 bg-gray-400 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl'
-            } text-white`}>
+            }
+          text-white`}>
             <div>
               <div>{peerUser && peerUser.handle && <b>{peerUser.handle}</b>}</div>
             </div>
