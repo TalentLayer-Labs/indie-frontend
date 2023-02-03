@@ -11,6 +11,7 @@ import useSendMessage from '../messaging/xmtp/hooks/useSendMessage';
 import MessageComposer from '../messaging/xmtp/components/MessageComposer';
 import { useNavigate, useParams } from 'react-router-dom';
 import useUserByAddress from '../hooks/useUserByAddress';
+import { ChatMessageStatus, XmtpChatMessage } from '../types';
 
 //TODO: Integrate "New message" + update when new conversation created
 //TODO: Register user to XMTP when profile being created ? When proposal + job being created + button if want before?
@@ -18,10 +19,12 @@ import useUserByAddress from '../hooks/useUserByAddress';
 function XmtpMessaging() {
   const { user } = useContext(TalentLayerContext);
   const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
-  const { providerState } = useContext(XmtpContext);
+  const { providerState, setProviderState } = useContext(XmtpContext);
   const [messageContent, setMessageContent] = useState<string>('');
   const { address: selectedConversationPeerAddress = '' } = useParams();
   const navigate = useNavigate();
+  const [sendingPending, setSendingPending] = useState(false);
+  const [messageSendingErrorMsg, setMessageSendingErrorMsg] = useState('');
   // Apparently the context handles this as a sigher change, and disconnects the user
   // if (selectedConversationPeerAddress === user?.address) navigate('/messaging');
   const { sendMessage } = useSendMessage(
@@ -46,9 +49,58 @@ function XmtpMessaging() {
     }
   };
 
-  const sendNewMessage = () => {
-    sendMessage(messageContent);
-    setMessageContent('');
+  const sendNewMessage = async () => {
+    if (user && user.address && messageContent && providerState && setProviderState) {
+      setSendingPending(true);
+      const sentMessage: XmtpChatMessage = {
+        from: user.address,
+        to: selectedConversationPeerAddress,
+        messageContent,
+        timestamp: new Date(),
+        status: ChatMessageStatus.PENDING,
+      };
+      console.log('sentMessage', sentMessage);
+      const messages = providerState.conversationMessages.get(selectedConversationPeerAddress);
+      if (messages) {
+        // If Last message in error, remove it & try to resend
+        if (messageSendingErrorMsg) {
+          messages.pop();
+          setMessageSendingErrorMsg('');
+        }
+        messages.push(sentMessage);
+      } else {
+        // If no messages, create new ChatMessage array
+        providerState.conversationMessages.set(selectedConversationPeerAddress, [sentMessage]);
+      }
+      console.log('Messages updated', messages);
+      // setProviderState(providerState);
+
+      try {
+        //Send message
+        // throw new Error('Test error');
+        const response = await sendMessage(messageContent);
+        console.log('Message sent', response);
+        // Update message status & timestamp
+        sentMessage.status = ChatMessageStatus.SENT;
+        sentMessage.timestamp = response.sent;
+        messages?.pop();
+        messages?.push(sentMessage);
+        setProviderState(providerState);
+        setMessageContent('');
+      } catch (error) {
+        setMessageSendingErrorMsg(
+          'An error occurred while sending the message. Please try again later.',
+        );
+        // If message in error, update last message' status to ERROR
+        sentMessage.status = ChatMessageStatus.ERROR;
+        messages?.pop();
+        messages?.push(sentMessage);
+        setProviderState(providerState);
+        console.error(error);
+      } finally {
+        setSendingPending(false);
+      }
+    }
   };
 
   return (
@@ -94,6 +146,8 @@ function XmtpMessaging() {
                   messageContent={messageContent}
                   setMessageContent={setMessageContent}
                   sendNewMessage={sendNewMessage}
+                  sendingPending={sendingPending}
+                  messageSendingErrorMsg={messageSendingErrorMsg}
                 />
               </div>
             )}

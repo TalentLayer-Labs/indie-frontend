@@ -46,7 +46,7 @@ export const isDateOnSameDay = (d1?: Date, d2?: Date): boolean => {
 export const buildChatMessage = (xmtpMessage: DecodedMessage): XmtpChatMessage => {
   return {
     from: xmtpMessage.senderAddress,
-    to: xmtpMessage.recipientAddress ? xmtpMessage.recipientAddress : '',
+    to: xmtpMessage.conversation.peerAddress ? xmtpMessage.conversation.peerAddress : '',
     messageContent: xmtpMessage.content,
     timestamp: xmtpMessage.sent,
     status: ChatMessageStatus.SENT,

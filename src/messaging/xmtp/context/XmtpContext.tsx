@@ -79,7 +79,7 @@ export const XmtpContextProvider = ({ children }: { children: ReactNode }) => {
     if (!providerState.client) return;
 
     const listConversations = async () => {
-      console.log('listConversations triggered by providerState.client: ', providerState.client);
+      // console.log('listConversations triggered by providerState.client: ', providerState.client);
       setProviderState({ ...providerState, loadingConversations: true });
       const { client, conversationMessages, conversations } = providerState;
       if (client) {
@@ -97,11 +97,12 @@ export const XmtpContextProvider = ({ children }: { children: ReactNode }) => {
               const messages: DecodedMessage[] = await conversation.messages();
               //Temp fix for conversation duplicates
               if (messages.length > 0) {
-                console.log('xmpt context - conversation', conversation);
+                // console.log('xmpt context - conversation', conversation);
+                // console.log('xmpt context - messages', messages);
                 const chatMessages: XmtpChatMessage[] = messages.map(message =>
                   buildChatMessage(message),
                 );
-                console.log('xmpt context - messages', chatMessages);
+                // console.log('xmpt context - chatMessages', chatMessages);
                 conversationMessages.set(conversation.peerAddress, chatMessages);
                 conversations.set(conversation.peerAddress, conversation);
               }

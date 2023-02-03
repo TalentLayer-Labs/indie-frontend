@@ -2,13 +2,11 @@ import { XmtpContext } from '../context/XmtpContext';
 import { useContext, useEffect, useState } from 'react';
 import { Conversation, DecodedMessage, Stream } from '@xmtp/xmtp-js';
 import TalentLayerContext from '../../../context/talentLayer';
-import { buildConversationId } from '../utils/messaging';
+import { buildChatMessage, buildConversationId, getLatestMessage } from '../utils/messaging';
 import { InvitationContext } from '@xmtp/xmtp-js/dist/types/src/Invitation';
-import useUserByAddress from '../../../hooks/useUserByAddress';
 
 const useStreamMessages = (peerAddress: string, userId: string, peerUserId: string) => {
-  const { account, user } = useContext(TalentLayerContext);
-  const peerUser = useUserByAddress(peerAddress);
+  const { account } = useContext(TalentLayerContext);
   const walletAddress = account?.address;
   const { providerState, setProviderState } = useContext(XmtpContext);
   const [stream, setStream] = useState<Stream<DecodedMessage>>();
@@ -46,16 +44,26 @@ const useStreamMessages = (peerAddress: string, userId: string, peerUserId: stri
         if (providerState && setProviderState) {
           const newMessages =
             providerState.conversationMessages.get(conversation.peerAddress) ?? [];
-          newMessages.push(msg);
+          // Default code provided by XMTP. I don't see its utility here so far. I would have put it in the context.
+          // const uniqueMessages = [
+          //   ...Array.from(new Map(newMessages.map(item => [item['id'], item])).values()),
+          // ];
+          // Faire un check içi pour ne pas ajouter le message si il existe déjà + build message
+          if (getLatestMessage(newMessages)?.messageContent === msg.content) {
+            console.log('msgStream - message already exists', msg.content);
+            return;
+          }
+          const incomingChatMessage = buildChatMessage(msg);
+          newMessages.push(incomingChatMessage);
           console.log('msgStream - newMessages', newMessages);
-          const uniqueMessages = [
-            ...Array.from(new Map(newMessages.map(item => [item['id'], item])).values()),
-          ];
-          console.log('msgStream - uniqueMessages', uniqueMessages);
-          providerState.conversationMessages.set(conversation.peerAddress, uniqueMessages);
+
+          // console.log('msgStream - uniqueMessages', uniqueMessages);
+          providerState.conversationMessages.set(conversation.peerAddress, newMessages);
+          // providerState.conversationMessages.set(conversation.peerAddress, uniqueMessages);
           setProviderState({
             ...providerState,
-            conversationMessages: new Map(providerState.conversationMessages),
+            conversationMessages: providerState.conversationMessages,
+            // conversationMessages: new Map(providerState.conversationMessages),
           });
         }
       }

@@ -3,6 +3,7 @@ import { useContext } from 'react';
 import { InvitationContext } from '@xmtp/xmtp-js/dist/types/src/Invitation';
 import useUserByAddress from '../../../hooks/useUserByAddress';
 import { buildConversationId } from '../utils/messaging';
+import { DecodedMessage } from '@xmtp/xmtp-js';
 
 const useSendMessage = (peerAddress: string, senderId: string | undefined) => {
   const { providerState } = useContext(XmtpContext);
@@ -15,10 +16,10 @@ const useSendMessage = (peerAddress: string, senderId: string | undefined) => {
 
   //Normally returns a Promise<DecodedMessage>
   //TODO if implement contentType, check if it's a string or an object
-  const sendMessage = async (message: string): Promise<void> => {
+  const sendMessage = async (message: string): Promise<DecodedMessage> => {
     if (!client || !peerAddress || !peerUser?.id || !senderId) {
       console.log('really?');
-      return;
+      throw new Error('Client not found');
     }
 
     const conversationId = buildConversationId(senderId, peerUser.id);
@@ -33,8 +34,8 @@ const useSendMessage = (peerAddress: string, senderId: string | undefined) => {
     const conversation = await client.conversations.newConversation(peerAddress, context);
 
     // const conversation = await client.conversations.newConversation(peerAddress);
-    if (!conversation) return;
-    await conversation.send(message);
+    if (!conversation) throw new Error('Conversation not found');
+    return await conversation.send(message);
   };
 
   return {

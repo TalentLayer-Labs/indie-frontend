@@ -9,7 +9,7 @@ import ConversationList from '../messaging/push/components/ConversationList';
 import PushContext from '../messaging/push/context/pushUser';
 import { walletToPCAIP10 } from '@pushprotocol/restapi/src/lib/helpers/address';
 import { watchAccount } from '@wagmi/core';
-import { ChatMessage, ChatMessageStatus, ConversationDisplayType, PushMessage } from '../types';
+import { ChatMessageStatus, ConversationDisplayType, PushChatMessage, PushMessage } from '../types';
 import Steps from '../components/Steps';
 import { pCAIP10ToWallet } from '@pushprotocol/restapi/src/lib/helpers';
 import { buildConversationMessage } from '../messaging/push/utils/messaging';
@@ -87,7 +87,7 @@ function PushMessaging() {
 
       const receiverAddressCAIP10 = walletToPCAIP10(selectedConversationPeerAddress);
 
-      const refactoredMessage: ChatMessage = {
+      const refactoredMessage: PushChatMessage = {
         from: user.address,
         to: selectedConversationPeerAddress,
         messageContent: messageContent,
