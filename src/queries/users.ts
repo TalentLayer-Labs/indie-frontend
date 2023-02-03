@@ -8,6 +8,8 @@ export const getUsers = (platformId?: string): Promise<any> => {
         address
         cid
         handle
+        lensID
+        lensHandle
         withPoh
         numReviews
         rating
@@ -25,6 +27,8 @@ export const getUserById = (id: string): Promise<any> => {
         address
         cid
         handle
+        lensID
+        lensHandle
         withPoh
         rating
         numReviews
@@ -42,6 +46,8 @@ export const getUserByAddress = (address: string): Promise<any> => {
         address
         cid
         handle
+        lensID
+        lensHandle
         withPoh
         rating
         numReviews

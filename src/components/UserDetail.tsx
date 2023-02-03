@@ -2,6 +2,7 @@ import { useContext } from 'react';
 import { NavLink } from 'react-router-dom';
 import TalentLayerContext from '../context/talentLayer';
 import useUserDetails from '../hooks/useUserDetails';
+import useUserById from '../hooks/useUserById';
 import { IUser } from '../types';
 import Loading from './Loading';
 import Stars from './Stars';
@@ -9,13 +10,14 @@ import Stars from './Stars';
 function UserDetail({ user }: { user: IUser }) {
   const { user: currentUser } = useContext(TalentLayerContext);
   const userDetails = useUserDetails(user?.cid);
+  const userById = useUserById(user?.id);
 
   if (user.cid && !userDetails) {
     return <Loading />;
   }
 
   return (
-    <div className='flex flex-col rounded-xl p-4 border border-gray-200'>
+    <div className='flex flex-col rounded-xl p-4 border border-gray-200 '>
       <div className='flex items-top justify-between w-full'>
         <div className='flex flex-col justify-start items-start gap-4'>
           <div className='flex items-center justify-start mb-4'>
@@ -37,6 +39,17 @@ function UserDetail({ user }: { user: IUser }) {
         <p className='text-sm text-gray-500 mt-4'>
           <strong>About:</strong> {userDetails?.about}
         </p>
+
+        {userById?.lensID != '0' && (
+          <div>
+            <p className='text-sm text-gray-500 mt-4'>
+              <strong>Lens ID:</strong> {userById?.lensID}
+            </p>
+            <p className='text-sm text-gray-500 mt-4'>
+              <strong>Lens Handle:</strong> {userById?.lensHandle}
+            </p>
+          </div>
+        )}
       </div>
       {currentUser?.id === user.id && (
         <div className=' border-t border-gray-100 pt-4 w-full mt-4'>

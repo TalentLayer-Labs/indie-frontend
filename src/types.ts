@@ -9,6 +9,8 @@ export type IUser = {
   withPoh: boolean;
   rating: string;
   numReviews: string;
+  lensID: string;
+  lensHandle: string;
 };
 
 export type IUserDetails = {

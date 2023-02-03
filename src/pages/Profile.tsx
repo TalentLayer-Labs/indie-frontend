@@ -1,5 +1,6 @@
 import { useParams } from 'react-router-dom';
 import Back from '../components/Back';
+import LensProfile from '../components/Layout/LensProfil';
 import Loading from '../components/Loading';
 import UserDetail from '../components/UserDetail';
 import UserServices from '../components/UserServices';
@@ -30,6 +31,9 @@ function Profile() {
             </div>
             <div className='mb-6'>
               <UserServices user={user} type='seller' />
+            </div>
+            <div className='mb-6'>
+              <LensProfile user={user} />
             </div>
           </div>
         </>
