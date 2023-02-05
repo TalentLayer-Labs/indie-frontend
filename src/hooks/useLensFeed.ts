@@ -19,7 +19,7 @@ const useLensFeed = (userProfileId: string): { lensFeed: IlensFeed | undefined }
       }
     };
     fetchData();
-  }, []);
+  }, [userProfileId]);
 
   return { lensFeed };
 };
