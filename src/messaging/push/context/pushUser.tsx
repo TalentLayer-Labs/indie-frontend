@@ -164,7 +164,6 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
             conversation.toDID = to;
             conversation.fromCAIP10 = from;
             conversation.fromDID = from;
-            console.log('de la meeeerde');
           }
         }
         setConversations(response);

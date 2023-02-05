@@ -27,9 +27,8 @@ const MessageList = ({
   return (
     <>
       <div className='flex flex-col mt-5'>
-        {!isNewMessage && conversationMessages.length === 0 && selectedConversationPeerAddress && (
-          <Loading />
-        )}
+        {isNewMessage ||
+          (conversationMessages.length === 0 && selectedConversationPeerAddress && <Loading />)}
       </div>
       <div className='flex flex-col mt-5 overflow-y-auto'>
         {conversationMessages.map((msg, index) => {

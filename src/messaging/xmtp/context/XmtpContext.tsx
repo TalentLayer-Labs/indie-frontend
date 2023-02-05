@@ -9,6 +9,7 @@ interface IProviderProps {
   client: Client | undefined;
   initClient: ((wallet: Signer) => Promise<void>) | undefined;
   loadingConversations: boolean;
+  loadingMessages: boolean;
   conversations: Map<string, Conversation>;
   conversationMessages: Map<string, XmtpChatMessage[]>;
   // getOneConversationMessages: (conversation: Conversation) => Promise<void>;
@@ -40,6 +41,7 @@ export const XmtpContextProvider = ({ children }: { children: ReactNode }) => {
     client: undefined,
     initClient: undefined,
     loadingConversations: false,
+    loadingMessages: false,
     conversations: new Map<string, Conversation>(),
     conversationMessages: new Map<string, XmtpChatMessage[]>(),
     // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -117,22 +119,36 @@ export const XmtpContextProvider = ({ children }: { children: ReactNode }) => {
 
     const listConversations = async (): Promise<void> => {
       // console.log('listConversations triggered by providerState.client: ', providerState.client);
-      setProviderState({ ...providerState, loadingConversations: true });
+      setProviderState({ ...providerState, loadingConversations: true, loadingMessages: true });
       const { client, conversationMessages, conversations } = providerState;
       if (client) {
         // (await client.conversations.list()).forEach(conv =>
         //   console.log(conv.context?.conversationId),
         // );
-        const conv: Conversation[] = (await client.conversations.list()).filter(conversation =>
-          conversation.context?.conversationId.startsWith(CONVERSATION_PREFIX),
-        );
+        let conv: Conversation[] = [];
+        try {
+          conv = (await client.conversations.list()).filter(conversation =>
+            conversation.context?.conversationId.startsWith(CONVERSATION_PREFIX),
+          );
+        } catch (e: any) {
+          console.log('Error listing conversations - ', e);
+        } finally {
+          setProviderState({ ...providerState, loadingConversations: false });
+          console.log('conv loaded');
+        }
+
         // console.log('TLV2 conv', conv);
         Promise.all(
           //TODO Here need to remove duplicates & find latest conversation + load its messages
           conv.map(async conversation => {
             if (conversation.peerAddress !== walletAddress) {
-              // Returns a list of all messages to/from the peerAddress
-              const messages: DecodedMessage[] = await conversation.messages();
+              let messages: DecodedMessage[] = [];
+              try {
+                // Returns a list of all messages to/from the peerAddress
+                messages = await conversation.messages();
+              } catch (e: any) {
+                console.log('Error listing messages - ', e);
+              }
               //Temp fix for conversation duplicates
               if (messages.length > 0) {
                 console.log('xmpt context - conversation', conversation);
@@ -144,6 +160,7 @@ export const XmtpContextProvider = ({ children }: { children: ReactNode }) => {
                 conversationMessages.set(conversation.peerAddress, chatMessages);
                 conversations.set(conversation.peerAddress, conversation);
               }
+              // conversationMessages.set(conversation.peerAddress, []);
               setProviderState({
                 ...providerState,
                 conversationMessages,
@@ -152,7 +169,8 @@ export const XmtpContextProvider = ({ children }: { children: ReactNode }) => {
             }
           }),
         ).then(() => {
-          setProviderState({ ...providerState, loadingConversations: false });
+          setProviderState({ ...providerState, loadingMessages: false });
+          console.log('msgs loaded');
         });
       }
     };

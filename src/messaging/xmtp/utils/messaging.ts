@@ -16,9 +16,8 @@ export const truncate = (str: string, length: number) => {
   return str;
 };
 
-export const getLatestMessage = (
-  messages: XmtpChatMessage[] | undefined,
-): XmtpChatMessage | undefined => (messages?.length ? messages[messages.length - 1] : undefined);
+export const getLatestMessage = (messages: XmtpChatMessage[]): XmtpChatMessage =>
+  messages[messages.length - 1];
 
 export const CONVERSATION_PREFIX = 'talentLayer/dmV5';
 export const buildConversationId = (talentLayerId1: string, talentLayerId2: string) => {
