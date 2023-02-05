@@ -5,7 +5,12 @@ import TalentLayerContext from '../../../context/talentLayer';
 import { buildChatMessage, buildConversationId, getLatestMessage } from '../utils/messaging';
 import { InvitationContext } from '@xmtp/xmtp-js/dist/types/src/Invitation';
 
-const useStreamMessages = (peerAddress: string, userId: string, peerUserId: string) => {
+const useStreamMessages = (
+  peerAddress: string,
+  userId: string,
+  peerUserId: string,
+  setMessageSendingErrorMsg: React.Dispatch<React.SetStateAction<string>>,
+) => {
   const { account } = useContext(TalentLayerContext);
   const walletAddress = account?.address;
   const { providerState, setProviderState } = useContext(XmtpContext);
@@ -13,6 +18,7 @@ const useStreamMessages = (peerAddress: string, userId: string, peerUserId: stri
   const [conversation, setConversation] = useState<Conversation>();
 
   useEffect(() => {
+    console.log('streamMessages - peerAddress', peerAddress);
     const getConversation = async () => {
       if (!providerState?.client || !peerAddress) return;
       const conversationId = buildConversationId(peerUserId, userId);
@@ -23,14 +29,25 @@ const useStreamMessages = (peerAddress: string, userId: string, peerUserId: stri
         conversationId: conversationId,
         metadata: { ['domain']: 'TalentLayer' },
       };
-      const conversation = await providerState.client.conversations.newConversation(
-        peerAddress,
-        context,
-      );
-      setConversation(conversation);
+      try {
+        const conversation = await providerState.client.conversations.newConversation(
+          peerAddress,
+          context,
+        );
+        setConversation(conversation);
+      } catch (e) {
+        setMessageSendingErrorMsg(
+          'The user you are trying to contact is not registered on XMTP network.',
+        );
+        console.log('error', e);
+      }
       // setConversation(await providerState.client.conversations.newConversation(peerAddress));
     };
     getConversation();
+
+    return () => {
+      setMessageSendingErrorMsg('');
+    };
   }, [providerState?.client, peerAddress]);
 
   useEffect(() => {
@@ -48,7 +65,6 @@ const useStreamMessages = (peerAddress: string, userId: string, peerUserId: stri
           // const uniqueMessages = [
           //   ...Array.from(new Map(newMessages.map(item => [item['id'], item])).values()),
           // ];
-          // Faire un check içi pour ne pas ajouter le message si il existe déjà + build message
           if (getLatestMessage(newMessages)?.messageContent === msg.content) {
             console.log('msgStream - message already exists', msg.content);
             return;

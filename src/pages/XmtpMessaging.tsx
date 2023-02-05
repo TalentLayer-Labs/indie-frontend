@@ -9,7 +9,7 @@ import MessageList from '../messaging/xmtp/components/MessageList';
 import useStreamConversations from '../messaging/xmtp/hooks/useStreamConversations';
 import useSendMessage from '../messaging/xmtp/hooks/useSendMessage';
 import MessageComposer from '../messaging/xmtp/components/MessageComposer';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import useUserByAddress from '../hooks/useUserByAddress';
 import { ChatMessageStatus, XmtpChatMessage } from '../types';
 
@@ -25,13 +25,34 @@ function XmtpMessaging() {
   const navigate = useNavigate();
   const [sendingPending, setSendingPending] = useState(false);
   const [messageSendingErrorMsg, setMessageSendingErrorMsg] = useState('');
-  // Apparently the context handles this as a sigher change, and disconnects the user
+
+  const { state } = useLocation();
+
+  // Apparently the context handles this as a signer change, and disconnects the user
   // if (selectedConversationPeerAddress === user?.address) navigate('/messaging');
   const { sendMessage } = useSendMessage(
     selectedConversationPeerAddress ? selectedConversationPeerAddress : '',
     user?.id,
   );
   const peerUser = useUserByAddress(selectedConversationPeerAddress);
+
+  // if (
+  //   selectedConversationPeerAddress &&
+  //   providerState &&
+  //   providerState.conversations
+  //   // && !pageLoaded
+  // ) {
+  //   const conversation = providerState.conversations.get(selectedConversationPeerAddress);
+  //   if (conversation) {
+  //     try {
+  //       providerState.getOneConversationMessages(conversation);
+  //     } catch (e) {
+  //       console.error(e);
+  //     } finally {
+  //       // setPageLoaded(true);
+  //     }
+  //   }
+  // }
 
   watchAccount(() => {
     providerState?.disconnect?.();
@@ -45,6 +66,7 @@ function XmtpMessaging() {
 
   const handleXmtpConnect = async () => {
     if (providerState && providerState.initClient && signer) {
+      console.log('Connecting to XMTP...');
       await providerState.initClient(signer);
     }
   };
@@ -102,6 +124,12 @@ function XmtpMessaging() {
       }
     }
   };
+  /*TODO: Les ,msg ne chargent pas quand TheGraph est down car on a une condition sur le handle
+   Du coup le listener ne s'active pas car il est dans "messageList"
+   RAF: Loader sur convers
+   Autoscroll down
+   ...Rest
+   */
 
   return (
     <div className='mx-auto text-gray-900 sm:px-4 lg:px-0'>
@@ -141,6 +169,9 @@ function XmtpMessaging() {
                     selectedConversationPeerAddress={selectedConversationPeerAddress}
                     userId={user?.id}
                     peerUserId={peerUser?.id}
+                    conversationLoading={providerState.loadingConversations}
+                    setMessageSendingErrorMsg={setMessageSendingErrorMsg}
+                    isNewMessage={state?.newMessage}
                   />
                 </div>
                 <MessageComposer

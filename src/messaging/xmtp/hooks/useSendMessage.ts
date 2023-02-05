@@ -18,7 +18,6 @@ const useSendMessage = (peerAddress: string, senderId: string | undefined) => {
   //TODO if implement contentType, check if it's a string or an object
   const sendMessage = async (message: string): Promise<DecodedMessage> => {
     if (!client || !peerAddress || !peerUser?.id || !senderId) {
-      console.log('really?');
       throw new Error('Client not found');
     }
 

@@ -13,6 +13,8 @@ import PushContext from '../../messaging/push/context/pushUser';
 import { XmtpContext } from '../../messaging/xmtp/context/XmtpContext';
 
 function ValidateProposalModal({ proposal, account }: { proposal: IProposal; account: IAccount }) {
+  const { providerState } = useContext(XmtpContext);
+  const { initPush, pushUser } = useContext(PushContext);
   const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
   const provider = useProvider({ chainId: import.meta.env.VITE_NETWORK_ID });
   const [show, setShow] = useState(false);
@@ -58,11 +60,8 @@ function ValidateProposalModal({ proposal, account }: { proposal: IProposal; acc
     }
   };
 
-  let handleMessageUser = async (): Promise<void> => {};
-
-  if (import.meta.env.VITE_MESSENGING_TECH === 'push') {
-    const { initPush, pushUser } = useContext(PushContext);
-    handleMessageUser = async () => {
+  const handleMessageUser = async (): Promise<void> => {
+    if (import.meta.env.VITE_MESSENGING_TECH === 'push') {
       console.log('handleMessageUser', pushUser);
       if (pushUser && initPush) {
         console.log('handleMessageUser inside');
@@ -76,20 +75,20 @@ function ValidateProposalModal({ proposal, account }: { proposal: IProposal; acc
           state: { newMessage: true },
         },
       );
-    };
-  }
-
-  if (import.meta.env.VITE_MESSENGING_TECH === 'xmtp') {
-    const { providerState } = useContext(XmtpContext);
-    handleMessageUser = async () => {
+    }
+    if (import.meta.env.VITE_MESSENGING_TECH === 'xmtp') {
       if (signer && providerState && providerState.initClient) {
-        await providerState.initClient(signer);
+        try {
+          await providerState.initClient(signer);
+          navigate(`/messaging/${ethers.utils.getAddress(proposal.seller?.address)}`, {
+            state: { newMessage: true },
+          });
+        } catch (e) {
+          console.log('Error initializing XMTP client - ', e);
+        }
       }
-      navigate(`/messaging/${ethers.utils.getAddress(proposal.seller?.address)}`, {
-        state: { newMessage: true },
-      });
-    };
-  }
+    }
+  };
 
   return (
     <>

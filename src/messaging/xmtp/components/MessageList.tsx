@@ -2,12 +2,16 @@ import useStreamMessages from '../hooks/useStreamMessages';
 import MessageCard from './MessageCard';
 import { isDateOnSameDay } from '../utils/messaging';
 import { XmtpChatMessage } from '../../../types';
+import Loading from '../../../components/Loading';
 
 interface IMessageListProps {
   conversationMessages: XmtpChatMessage[];
   selectedConversationPeerAddress: string;
   peerUserId: string;
   userId: string;
+  conversationLoading: boolean;
+  setMessageSendingErrorMsg: React.Dispatch<React.SetStateAction<string>>;
+  isNewMessage?: boolean;
 }
 
 const MessageList = ({
@@ -15,16 +19,24 @@ const MessageList = ({
   selectedConversationPeerAddress,
   peerUserId,
   userId,
+  conversationLoading,
+  setMessageSendingErrorMsg,
+  isNewMessage,
 }: IMessageListProps) => {
-  useStreamMessages(selectedConversationPeerAddress, userId, peerUserId);
+  // TODO: We only listen to the active conversation
+  useStreamMessages(selectedConversationPeerAddress, userId, peerUserId, setMessageSendingErrorMsg);
   let lastMessageDate: Date | undefined;
 
+  // console.log('conversationMessages', conversationMessages);
+  // console.log('conversationLoading', conversationLoading);
+  // console.log('selectedConversationPeerAddress', selectedConversationPeerAddress);
+  // console.log('isNewMessage', isNewMessage);
   return (
     <div className='flex flex-col mt-5'>
-      {/*TODO handle this*/}
-      {/*{!isNewMessage && conversationMessages.length === 0 && selectedConversationPeerAddress && (*/}
-      {/*  <Loading />*/}
-      {/*)}*/}
+      {!isNewMessage &&
+        conversationMessages.length === 0 &&
+        selectedConversationPeerAddress &&
+        conversationLoading && <Loading />}
       {conversationMessages.map((msg, index) => {
         const messageCard = (
           <div key={index}>

@@ -21,6 +21,9 @@ import { useSigner } from 'wagmi';
 
 function ServiceDetail({ service }: { service: IService }) {
   const { account, user } = useContext(TalentLayerContext);
+  const { providerState } = useContext(XmtpContext);
+  const { initPush } = useContext(PushContext);
+  const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
 
   const serviceDetail = useServiceDetails(service.uri);
   const { reviews } = useReviewsByService(service.id);
@@ -32,11 +35,9 @@ function ServiceDetail({ service }: { service: IService }) {
     return null;
   }
 
-  let handleMessageUser = async (): Promise<void> => {};
-
-  if (import.meta.env.VITE_MESSENGING_TECH === 'push') {
-    const { initPush } = useContext(PushContext);
-    handleMessageUser = async () => {
+  const handleMessageUser = async (): Promise<void> => {
+    if (import.meta.env.VITE_MESSENGING_TECH === 'push') {
+      //TODO handle metamask rejection like xmtp
       console.log('handleMessageUser', initPush);
       if (user && initPush) {
         console.log('handleMessageUser inside');
@@ -48,25 +49,20 @@ function ServiceDetail({ service }: { service: IService }) {
           { state: { newMessage: true } },
         );
       }
-    };
-  }
-
-  if (import.meta.env.VITE_MESSENGING_TECH === 'xmtp') {
-    handleMessageUser = async () => {
-      const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
-      const { providerState } = useContext(XmtpContext);
-
-      console.log('handleMessageUser', providerState);
+    }
+    if (import.meta.env.VITE_MESSENGING_TECH === 'xmtp') {
       if (signer && providerState && providerState.initClient) {
-        console.log('handleMessageUser inside');
-        await providerState.initClient(signer);
+        try {
+          await providerState.initClient(signer);
+          navigate(`/messaging/${ethers.utils.getAddress(service.buyer?.address)}`, {
+            state: { newMessage: true },
+          });
+        } catch (e) {
+          console.log('Error initializing XMTP client - ', e);
+        }
       }
-      console.log('service.seller', service.buyer);
-      navigate(`/messaging/${ethers.utils.getAddress(service.buyer?.address)}`, {
-        state: { newMessage: true },
-      });
-    };
-  }
+    }
+  };
 
   const isBuyer = user?.id === service.buyer.id;
   const isSeller = user?.id === service.seller?.id;
