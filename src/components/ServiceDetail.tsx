@@ -42,6 +42,7 @@ function ServiceDetail({ service }: { service: IService }) {
       if (user && initPush) {
         console.log('handleMessageUser inside');
         await initPush(user.address);
+
         navigate(
           `/messaging/${ConversationDisplayType.CONVERSATION}/${ethers.utils.getAddress(
             service.buyer?.address,
@@ -51,15 +52,25 @@ function ServiceDetail({ service }: { service: IService }) {
       }
     }
     if (import.meta.env.VITE_MESSENGING_TECH === 'xmtp') {
-      if (signer && providerState && providerState.initClient) {
-        try {
-          await providerState.initClient(signer);
-          navigate(`/messaging/${ethers.utils.getAddress(service.buyer?.address)}`, {
-            state: { newMessage: true },
-          });
-        } catch (e) {
-          console.log('Error initializing XMTP client - ', e);
+      if (signer && providerState) {
+        //If initClient() is in the context, then we can assume that the user has not already logged in
+        if (providerState.initClient) {
+          try {
+            await providerState.initClient(signer);
+          } catch (e) {
+            console.log('Error initializing XMTP client - ', e);
+          }
         }
+        const buyerAddress = ethers.utils.getAddress(service.buyer?.address);
+        let newMessage = false;
+        // Check if conversation exists
+        providerState?.conversationMessages?.get(buyerAddress)?.length === 0
+          ? (newMessage = true)
+          : (newMessage = false);
+        console.log('newMessage', newMessage);
+        navigate(`/messaging/${buyerAddress}`, {
+          state: { newMessage },
+        });
       }
     }
   };

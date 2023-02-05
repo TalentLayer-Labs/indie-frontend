@@ -5,6 +5,9 @@ import TalentLayerContext from '../../../context/talentLayer';
 import { buildChatMessage, buildConversationId, getLatestMessage } from '../utils/messaging';
 import { InvitationContext } from '@xmtp/xmtp-js/dist/types/src/Invitation';
 
+export const NON_EXISTING_XMTP_USER_ERROR_MESSAGE =
+  'The user you are trying to contact is not registered on XMTP network.';
+
 const useStreamMessages = (
   peerAddress: string,
   userId: string,
@@ -36,9 +39,7 @@ const useStreamMessages = (
         );
         setConversation(conversation);
       } catch (e) {
-        setMessageSendingErrorMsg(
-          'The user you are trying to contact is not registered on XMTP network.',
-        );
+        setMessageSendingErrorMsg(NON_EXISTING_XMTP_USER_ERROR_MESSAGE);
         console.log('error', e);
       }
       // setConversation(await providerState.client.conversations.newConversation(peerAddress));

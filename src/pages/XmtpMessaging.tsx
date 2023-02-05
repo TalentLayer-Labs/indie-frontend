@@ -12,6 +12,7 @@ import MessageComposer from '../messaging/xmtp/components/MessageComposer';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import useUserByAddress from '../hooks/useUserByAddress';
 import { ChatMessageStatus, XmtpChatMessage } from '../types';
+import { NON_EXISTING_XMTP_USER_ERROR_MESSAGE } from '../messaging/xmtp/hooks/useStreamMessages';
 
 //TODO: Integrate "New message" + update when new conversation created
 //TODO: Register user to XMTP when profile being created ? When proposal + job being created + button if want before?
@@ -82,9 +83,11 @@ function XmtpMessaging() {
         status: ChatMessageStatus.PENDING,
       };
       console.log('sentMessage', sentMessage);
+      console.log('sentMessage status', sentMessage.status);
       const messages = providerState.conversationMessages.get(selectedConversationPeerAddress);
       if (messages) {
         // If Last message in error, remove it & try to resend
+        console.log('last message in error');
         if (messageSendingErrorMsg) {
           messages.pop();
           setMessageSendingErrorMsg('');
@@ -154,7 +157,6 @@ function XmtpMessaging() {
               <ConversationList
                 conversationMessages={providerState.conversationMessages}
                 selectedConversationPeerAddress={selectedConversationPeerAddress}
-                peerAddress={peerUser?.address ? peerUser.address : ''}
                 conversationsLoading={providerState.loadingConversations}
                 // setSelectedConversationPeerAddress={setSelectedConversationPeerAddress}
               />
@@ -169,8 +171,9 @@ function XmtpMessaging() {
                     selectedConversationPeerAddress={selectedConversationPeerAddress}
                     userId={user?.id}
                     peerUserId={peerUser?.id}
-                    conversationLoading={providerState.loadingConversations}
+                    messagesLoading={providerState.loadingMessages}
                     setMessageSendingErrorMsg={setMessageSendingErrorMsg}
+                    peerUserExists={messageSendingErrorMsg !== NON_EXISTING_XMTP_USER_ERROR_MESSAGE}
                     isNewMessage={state?.newMessage}
                   />
                 </div>

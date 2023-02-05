@@ -5,21 +5,20 @@ import Loading from '../../../components/Loading';
 
 interface IConversationListProps {
   conversationMessages: Map<string, XmtpChatMessage[]>;
-  peerAddress: string;
   selectedConversationPeerAddress: string;
   conversationsLoading: boolean;
 }
 
 const ConversationList = ({
   conversationMessages,
-  peerAddress,
   selectedConversationPeerAddress,
   conversationsLoading,
 }: IConversationListProps) => {
-  const sortedConversations: Map<string, XmtpChatMessage[]> | undefined = new Map(
+  // Sort conversations by latest message timestamp
+  const sortedConversations: Map<string, XmtpChatMessage[]> = new Map(
     [...conversationMessages.entries()].sort((convA, convB) => {
       // if (!getLatestMessage(convA[1])?.sent || !getLatestMessage(convB[1])?.sent) return -1;
-      return getLatestMessage(convA[1])?.timestamp < getLatestMessage(convB[1])?.timestamp ? 1 : -1;
+      return getLatestMessage(convA[1]).timestamp < getLatestMessage(convB[1]).timestamp ? 1 : -1;
     }),
   );
 
@@ -33,8 +32,12 @@ const ConversationList = ({
             <ConversationCard
               key={peerAddress}
               // isConvSelected={isConvSelected}
+              latestMessage={
+                sortedConversations.get(peerAddress)
+                  ? getLatestMessage(sortedConversations.get(peerAddress) as XmtpChatMessage[])
+                  : undefined
+              }
               peerAddress={peerAddress}
-              latestMessage={getLatestMessage(sortedConversations.get(peerAddress))}
               selectedConversationPeerAddress={selectedConversationPeerAddress}
             />
           );
