@@ -20,6 +20,42 @@ export type IUserDetails = {
 export type IlensUser = {
   id: string;
   name: string;
+  bio: string;
+  picture: {
+    original: {
+      url: string;
+      mimeType: string;
+    };
+  };
+  stats: {
+    totalCollects: number;
+    totalComments: number;
+    totalFollowers: number;
+    totalFollowing: number;
+    totalMirrors: number;
+    totalPosts: number;
+    totalPublications: number;
+  };
+};
+
+export type IlensFeed = {
+  metadata: {
+    name: string;
+    description: string;
+    content: string;
+    media: {
+      original: {
+        url: string;
+        mimeType: string;
+      };
+    };
+    attributes: {
+      displayType: string;
+      traitType: string;
+      value: string;
+    }[];
+  };
+  createdAt: string;
 };
 
 export type IAccount = {

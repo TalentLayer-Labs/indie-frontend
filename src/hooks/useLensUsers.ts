@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getLensProfileInfo } from '../queries/LensCheck';
+import { getLensProfileInfo } from '../queries/lensProfileData';
 import { IlensUser } from '../types';
 
 const useLensUser = (userAddress: string): { lensUser: IlensUser | undefined } => {
