@@ -32,3 +32,7 @@ export const IpfsIsSynced = async (cid: string): Promise<boolean> => {
     }, 5000);
   });
 };
+
+export const readableIpfsUrl = (cid: string | undefined): string => {
+  return `https://ipfs.io/ipfs/${cid?.replace('ipfs://', '') || ''}`;
+};
