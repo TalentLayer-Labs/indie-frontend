@@ -1,13 +1,13 @@
 import { processLensRequest } from '../utils/graphql';
 
-export const getLensFeedData = (profileId: string): Promise<any> => {
+export const getLensFeedData = (userProfileId: string): Promise<any> => {
   const query = `
     {
       publications(
         request: {
-          profileId: "0x01a1ee"
-          publicationTypes: [POST, COMMENT, MIRROR]
-          limit: 10
+          profileId: "${userProfileId}"
+          publicationTypes: [POST]
+          limit: 1
         }
       ) {
         items {

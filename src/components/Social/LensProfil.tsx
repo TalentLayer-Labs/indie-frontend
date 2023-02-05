@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react';
+import { useContext } from 'react';
 import TalentLayerContext from '../../context/talentLayer';
 import useUserById from '../../hooks/useUserById';
 import { IUser } from '../../types';
