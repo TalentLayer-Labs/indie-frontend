@@ -5,7 +5,7 @@ export type IUser = {
   id: string;
   handle: string;
   address: string;
-  uri: string;
+  cid: string;
   withPoh: boolean;
   rating: string;
   numReviews: string;
@@ -39,7 +39,7 @@ export type IService = {
   seller: IUser;
   sender: IUser;
   recipient: IUser;
-  uri: string;
+  cid: string;
   createdAt: string;
   updatedAt: string;
   transaction: ITransaction;
@@ -76,9 +76,11 @@ export type IReview = {
   service: IService;
   to: IUser;
   uri: string;
+  description: IReviewDetails;
 };
 
 export type IReviewDetails = {
+  id: string;
   content: string;
   rating: string;
 };
@@ -102,7 +104,7 @@ export type IProposalDetails = {
 
 export type IProposal = {
   id: string;
-  uri: string;
+  cid: string;
   status: ProposalStatusEnum;
   seller: IUser;
   rateToken: IToken;
@@ -113,8 +115,8 @@ export type IProposal = {
 };
 
 export type IFees = {
-  protocolFeeRate: number;
-  originPlatformFeeRate: number;
+  protocolEscrowFeeRate: number;
+  originPlatformEscrowFeeRate: number;
   platformFeeRate: number;
 };
 

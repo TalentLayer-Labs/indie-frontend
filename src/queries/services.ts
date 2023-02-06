@@ -5,16 +5,14 @@ export const getServices = (
   serviceStatus?: ServiceStatusEnum,
   buyerId?: string,
   sellerId?: string,
+  platformId?: string,
 ): Promise<any> => {
-  let condition = '';
-
-  if (serviceStatus) {
-    condition = `, where: {status: ${serviceStatus}}`;
-  } else if (buyerId) {
-    condition = `, where: {buyer: "${buyerId}"}`;
-  } else if (sellerId) {
-    condition = `, where: {seller: "${sellerId}"}`;
-  }
+  let condition = ', where: {';
+  condition += serviceStatus ? `status: "${serviceStatus}"` : '';
+  condition += buyerId ? `, buyer: "${buyerId}"` : '';
+  condition += sellerId ? `, seller: "${sellerId}"` : '';
+  condition += platformId ? `, platform: "${platformId}"` : '';
+  condition += '}';
 
   const query = `
     {
@@ -22,7 +20,7 @@ export const getServices = (
         id
         status
         createdAt
-        uri
+        cid
         buyer {
           id
           handle
@@ -46,7 +44,7 @@ export const getServiceById = (id: string): Promise<any> => {
         id
         status
         createdAt
-        uri
+        cid
         transaction {
           id
         }

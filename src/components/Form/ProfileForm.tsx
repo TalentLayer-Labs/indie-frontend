@@ -27,10 +27,10 @@ function ProfileForm() {
   const { open: openConnectModal } = useWeb3Modal();
   const { user } = useContext(TalentLayerContext);
   const provider = useProvider({ chainId: import.meta.env.VITE_NETWORK_ID });
-  const userDetails = useUserDetails(user?.uri);
+  const userDetails = useUserDetails(user?.cid);
   const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
 
-  if (user?.uri && !userDetails) {
+  if (user?.cid && !userDetails) {
     return <Loading />;
   }
 
@@ -46,7 +46,7 @@ function ProfileForm() {
   ) => {
     if (user && provider && signer) {
       try {
-        const uri = await postToIPFS(
+        const cid = await postToIPFS(
           JSON.stringify({
             title: values.title,
             about: values.about,
@@ -60,7 +60,7 @@ function ProfileForm() {
           signer,
         );
 
-        const tx = await contract.updateProfileData(user.id, uri);
+        const tx = await contract.updateProfileData(user.id, cid);
         await createMultiStepsTransactionToast(
           {
             pending: 'Updating profile...',
@@ -70,7 +70,7 @@ function ProfileForm() {
           provider,
           tx,
           'users',
-          uri,
+          cid,
         );
 
         setSubmitting(false);

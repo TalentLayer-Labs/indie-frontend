@@ -9,8 +9,8 @@ import { formatDate } from '../utils/dates';
 
 function UserProposalItem({ proposal }: { proposal: IProposal }) {
   const { user } = useContext(TalentLayerContext);
-  const proposalDetail = useProposalDetails(proposal.uri);
-  const serviceDetail = useServiceDetails(proposal.service.uri);
+  const proposalDetail = useProposalDetails(proposal.cid);
+  const serviceDetail = useServiceDetails(proposal.service.cid);
 
   if (!proposalDetail || !serviceDetail) {
     return null;

@@ -1,12 +1,12 @@
 import { processRequest } from '../utils/graphql';
 
-export const getUsers = (): Promise<any> => {
+export const getUsers = (platformId?: string): Promise<any> => {
   const query = `
     {
-      users(orderBy: rating, orderDirection: desc) {
+      users(orderBy: rating, orderDirection: desc, where : { platform: "${platformId}" }) {
         id
         address
-        uri
+        cid
         handle
         withPoh
         numReviews
@@ -23,7 +23,7 @@ export const getUserById = (id: string): Promise<any> => {
       user(id: "${id}") {
         id
         address
-        uri
+        cid
         handle
         withPoh
         rating
@@ -40,7 +40,7 @@ export const getUserByAddress = (address: string): Promise<any> => {
       users(where: {address: "${address.toLocaleLowerCase()}"}, first: 1) {
         id
         address
-        uri
+        cid
         handle
         withPoh
         rating

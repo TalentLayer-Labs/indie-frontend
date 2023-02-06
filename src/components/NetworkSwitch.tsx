@@ -12,6 +12,10 @@ const chainIdToName = (chainId: number) => {
       return 'Goerli';
     case 1337:
       return 'Localhost';
+    case 80001:
+      return 'Mumbai';
+    case 137:
+      return 'Polygon';
     default:
       return 'Unknown';
   }
