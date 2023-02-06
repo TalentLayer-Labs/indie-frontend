@@ -78,6 +78,8 @@ export const XmtpContextProvider = ({ children }: { children: ReactNode }) => {
         });
       } catch (e: any) {
         throw e;
+        /*TODO see if this is still useful... I think not, redefining the client
+         prevents from calling it again after rejecting metamask popup */
         // setProviderState({
         //   ...providerState,
         //   client: undefined,

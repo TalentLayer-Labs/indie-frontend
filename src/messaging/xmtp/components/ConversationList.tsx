@@ -18,6 +18,7 @@ const ConversationList = ({
   const sortedConversations: Map<string, XmtpChatMessage[]> = new Map(
     [...conversationMessages.entries()].sort((convA, convB) => {
       // if (!getLatestMessage(convA[1])?.sent || !getLatestMessage(convB[1])?.sent) return -1;
+      //TODO had some issues here with undefined timestamps
       return getLatestMessage(convA[1]).timestamp < getLatestMessage(convB[1]).timestamp ? 1 : -1;
     }),
   );

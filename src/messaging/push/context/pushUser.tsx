@@ -78,15 +78,11 @@ const PushProvider = ({ children }: { children: ReactNode }) => {
 
   const init = async (account: string) => {
     console.log('init');
-    try {
-      const pushUserData = await createUserIfNecessary({ account });
-      if (pushUserData) {
-        setPushUser(pushUserData);
-      }
-      decodePrivateKey();
-    } catch (e) {
-      console.error(e);
+    const pushUserData = await createUserIfNecessary({ account });
+    if (pushUserData) {
+      setPushUser(pushUserData);
     }
+    decodePrivateKey();
   };
 
   const decodePrivateKey = async (): Promise<void> => {

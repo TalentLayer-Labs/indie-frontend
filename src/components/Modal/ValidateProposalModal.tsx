@@ -15,7 +15,7 @@ import { useNavigate } from 'react-router-dom';
 
 function ValidateProposalModal({ proposal, account }: { proposal: IProposal; account: IAccount }) {
   const { providerState } = useContext(XmtpContext);
-  const { initPush, pushUser } = useContext(PushContext);
+  const { initPush, pushUser, conversationMessages } = useContext(PushContext);
   const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
   const provider = useProvider({ chainId: import.meta.env.VITE_NETWORK_ID });
   const [show, setShow] = useState(false);
@@ -77,27 +77,45 @@ function ValidateProposalModal({ proposal, account }: { proposal: IProposal; acc
       console.log('handleMessageUser', pushUser);
       if (pushUser && initPush) {
         console.log('handleMessageUser inside');
-        await initPush(account.address as string);
+        try {
+          await initPush(account.address as string);
+        } catch (e) {
+          console.log('ValidateProposalModal - Error initializing push client: ', e);
+          return;
+        }
+        const sellerAddress = ethers.utils.getAddress(proposal.seller?.address);
+        let newMessage = false;
+        // Check if conversation exists
+        conversationMessages?.get(sellerAddress)?.length === 0
+          ? (newMessage = true)
+          : (newMessage = false);
+        navigate(
+          `/messaging/${ConversationDisplayType.CONVERSATION}/${ethers.utils.getAddress(
+            proposal.seller?.address,
+          )}`,
+          {
+            state: { newMessage },
+          },
+        );
       }
-      navigate(
-        `/messaging/${ConversationDisplayType.CONVERSATION}/${ethers.utils.getAddress(
-          proposal.seller?.address,
-        )}`,
-        {
-          state: { newMessage: true },
-        },
-      );
     }
     if (import.meta.env.VITE_MESSENGING_TECH === 'xmtp') {
       if (signer && providerState && providerState.initClient) {
         try {
           await providerState.initClient(signer);
-          navigate(`/messaging/${ethers.utils.getAddress(proposal.seller?.address)}`, {
-            state: { newMessage: true },
-          });
         } catch (e) {
-          console.log('Error initializing XMTP client - ', e);
+          console.log('ValidateProposalModal - Error initializing XMTP client: ', e);
+          return;
         }
+        const sellerAddress = ethers.utils.getAddress(proposal.seller?.address);
+        let newMessage = false;
+        providerState?.conversationMessages?.get(sellerAddress)?.length === 0
+          ? (newMessage = true)
+          : (newMessage = false);
+        // Check if conversation exists
+        navigate(`/messaging/${sellerAddress}`, {
+          state: { newMessage },
+        });
       }
     }
   };
