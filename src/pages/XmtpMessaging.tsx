@@ -183,6 +183,7 @@ function XmtpMessaging() {
                   sendNewMessage={sendNewMessage}
                   sendingPending={sendingPending}
                   messageSendingErrorMsg={messageSendingErrorMsg}
+                  peerUserExists={messageSendingErrorMsg !== NON_EXISTING_XMTP_USER_ERROR_MESSAGE}
                 />
               </div>
             )}

@@ -22,7 +22,7 @@ import { useSigner } from 'wagmi';
 function ServiceDetail({ service }: { service: IService }) {
   const { account, user } = useContext(TalentLayerContext);
   const { providerState } = useContext(XmtpContext);
-  const { initPush } = useContext(PushContext);
+  const { initPush, conversationMessages } = useContext(PushContext);
   const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
 
   const serviceDetail = useServiceDetails(service.uri);
@@ -37,18 +37,25 @@ function ServiceDetail({ service }: { service: IService }) {
 
   const handleMessageUser = async (): Promise<void> => {
     if (import.meta.env.VITE_MESSENGING_TECH === 'push') {
-      //TODO handle metamask rejection like xmtp
       console.log('handleMessageUser', initPush);
       if (user && initPush) {
         console.log('handleMessageUser inside');
-        await initPush(user.address);
+        try {
+          await initPush(user.address);
+        } catch (e) {
+          console.log('ServiceDetail - Error initializing Push client: ', e);
+          return;
+        }
 
-        navigate(
-          `/messaging/${ConversationDisplayType.CONVERSATION}/${ethers.utils.getAddress(
-            service.buyer?.address,
-          )}`,
-          { state: { newMessage: true } },
-        );
+        const buyerAddress = ethers.utils.getAddress(service.buyer?.address);
+        let newMessage = false;
+        // Check if conversation exists
+        conversationMessages?.get(buyerAddress)?.length === 0
+          ? (newMessage = true)
+          : (newMessage = false);
+        navigate(`/messaging/${ConversationDisplayType.CONVERSATION}/${buyerAddress}`, {
+          state: { newMessage },
+        });
       }
     }
     if (import.meta.env.VITE_MESSENGING_TECH === 'xmtp') {
@@ -58,7 +65,8 @@ function ServiceDetail({ service }: { service: IService }) {
           try {
             await providerState.initClient(signer);
           } catch (e) {
-            console.log('Error initializing XMTP client - ', e);
+            console.log('ServiceDetail - Error initializing XMTP client: ', e);
+            return;
           }
         }
         const buyerAddress = ethers.utils.getAddress(service.buyer?.address);

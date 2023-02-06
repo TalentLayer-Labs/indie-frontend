@@ -33,7 +33,7 @@ function CreateService() {
           await createUserIfNecessary({ account: user.address });
         }
       } catch (e) {
-        console.error(e);
+        console.error('CreateService - Error initializing Push client :', e);
       }
     }
     if (import.meta.env.VITE_MESSENGING_TECH === 'xmtp') {
@@ -42,7 +42,7 @@ function CreateService() {
           await providerState.initClient(signer);
         }
       } catch (e) {
-        console.error(e);
+        console.error('CreateService - Error initializing XMTP client : ', e);
       }
     }
   };

@@ -7,6 +7,7 @@ interface IMessageComposerProps {
   sendNewMessage: () => void;
   sendingPending: boolean;
   messageSendingErrorMsg: string;
+  peerUserExists: boolean;
 }
 
 const MessageComposer = ({
@@ -15,7 +16,24 @@ const MessageComposer = ({
   sendNewMessage,
   sendingPending,
   messageSendingErrorMsg,
+  peerUserExists,
 }: IMessageComposerProps) => {
+  console.log('peerUserExists', peerUserExists);
+
+  //TODO Disabling button not working yet
+  const renderSendButton = (peerUserExists: boolean, sendingPending: boolean) => {
+    return (
+      !sendingPending && (
+        <button
+          className='bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-full'
+          onClick={sendNewMessage}
+          disabled={!peerUserExists}>
+          Send
+        </button>
+      )
+    );
+  };
+
   return (
     <>
       <div className='flex flex-row space-x-5 py-5'>
@@ -27,13 +45,7 @@ const MessageComposer = ({
           value={messageContent}
         />
         {sendingPending && <Loading />}
-        {!sendingPending && (
-          <button
-            className='bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-full'
-            onClick={sendNewMessage}>
-            Send
-          </button>
-        )}
+        {renderSendButton(peerUserExists, sendingPending)}
       </div>
       {messageSendingErrorMsg && (
         <div>
