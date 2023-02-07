@@ -31,6 +31,13 @@ export type ILensPublication = {
     }[];
   };
   createdAt: string;
+  stats: {
+    totalAmountOfMirrors: number;
+    totalAmountOfCollects: number;
+    totalAmountOfComments: number;
+    totalUpvotes: number;
+    totalDownvotes: number;
+  };
 };
 
 export type ILensMedia = {
