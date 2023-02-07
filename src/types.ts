@@ -4,10 +4,10 @@ export type IUser = {
   id: string;
   handle: string;
   address: string;
-  cid: string;
   withPoh: boolean;
   rating: string;
   numReviews: string;
+  description: IUserDetails;
 };
 
 export type IUserDetails = {
@@ -97,6 +97,7 @@ export enum ProposalStatusEnum {
   Validated = 'Validated',
   Rejected = 'Rejected',
 }
+
 export type IProposalDetails = {
   description: string;
 };

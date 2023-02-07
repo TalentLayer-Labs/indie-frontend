@@ -1,14 +1,14 @@
 import { useContext } from 'react';
 import { NavLink } from 'react-router-dom';
 import TalentLayerContext from '../context/talentLayer';
-import useUserDetails from '../hooks/useUserDetails';
 import { IUser } from '../types';
 import Loading from './Loading';
 import Stars from './Stars';
+import useUserById from '../hooks/useUserById';
 
 function UserDetail({ user }: { user: IUser }) {
   const { user: currentUser } = useContext(TalentLayerContext);
-  const userDetails = user?.id ? useUserDetails(user?.id) : null;
+  const userDescription = user?.id ? useUserById(user?.id)?.description : null;
 
   if (!user?.id) {
     return <Loading />;
@@ -25,7 +25,7 @@ function UserDetail({ user }: { user: IUser }) {
             />
             <div className='flex flex-col'>
               <p className='text-gray-900 font-medium'>{user?.handle}</p>
-              <p className='text-gray-900 text-xs'>{userDetails?.title}</p>
+              <p className='text-gray-900 text-xs'>{userDescription?.title}</p>
             </div>
           </div>
         </div>
@@ -33,10 +33,10 @@ function UserDetail({ user }: { user: IUser }) {
       </div>
       <div className=' border-t border-gray-100 pt-4 w-full'>
         <p className='text-sm text-gray-500 mt-4'>
-          <strong>Skills:</strong> {userDetails?.skills}
+          <strong>Skills:</strong> {userDescription?.skills}
         </p>
         <p className='text-sm text-gray-500 mt-4'>
-          <strong>About:</strong> {userDetails?.about}
+          <strong>About:</strong> {userDescription?.about}
         </p>
       </div>
       {currentUser?.id === user.id && (
