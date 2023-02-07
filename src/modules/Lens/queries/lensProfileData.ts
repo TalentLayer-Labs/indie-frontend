@@ -1,4 +1,4 @@
-import { processLensRequest } from '../../../utils/graphql';
+import { processLensRequest } from '../utils/graphql';
 
 /*
  * @doc: https://api.lens.dev/ & https://docs.lens.xyz/docs/get-default-profile
