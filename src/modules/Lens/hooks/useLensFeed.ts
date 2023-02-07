@@ -10,8 +10,8 @@ const useLensFeed = (userProfileId: string): { lensFeed: IlensFeed | undefined }
       try {
         const response = await getLensFeedData(userProfileId);
 
-        if (response?.data?.data?.publications.items[0]) {
-          setLensFeed(response?.data?.data?.publications.items[0]);
+        if (response?.data?.data?.publications) {
+          setLensFeed(response?.data?.data?.publications);
         }
       } catch (err: any) {
         // eslint-disable-next-line no-console

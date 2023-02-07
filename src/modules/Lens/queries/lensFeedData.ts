@@ -7,7 +7,7 @@ export const getLensFeedData = (userProfileId: string): Promise<any> => {
         request: {
           profileId: "${userProfileId}"
           publicationTypes: [POST]
-          limit: 1
+          limit: 2
         }
       ) {
         items {
