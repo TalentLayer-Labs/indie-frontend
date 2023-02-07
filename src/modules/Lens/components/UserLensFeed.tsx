@@ -4,7 +4,7 @@ import useLensUser from '../hooks/useLensUsers';
 import { readableIpfsUrl } from '../../../utils/ipfs';
 import { formatStringDate } from '../../../utils/dates';
 
-function UserLensFeed({ user }: { user: IUser }) {
+function UserLensFeed({ user }: { user: IUser | null }) {
   let currentUserAddress = user?.address.toString() || '';
 
   // we get Lens user details

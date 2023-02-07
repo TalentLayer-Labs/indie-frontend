@@ -3,8 +3,8 @@ import { IUser } from '../../../types';
 import useLensUser from '../hooks/useLensUsers';
 import { readableIpfsUrl } from '../../../utils/ipfs';
 
-function UserLensProfile({ user }: { user: IUser }) {
-  let currentUserAddress = user.address.toString() || '';
+function UserLensProfile({ user }: { user: IUser | null }) {
+  let currentUserAddress = user?.address.toString() || '';
 
   // we get Lens user details
   const { lensUser } = useLensUser(currentUserAddress);
