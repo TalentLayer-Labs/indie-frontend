@@ -9,7 +9,6 @@ interface IProps {
 
 function UserLensFeed({ lensUser }: IProps) {
   const { lensFeed } = useLensFeed(lensUser.id);
-  console.log('lensFeed', lensFeed);
 
   if (!lensFeed) {
     return null;
@@ -26,7 +25,7 @@ function UserLensFeed({ lensUser }: IProps) {
           {item.metadata.media[0] && (
             <div>
               <img
-                className='w-40 mx-auto '
+                className='w-36 mx-auto '
                 src={buildMediaUrl(item.metadata.media[0].original.url)}
                 alt=''></img>
             </div>
@@ -45,7 +44,7 @@ function UserLensFeed({ lensUser }: IProps) {
                   target='_blank'
                   className='font-medium text-blue-400 '
                   href={`https://lenster.xyz/posts/${item.id}`}>
-                  Read it on lenster
+                  Read it on Lenster
                 </a>
               </div>
             </div>

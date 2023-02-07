@@ -35,7 +35,7 @@ function UserLensProfile({ lensUser }: IProps) {
                   Follow me
                 </a>
               </div>
-              <div className='flex p-2'>
+              <div className='flex p-3'>
                 <div className='w-1/2 text-center'>
                   <span className='font-bold'>{lensUser?.stats.totalFollowers}</span> Followers
                 </div>
