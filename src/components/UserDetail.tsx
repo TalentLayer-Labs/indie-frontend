@@ -8,9 +8,9 @@ import Stars from './Stars';
 
 function UserDetail({ user }: { user: IUser }) {
   const { user: currentUser } = useContext(TalentLayerContext);
-  const userDetails = useUserDetails(user?.cid);
+  const userDetails = user?.id ? useUserDetails(user?.id) : null;
 
-  if (user.cid && !userDetails) {
+  if (!user?.id) {
     return <Loading />;
   }
 
@@ -24,7 +24,8 @@ function UserDetail({ user }: { user: IUser }) {
               className='w-10 mr-4 rounded-full'
             />
             <div className='flex flex-col'>
-              <p className='text-gray-900 font-medium'>{userDetails?.title || '-'}</p>
+              <p className='text-gray-900 font-medium'>{user?.handle}</p>
+              <p className='text-gray-900 text-xs'>{userDetails?.title}</p>
             </div>
           </div>
         </div>

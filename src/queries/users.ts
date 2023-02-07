@@ -6,7 +6,6 @@ export const getUsers = (platformId?: string): Promise<any> => {
       users(orderBy: rating, orderDirection: desc, where : { platform: "${platformId}" }) {
         id
         address
-        cid
         handle
         withPoh
         numReviews
@@ -23,11 +22,22 @@ export const getUserById = (id: string): Promise<any> => {
       user(id: "${id}") {
         id
         address
-        cid
         handle
         withPoh
         rating
         numReviews
+        updatedAt
+        createdAt
+        description {
+          about
+          country
+          headline
+          id
+          picture
+          title
+          timezone
+          skills_raw
+        }
       }
     }
     `;

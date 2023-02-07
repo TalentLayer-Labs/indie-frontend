@@ -4,10 +4,15 @@ import TalentLayerContext from '../context/talentLayer';
 import useUserDetails from '../hooks/useUserDetails';
 import { IUser } from '../types';
 import Stars from './Stars';
+import Loading from './Loading';
 
 function UserItem({ user }: { user: IUser }) {
   const { user: currentUser } = useContext(TalentLayerContext);
-  const userDetails = useUserDetails(user?.cid);
+  const userDetails = user?.id ? useUserDetails(user?.id) : null;
+
+  if (!user?.id) {
+    return <Loading />;
+  }
 
   return (
     <div className='flex flex-row gap-2 rounded-xl p-4 border border-gray-200'>
