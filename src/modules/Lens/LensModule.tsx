@@ -3,7 +3,7 @@ import UserLensProfile from '../../modules/Lens/components/UserLensProfile';
 import useLensUser from './hooks/useLensUsers';
 
 interface IProps {
-  address: `0x${string}`;
+  address: string;
 }
 
 function LensModule({ address }: IProps) {
