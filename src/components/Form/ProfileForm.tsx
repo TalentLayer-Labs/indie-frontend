@@ -27,10 +27,10 @@ function ProfileForm() {
   const { open: openConnectModal } = useWeb3Modal();
   const { user } = useContext(TalentLayerContext);
   const provider = useProvider({ chainId: import.meta.env.VITE_NETWORK_ID });
-  const userDetails = useUserDetails(user?.cid);
+  const userDetails = user?.id ? useUserDetails(user?.id) : null;
   const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
 
-  if (user?.cid && !userDetails) {
+  if (!user?.id) {
     return <Loading />;
   }
 

@@ -1,26 +1,28 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { IUserDetails } from '../types';
+import { getUserById } from '../queries/users';
 
-const useUserDetails = (cid: string | undefined): IUserDetails | null => {
+const useUserDetails = (userId: string | undefined): IUserDetails | null => {
   const [serviceDetails, setUserDetails] = useState<IUserDetails | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const fullUserDetailsUri = `${import.meta.env.VITE_IPFS_BASE_URL}${cid}`;
-
-        const response = await fetch(fullUserDetailsUri);
-        const data: IUserDetails = await response.json();
-        if (typeof data === 'object') {
-          setUserDetails(data);
+      if (userId) {
+        try {
+          const response = await getUserById(userId);
+          if (response?.data?.data?.user?.description) {
+            setUserDetails(response?.data?.data?.user?.description);
+          }
+        } catch (err: any) {
+          // eslint-disable-next-line no-console
+          console.error(err);
         }
-      } catch (err: any) {
-        // eslint-disable-next-line no-console
-        console.error(err);
+      } else {
+        setUserDetails(null);
       }
     };
     fetchData();
-  }, [cid]);
+  }, [userId]);
 
   return serviceDetails;
 };
