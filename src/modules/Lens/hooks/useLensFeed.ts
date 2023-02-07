@@ -2,12 +2,15 @@ import { useState, useEffect } from 'react';
 import { getLensFeedData } from '../queries/lensFeedData';
 import { IlensFeed } from '../../../types';
 
-const useLensFeed = (userProfileId: string): { lensFeed: IlensFeed | undefined } => {
+const useLensFeed = (userProfileId: string | undefined): { lensFeed: IlensFeed | undefined } => {
   const [lensFeed, setLensFeed] = useState();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        if (!userProfileId) {
+          return;
+        }
         const response = await getLensFeedData(userProfileId);
 
         if (response?.data?.data?.publications) {

@@ -1,16 +1,20 @@
-import { useContext } from 'react';
-import { IUser } from '../../../types';
-import useLensUser from '../hooks/useLensUsers';
+import Loading from '../../../components/Loading';
 import { readableIpfsUrl } from '../../../utils/ipfs';
+import useLensUser from '../hooks/useLensUsers';
+interface IProps {
+  address: `0x${string}`;
+}
 
-function UserLensProfile({ user }: { user: IUser | null }) {
-  let currentUserAddress = user?.address.toString() || '';
-
+function UserLensProfile({ address }: IProps) {
   // we get Lens user details
-  const { lensUser } = useLensUser(currentUserAddress);
+  const { lensUser } = useLensUser(address);
+
+  if (!lensUser?.id) {
+    return <Loading />;
+  }
 
   // Lens profile picture ipfs format
-  let lensProfileipfs = lensUser?.picture.original.url;
+  const lensProfileipfs = lensUser?.picture.original.url;
   const lensUserProfilPics = readableIpfsUrl(lensProfileipfs);
 
   return (

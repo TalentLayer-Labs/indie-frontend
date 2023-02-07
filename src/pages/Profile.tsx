@@ -1,11 +1,9 @@
-import { log } from 'console';
 import { useParams } from 'react-router-dom';
 import Back from '../components/Back';
 import Loading from '../components/Loading';
 import UserDetail from '../components/UserDetail';
 import UserServices from '../components/UserServices';
 import useUserById from '../hooks/useUserById';
-import useLensUser from '../modules/Lens/hooks/useLensUsers';
 import LensModule from '../modules/Lens/LensModule';
 
 function Profile() {
@@ -35,7 +33,7 @@ function Profile() {
               <UserServices user={user} type='seller' />
             </div>
             <div className='mb-6'>
-              <LensModule />
+              <LensModule address={user.address} />
             </div>
           </div>
         </>
