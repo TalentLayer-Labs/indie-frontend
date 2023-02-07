@@ -39,6 +39,7 @@ export type IlensUser = {
 };
 
 export type IlensFeed = {
+  items: any;
   metadata: {
     name: string;
     description: string;
