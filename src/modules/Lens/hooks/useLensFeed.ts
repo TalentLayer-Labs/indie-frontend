@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getLensFeedData } from '../queries/lensFeedData';
-import { IlensFeed } from '../../../types';
+import { IlensFeed } from '../utils/types';
 
 const useLensFeed = (userProfileId: string | undefined): { lensFeed: IlensFeed | undefined } => {
   const [lensFeed, setLensFeed] = useState();
@@ -13,8 +13,8 @@ const useLensFeed = (userProfileId: string | undefined): { lensFeed: IlensFeed |
         }
         const response = await getLensFeedData(userProfileId);
 
-        if (response?.data?.data?.publications) {
-          setLensFeed(response?.data?.data?.publications);
+        if (response?.data?.data?.publications.items.length > 0) {
+          setLensFeed(response?.data?.data?.publications.items);
         }
       } catch (err: any) {
         // eslint-disable-next-line no-console
