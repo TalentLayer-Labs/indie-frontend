@@ -75,13 +75,14 @@ export type IReview = {
   service: IService;
   to: IUser;
   uri: string;
+  rating: number;
+  createdAt: string;
   description: IReviewDetails;
 };
 
 export type IReviewDetails = {
   id: string;
   content: string;
-  rating: string;
 };
 
 export enum ServiceStatusEnum {
