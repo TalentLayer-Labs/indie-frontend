@@ -1,31 +1,19 @@
-import Loading from '../../../components/Loading';
 import { formatStringDate } from '../../../utils/dates';
 import useLensFeed from '../hooks/useLensFeed';
-import useLensUser from '../hooks/useLensUsers';
 import { buildMediaUrl } from '../utils/ipfs';
-import { ILensPublication } from '../utils/types';
+import { ILensPublication, IlensUser } from '../utils/types';
 
 interface IProps {
-  address: `0x${string}`;
+  lensUser: IlensUser;
 }
 
-function UserLensFeed({ address }: IProps) {
-  // we get Lens user details
-  const { lensUser } = useLensUser(address);
-
-  // we get Lens user details
-  const { lensFeed } = useLensFeed(lensUser?.id);
-  console.log('lensFeed', lensFeed);
-
-  if (!lensUser?.id) {
-    return <Loading />;
-  }
+function UserLensFeed({ lensUser }: IProps) {
+  const { lensFeed } = useLensFeed(lensUser.id);
 
   if (!lensFeed) {
     return null;
   }
 
-  // We format the Lens post Date
   return (
     <>
       {lensFeed.map((item: ILensPublication, index: number) => (

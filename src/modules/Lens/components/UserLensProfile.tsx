@@ -1,20 +1,10 @@
-import Loading from '../../../components/Loading';
-import useLensUser from '../hooks/useLensUsers';
 import { buildMediaUrl } from '../utils/ipfs';
+import { IlensUser } from '../utils/types';
 interface IProps {
-  address: `0x${string}`;
+  lensUser: IlensUser;
 }
 
-function UserLensProfile({ address }: IProps) {
-  // we get Lens user details
-  const { lensUser } = useLensUser(address);
-
-  if (!lensUser?.id) {
-    return <Loading />;
-  }
-
-  console.log({ lensUser });
-
+function UserLensProfile({ lensUser }: IProps) {
   return (
     <>
       {lensUser?.id && (
