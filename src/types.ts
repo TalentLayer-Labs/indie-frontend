@@ -21,6 +21,7 @@ export type IlensUser = {
   id: string;
   name: string;
   bio: string;
+  handle: string;
   picture: {
     original: {
       url: string;
