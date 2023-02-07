@@ -50,11 +50,22 @@ export const getUserByAddress = (address: string): Promise<any> => {
       users(where: {address: "${address.toLocaleLowerCase()}"}, first: 1) {
         id
         address
-        cid
         handle
         withPoh
         rating
         numReviews
+        updatedAt
+        createdAt
+        description {
+          about
+          country
+          headline
+          id
+          picture
+          title
+          timezone
+          skills_raw
+        }
       }
     }
     `;
