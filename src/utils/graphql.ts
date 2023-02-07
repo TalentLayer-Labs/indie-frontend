@@ -10,12 +10,3 @@ export const processRequest = async (query: string): Promise<any> => {
     return null;
   }
 };
-
-export const processLensRequest = async (query: string): Promise<any> => {
-  try {
-    return await axios.post(import.meta.env.VITE_LENS_URL, { query });
-  } catch (err) {
-    console.error(err);
-    return null;
-  }
-};
