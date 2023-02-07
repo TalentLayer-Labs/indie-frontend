@@ -13,6 +13,8 @@ function UserLensProfile({ address }: IProps) {
     return <Loading />;
   }
 
+  console.log({ lensUser });
+
   // Lens profile picture ipfs format
   const lensProfileipfs = lensUser?.picture.original.url;
   const lensUserProfilPics = readableIpfsUrl(lensProfileipfs);
@@ -38,9 +40,12 @@ function UserLensProfile({ address }: IProps) {
                 </p>
               </div>
               <div className='p-4 text-center'>
-                <button className='bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 border border-green-700 rounded'>
+                <a
+                  href={`https://lenster.xyz/u/${lensUser.handle}`}
+                  target='_blank'
+                  className='bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 border border-green-700 rounded'>
                   Follow me
-                </button>
+                </a>
               </div>
               <div className='flex p-2'>
                 <div className='w-1/2 text-center'>
