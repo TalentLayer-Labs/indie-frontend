@@ -32,6 +32,13 @@ export const getAllProposalsbyServiceId = (id: string): Promise<any> => {
           rating
           numReviews
         }
+        description {
+          title
+          id
+          about
+          expectedHours
+          startDate
+        }
       }
     }
     `;
@@ -65,6 +72,13 @@ export const getAllProposalsByUser = (id: string): Promise<any> => {
               id
               handle
             }
+          }
+          description {
+            title
+            id
+            about
+            expectedHours
+            startDate
           }
         }
       }

@@ -100,7 +100,12 @@ export enum ProposalStatusEnum {
 }
 
 export type IProposalDetails = {
-  description: string;
+  id: string;
+  title: string;
+  about: string;
+  startDate: string;
+  expectedHours: string;
+  service: IService;
 };
 
 export type IProposal = {
@@ -113,6 +118,7 @@ export type IProposal = {
   service: IService;
   createdAt: string;
   updatedAt: string;
+  description: IProposalDetails;
 };
 
 export type IFees = {

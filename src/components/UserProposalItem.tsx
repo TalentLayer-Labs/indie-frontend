@@ -1,7 +1,6 @@
 import { useContext } from 'react';
 import { NavLink } from 'react-router-dom';
 import TalentLayerContext from '../context/talentLayer';
-import useProposalDetails from '../hooks/useProposalDetails';
 import useServiceDetails from '../hooks/useServiceDetails';
 import { renderTokenAmount } from '../utils/conversion';
 import { IProposal, ProposalStatusEnum } from '../types';
@@ -9,10 +8,9 @@ import { formatDate } from '../utils/dates';
 
 function UserProposalItem({ proposal }: { proposal: IProposal }) {
   const { user } = useContext(TalentLayerContext);
-  const proposalDetail = useProposalDetails(proposal.cid);
   const serviceDetail = useServiceDetails(proposal.service.cid);
 
-  if (!proposalDetail || !serviceDetail) {
+  if (!serviceDetail) {
     return null;
   }
 
@@ -35,7 +33,8 @@ function UserProposalItem({ proposal }: { proposal: IProposal }) {
               </p>
             </div>
 
-            <span className='absolute right-0 inline-flex items-center rounded-full bg-indigo-100 px-2.5 py-1 text-xs font-medium text-indigo-800'>
+            <span
+              className='absolute right-0 inline-flex items-center rounded-full bg-indigo-100 px-2.5 py-1 text-xs font-medium text-indigo-800'>
               {proposal.status}
             </span>
           </div>
@@ -46,7 +45,7 @@ function UserProposalItem({ proposal }: { proposal: IProposal }) {
               {formatDate(Number(proposal.createdAt) * 1000)}
             </p>
             <p className='text-sm text-gray-500 mt-4'>
-              <strong>Message:</strong> {proposalDetail.description}
+              <strong>Message:</strong> {proposal.description.title}
             </p>
           </div>
         </div>
