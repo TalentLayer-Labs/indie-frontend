@@ -43,17 +43,23 @@ export type IService = {
   updatedAt: string;
   transaction: ITransaction;
   proposals: IProposal[];
-  validatedProposal: IProposal[];
+  description: IServiceDetails;
+};
+
+export type IKeyword = {
+  id: string;
 };
 
 export type IServiceDetails = {
   title: string;
   about: string;
-  keywords: string;
-  recipient: string;
-  role: string;
+  keywords: IKeyword[];
   rateAmount: string;
   rateToken: string;
+  id: string;
+  keywords_raw: string;
+  startDate: string;
+  expectedEndDate: string;
 };
 
 export type IServiceDetailsBuyer = {

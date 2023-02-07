@@ -1,16 +1,16 @@
 import { useContext } from 'react';
 import { NavLink } from 'react-router-dom';
 import TalentLayerContext from '../context/talentLayer';
-import useServiceDetails from '../hooks/useServiceDetails';
 import { renderTokenAmount } from '../utils/conversion';
 import { IProposal, ProposalStatusEnum } from '../types';
 import { formatDate } from '../utils/dates';
+import useServiceById from '../hooks/useServiceById';
 
 function UserProposalItem({ proposal }: { proposal: IProposal }) {
   const { user } = useContext(TalentLayerContext);
-  const serviceDetail = useServiceDetails(proposal.service.cid);
+  const service = useServiceById(proposal.service.id);
 
-  if (!serviceDetail) {
+  if (!service) {
     return null;
   }
 
@@ -26,7 +26,7 @@ function UserProposalItem({ proposal }: { proposal: IProposal }) {
               className='w-10 mr-4 rounded-full'
             />
             <div className='flex flex-col'>
-              <p className='text-gray-900 font-medium'>{serviceDetail.title}</p>
+              <p className='text-gray-900 font-medium'>{service.description.title}</p>
               <p className='text-xs text-gray-500'>
                 Job created by {proposal.service.buyer.handle} the{' '}
                 {formatDate(Number(proposal.service.createdAt) * 1000)}
