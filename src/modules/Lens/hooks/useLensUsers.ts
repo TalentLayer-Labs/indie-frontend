@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getLensProfileInfo } from '../queries/lensProfileData';
-import { IlensUser } from '../types';
+import { IlensUser } from '../../../types';
 
 const useLensUser = (userAddress: string): { lensUser: IlensUser | undefined } => {
   const [lensUser, setLensUser] = useState();

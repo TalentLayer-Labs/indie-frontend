@@ -1,4 +1,4 @@
-import { processLensRequest } from '../utils/graphql';
+import { processLensRequest } from '../../../utils/graphql';
 
 export const getLensProfileInfo = (userAddress: string): Promise<any> => {
   const query = `

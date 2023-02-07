@@ -1,14 +1,10 @@
 import { useContext } from 'react';
-import TalentLayerContext from '../../context/talentLayer';
-import useUserById from '../../hooks/useUserById';
-import { IUser } from '../../types';
-import useLensUser from '../../hooks/useLensUsers';
-import { readableIpfsUrl } from '../../utils/ipfs';
+import { IUser } from '../../../types';
+import useLensUser from '../hooks/useLensUsers';
+import { readableIpfsUrl } from '../../../utils/ipfs';
 
-function LensProfile({ user }: { user: IUser }) {
-  const { user: currentUser } = useContext(TalentLayerContext);
-  let currentUserAddress = currentUser?.address.toString() || '';
-  const userById = useUserById(user?.id);
+function UserLensProfile({ user }: { user: IUser }) {
+  let currentUserAddress = user.address.toString() || '';
 
   // we get Lens user details
   const { lensUser } = useLensUser(currentUserAddress);
@@ -21,23 +17,28 @@ function LensProfile({ user }: { user: IUser }) {
     <>
       {lensUser?.id && (
         <div>
-          <h2 className='mb-6 pb-4 border-b border-gray-gray-200 text-gray-900 font-medium'>
-            Lens Profile
-          </h2>
-
           <div className='flex '>
             <div className='card bg-white shadow-xl hover:shadow border border-gray-200 rounded-xl'>
               <img
-                className='w-32 mx-auto rounded-full border-8 border-white'
+                className='w-32 pt-2  mx-auto rounded-full border-8 border-white'
                 src={lensUserProfilPics}
                 alt=''></img>
-              <div className='text-center text-gray-900 font-medium'>{lensUser?.name}</div>
-              <div className='text-center mt-2 font-light text-sm'>id : {lensUser?.id}</div>
-              <span id='lens-follow-small' data-handle={'nader.lens'} />
-              <div className='px-6 text-center mt-2 font-light text-sm'>
-                <p>{lensUser?.bio}</p>
+              <div className='text-center text-gray-900 text-lg font-medium'>{lensUser?.name}</div>
+              <div className='text-center mt-2 text-green-500 font-medium text-base'>
+                id : {lensUser?.id}
               </div>
-              <div className='flex p-4'>
+              <span id='lens-follow-small' data-handle={'nader.lens'} />
+              <div className='px-2 text-center mt-2 font-light text-sm'>
+                <p>
+                  <strong>{lensUser?.bio} </strong>
+                </p>
+              </div>
+              <div className='p-4 text-center'>
+                <button className='bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 border border-green-700 rounded'>
+                  Follow me
+                </button>
+              </div>
+              <div className='flex p-2'>
                 <div className='w-1/2 text-center'>
                   <span className='font-bold'>{lensUser?.stats.totalFollowers}</span> Followers
                 </div>
@@ -53,4 +54,4 @@ function LensProfile({ user }: { user: IUser }) {
     </>
   );
 }
-export default LensProfile;
+export default UserLensProfile;
