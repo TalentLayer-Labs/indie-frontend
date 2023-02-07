@@ -13,7 +13,7 @@ function LensModule({ address }: IProps) {
       </h2>
       <div className='flex'>
         <>
-          <div className='md:w-1/3 mb-6'>
+          <div className='md:w-1/2 xl:w-1/3 mb-6'>
             <UserLensProfile address={address} />
           </div>
           <div className='md:w-2/3 mb-6'>
