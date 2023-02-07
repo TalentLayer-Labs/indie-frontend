@@ -13,6 +13,7 @@ export const getLensFeedData = (userProfileId: string): Promise<any> => {
         items {
           __typename
           ... on Post {
+            id
             metadata {
               name
               description
