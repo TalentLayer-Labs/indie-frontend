@@ -1,6 +1,5 @@
 import { useContext } from 'react';
 import TalentLayerContext from '../context/talentLayer';
-import useProposalDetails from '../hooks/useProposalDetails';
 import useServiceDetails from '../hooks/useServiceDetails';
 import { renderTokenAmount } from '../utils/conversion';
 import { IProposal, ProposalStatusEnum } from '../types';
@@ -9,10 +8,9 @@ import ValidateProposalModal from './Modal/ValidateProposalModal';
 
 function ProposalItem({ proposal }: { proposal: IProposal }) {
   const { user, account } = useContext(TalentLayerContext);
-  const proposalDetail = useProposalDetails(proposal.cid);
   const serviceDetail = useServiceDetails(proposal.service.cid);
 
-  if (!proposalDetail || !serviceDetail) {
+  if (!serviceDetail) {
     return null;
   }
 
@@ -36,14 +34,15 @@ function ProposalItem({ proposal }: { proposal: IProposal }) {
               </p>
             </div>
 
-            <span className='absolute right-0 inline-flex items-center rounded-full bg-indigo-100 px-2.5 py-1 text-xs font-medium text-indigo-800'>
+            <span
+              className='absolute right-0 inline-flex items-center rounded-full bg-indigo-100 px-2.5 py-1 text-xs font-medium text-indigo-800'>
               {proposal.status}
             </span>
           </div>
 
           <div className=' border-t border-gray-100 w-full'>
             <p className='text-sm text-gray-500 mt-4'>
-              <strong>Message:</strong> {proposalDetail.description}
+              <strong>Message:</strong> {proposal.description.about}
             </p>
           </div>
         </div>
