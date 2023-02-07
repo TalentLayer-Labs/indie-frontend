@@ -4,7 +4,6 @@ import TalentLayerContext from '../context/talentLayer';
 import usePaymentsByService from '../hooks/usePaymentsByService';
 import useProposalsByService from '../hooks/useProposalsByService';
 import useReviewsByService from '../hooks/useReviewsByService';
-import useServiceDetails from '../hooks/useServiceDetails';
 import { renderTokenAmount } from '../utils/conversion';
 import { IService, ProposalStatusEnum, ServiceStatusEnum } from '../types';
 import { formatDate } from '../utils/dates';
@@ -17,14 +16,9 @@ import Stars from './Stars';
 
 function ServiceDetail({ service }: { service: IService }) {
   const { account, user } = useContext(TalentLayerContext);
-  const serviceDetail = useServiceDetails(service.cid);
   const { reviews } = useReviewsByService(service.id);
   const proposals = useProposalsByService(service.id);
   const payments = usePaymentsByService(service.id);
-
-  if (!serviceDetail) {
-    return null;
-  }
 
   const isBuyer = user?.id === service.buyer.id;
   const isSeller = user?.id === service.seller?.id;
@@ -46,7 +40,7 @@ function ServiceDetail({ service }: { service: IService }) {
                 className='w-10 mr-4 rounded-full'
               />
               <div className='flex flex-col'>
-                <p className='text-gray-900 font-medium'>{serviceDetail.title}</p>
+                <p className='text-gray-900 font-medium'>{service.description.title}</p>
                 <p className='text-xs text-gray-500'>
                   created by {isBuyer ? 'You' : service.buyer.handle} the{' '}
                   {formatDate(Number(service.createdAt) * 1000)}
@@ -73,15 +67,15 @@ function ServiceDetail({ service }: { service: IService }) {
                 />
               </div>
               <p className='text-sm text-gray-500 mt-4'>
-                <strong>About:</strong> {serviceDetail.about}
+                <strong>About:</strong> {service.description.about}
               </p>
               <p className='text-sm text-gray-500 mt-4'>
                 <strong>Budget:</strong>{' '}
-                {renderTokenAmount(serviceDetail.rateToken, serviceDetail.rateAmount)}
+                {renderTokenAmount(service.description.rateToken, service.description.rateAmount)}
               </p>
               <p className='text-sm text-gray-500 mt-4'>
                 <strong>Keywords:</strong>{' '}
-                {serviceDetail.keywords.split(',').map((keyword, i) => (
+                {service.description.keywords_raw.split(',').map((keyword, i) => (
                   <span
                     key={i}
                     className='inline-block bg-gray-100 rounded-full px-2 py-1 text-xs font-semibold text-gray-700 mr-2 mb-2'>

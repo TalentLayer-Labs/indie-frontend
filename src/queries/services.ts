@@ -32,6 +32,19 @@ export const getServices = (
         proposals {
           id
         }
+        description {
+          id
+          title
+          about
+          startDate
+          expectedEndDate
+          rateAmount
+          rateToken
+          keywords_raw
+          keywords {
+            id
+          }
+        }
       }
     }`;
   return processRequest(query);
@@ -70,6 +83,19 @@ export const getServiceById = (id: string): Promise<any> => {
             symbol
           },
           rateAmount,
+        }
+        description {
+          id
+          title
+          about
+          startDate
+          expectedEndDate
+          rateAmount
+          rateToken
+          keywords_raw
+          keywords {
+            id
+          }
         }
       }
     }
