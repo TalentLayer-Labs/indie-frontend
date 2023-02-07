@@ -2,13 +2,13 @@ import { useState, useEffect } from 'react';
 import { getLensProfileInfo } from '../queries/lensProfileData';
 import { IlensUser } from '../../../types';
 
-const useLensUser = (userAddress: string): { lensUser: IlensUser | undefined } => {
+const useLensUser = (address: string): { lensUser: IlensUser | undefined } => {
   const [lensUser, setLensUser] = useState();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await getLensProfileInfo(userAddress);
+        const response = await getLensProfileInfo(address);
 
         if (response?.data?.data?.defaultProfile) {
           setLensUser(response.data.data.defaultProfile);
@@ -19,7 +19,7 @@ const useLensUser = (userAddress: string): { lensUser: IlensUser | undefined } =
       }
     };
     fetchData();
-  }, []);
+  }, [address]);
 
   return { lensUser };
 };

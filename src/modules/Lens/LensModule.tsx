@@ -1,14 +1,11 @@
-import { useParams } from 'react-router-dom';
-import Loading from '../../components/Loading';
-import useUserById from '../../hooks/useUserById';
-import UserLensProfile from '../../modules/Lens/components/UserLensProfile';
 import UserLensFeed from '../../modules/Lens/components/UserLensFeed';
-import useLensUser from './hooks/useLensUsers';
+import UserLensProfile from '../../modules/Lens/components/UserLensProfile';
 
-function Profile() {
-  const { id } = useParams<{ id: string }>();
-  const user = useUserById(id || '1');
+interface IProps {
+  address: `0x${string}`;
+}
 
+function LensModule({ address }: IProps) {
   return (
     <div>
       <h2 className='mb-6 pb-4 border-b border-gray-gray-200 text-gray-900 font-medium'>
@@ -17,10 +14,10 @@ function Profile() {
       <div className='flex'>
         <>
           <div className='md:w-1/3 mb-6'>
-            <UserLensProfile user={user} />
+            <UserLensProfile address={address} />
           </div>
           <div className='md:w-2/3 mb-6'>
-            <UserLensFeed user={user} />
+            <UserLensFeed address={address} />
           </div>
         </>
       </div>
@@ -28,4 +25,4 @@ function Profile() {
   );
 }
 
-export default Profile;
+export default LensModule;

@@ -1,18 +1,24 @@
-import { IUser } from '../../../types';
+import Loading from '../../../components/Loading';
+import { formatStringDate } from '../../../utils/dates';
+import { readableIpfsUrl } from '../../../utils/ipfs';
 import useLensFeed from '../hooks/useLensFeed';
 import useLensUser from '../hooks/useLensUsers';
-import { readableIpfsUrl } from '../../../utils/ipfs';
-import { formatStringDate } from '../../../utils/dates';
 
-function UserLensFeed({ user }: { user: IUser | null }) {
-  let currentUserAddress = user?.address.toString() || '';
+interface IProps {
+  address: `0x${string}`;
+}
+
+function UserLensFeed({ address }: IProps) {
+  // we get Lens user details
+  const { lensUser } = useLensUser(address);
 
   // we get Lens user details
-  const { lensUser } = useLensUser(currentUserAddress);
-
-  // we get Lens user details
-  const { lensFeed } = useLensFeed(lensUser?.id || '');
+  const { lensFeed } = useLensFeed(lensUser?.id);
   console.log('lensFeed', lensFeed);
+
+  if (!lensUser?.id) {
+    return <Loading />;
+  }
 
   // We format the Lens post Date
   const readableDate = formatStringDate(lensFeed?.createdAt || '');
@@ -34,18 +40,11 @@ function UserLensFeed({ user }: { user: IUser | null }) {
             )}
           </div>
 
-          {lensFeed?.metadata.media.original ? (
+          {lensFeed?.metadata.media.original && (
             <div>
               <img
                 className='w-32 mx-auto rounded-full border-8 border-white'
                 src={readableIpfsUrl(lensFeed?.metadata.media.original.url)}
-                alt=''></img>
-            </div>
-          ) : (
-            <div>
-              <img
-                className='w-32 mx-auto  border-8 border-white'
-                src={`/default-avatar-${Number(user?.id ? user.id : '1') % 11}.jpeg`}
                 alt=''></img>
             </div>
           )}
