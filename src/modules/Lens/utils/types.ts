@@ -18,6 +18,7 @@ export type IlensUser = {
 export type IlensFeed = ILensPublication[];
 
 export type ILensPublication = {
+  id: any;
   metadata: {
     name: string;
     description: string;
