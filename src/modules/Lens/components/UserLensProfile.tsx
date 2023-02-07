@@ -1,6 +1,6 @@
 import Loading from '../../../components/Loading';
-import { readableIpfsUrl } from '../../../utils/ipfs';
 import useLensUser from '../hooks/useLensUsers';
+import { buildMediaUrl } from '../utils/ipfs';
 interface IProps {
   address: `0x${string}`;
 }
@@ -15,20 +15,18 @@ function UserLensProfile({ address }: IProps) {
 
   console.log({ lensUser });
 
-  // Lens profile picture ipfs format
-  const lensProfileipfs = lensUser?.picture.original.url;
-  const lensUserProfilPics = readableIpfsUrl(lensProfileipfs);
-
   return (
     <>
       {lensUser?.id && (
         <div>
           <div className='flex '>
             <div className='card bg-white shadow-xl hover:shadow border border-gray-200 rounded-xl'>
-              <img
-                className='w-32 pt-2  mx-auto rounded-full border-8 border-white'
-                src={lensUserProfilPics}
-                alt=''></img>
+              {lensUser?.picture.original.url && (
+                <img
+                  className='w-32 pt-2  mx-auto rounded-full border-8 border-white'
+                  src={buildMediaUrl(lensUser?.picture.original.url)}
+                  alt=''></img>
+              )}
               <div className='text-center text-gray-900 text-lg font-medium'>{lensUser?.name}</div>
               <div className='text-center mt-2 text-green-500 font-medium text-base'>
                 id : {lensUser?.id}
