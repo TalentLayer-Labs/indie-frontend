@@ -26,7 +26,7 @@ function UserLensFeed({ lensUser }: IProps) {
           {item.metadata.media[0] && (
             <div>
               <img
-                className='w-32 mx-auto '
+                className='w-40 mx-auto '
                 src={buildMediaUrl(item.metadata.media[0].original.url)}
                 alt=''></img>
             </div>
