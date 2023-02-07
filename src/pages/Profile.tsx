@@ -1,11 +1,12 @@
+import { log } from 'console';
 import { useParams } from 'react-router-dom';
 import Back from '../components/Back';
 import Loading from '../components/Loading';
 import UserDetail from '../components/UserDetail';
 import UserServices from '../components/UserServices';
 import useUserById from '../hooks/useUserById';
-import LensProfile from '../components/Social/LensProfil';
-import LensFeed from '../components/Social/LensFeed';
+import useLensUser from '../modules/Lens/hooks/useLensUsers';
+import LensModule from '../modules/Lens/LensModule';
 
 function Profile() {
   const { id } = useParams<{ id: string }>();
@@ -33,13 +34,8 @@ function Profile() {
             <div className='mb-6'>
               <UserServices user={user} type='seller' />
             </div>
-            <div className='flex items-end flex-col md:flex-row'>
-              <div className='md:w-1/2 mb-6'>
-                <LensProfile user={user} />
-              </div>
-              <div className='md:w-1/2 mb-6'>
-                <LensFeed user={user} />
-              </div>
+            <div className='mb-6'>
+              <LensModule />
             </div>
           </div>
         </>
