@@ -57,11 +57,11 @@ const goerli: Config = {
 const fuji: Config = {
   networkId: NetworkEnum.FUJI,
   contracts: {
-    talentLayerId: '0xD1B87CCe7f9FA272c6643Fa89085F135A2AbB234',
-    serviceRegistry: '0x9Af3080e73FB1054896e3799a786F0063965bA46',
-    talentLayerReview: '0xc9c87d5b85fd88d375000f9e3e26195690934F50',
-    talentLayerEscrow: '0x754278520467fAdBB1D0230E082E436E70505EE2',
-    talentLayerPlatformId: '0xC30859CFa06D0cB9D66837feBB36a856BF78865E',
+    talentLayerId: '0x9a76eA2C056B6Bee5A1179BBece77D28FceE48C4',
+    serviceRegistry: '0x9EA2678d5A69CEDEc52ecafA367659b1d2Ff7824',
+    talentLayerReview: '0xD8c4fD1D8Dd2f3a6E4d26BeB167e73D9E28db7F0',
+    talentLayerEscrow: '0x8754a129D3F53222dd94Ce45749134c15C9Ed119',
+    talentLayerPlatformId: '0x8799479a39b6e563969126328e2323cbA01e8742',
   },
   escrowConfig: {
     adminFee: '0',
