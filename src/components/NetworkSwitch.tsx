@@ -52,6 +52,7 @@ function NetworkSwitch() {
           <div className='py-1'>
             <Menu.Item key={import.meta.env.VITE_NETWORK_ID}>
               <NetworkLink
+                key={import.meta.env.VITE_NETWORK_ID}
                 chaindId={import.meta.env.VITE_NETWORK_ID}
                 chainName={chainIdToName(parseInt(import.meta.env.VITE_NETWORK_ID))}
               />
