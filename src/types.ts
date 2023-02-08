@@ -1,4 +1,3 @@
-import { ethers } from 'ethers';
 import { Connector } from 'wagmi';
 
 export type IUser = {

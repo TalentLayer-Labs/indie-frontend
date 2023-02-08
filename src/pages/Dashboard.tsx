@@ -6,7 +6,6 @@ import UserPayments from '../components/UserPayments';
 import UserProposals from '../components/UserProposals';
 import UserServices from '../components/UserServices';
 import TalentLayerContext from '../context/talentLayer';
-import useUserById from '../hooks/useUserById';
 
 function Dashboard() {
   const { account, user } = useContext(TalentLayerContext);
