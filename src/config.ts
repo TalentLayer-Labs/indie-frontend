@@ -3,6 +3,7 @@ import { IToken, NetworkEnum } from './types';
 
 export type Config = {
   networkId: NetworkEnum;
+  subgraphUrl: string;
   escrowConfig: { [key: string]: any };
   contracts: { [key: string]: `0x${string}` };
   tokens: { [key: string]: IToken };
@@ -16,6 +17,7 @@ export const FEE_RATE_DIVIDER = 10_000;
 
 const goerli: Config = {
   networkId: NetworkEnum.GOERLI,
+  subgraphUrl: 'https://api.thegraph.com/subgraphs/name/talentlayer/talent-layer-protocol',
   contracts: {
     talentLayerId: '0x11119eD887aeC1302e2cAF49942F891667A31BBc',
     serviceRegistry: '0xf0EECbBf164D81261C7Ce4D22D16f38DC63fBAbd',
@@ -56,12 +58,13 @@ const goerli: Config = {
 
 const fuji: Config = {
   networkId: NetworkEnum.FUJI,
+  subgraphUrl: 'https://api.thegraph.com/subgraphs/name/talentlayer/talent-layer-fuji',
   contracts: {
-    talentLayerId: '0xD1B87CCe7f9FA272c6643Fa89085F135A2AbB234',
-    serviceRegistry: '0x9Af3080e73FB1054896e3799a786F0063965bA46',
-    talentLayerReview: '0xc9c87d5b85fd88d375000f9e3e26195690934F50',
-    talentLayerEscrow: '0x754278520467fAdBB1D0230E082E436E70505EE2',
-    talentLayerPlatformId: '0xC30859CFa06D0cB9D66837feBB36a856BF78865E',
+    talentLayerId: '0x9a76eA2C056B6Bee5A1179BBece77D28FceE48C4',
+    serviceRegistry: '0x9EA2678d5A69CEDEc52ecafA367659b1d2Ff7824',
+    talentLayerReview: '0xD8c4fD1D8Dd2f3a6E4d26BeB167e73D9E28db7F0',
+    talentLayerEscrow: '0x8754a129D3F53222dd94Ce45749134c15C9Ed119',
+    talentLayerPlatformId: '0x8799479a39b6e563969126328e2323cbA01e8742',
   },
   escrowConfig: {
     adminFee: '0',
@@ -86,6 +89,7 @@ const fuji: Config = {
 
 const mumbai: Config = {
   networkId: NetworkEnum.MUMBAI,
+  subgraphUrl: 'https://api.thegraph.com/subgraphs/name/akugone/aku-mumbai-talent-layer',
   contracts: {
     talentLayerId: '0x2C8Bd9ebF75804CA666a086e3F78bf5a44f1E680',
     serviceRegistry: '0xF93A58801c48e264Ace3226555E08eEF64F2Cbee',
@@ -116,6 +120,7 @@ const mumbai: Config = {
 
 const local: Config = {
   networkId: NetworkEnum.LOCAL,
+  subgraphUrl: 'http://localhost:8020/',
   contracts: {
     talentLayerId: '0x2475F87a2A73548b2E49351018E7f6a53D3d35A4',
     serviceRegistry: '0x3dE39C61d4281716c458ffdb3150aa9aF4fb752a',
