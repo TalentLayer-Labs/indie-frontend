@@ -3,9 +3,11 @@ import { useNavigate } from 'react-router-dom';
 
 function SearchService() {
   const navigate = useNavigate();
+  let searchQuery = '';
 
-  const onClick = useCallback(() => {
-    navigate('/services');
+  const handleSubmit = useCallback(() => {
+    const serviceUrl = searchQuery.length > 0 ? `/services?s=${searchQuery}` : '/services';
+    navigate(serviceUrl);
   }, []);
 
   return (
@@ -20,8 +22,9 @@ function SearchService() {
             Earn money doing what you love. Find a job that fits your skills and schedule.
           </p>
 
-          <div>
-            <div className='flex divide-x bg-white py-4 px-4 sm:px-0 justify-center items-center flex-row drop-shadow-lg rounded-lg'>
+          <form onSubmit={handleSubmit}>
+            <div
+              className='flex divide-x bg-white py-4 px-4 sm:px-0 justify-center items-center flex-row drop-shadow-lg rounded-lg'>
               <div className='sm:px-6 flex flex-row items-center gap-2'>
                 <span className='text-gray-500'>
                   <svg
@@ -42,19 +45,19 @@ function SearchService() {
                   className='text-gray-500 py-2 focus:ring-0 outline-none text-sm sm:text-lg border-0'
                   type='text'
                   placeholder='Search by title'
+                  onChange={e => (searchQuery = e.target.value)}
                 />
               </div>
 
               <div className='sm:px-4 flex flex-row  sm:space-x-4 justify-between items-center'>
                 <button
-                  onClick={onClick}
-                  type='button'
+                  type='submit'
                   className='px-5 py-2 border border-indigo-600 rounded-lg hover:text-indigo-600 hover:bg-white text-white bg-indigo-700'>
                   Search
                 </button>
               </div>
             </div>
-          </div>
+          </form>
         </div>
       </div>
     </div>
