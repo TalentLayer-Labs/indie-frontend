@@ -3,6 +3,7 @@ import { IToken, NetworkEnum } from './types';
 
 export type Config = {
   networkId: NetworkEnum;
+  subgraphUrl: string;
   escrowConfig: { [key: string]: any };
   contracts: { [key: string]: `0x${string}` };
   tokens: { [key: string]: IToken };
@@ -16,6 +17,7 @@ export const FEE_RATE_DIVIDER = 10_000;
 
 const goerli: Config = {
   networkId: NetworkEnum.GOERLI,
+  subgraphUrl: 'https://api.thegraph.com/subgraphs/name/talentlayer/talent-layer-protocol',
   contracts: {
     talentLayerId: '0x11119eD887aeC1302e2cAF49942F891667A31BBc',
     serviceRegistry: '0xf0EECbBf164D81261C7Ce4D22D16f38DC63fBAbd',
@@ -56,6 +58,7 @@ const goerli: Config = {
 
 const fuji: Config = {
   networkId: NetworkEnum.FUJI,
+  subgraphUrl: 'https://api.thegraph.com/subgraphs/name/talentlayer/talent-layer-fuji',
   contracts: {
     talentLayerId: '0x9a76eA2C056B6Bee5A1179BBece77D28FceE48C4',
     serviceRegistry: '0x9EA2678d5A69CEDEc52ecafA367659b1d2Ff7824',
@@ -86,6 +89,7 @@ const fuji: Config = {
 
 const mumbai: Config = {
   networkId: NetworkEnum.MUMBAI,
+  subgraphUrl: 'https://api.thegraph.com/subgraphs/name/akugone/aku-mumbai-talent-layer',
   contracts: {
     talentLayerId: '0x2C8Bd9ebF75804CA666a086e3F78bf5a44f1E680',
     serviceRegistry: '0xF93A58801c48e264Ace3226555E08eEF64F2Cbee',
@@ -116,6 +120,7 @@ const mumbai: Config = {
 
 const local: Config = {
   networkId: NetworkEnum.LOCAL,
+  subgraphUrl: 'http://localhost:8020/',
   contracts: {
     talentLayerId: '0x2475F87a2A73548b2E49351018E7f6a53D3d35A4',
     serviceRegistry: '0x3dE39C61d4281716c458ffdb3150aa9aF4fb752a',
