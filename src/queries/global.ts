@@ -23,3 +23,17 @@ export const checkEntityByUri = (entity: string, cid: string): Promise<any> => {
       `;
   return processRequest(query);
 };
+
+export const getAllowedTokenList = (): Promise<any> => {
+  const query = `
+      {
+         tokens(where: {allowed: true}) {
+            address
+            symbol
+            name
+            decimals
+        }
+      }
+      `;
+  return processRequest(query);
+};

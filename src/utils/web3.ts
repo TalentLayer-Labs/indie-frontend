@@ -1,7 +1,6 @@
 import { Contract } from '@ethersproject/contracts';
 import { ExternalProvider, JsonRpcFetchFunc, Web3Provider } from '@ethersproject/providers';
 import { BigNumber, ethers, FixedNumber, Signer } from 'ethers';
-import { config } from '../config';
 import ERC20 from '../contracts/ABI/ERC20.json';
 import { ITokenFormattedValues } from '../types';
 
@@ -23,11 +22,12 @@ const getDecimal = async (erc20Token: Contract): Promise<string> => {
 export const parseRateAmount = async (
   rateAmount: string,
   rateToken: string,
+  decimals: number,
 ): Promise<BigNumber> => {
   if (rateToken === ethers.constants.AddressZero) {
     return ethers.utils.parseEther(rateAmount);
   }
-  return ethers.utils.parseUnits(rateAmount, config.tokens[rateToken].decimals);
+  return ethers.utils.parseUnits(rateAmount, decimals);
 };
 
 export const formatRateAmount = async (
