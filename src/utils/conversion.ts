@@ -6,7 +6,7 @@ export const renderTokenAmount = (tokenAddress: string, value: string): string =
     return 'unknown token';
   }
   if (!value) {
-    return 'undefined';
+    return '';
   }
   const symbol = config.tokens[tokenAddress].symbol;
   const formattedValue = ethers.utils.formatUnits(value, config.tokens[tokenAddress].decimals);
