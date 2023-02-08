@@ -15,16 +15,22 @@ import Profile from './pages/Profile';
 import Service from './pages/Service';
 import Services from './pages/Services';
 import Talents from './pages/Talents';
+import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
 
 import { Web3Modal } from '@web3modal/react';
 
-import { chain, configureChains, createClient, WagmiConfig } from 'wagmi';
+import { configureChains, createClient, WagmiConfig } from 'wagmi';
+import { customChains } from './chains';
 
-const chains = [chain.polygonMumbai];
+const chains: any = [customChains.fuji];
 
 // Wagmi client
 const { provider } = configureChains(chains, [
-  walletConnectProvider({ projectId: `${import.meta.env.VITE_WALLECT_CONNECT_PROJECT_ID}` }),
+  jsonRpcProvider({
+    rpc: chain => {
+      return { http: chain.rpcUrls.default };
+    },
+  }),
 ]);
 const wagmiClient = createClient({
   autoConnect: true,
