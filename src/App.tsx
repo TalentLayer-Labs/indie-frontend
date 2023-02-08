@@ -16,6 +16,7 @@ import Profile from './pages/Profile';
 import Service from './pages/Service';
 import Services from './pages/Services';
 import Talents from './pages/Talents';
+import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
 
 import { Web3Modal } from '@web3modal/react';
 
