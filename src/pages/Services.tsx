@@ -1,10 +1,11 @@
 import ServiceItem from '../components/ServiceItem';
 import useServices from '../hooks/useServices';
 import { IService, ServiceStatusEnum } from '../types';
+import SearchServiceButton from '../components/Form/SearchServiceButton';
 
 function Services() {
   const queryString = window.location.search;
-  const searchQuery = new URLSearchParams(queryString).get('s');
+  const searchQuery = new URLSearchParams(queryString).get('s') || undefined;
   const services = useServices(
     ServiceStatusEnum.Opened,
     undefined,
@@ -27,6 +28,10 @@ function Services() {
           No search results for <span className='text-indigo-600'>{searchQuery}</span>
         </p>
       )}
+
+      <div className='flex justify-center items-center gap-10 flex-col pb-5'>
+        <SearchServiceButton value={searchQuery} />
+      </div>
 
       <div className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4'>
         {services.map((service: IService, i: number) => {
