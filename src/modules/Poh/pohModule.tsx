@@ -7,7 +7,6 @@ interface IProps {
 
 function PohModule({ address }: IProps) {
   const { pohUser } = usePohUser(address);
-  console.log('pohUser', pohUser);
 
   if (!pohUser?.registered) {
     return null;

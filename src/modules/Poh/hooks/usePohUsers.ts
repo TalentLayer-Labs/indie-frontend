@@ -8,7 +8,7 @@ const usePohUser = (address: string): { pohUser: IPohUser | undefined } => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await getPohProfileInfo('0x1db3439a222c519ab44bb1144fc28167b4fa6ee6');
+        const response = await getPohProfileInfo(address);
 
         if (response?.data?.data?.submission) {
           setPohUser(response.data.data.submission);
