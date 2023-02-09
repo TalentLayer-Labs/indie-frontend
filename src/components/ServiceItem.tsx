@@ -38,9 +38,11 @@ function ServiceItem({ service }: { service: IService }) {
         </div>
 
         <div className='flex flex-row gap-4 justify-between items-center border-t border-gray-100 pt-4'>
-          <p className='text-gray-900 font-bold line-clamp-1 max-w-[100px]'>
-            {renderTokenAmount(service.description.rateToken, service.description.rateAmount)}
-          </p>
+          {service.description?.rateToken && service.description?.rateAmount && (
+            <p className='text-gray-900 font-bold line-clamp-1 max-w-[100px]'>
+              {renderTokenAmount(service.description.rateToken, service.description.rateAmount)}
+            </p>
+          )}
           <NavLink
             className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg'
             to={`/services/${service.id}`}>

@@ -69,10 +69,12 @@ function ServiceDetail({ service }: { service: IService }) {
               <p className='text-sm text-gray-500 mt-4'>
                 <strong>About:</strong> {service.description.about}
               </p>
-              <p className='text-sm text-gray-500 mt-4'>
-                <strong>Budget:</strong>{' '}
-                {renderTokenAmount(service.description.rateToken, service.description.rateAmount)}
-              </p>
+              {service.description?.rateToken && service.description?.rateAmount && (
+                <p className='text-sm text-gray-500 mt-4'>
+                  <strong>Budget:</strong>{' '}
+                  {renderTokenAmount(service.description.rateToken, service.description.rateAmount)}
+                </p>
+              )}
               <p className='text-sm text-gray-500 mt-4'>
                 <strong>Keywords:</strong>{' '}
                 {service.description.keywords_raw.split(',').map((keyword, i) => (
