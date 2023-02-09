@@ -13,7 +13,12 @@ export type IUser = {
 export type IUserDetails = {
   title: string;
   about: string;
-  skills: string;
+  skills: ISkill[];
+  skills_raw: string;
+};
+
+export type ISkill = {
+  id: string;
 };
 
 export type IAccount = {

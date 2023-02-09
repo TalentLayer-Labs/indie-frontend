@@ -11,7 +11,6 @@ import { postToIPFS } from '../../utils/ipfs';
 import { createMultiStepsTransactionToast, showErrorTransactionToast } from '../../utils/toast';
 import Loading from '../Loading';
 import SubmitButton from './SubmitButton';
-import useUserById from '../../hooks/useUserById';
 
 interface IFormValues {
   title?: string;
@@ -27,7 +26,6 @@ function ProfileForm() {
   const { open: openConnectModal } = useWeb3Modal();
   const { user } = useContext(TalentLayerContext);
   const provider = useProvider({ chainId: import.meta.env.VITE_NETWORK_ID });
-  const userDescription = user?.id ? useUserById(user?.id)?.description : null;
   const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
 
   if (!user?.id) {
@@ -35,9 +33,9 @@ function ProfileForm() {
   }
 
   const initialValues: IFormValues = {
-    title: userDescription?.title || '',
-    about: userDescription?.about || '',
-    skills: userDescription?.skills || '',
+    title: user?.description?.title || '',
+    about: user?.description?.about || '',
+    skills: user?.description?.skills_raw || '',
   };
 
   const onSubmit = async (

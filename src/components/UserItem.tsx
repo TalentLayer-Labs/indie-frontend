@@ -4,11 +4,9 @@ import TalentLayerContext from '../context/talentLayer';
 import { IUser } from '../types';
 import Stars from './Stars';
 import Loading from './Loading';
-import useUserById from '../hooks/useUserById';
 
 function UserItem({ user }: { user: IUser }) {
   const { user: currentUser } = useContext(TalentLayerContext);
-  const userDescription = user?.id ? useUserById(user?.id)?.description : null;
 
   if (!user?.id) {
     return <Loading />;
@@ -25,7 +23,7 @@ function UserItem({ user }: { user: IUser }) {
             />
             <div className='flex flex-col'>
               <p className='text-gray-900 font-medium'>{user.handle}</p>
-              <p className='text-xs text-gray-500'>{userDescription?.title || '-'}</p>
+              <p className='text-xs text-gray-500'>{user?.description?.title}</p>
             </div>
           </div>
         </div>
