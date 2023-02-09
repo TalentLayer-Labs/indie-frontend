@@ -15,6 +15,7 @@ const useServices = (
       try {
         let response;
         if (searchQuery) {
+          // if searchQuery is not empty, use searchServices/serviceDescriptionSearchRank
           response = await searchServices({
             serviceStatus,
             buyerId,
@@ -22,6 +23,7 @@ const useServices = (
             platformId: import.meta.env.VITE_PLATFORM_ID,
             searchQuery,
           });
+          // map the response to match the format because service != serviceDescription
           const services = response.data.data.serviceDescriptionSearchRank.map(
             (serviceDescription: { service: any }) => {
               return {
@@ -34,12 +36,13 @@ const useServices = (
           );
           setServices(services);
         } else {
+          // if searchQuery is empty, use getServices without searchQuery and mapping
           response = await getServices({
             serviceStatus,
             buyerId,
             sellerId,
             platformId: import.meta.env.VITE_PLATFORM_ID,
-            searchQuery,
+            searchQuery: undefined,
           });
           setServices(response.data.data.services);
         }
