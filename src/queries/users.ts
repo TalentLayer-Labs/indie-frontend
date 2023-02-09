@@ -3,7 +3,7 @@ import { processRequest } from '../utils/graphql';
 export const getUsers = (platformId?: string, searchQuery?: string): Promise<any> => {
   let condition = ', where: {';
   condition += platformId ? `, platform: "${platformId}"` : '';
-  condition += searchQuery ? `, handle_contains_nocase: "${searchQuery}"` : '';
+  condition += searchQuery ? `, description_: {skills_raw_contains_nocase: "${searchQuery}"}` : '';
   condition += '}';
 
   const query = `

@@ -20,7 +20,7 @@ function Talents() {
       )}
       {searchQuery && users.length === 0 && (
         <p className='text-xl font-medium tracking-wider mb-8'>
-          No search results for <span className='text-indigo-600'>{searchQuery}</span>
+          No search results for the skill <span className='text-indigo-600'>{searchQuery}</span>
         </p>
       )}
 
