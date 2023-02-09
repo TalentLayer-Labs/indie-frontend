@@ -2,6 +2,7 @@ import { useContext } from 'react';
 import { NavLink } from 'react-router-dom';
 import TalentLayerContext from '../context/talentLayer';
 import useUserDetails from '../hooks/useUserDetails';
+import PohModule from '../modules/Poh/pohModule';
 import { IUser } from '../types';
 import Loading from './Loading';
 import Stars from './Stars';
@@ -25,6 +26,9 @@ function UserDetail({ user }: { user: IUser }) {
             />
             <div className='flex flex-col'>
               <p className='text-gray-900 font-medium'>{userDetails?.title || '-'}</p>
+            </div>
+            <div className=''>
+              <PohModule address={user.address} />
             </div>
           </div>
         </div>

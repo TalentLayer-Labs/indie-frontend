@@ -36,9 +36,6 @@ function Profile() {
             <div className='mb-6'>
               <LensModule address={user.address} />
             </div>
-            <div className='mb-6'>
-              <PohModule address={user.address} />
-            </div>
           </div>
         </>
       )}
