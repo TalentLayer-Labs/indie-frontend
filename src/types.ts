@@ -7,10 +7,10 @@ export type IUser = {
   withPoh: boolean;
   rating: string;
   numReviews: string;
-  description: IUserDetails;
+  description: IUserDescription;
 };
 
-export type IUserDetails = {
+export type IUserDescription = {
   title: string;
   about: string;
   skills: ISkill[];
@@ -48,14 +48,14 @@ export type IService = {
   updatedAt: string;
   transaction: ITransaction;
   proposals: IProposal[];
-  description: IServiceDetails;
+  description: IServiceDescription;
 };
 
 export type IKeyword = {
   id: string;
 };
 
-export type IServiceDetails = {
+export type IServiceDescription = {
   title: string;
   about: string;
   keywords: IKeyword[];
@@ -67,20 +67,6 @@ export type IServiceDetails = {
   expectedEndDate: string;
 };
 
-export type IServiceDetailsBuyer = {
-  title: string;
-  about: string;
-  rateAmount: string;
-  rateToken: string;
-  buyerHandle: string;
-  buyerId: string;
-  buyerServiceCount: string;
-  buyerRating: string;
-  serviceId: string;
-  createdAt: string;
-  updatedAt: string;
-};
-
 export type IReview = {
   id: string;
   service: IService;
@@ -88,10 +74,10 @@ export type IReview = {
   uri: string;
   rating: number;
   createdAt: string;
-  description: IReviewDetails;
+  description: IReviewDescription;
 };
 
-export type IReviewDetails = {
+export type IReviewDescription = {
   id: string;
   content: string;
 };
@@ -110,7 +96,7 @@ export enum ProposalStatusEnum {
   Rejected = 'Rejected',
 }
 
-export type IProposalDetails = {
+export type IProposalDescription = {
   id: string;
   title: string;
   about: string;
@@ -129,7 +115,7 @@ export type IProposal = {
   service: IService;
   createdAt: string;
   updatedAt: string;
-  description: IProposalDetails;
+  description: IProposalDescription;
 };
 
 export type IFees = {

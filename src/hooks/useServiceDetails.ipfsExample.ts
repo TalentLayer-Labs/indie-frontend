@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
-import { IServiceDetails } from '../types';
+import { IServiceDescription } from '../types';
 
 /**
  * Example of ipfs query implementation for a service
  * Useful only if you need query non indexed data
  * @param cid
  */
-const useServiceDetails = (cid: string): IServiceDetails | null => {
-  const [serviceDetails, setServiceDetails] = useState<IServiceDetails | null>(null);
+const useServiceDetails = (cid: string): IServiceDescription | null => {
+  const [serviceDetails, setServiceDetails] = useState<IServiceDescription | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -16,7 +16,7 @@ const useServiceDetails = (cid: string): IServiceDetails | null => {
 
         const response = await fetch(fullSeviceDetailsUri);
 
-        const data: IServiceDetails = await response.json();
+        const data: IServiceDescription = await response.json();
         if (data) {
           setServiceDetails(data);
         }
