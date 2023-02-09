@@ -1,10 +1,11 @@
 import UserItem from '../components/UserItem';
 import useUsers from '../hooks/useUsers';
 import SearchTalentForm from '../components/Form/SearchTalentForm';
+import { useSearchParams } from 'react-router-dom';
 
 function Talents() {
-  const queryString = window.location.search;
-  const searchQuery = new URLSearchParams(queryString).get('s') || undefined;
+  const [searchParams] = useSearchParams();
+  const searchQuery = searchParams.get('s');
   const users = useUsers(searchQuery?.toLocaleLowerCase());
 
   return (

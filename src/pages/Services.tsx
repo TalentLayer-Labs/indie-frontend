@@ -2,10 +2,11 @@ import ServiceItem from '../components/ServiceItem';
 import useServices from '../hooks/useServices';
 import { IService, ServiceStatusEnum } from '../types';
 import SearchServiceForm from '../components/Form/SearchServiceForm';
+import { useSearchParams } from 'react-router-dom';
 
 function Services() {
-  const queryString = window.location.search;
-  const searchQuery = new URLSearchParams(queryString).get('s') || undefined;
+  const [searchParams] = useSearchParams();
+  const searchQuery = searchParams.get('s');
   const services = useServices(
     ServiceStatusEnum.Opened,
     undefined,
