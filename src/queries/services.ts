@@ -1,7 +1,7 @@
 import { ServiceStatusEnum } from '../types';
 import { processRequest } from '../utils/graphql';
 
-interface IProps {
+export interface IServiceQueryProps {
   serviceStatus?: ServiceStatusEnum;
   buyerId?: string;
   sellerId?: string;
@@ -56,7 +56,7 @@ const serviceDescriptionQueryFields = `
   }
 `;
 
-const getFilterCondition = (params: IProps) => {
+const getFilterCondition = (params: IServiceQueryProps) => {
   let condition = ', where: {';
   condition += params.serviceStatus ? `status: "${params.serviceStatus}"` : '';
   condition += params.buyerId ? `, buyer: "${params.buyerId}"` : '';
@@ -66,7 +66,7 @@ const getFilterCondition = (params: IProps) => {
   return condition === ', where: {}' ? '' : condition;
 };
 
-export const getServices = (params: IProps): Promise<any> => {
+export const getServices = (params: IServiceQueryProps): Promise<any> => {
   const query = `
     {
       services(orderBy: id, orderDirection: desc ${getFilterCondition(params)}) {
@@ -80,7 +80,7 @@ export const getServices = (params: IProps): Promise<any> => {
   return processRequest(query);
 };
 
-export const searchServices = (params: IProps): Promise<any> => {
+export const searchServices = (params: IServiceQueryProps): Promise<any> => {
   const query = `
     {
       serviceDescriptionSearchRank(

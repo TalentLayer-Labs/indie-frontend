@@ -7,12 +7,10 @@ import SearchForm from '../components/Form/SearchForm';
 function Services() {
   const [searchParams, setSearchParams] = useSearchParams();
   const searchQuery = searchParams.get('s');
-  const services = useServices(
-    ServiceStatusEnum.Opened,
-    undefined,
-    undefined,
-    searchQuery?.toLocaleLowerCase(),
-  );
+  const services = useServices({
+    serviceStatus: ServiceStatusEnum.Opened,
+    searchQuery: searchQuery?.toLocaleLowerCase(),
+  });
 
   return (
     <div className='max-w-7xl mx-auto text-gray-900 sm:px-4 lg:px-0'>

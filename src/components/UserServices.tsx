@@ -8,11 +8,10 @@ interface IProps {
 }
 
 function UserServices({ user, type }: IProps) {
-  const services = useServices(
-    undefined,
-    type == 'buyer' ? user.id : undefined,
-    type == 'seller' ? user.id : undefined,
-  );
+  const services = useServices({
+    buyerId: type == 'buyer' ? user.id : undefined,
+    sellerId: type == 'seller' ? user.id : undefined,
+  });
 
   if (services.length === 0) {
     return null;

@@ -1,27 +1,22 @@
 import { useEffect, useState } from 'react';
-import { getServices, searchServices } from '../queries/services';
-import { IService, ServiceStatusEnum } from '../types';
+import { getServices, IServiceQueryProps, searchServices } from '../queries/services';
+import { IService } from '../types';
 
-const useServices = (
-  serviceStatus?: ServiceStatusEnum,
-  buyerId?: string,
-  sellerId?: string,
-  searchQuery?: string,
-): IService[] => {
+const useServices = (props: IServiceQueryProps): IService[] => {
   const [services, setServices] = useState<IService[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         let response;
-        if (searchQuery) {
+        if (props.searchQuery) {
           // if searchQuery is not empty, use searchServices/serviceDescriptionSearchRank
           response = await searchServices({
-            serviceStatus,
-            buyerId,
-            sellerId,
+            serviceStatus: props.serviceStatus,
+            buyerId: props.buyerId,
+            sellerId: props.sellerId,
             platformId: import.meta.env.VITE_PLATFORM_ID,
-            searchQuery,
+            searchQuery: props.searchQuery,
           });
           // map the response to match the format because service != serviceDescription
           const services = response.data.data.serviceDescriptionSearchRank.map(
@@ -38,9 +33,9 @@ const useServices = (
         } else {
           // if searchQuery is empty, use getServices without searchQuery and mapping
           response = await getServices({
-            serviceStatus,
-            buyerId,
-            sellerId,
+            serviceStatus: props.serviceStatus,
+            buyerId: props.buyerId,
+            sellerId: props.sellerId,
             platformId: import.meta.env.VITE_PLATFORM_ID,
             searchQuery: undefined,
           });
@@ -52,7 +47,7 @@ const useServices = (
       }
     };
     fetchData();
-  }, [serviceStatus, searchQuery, buyerId, sellerId]);
+  }, [props]);
 
   return services;
 };
