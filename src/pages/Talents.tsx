@@ -1,10 +1,10 @@
 import UserItem from '../components/UserItem';
-import useUsers from '../hooks/useUsers';
-import SearchTalentForm from '../components/Form/SearchTalentForm';
+import SearchForm from '../components/Form/SearchForm';
 import { useSearchParams } from 'react-router-dom';
+import useUsers from '../hooks/useUsers';
 
 function Talents() {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const searchQuery = searchParams.get('s');
   const users = useUsers(searchQuery?.toLocaleLowerCase());
 
@@ -26,7 +26,12 @@ function Talents() {
       )}
 
       <div className='flex justify-center items-center gap-10 flex-col pb-5'>
-        <SearchTalentForm value={searchQuery} />
+        <SearchForm
+          value={searchParams.get('s') || undefined}
+          callback={query => {
+            setSearchParams({ s: query });
+          }}
+        />
       </div>
 
       <div className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4'>

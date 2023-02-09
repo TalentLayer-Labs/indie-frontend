@@ -1,18 +1,31 @@
-import { FormEvent, useCallback, useState } from 'react';
+import { FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-function SearchServiceForm(props?: { value?: string }) {
-  const navigate = useNavigate();
+/**
+ * Search form
+ * @param props {
+ *  value: the initial value of the search input
+ *  callback: a callback function to be called when the form is submitted
+ *  destinationUrl: the url to navigate to when the form is submitted (if callback is not provided)
+ * @constructor
+ */
+function SearchForm(props?: {
+  value?: string;
+  callback?: (value: string) => void;
+  destinationUrl?: string;
+}) {
   const [searchQuery, setSearchQuery] = useState(props!.value || '');
+  const navigate = useNavigate();
 
-  const handleSubmit = useCallback((e: FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    const formElm = e.target as HTMLFormElement;
-    const searchQueryRef = formElm.querySelector('input')!.value;
-    const serviceUrl = searchQueryRef.length > 0 ? `/services?s=${searchQueryRef}` : '/services';
-    navigate(serviceUrl);
-    window.location.reload();
-  }, []);
+    if (props?.callback) {
+      props?.callback ? props.callback(searchQuery) : null;
+    } else if (props?.destinationUrl) {
+      navigate(props.destinationUrl + `?s=${searchQuery}`);
+    }
+    return;
+  };
 
   return (
     <form onSubmit={e => handleSubmit(e)}>
@@ -37,11 +50,12 @@ function SearchServiceForm(props?: { value?: string }) {
           <input
             className='text-gray-500 py-2 focus:ring-0 outline-none text-sm sm:text-lg border-0'
             type='text'
-            placeholder='Search by title'
+            placeholder='Search by skills'
             onChange={e => setSearchQuery(e.target.value)}
             value={searchQuery}
           />
         </div>
+
         <div className='sm:px-4 flex flex-row  sm:space-x-4 justify-between items-center'>
           <button
             type='submit'
@@ -54,4 +68,4 @@ function SearchServiceForm(props?: { value?: string }) {
   );
 }
 
-export default SearchServiceForm;
+export default SearchForm;

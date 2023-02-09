@@ -1,11 +1,11 @@
 import ServiceItem from '../components/ServiceItem';
 import useServices from '../hooks/useServices';
 import { IService, ServiceStatusEnum } from '../types';
-import SearchServiceForm from '../components/Form/SearchServiceForm';
 import { useSearchParams } from 'react-router-dom';
+import SearchForm from '../components/Form/SearchForm';
 
 function Services() {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const searchQuery = searchParams.get('s');
   const services = useServices(
     ServiceStatusEnum.Opened,
@@ -31,7 +31,12 @@ function Services() {
       )}
 
       <div className='flex justify-center items-center gap-10 flex-col pb-5'>
-        <SearchServiceForm value={searchQuery} />
+        <SearchForm
+          value={searchParams.get('s') || undefined}
+          callback={query => {
+            setSearchParams({ s: query });
+          }}
+        />
       </div>
 
       <div className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4'>

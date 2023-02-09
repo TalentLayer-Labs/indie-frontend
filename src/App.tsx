@@ -1,4 +1,4 @@
-import { EthereumClient, modalConnectors, walletConnectProvider } from '@web3modal/ethereum';
+import { EthereumClient, modalConnectors } from '@web3modal/ethereum';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -54,10 +54,12 @@ function App() {
                   <Route index element={<Home />} />
                   <Route path='/dashboard' element={<Dashboard />} />
                   <Route path='/services' element={<Services />} />
+                  <Route path='/services?s=' element={<Services />} />
                   <Route path='/services/:id' element={<Service />} />
                   <Route path='/services/create' element={<CreateService />} />
                   <Route path='/services/:id/create-proposal' element={<CreateProposal />} />
                   <Route path='/talents' element={<Talents />} />
+                  <Route path='/talents?s=' element={<Talents />} />
                   <Route path='/about' element={<About />} />
                   <Route path='/profile/:id' element={<Profile />} />
                   <Route path='/profile/edit' element={<EditProfile />} />
