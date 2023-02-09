@@ -16,7 +16,7 @@ function PohModule({ address }: IProps) {
   return (
     <div className='flex'>
       <>
-        <div className='md:w-1/2 xl:w-1/3 mb-6'>
+        <div className='ml-4'>
           <UserPohProfile pohUser={pohUser} />
         </div>
       </>
