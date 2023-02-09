@@ -1,7 +1,7 @@
 import { FormEvent, useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-function SearchServiceButton(props?: { value?: string }) {
+function SearchServiceForm(props?: { value?: string }) {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState(props!.value || '');
 
@@ -54,4 +54,4 @@ function SearchServiceButton(props?: { value?: string }) {
   );
 }
 
-export default SearchServiceButton;
+export default SearchServiceForm;

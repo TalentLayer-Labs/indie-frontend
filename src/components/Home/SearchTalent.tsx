@@ -1,4 +1,4 @@
-import SearchTalentButton from '../Form/SearchTalentButton';
+import SearchTalentForm from '../Form/SearchTalentForm';
 
 function SearchTalent() {
   return (
@@ -11,7 +11,7 @@ function SearchTalent() {
           <p className='text-gray-500'>
             Hire the best freelance, verified their reviews and start working together.
           </p>
-          <SearchTalentButton value={''} />
+          <SearchTalentForm value={''} />
         </div>
       </div>
     </div>

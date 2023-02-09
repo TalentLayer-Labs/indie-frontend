@@ -1,7 +1,7 @@
 import { FormEvent, useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-function SearchTalentButton(props?: { value?: string }) {
+function SearchTalentForm(props?: { value?: string }) {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState(props!.value || '');
 
@@ -55,4 +55,4 @@ function SearchTalentButton(props?: { value?: string }) {
   );
 }
 
-export default SearchTalentButton;
+export default SearchTalentForm;

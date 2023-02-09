@@ -1,7 +1,7 @@
 import ServiceItem from '../components/ServiceItem';
 import useServices from '../hooks/useServices';
 import { IService, ServiceStatusEnum } from '../types';
-import SearchServiceButton from '../components/Form/SearchServiceButton';
+import SearchServiceForm from '../components/Form/SearchServiceForm';
 
 function Services() {
   const queryString = window.location.search;
@@ -30,7 +30,7 @@ function Services() {
       )}
 
       <div className='flex justify-center items-center gap-10 flex-col pb-5'>
-        <SearchServiceButton value={searchQuery} />
+        <SearchServiceForm value={searchQuery} />
       </div>
 
       <div className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4'>

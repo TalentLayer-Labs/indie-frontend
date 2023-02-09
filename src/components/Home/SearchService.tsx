@@ -1,4 +1,4 @@
-import SearchServiceButton from '../Form/SearchServiceButton';
+import SearchServiceForm from '../Form/SearchServiceForm';
 
 function SearchService() {
   return (
@@ -11,7 +11,7 @@ function SearchService() {
           <p className='text-gray-500'>
             Earn money doing what you love. Find a job that fits your skills and schedule.
           </p>
-          <SearchServiceButton value={''} />
+          <SearchServiceForm value={''} />
         </div>
       </div>
     </div>
