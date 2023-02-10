@@ -2,7 +2,10 @@ import { useEffect, useState } from 'react';
 import { getServices, IServiceQueryProps, searchServices } from '../queries/services';
 import { IService } from '../types';
 
-const useServices = (props: IServiceQueryProps): IService[] => {
+const useServices = (
+  props: IServiceQueryProps,
+  setIsLoading?: (value: ((prevState: boolean) => boolean) | boolean) => void,
+): IService[] => {
   const [services, setServices] = useState<IService[]>([]);
 
   useEffect(() => {
@@ -41,6 +44,7 @@ const useServices = (props: IServiceQueryProps): IService[] => {
           });
           setServices(response.data.data.services);
         }
+        setIsLoading ? setIsLoading(false) : null;
       } catch (err: any) {
         // eslint-disable-next-line no-console
         console.error(err);

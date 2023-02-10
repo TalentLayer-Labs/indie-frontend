@@ -4,14 +4,19 @@ import { IService, ServiceStatusEnum } from '../types';
 import { useSearchParams } from 'react-router-dom';
 import SearchForm from '../components/Form/SearchForm';
 import Loading from '../components/Loading';
+import { useState } from 'react';
 
 function Services() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const [isLoading, setIsLoading] = useState(true);
   const searchQuery = searchParams.get('s');
-  const services = useServices({
-    serviceStatus: ServiceStatusEnum.Opened,
-    searchQuery: searchQuery?.toLocaleLowerCase(),
-  });
+  const services = useServices(
+    {
+      serviceStatus: ServiceStatusEnum.Opened,
+      searchQuery: searchQuery?.toLocaleLowerCase(),
+    },
+    setIsLoading,
+  );
 
   return (
     <div className='max-w-7xl mx-auto text-gray-900 sm:px-4 lg:px-0'>
@@ -28,7 +33,6 @@ function Services() {
           No search results for <span className='text-indigo-600'>{searchQuery}</span>
         </p>
       )}
-      {!services && <Loading />}
 
       <div className='flex justify-center items-center gap-10 flex-col pb-5'>
         <SearchForm
@@ -38,6 +42,8 @@ function Services() {
           }}
         />
       </div>
+
+      {isLoading && <Loading />}
 
       <div className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4'>
         {services.map((service: IService, i: number) => {

@@ -1,6 +1,8 @@
 import useServices from '../hooks/useServices';
 import { IUser } from '../types';
 import UserServiceItem from './UserServiceItem';
+import { useState } from 'react';
+import Loading from './Loading';
 
 interface IProps {
   user: IUser;
@@ -8,10 +10,14 @@ interface IProps {
 }
 
 function UserServices({ user, type }: IProps) {
-  const services = useServices({
-    buyerId: type == 'buyer' ? user.id : undefined,
-    sellerId: type == 'seller' ? user.id : undefined,
-  });
+  const [isLoading, setIsLoading] = useState(true);
+  const services = useServices(
+    {
+      buyerId: type == 'buyer' ? user.id : undefined,
+      sellerId: type == 'seller' ? user.id : undefined,
+    },
+    setIsLoading,
+  );
 
   if (services.length === 0) {
     return null;
@@ -23,6 +29,7 @@ function UserServices({ user, type }: IProps) {
         {type == 'buyer' ? 'Jobs posted' : 'Jobs applied'}
       </h2>
       <div className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4'>
+        {isLoading && <Loading />}
         {services.map((service, i) => {
           return <UserServiceItem user={user} service={service} key={i} />;
         })}

@@ -2,13 +2,17 @@ import { useEffect, useState } from 'react';
 import { getUsers } from '../queries/users';
 import { IUser } from '../types';
 
-const useUsers = (searchQuery?: string): IUser[] => {
+const useUsers = (
+  searchQuery?: string,
+  setIsLoading?: (value: ((prevState: boolean) => boolean) | boolean) => void,
+): IUser[] => {
   const [users, setUsers] = useState<IUser[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await getUsers(import.meta.env.VITE_PLATFORM_ID, searchQuery);
+        setIsLoading ? setIsLoading(false) : null;
         setUsers(response.data.data.users);
       } catch (err: any) {
         // eslint-disable-next-line no-console

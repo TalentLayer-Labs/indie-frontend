@@ -3,11 +3,13 @@ import SearchForm from '../components/Form/SearchForm';
 import { useSearchParams } from 'react-router-dom';
 import useUsers from '../hooks/useUsers';
 import Loading from '../components/Loading';
+import { useState } from 'react';
 
 function Talents() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const [isLoading, setIsLoading] = useState(true);
   const searchQuery = searchParams.get('s');
-  const users = useUsers(searchQuery?.toLocaleLowerCase());
+  const users = useUsers(searchQuery?.toLocaleLowerCase(), setIsLoading);
 
   return (
     <div className='max-w-7xl mx-auto text-gray-900 sm:px-4 lg:px-0'>
@@ -26,8 +28,6 @@ function Talents() {
         </p>
       )}
 
-      {!users && <Loading />}
-
       <div className='flex justify-center items-center gap-10 flex-col pb-5'>
         <SearchForm
           value={searchParams.get('s') || undefined}
@@ -36,6 +36,8 @@ function Talents() {
           }}
         />
       </div>
+
+      {isLoading && <Loading />}
 
       <div className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4'>
         {users.map((user, i) => {
