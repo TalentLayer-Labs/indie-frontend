@@ -3,6 +3,7 @@ import useServices from '../hooks/useServices';
 import { IService, ServiceStatusEnum } from '../types';
 import { useSearchParams } from 'react-router-dom';
 import SearchForm from '../components/Form/SearchForm';
+import Loading from '../components/Loading';
 
 function Services() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -27,6 +28,7 @@ function Services() {
           No search results for <span className='text-indigo-600'>{searchQuery}</span>
         </p>
       )}
+      {!services && <Loading />}
 
       <div className='flex justify-center items-center gap-10 flex-col pb-5'>
         <SearchForm

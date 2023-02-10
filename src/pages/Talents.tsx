@@ -2,6 +2,7 @@ import UserItem from '../components/UserItem';
 import SearchForm from '../components/Form/SearchForm';
 import { useSearchParams } from 'react-router-dom';
 import useUsers from '../hooks/useUsers';
+import Loading from '../components/Loading';
 
 function Talents() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -24,6 +25,8 @@ function Talents() {
           No search results for the skill <span className='text-indigo-600'>{searchQuery}</span>
         </p>
       )}
+
+      {!users && <Loading />}
 
       <div className='flex justify-center items-center gap-10 flex-col pb-5'>
         <SearchForm
