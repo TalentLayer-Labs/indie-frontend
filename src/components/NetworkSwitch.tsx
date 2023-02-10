@@ -53,7 +53,7 @@ function NetworkSwitch() {
             <Menu.Item key={import.meta.env.VITE_NETWORK_ID}>
               <NetworkLink
                 key={import.meta.env.VITE_NETWORK_ID}
-                chaindId={import.meta.env.VITE_NETWORK_ID}
+                chaindId={import.meta.env.VITE_NETWORK_ID.toString()}
                 chainName={chainIdToName(parseInt(import.meta.env.VITE_NETWORK_ID))}
               />
             </Menu.Item>

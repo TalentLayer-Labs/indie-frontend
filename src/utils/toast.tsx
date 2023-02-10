@@ -1,12 +1,10 @@
 import { getParsedEthersError } from '@enzoferey/ethers-error-parser';
 import { EthersError } from '@enzoferey/ethers-error-parser/dist/types';
-import { TransactionReceipt } from '@ethersproject/abstract-provider';
 import { Provider } from '@wagmi/core';
 import { Transaction } from 'ethers';
 import { toast } from 'react-toastify';
 import MultiStepsTransactionToast from '../components/MultiStepsTransactionToast';
-import { checkEntityByUri, graphIsSynced } from '../queries/global';
-import { IpfsIsSynced } from './ipfs';
+import { graphIsSynced } from '../queries/global';
 
 interface IMessages {
   pending: string;
@@ -57,7 +55,7 @@ export const createMultiStepsTransactionToast = async (
       ),
     });
 
-    await IpfsIsSynced(newUri);
+    await graphIsSynced(`${entity}Description`, newUri);
     toast.update(toastId, {
       type: toast.TYPE.SUCCESS,
       render: messages.success,
