@@ -1,5 +1,6 @@
 import { ServiceStatusEnum } from '../types';
 import { processRequest } from '../utils/graphql';
+import { serviceDescriptionQueryFields, serviceQueryFields } from './fieldTypes';
 
 export interface IServiceQueryProps {
   serviceStatus?: ServiceStatusEnum;
@@ -8,53 +9,6 @@ export interface IServiceQueryProps {
   platformId?: string;
   searchQuery?: string;
 }
-
-const serviceQueryFields = `
-  id
-  status
-  createdAt
-  cid
-  transaction {
-    id
-  }
-  buyer {
-    id
-    handle
-    rating
-    numReviews
-  }
-  seller {
-    id
-    handle
-  }
-  proposals {
-    id
-  }
-  validatedProposal: proposals(where: {status: "Validated"}){
-    id,
-    rateToken {
-      address
-      decimals
-      name
-      symbol
-    },
-    rateAmount,
-  }
-`;
-
-const serviceDescriptionQueryFields = `
-  id
-  title
-  about
-  startDate
-  expectedEndDate
-  rateAmount
-  rateToken
-  keywords_raw
-  keywords {
-    id
-  }
-`;
 
 const getFilterCondition = (params: IServiceQueryProps) => {
   let condition = ', where: {';
