@@ -35,7 +35,7 @@ function SubmitButton({
           </svg>
           Loading...
         </button>
-      ) : isConnected === true ? (
+      ) : isConnected ? (
         <button
           type='submit'
           className='px-5 py-2 border border-indigo-600 rounded-md hover:text-indigo-600 hover:bg-white text-white bg-indigo-700'>

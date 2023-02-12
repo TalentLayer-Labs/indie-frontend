@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
 import { Check, X } from 'heroicons-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { validateProposal } from '../../contracts/acceptProposal';
 import { renderTokenAmount } from '../../utils/conversion';
 import { IAccount, IProposal } from '../../types';
@@ -21,15 +21,23 @@ function ValidateProposalModal({ proposal, account }: { proposal: IProposal; acc
     token: proposal.rateToken.address,
   });
 
-  const platformId = import.meta.env.VITE_PLATFORM_ID;
-  const { protocolEscrowFeeRate, originPlatformEscrowFeeRate, platformFeeRate } =
-    useFees(platformId);
+  const originValidatedProposalPlatformId = import.meta.env.VITE_PLATFORM_ID;
+  const originServicePlatformId = proposal.service.platformId;
+  const { protocolEscrowFeeRate, originValidatedProposalFeeRate, originServiceFeeRate } = useFees(
+    originValidatedProposalPlatformId,
+    originServicePlatformId,
+  );
 
   const jobRateAmount = ethers.BigNumber.from(proposal.rateAmount);
   const protocolFee = jobRateAmount.mul(protocolEscrowFeeRate).div(FEE_RATE_DIVIDER);
-  const originPlatformFee = jobRateAmount.mul(originPlatformEscrowFeeRate).div(FEE_RATE_DIVIDER);
-  const platformFee = jobRateAmount.mul(platformFeeRate).div(FEE_RATE_DIVIDER);
-  const totalAmount = jobRateAmount.add(originPlatformFee).add(platformFee).add(protocolFee);
+  const originPlatformFee = jobRateAmount.mul(originServiceFeeRate).div(FEE_RATE_DIVIDER);
+  const originValidatedProposalFee = jobRateAmount
+    .mul(originValidatedProposalFeeRate)
+    .div(FEE_RATE_DIVIDER);
+  const totalAmount = jobRateAmount
+    .add(originPlatformFee)
+    .add(originValidatedProposalFee)
+    .add(protocolFee);
 
   const onSubmit = async () => {
     if (!signer || !provider) {
@@ -119,21 +127,25 @@ function ValidateProposalModal({ proposal, account }: { proposal: IProposal; acc
                   </div>
                   <div className='flex justify-between items-center w-full'>
                     <p className='text-base leading-4 text-gray-800'>
-                      Marketplace fees{' '}
+                      Fees from the marketplace originating the service{' '}
                       <span className='bg-gray-200 p-1 text-xs font-medium leading-3 text-gray-800'>
-                        {((Number(platformFeeRate) / FEE_RATE_DIVIDER) * 100).toString()} %
+                        {((Number(originServiceFeeRate) / FEE_RATE_DIVIDER) * 100).toString()} %
                       </span>
                     </p>
                     <p className='text-base  leading-4 text-gray-600'>
-                      +{renderTokenAmount(proposal.rateToken.address, platformFee.toString())}
+                      +
+                      {renderTokenAmount(
+                        proposal.rateToken.address,
+                        originValidatedProposalFee.toString(),
+                      )}
                     </p>
                   </div>
                   <div className='flex justify-between items-center w-full'>
                     <p className='text-base leading-4 text-gray-800'>
-                      Origin Marketplace fees{' '}
+                      Fees from the marketplace validating the proposal{' '}
                       <span className='bg-gray-200 p-1 text-xs font-medium leading-3 text-gray-800'>
                         {(
-                          (Number(originPlatformEscrowFeeRate) / FEE_RATE_DIVIDER) *
+                          (Number(originValidatedProposalFeeRate) / FEE_RATE_DIVIDER) *
                           100
                         ).toString()}{' '}
                         %

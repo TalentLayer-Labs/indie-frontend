@@ -1,28 +1,44 @@
-import { ethers } from 'ethers';
 import { useEffect, useState } from 'react';
 import { IFees } from '../types';
-import { getProtocolAndOriginFee } from '../queries/fees';
+import {
+  getOriginProposalValidatedPlatformId,
+  getProtocolAndOriginServiceFee,
+} from '../queries/fees';
 
-const useFees = (platformId: number): IFees => {
+const useFees = (
+  originValidatedProposalPlatformId: number,
+  originServicePlatformId: number,
+): IFees => {
   const [fees, setFees] = useState({
     protocolEscrowFeeRate: 0,
-    originPlatformEscrowFeeRate: 0,
-    platformFeeRate: 0,
+    originServiceFeeRate: 0,
+    originValidatedProposalFeeRate: 0,
   });
 
   useEffect(() => {
+    const fees: IFees = {
+      protocolEscrowFeeRate: 0,
+      originServiceFeeRate: 0,
+      originValidatedProposalFeeRate: 0,
+    };
     const fetchData = async () => {
       try {
-        const response = await getProtocolAndOriginFee(platformId);
+        const response1 = await getProtocolAndOriginServiceFee(originServicePlatformId);
 
-        if (response?.data?.data?.protocols && response?.data?.data?.platforms) {
-          setFees({
-            protocolEscrowFeeRate: response.data.data.protocols[0].protocolEscrowFeeRate,
-            originPlatformEscrowFeeRate:
-              response.data.data.protocols[0].originPlatformEscrowFeeRate,
-            platformFeeRate: response.data.data.platforms[0].platformEscrowFeeRate,
-          });
+        if (response1?.data?.data?.protocols && response1?.data?.data?.platforms) {
+          fees.protocolEscrowFeeRate = response1.data.data.protocols[0].protocolEscrowFeeRate;
+          response1.data.data.platforms[0].originServiceFeeRate;
         }
+
+        const response2 = await getOriginProposalValidatedPlatformId(
+          originValidatedProposalPlatformId,
+        );
+
+        if (response2?.data?.data?.protocols && response2?.data?.data?.platforms) {
+          fees.originValidatedProposalFeeRate =
+            response2.data.data.platforms[0].originValidatedProposalFeeRate;
+        }
+        setFees(fees);
       } catch (err: any) {
         // eslint-disable-next-line no-console
         console.error(err);
