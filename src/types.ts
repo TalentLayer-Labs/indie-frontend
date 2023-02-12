@@ -42,6 +42,7 @@ export type IService = {
   createdAt: string;
   updatedAt: string;
   transaction: ITransaction;
+  platformId: number;
   proposals: IProposal[];
   description: IServiceDetails;
 };
@@ -122,6 +123,8 @@ export type IProposal = {
   rateToken: IToken;
   rateAmount: string;
   service: IService;
+  // transaction: ITransaction;
+  platformId: number;
   createdAt: string;
   updatedAt: string;
   description: IProposalDetails;
@@ -129,8 +132,8 @@ export type IProposal = {
 
 export type IFees = {
   protocolEscrowFeeRate: number;
-  originPlatformEscrowFeeRate: number;
-  platformFeeRate: number;
+  originServiceFeeRate: number;
+  originValidatedProposalFeeRate: number;
 };
 
 export enum ProposalTypeEnum {

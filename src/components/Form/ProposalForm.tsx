@@ -69,6 +69,7 @@ function ProposalForm({ service }: { service: IService }) {
           service.id,
           values.rateToken,
           parsedRateAmountString,
+          import.meta.env.VITE_PLATFORM_ID,
           uri,
         );
         await createMultiStepsTransactionToast(
