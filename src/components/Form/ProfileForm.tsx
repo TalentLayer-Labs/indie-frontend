@@ -7,11 +7,11 @@ import * as Yup from 'yup';
 import { config } from '../../config';
 import TalentLayerContext from '../../context/talentLayer';
 import TalentLayerID from '../../contracts/ABI/TalentLayerID.json';
-import useUserDetails from '../../hooks/useUserDetails';
 import { postToIPFS } from '../../utils/ipfs';
 import { createMultiStepsTransactionToast, showErrorTransactionToast } from '../../utils/toast';
 import Loading from '../Loading';
 import SubmitButton from './SubmitButton';
+import useUserById from '../../hooks/useUserById';
 
 interface IFormValues {
   title?: string;
@@ -27,17 +27,17 @@ function ProfileForm() {
   const { open: openConnectModal } = useWeb3Modal();
   const { user } = useContext(TalentLayerContext);
   const provider = useProvider({ chainId: import.meta.env.VITE_NETWORK_ID });
-  const userDetails = useUserDetails(user?.cid);
+  const userDescription = user?.id ? useUserById(user?.id)?.description : null;
   const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
 
-  if (user?.cid && !userDetails) {
+  if (!user?.id) {
     return <Loading />;
   }
 
   const initialValues: IFormValues = {
-    title: userDetails?.title || '',
-    about: userDetails?.about || '',
-    skills: userDetails?.skills || '',
+    title: userDescription?.title || '',
+    about: userDescription?.about || '',
+    skills: userDescription?.skills || '',
   };
 
   const onSubmit = async (

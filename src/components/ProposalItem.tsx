@@ -1,18 +1,16 @@
 import { useContext } from 'react';
 import TalentLayerContext from '../context/talentLayer';
-import useProposalDetails from '../hooks/useProposalDetails';
-import useServiceDetails from '../hooks/useServiceDetails';
 import { renderTokenAmount } from '../utils/conversion';
 import { IProposal, ProposalStatusEnum } from '../types';
 import { formatDate } from '../utils/dates';
 import ValidateProposalModal from './Modal/ValidateProposalModal';
+import useServiceById from '../hooks/useServiceById';
 
 function ProposalItem({ proposal }: { proposal: IProposal }) {
   const { user, account } = useContext(TalentLayerContext);
-  const proposalDetail = useProposalDetails(proposal.cid);
-  const serviceDetail = useServiceDetails(proposal.service.cid);
+  const service = useServiceById(proposal.service.id);
 
-  if (!proposalDetail || !serviceDetail) {
+  if (!service) {
     return null;
   }
 
@@ -29,21 +27,22 @@ function ProposalItem({ proposal }: { proposal: IProposal }) {
             />
             <div className='flex flex-col'>
               <p className='text-gray-900 font-medium'>
-                {proposal.seller.handle} - {serviceDetail.title}
+                {proposal.seller.handle} - {service.description.title}
               </p>
               <p className='text-xs text-gray-500'>
                 Proposal created the {formatDate(Number(proposal.createdAt) * 1000)}
               </p>
             </div>
 
-            <span className='absolute right-0 inline-flex items-center rounded-full bg-indigo-100 px-2.5 py-1 text-xs font-medium text-indigo-800'>
+            <span
+              className='absolute right-0 inline-flex items-center rounded-full bg-indigo-100 px-2.5 py-1 text-xs font-medium text-indigo-800'>
               {proposal.status}
             </span>
           </div>
 
           <div className=' border-t border-gray-100 w-full'>
             <p className='text-sm text-gray-500 mt-4'>
-              <strong>Message:</strong> {proposalDetail.description}
+              <strong>Message:</strong> {proposal.description.about}
             </p>
           </div>
         </div>
