@@ -27,6 +27,9 @@ function UserDetail({ user }: { user: IUser }) {
               <p className='text-gray-900 font-medium'>{user?.handle}</p>
               <p className='text-gray-900 text-xs'>{userDescription?.title}</p>
             </div>
+            <div className=''>
+              <PohModule address={user.address} />
+            </div>
           </div>
         </div>
         <Stars rating={Number(user.rating)} numReviews={user.numReviews} />
