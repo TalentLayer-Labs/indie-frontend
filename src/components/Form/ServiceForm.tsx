@@ -12,6 +12,7 @@ import { postToIPFS } from '../../utils/ipfs';
 import { createMultiStepsTransactionToast, showErrorTransactionToast } from '../../utils/toast';
 import { parseRateAmount } from '../../utils/web3';
 import SubmitButton from './SubmitButton';
+import useAllowedTokens from '../../hooks/useAllowedTokens';
 
 interface IFormValues {
   title: string;
@@ -43,6 +44,7 @@ function ServiceForm() {
   const provider = useProvider({ chainId: import.meta.env.VITE_NETWORK_ID });
   const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
   const navigate = useNavigate();
+  const allowedTokenList = useAllowedTokens();
 
   const onSubmit = async (
     values: IFormValues,
@@ -51,11 +53,13 @@ function ServiceForm() {
       resetForm,
     }: { setSubmitting: (isSubmitting: boolean) => void; resetForm: () => void },
   ) => {
-    if (account?.isConnected === true && provider && signer) {
+    const token = allowedTokenList.find(token => token.address === values.rateToken);
+    if (account?.isConnected === true && provider && signer && token) {
       try {
         const parsedRateAmount = await parseRateAmount(
           values.rateAmount.toString(),
           values.rateToken,
+          token.decimals,
         );
         const parsedRateAmountString = parsedRateAmount.toString();
         const cid = await postToIPFS(
@@ -158,9 +162,9 @@ function ServiceForm() {
                   className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
                   placeholder=''>
                   <option value=''>Select a token</option>
-                  {Object.keys(config.tokens).map((address, index) => (
-                    <option key={index} value={address}>
-                      {config.tokens[address].symbol}
+                  {allowedTokenList.map((token, index) => (
+                    <option key={index} value={token.address}>
+                      {token.symbol}
                     </option>
                   ))}
                 </Field>

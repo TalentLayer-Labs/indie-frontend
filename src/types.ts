@@ -4,10 +4,10 @@ export type IUser = {
   id: string;
   handle: string;
   address: string;
-  cid: string;
   withPoh: boolean;
   rating: string;
   numReviews: string;
+  description: IUserDetails;
 };
 
 export type IUserDetails = {
@@ -42,18 +42,25 @@ export type IService = {
   createdAt: string;
   updatedAt: string;
   transaction: ITransaction;
+  platformId: number;
   proposals: IProposal[];
-  validatedProposal: IProposal[];
+  description: IServiceDetails;
+};
+
+export type IKeyword = {
+  id: string;
 };
 
 export type IServiceDetails = {
   title: string;
   about: string;
-  keywords: string;
-  recipient: string;
-  role: string;
+  keywords: IKeyword[];
   rateAmount: string;
   rateToken: string;
+  id: string;
+  keywords_raw: string;
+  startDate: string;
+  expectedEndDate: string;
 };
 
 export type IServiceDetailsBuyer = {
@@ -75,13 +82,14 @@ export type IReview = {
   service: IService;
   to: IUser;
   uri: string;
+  rating: number;
+  createdAt: string;
   description: IReviewDetails;
 };
 
 export type IReviewDetails = {
   id: string;
   content: string;
-  rating: string;
 };
 
 export enum ServiceStatusEnum {
@@ -97,8 +105,14 @@ export enum ProposalStatusEnum {
   Validated = 'Validated',
   Rejected = 'Rejected',
 }
+
 export type IProposalDetails = {
-  description: string;
+  id: string;
+  title: string;
+  about: string;
+  startDate: string;
+  expectedHours: string;
+  service: IService;
 };
 
 export type IProposal = {
@@ -109,14 +123,17 @@ export type IProposal = {
   rateToken: IToken;
   rateAmount: string;
   service: IService;
+  // transaction: ITransaction;
+  platformId: number;
   createdAt: string;
   updatedAt: string;
+  description: IProposalDetails;
 };
 
 export type IFees = {
   protocolEscrowFeeRate: number;
-  originPlatformEscrowFeeRate: number;
-  platformFeeRate: number;
+  originServiceFeeRate: number;
+  originValidatedProposalFeeRate: number;
 };
 
 export enum ProposalTypeEnum {

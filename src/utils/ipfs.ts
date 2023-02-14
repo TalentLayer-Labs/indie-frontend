@@ -25,8 +25,7 @@ export const IpfsIsSynced = async (cid: string): Promise<boolean> => {
   return new Promise<boolean>(async (resolve, reject) => {
     const interval = setInterval(async () => {
       const response = await fetch(cid);
-      const data = await response.json();
-      if (data) {
+      if (response.status === 200) {
         clearInterval(interval);
         resolve(true);
       }

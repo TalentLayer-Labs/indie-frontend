@@ -1,6 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { IServiceDetails } from '../types';
 
+/**
+ * Example of ipfs query implementation for a service
+ * Useful only if you need query non indexed data
+ * @param cid
+ */
 const useServiceDetails = (cid: string): IServiceDetails | null => {
   const [serviceDetails, setServiceDetails] = useState<IServiceDetails | null>(null);
 

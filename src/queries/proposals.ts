@@ -1,6 +1,6 @@
 import { processRequest } from '../utils/graphql';
 
-export const getAllProposalsbyServiceId = (id: string): Promise<any> => {
+export const getAllProposalsByServiceId = (id: string): Promise<any> => {
   const query = `
     {
       proposals(where: {service_: {id: "${id}"}}) {
@@ -8,6 +8,9 @@ export const getAllProposalsbyServiceId = (id: string): Promise<any> => {
           id,
           cid
           buyer {
+            id
+          }
+          platform {
             id
           }
         }
@@ -31,6 +34,16 @@ export const getAllProposalsbyServiceId = (id: string): Promise<any> => {
           withPoh
           rating
           numReviews
+        }
+        description {
+          title
+          id
+          about
+          expectedHours
+          startDate
+        }
+        platform {
+          id
         }
       }
     }
@@ -65,6 +78,13 @@ export const getAllProposalsByUser = (id: string): Promise<any> => {
               id
               handle
             }
+          }
+          description {
+            title
+            id
+            about
+            expectedHours
+            startDate
           }
         }
       }

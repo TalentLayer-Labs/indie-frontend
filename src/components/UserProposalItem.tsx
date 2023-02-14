@@ -1,18 +1,16 @@
 import { useContext } from 'react';
 import { NavLink } from 'react-router-dom';
 import TalentLayerContext from '../context/talentLayer';
-import useProposalDetails from '../hooks/useProposalDetails';
-import useServiceDetails from '../hooks/useServiceDetails';
 import { renderTokenAmount } from '../utils/conversion';
 import { IProposal, ProposalStatusEnum } from '../types';
 import { formatDate } from '../utils/dates';
+import useServiceById from '../hooks/useServiceById';
 
 function UserProposalItem({ proposal }: { proposal: IProposal }) {
   const { user } = useContext(TalentLayerContext);
-  const proposalDetail = useProposalDetails(proposal.cid);
-  const serviceDetail = useServiceDetails(proposal.service.cid);
+  const service = useServiceById(proposal.service.id);
 
-  if (!proposalDetail || !serviceDetail) {
+  if (!service) {
     return null;
   }
 
@@ -28,14 +26,15 @@ function UserProposalItem({ proposal }: { proposal: IProposal }) {
               className='w-10 mr-4 rounded-full'
             />
             <div className='flex flex-col'>
-              <p className='text-gray-900 font-medium'>{serviceDetail.title}</p>
+              <p className='text-gray-900 font-medium'>{service.description.title}</p>
               <p className='text-xs text-gray-500'>
                 Job created by {proposal.service.buyer.handle} the{' '}
                 {formatDate(Number(proposal.service.createdAt) * 1000)}
               </p>
             </div>
 
-            <span className='absolute right-0 inline-flex items-center rounded-full bg-indigo-100 px-2.5 py-1 text-xs font-medium text-indigo-800'>
+            <span
+              className='absolute right-0 inline-flex items-center rounded-full bg-indigo-100 px-2.5 py-1 text-xs font-medium text-indigo-800'>
               {proposal.status}
             </span>
           </div>
@@ -46,7 +45,7 @@ function UserProposalItem({ proposal }: { proposal: IProposal }) {
               {formatDate(Number(proposal.createdAt) * 1000)}
             </p>
             <p className='text-sm text-gray-500 mt-4'>
-              <strong>Message:</strong> {proposalDetail.description}
+              <strong>Message:</strong> {proposal.description.title}
             </p>
           </div>
         </div>

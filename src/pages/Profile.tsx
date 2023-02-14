@@ -5,6 +5,7 @@ import UserDetail from '../components/UserDetail';
 import UserServices from '../components/UserServices';
 import useUserById from '../hooks/useUserById';
 import LensModule from '../modules/Lens/LensModule';
+import PohModule from '../modules/Poh/pohModule';
 
 function Profile() {
   const { id } = useParams<{ id: string }>();

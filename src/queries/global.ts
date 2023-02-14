@@ -13,11 +13,34 @@ export const graphIsSynced = async (entity: string, cid: string): Promise<number
 };
 
 export const checkEntityByUri = (entity: string, cid: string): Promise<any> => {
+  let query;
+  if (entity.includes('Description')) {
+    query = `
+        {
+          ${entity}(where: {cid: "${cid}"}, first: 1) {
+            id
+            cid
+          }
+        } `;
+  } else {
+    query = `
+        {
+          ${entity}(where: {id: "${cid}"}, first: 1) {
+            id
+          }
+        } `;
+  }
+  return processRequest(query);
+};
+
+export const getAllowedTokenList = (): Promise<any> => {
   const query = `
       {
-        ${entity}(where: {cid: "${cid}"}, first: 1) {
-          id
-          cid
+         tokens(where: {allowed: true}) {
+            address
+            symbol
+            name
+            decimals
         }
       }
       `;

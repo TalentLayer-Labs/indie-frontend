@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getAllProposalsbyServiceId } from '../queries/proposals';
+import { getAllProposalsByServiceId } from '../queries/proposals';
 import { IProposal } from '../types';
 
 const useProposalsByService = (serviceId?: string | undefined): IProposal[] => {
@@ -9,7 +9,7 @@ const useProposalsByService = (serviceId?: string | undefined): IProposal[] => {
     const fetchData = async () => {
       if (serviceId) {
         try {
-          const response = await getAllProposalsbyServiceId(serviceId);
+          const response = await getAllProposalsByServiceId(serviceId);
 
           if (response?.data?.data?.proposals) {
             setProposals(response.data.data.proposals);
