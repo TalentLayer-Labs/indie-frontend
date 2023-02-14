@@ -21,7 +21,7 @@ function ValidateProposalModal({ proposal, account }: { proposal: IProposal; acc
     token: proposal.rateToken.address,
   });
 
-  const originValidatedProposalPlatformId = import.meta.env.VITE_PLATFORM_ID;
+  const originValidatedProposalPlatformId = proposal.platformId;
   const originServicePlatformId = proposal.service.platformId;
   const { protocolEscrowFeeRate, originValidatedProposalFeeRate, originServiceFeeRate } = useFees(
     originValidatedProposalPlatformId,
