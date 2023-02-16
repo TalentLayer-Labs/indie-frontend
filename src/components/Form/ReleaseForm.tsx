@@ -116,7 +116,7 @@ function ReleaseForm({
               {isBuyer && totalInEscrow.gt(0) && (
                 <button
                   type='submit'
-                  className='text-green-600 bg-green-50 hover:bg-green-500 hover:text-white px-5 py-2 rounded-lg'>
+                  className='hover:text-green-600 hover:bg-green-50 bg-green-500 text-white px-5 py-2 rounded-lg'>
                   Release the selected amount
                 </button>
               )}
