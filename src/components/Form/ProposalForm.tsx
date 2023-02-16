@@ -133,16 +133,6 @@ function ProposalForm({ user, service }: { user: IUser; service: IService }) {
                   placeholder=''
                 />
               </label>
-              <label className='block flex-1 mr-4'>
-                <span className='text-gray-700'>Expiration Date (Days)</span>
-                <Field
-                  type='number'
-                  id='expirationDate'
-                  name='expirationDate'
-                  className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
-                  placeholder=''
-                />
-              </label>
               <label className='block'>
                 <span className='text-gray-700'>Token</span>
                 <Field
@@ -160,6 +150,16 @@ function ProposalForm({ user, service }: { user: IUser; service: IService }) {
                 </Field>
               </label>
             </div>
+            <label className='block flex-1'>
+              <span className='text-gray-700'>Expiration Date (Days)</span>
+              <Field
+                type='number'
+                id='expirationDate'
+                name='expirationDate'
+                className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
+                placeholder=''
+              />
+            </label>
 
             <SubmitButton isSubmitting={isSubmitting} label='Post' />
           </div>
