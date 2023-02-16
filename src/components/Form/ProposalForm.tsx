@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useProvider, useSigner } from 'wagmi';
 import * as Yup from 'yup';
 import { config } from '../../config';
-import ServiceRegistry from '../../contracts/ABI/ServiceRegistry.json';
+import ServiceRegistry from '../../contracts/ABI/TalentLayerService.json';
 import { IService } from '../../types';
 import { postToIPFS } from '../../utils/ipfs';
 import { createMultiStepsTransactionToast, showErrorTransactionToast } from '../../utils/toast';
