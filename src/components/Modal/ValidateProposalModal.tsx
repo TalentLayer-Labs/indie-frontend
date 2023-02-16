@@ -24,18 +24,18 @@ function ValidateProposalModal({ proposal, account }: { proposal: IProposal; acc
   const originValidatedProposalPlatformId = proposal.platformId;
   const originServicePlatformId = proposal.service.platformId;
   const { protocolEscrowFeeRate, originValidatedProposalFeeRate, originServiceFeeRate } = useFees(
-    originValidatedProposalPlatformId,
     originServicePlatformId,
+    originValidatedProposalPlatformId,
   );
 
   const jobRateAmount = ethers.BigNumber.from(proposal.rateAmount);
   const protocolFee = jobRateAmount.mul(protocolEscrowFeeRate).div(FEE_RATE_DIVIDER);
-  const originPlatformFee = jobRateAmount.mul(originServiceFeeRate).div(FEE_RATE_DIVIDER);
+  const originServiceFee = jobRateAmount.mul(originServiceFeeRate).div(FEE_RATE_DIVIDER);
   const originValidatedProposalFee = jobRateAmount
     .mul(originValidatedProposalFeeRate)
     .div(FEE_RATE_DIVIDER);
   const totalAmount = jobRateAmount
-    .add(originPlatformFee)
+    .add(originServiceFee)
     .add(originValidatedProposalFee)
     .add(protocolFee);
 
@@ -49,6 +49,7 @@ function ValidateProposalModal({ proposal, account }: { proposal: IProposal; acc
       proposal.service.id,
       proposal.seller.id,
       proposal.rateToken.address,
+      proposal.cid,
       totalAmount,
     );
     setShow(false);
@@ -149,7 +150,7 @@ function ValidateProposalModal({ proposal, account }: { proposal: IProposal; acc
                       </span>
                     </p>
                     <p className='text-base  leading-4 text-gray-600'>
-                      +{renderTokenAmount(proposal.rateToken, originPlatformFee.toString())}
+                      +{renderTokenAmount(proposal.rateToken, originServiceFee.toString())}
                     </p>
                   </div>
                   <div className='flex justify-between items-center w-full'>

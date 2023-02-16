@@ -14,6 +14,7 @@ export const validateProposal = async (
   serviceId: string,
   proposalId: string,
   rateToken: string,
+  cid: string,
   value: ethers.BigNumber,
 ): Promise<void> => {
   const talentLayerEscrow = new Contract(
@@ -24,10 +25,12 @@ export const validateProposal = async (
 
   try {
     if (rateToken === ethers.constants.AddressZero) {
+      console.log({ value: value.toString(), serviceId, proposalId, cid });
       const tx1 = await talentLayerEscrow.createETHTransaction(
         'meta_evidence',
         parseInt(serviceId, 10),
         parseInt(proposalId, 10),
+        cid,
         {
           value,
         },
@@ -89,6 +92,7 @@ export const validateProposal = async (
         'meta_evidence',
         parseInt(serviceId, 10),
         parseInt(proposalId, 10),
+        cid,
       );
       const receipt2 = await toast.promise(provider.waitForTransaction(tx2.hash), {
         pending: {
