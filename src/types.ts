@@ -6,7 +6,7 @@ export type IUser = {
   address: string;
   rating: string;
   numReviews: string;
-  description: IUserDetails;
+  description?: IUserDetails;
 };
 
 export type IUserDetails = {
@@ -43,7 +43,8 @@ export type IService = {
   transaction: ITransaction;
   platformId: number;
   proposals: IProposal[];
-  description: IServiceDetails;
+  validatedProposal: IProposal[];
+  description?: IServiceDetails;
 };
 
 export type IKeyword = {
@@ -83,7 +84,7 @@ export type IReview = {
   uri: string;
   rating: number;
   createdAt: string;
-  description: IReviewDetails;
+  description?: IReviewDetails;
 };
 
 export type IReviewDetails = {
@@ -126,7 +127,7 @@ export type IProposal = {
   platformId: number;
   createdAt: string;
   updatedAt: string;
-  description: IProposalDetails;
+  description?: IProposalDetails;
 };
 
 export type IFees = {

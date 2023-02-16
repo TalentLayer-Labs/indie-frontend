@@ -27,22 +27,21 @@ function ProposalItem({ proposal }: { proposal: IProposal }) {
             />
             <div className='flex flex-col'>
               <p className='text-gray-900 font-medium'>
-                {proposal.seller.handle} - {service.description.title}
+                {proposal.seller.handle} - {service.description?.title}
               </p>
               <p className='text-xs text-gray-500'>
                 Proposal created the {formatDate(Number(proposal.createdAt) * 1000)}
               </p>
             </div>
 
-            <span
-              className='absolute right-0 inline-flex items-center rounded-full bg-indigo-100 px-2.5 py-1 text-xs font-medium text-indigo-800'>
+            <span className='absolute right-0 inline-flex items-center rounded-full bg-indigo-100 px-2.5 py-1 text-xs font-medium text-indigo-800'>
               {proposal.status}
             </span>
           </div>
 
           <div className=' border-t border-gray-100 w-full'>
             <p className='text-sm text-gray-500 mt-4'>
-              <strong>Message:</strong> {proposal.description.about}
+              <strong>Message:</strong> {proposal.description?.about}
             </p>
           </div>
         </div>
