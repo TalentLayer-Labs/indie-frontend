@@ -30,11 +30,11 @@ function MultiStepsTransactionToast({
       render: renderTransaction,
     },
     {
-      title: 'Synchronize onchain data',
+      title: 'Synchronize onChain data',
       status: currentStep > 2 ? 'complete' : currentStep == 2 ? 'current' : 'upcomming',
     },
     {
-      title: 'Synchronize offchain data',
+      title: 'Synchronize offChain data',
       status: currentStep > 3 ? 'complete' : currentStep == 3 ? 'current' : 'upcomming',
     },
   ];
