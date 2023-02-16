@@ -54,6 +54,7 @@ function ReviewForm({ serviceId }: { serviceId: string }) {
           signer,
         );
         const tx = await contract.addReview(
+          user.id,
           serviceId,
           uri,
           values.rating,
