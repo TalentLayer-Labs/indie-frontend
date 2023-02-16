@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useProvider, useSigner } from 'wagmi';
 import { config } from '../../config';
 import { releasePayment } from '../../contracts/releasePayment';
-import { IService, ServiceStatusEnum } from '../../types';
+import { IService, IToken, ServiceStatusEnum } from '../../types';
 import { renderTokenAmount } from '../../utils/conversion';
 
 interface IFormValues {
@@ -13,7 +13,7 @@ interface IFormValues {
 
 interface IReleaseFormProps {
   totalInEscrow: BigNumber;
-  rateToken: string;
+  rateToken: IToken;
   service: IService;
   isBuyer: boolean;
   closeModal: () => void;
@@ -29,7 +29,6 @@ function ReleaseForm({
   const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
   const provider = useProvider({ chainId: import.meta.env.VITE_NETWORK_ID });
   const [pourcent, setPourcentage] = useState(0);
-  const symbol = config.tokens[rateToken].symbol;
 
   const handleSubmit = async (values: any) => {
     if (!signer || !provider) {
@@ -109,8 +108,7 @@ function ReleaseForm({
               </div>
               {
                 <div className='pr-2 text-base font-semibold leading-4 text-gray-400  '>
-                  {amountSelected && renderTokenAmount(rateToken, amountSelected.toString())}
-                  {!amountSelected && '0 ' + `${symbol}`}
+                  {renderTokenAmount(rateToken, amountSelected ? amountSelected.toString() : '0')}
                 </div>
               }
             </div>

@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { renderTokenAmount } from '../utils/conversion';
+import { renderTokenAmount, renderTokenAmountFromConfig } from '../utils/conversion';
 import { IService } from '../types';
 import { formatDate } from '../utils/dates';
 
@@ -40,7 +40,10 @@ function ServiceItem({ service }: { service: IService }) {
         <div className='flex flex-row gap-4 justify-between items-center border-t border-gray-100 pt-4'>
           {service.description?.rateToken && (
             <p className='text-gray-900 font-bold line-clamp-1 max-w-[100px]'>
-              {renderTokenAmount(service.description.rateToken, service.description?.rateAmount)}
+              {renderTokenAmountFromConfig(
+                service.description.rateToken,
+                service.description.rateAmount,
+              )}
             </p>
           )}
           <NavLink

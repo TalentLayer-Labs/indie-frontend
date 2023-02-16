@@ -39,8 +39,7 @@ function UserGains({ user }: IProps) {
               </div>
               <div className='flex-grow flex flex-col ml-4'>
                 <span className='text-xl font-bold'>
-                  {/* {renderTokenAmount(gain.token.address, gain.totalGain)} */}
-                  {gain.totalGain} {gain.token.name}
+                  {renderTokenAmount(gain.token, gain.totalGain)}
                 </span>
               </div>
             </div>

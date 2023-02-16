@@ -4,7 +4,7 @@ import TalentLayerContext from '../context/talentLayer';
 import usePaymentsByService from '../hooks/usePaymentsByService';
 import useProposalsByService from '../hooks/useProposalsByService';
 import useReviewsByService from '../hooks/useReviewsByService';
-import { renderTokenAmount } from '../utils/conversion';
+import { renderTokenAmount, renderTokenAmountFromConfig } from '../utils/conversion';
 import { IService, ProposalStatusEnum, ServiceStatusEnum } from '../types';
 import { formatDate } from '../utils/dates';
 import PaymentModal from './Modal/PaymentModal';
@@ -72,7 +72,10 @@ function ServiceDetail({ service }: { service: IService }) {
               {service.description?.rateToken && (
                 <p className='text-sm text-gray-500 mt-4'>
                   <strong>Budget:</strong>{' '}
-                  {renderTokenAmount(service.description.rateToken, service.description.rateAmount)}
+                  {renderTokenAmountFromConfig(
+                    service.description.rateToken,
+                    service.description.rateAmount,
+                  )}
                 </p>
               )}
               <p className='text-sm text-gray-500 mt-4'>

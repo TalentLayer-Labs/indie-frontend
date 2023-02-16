@@ -81,7 +81,7 @@ function PaymentModal({ service, payments, isBuyer }: IPaymentModalProps) {
                   <div className='flex justify-between w-full'>
                     <p className='text-base leading-4 text-gray-800'>Job rate</p>
                     <p className='text-base  leading-4 text-gray-600'>
-                      {renderTokenAmount(rateToken.address, rateAmount)}
+                      {renderTokenAmount(rateToken, rateAmount)}
                     </p>
                   </div>
                   {payments.map((payment, index) => (
@@ -98,7 +98,7 @@ function PaymentModal({ service, payments, isBuyer }: IPaymentModalProps) {
                         </a>
                       </p>
                       <p className='text-base  leading-4 text-gray-600'>
-                        -{renderTokenAmount(rateToken.address, payment.amount)}
+                        -{renderTokenAmount(rateToken, payment.amount)}
                       </p>
                     </div>
                   ))}
@@ -108,7 +108,7 @@ function PaymentModal({ service, payments, isBuyer }: IPaymentModalProps) {
                     Total in the escrow
                   </p>
                   <p className='text-base  font-semibold leading-4 text-gray-600'>
-                    {renderTokenAmount(rateToken.address, totalInEscrow.toString())}
+                    {renderTokenAmount(rateToken, totalInEscrow.toString())}
                   </p>
                 </div>
               </div>
@@ -122,7 +122,7 @@ function PaymentModal({ service, payments, isBuyer }: IPaymentModalProps) {
             {isBuyer && totalInEscrow.gt(0) && show && (
               <ReleaseForm
                 totalInEscrow={totalInEscrow}
-                rateToken={rateToken.address}
+                rateToken={rateToken}
                 service={service}
                 isBuyer={isBuyer}
                 closeModal={() => setShow(false)}
