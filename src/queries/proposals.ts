@@ -41,6 +41,7 @@ export const getAllProposalsByServiceId = (id: string): Promise<any> => {
           expectedHours
           startDate
         }
+        expirationDate
         platform {
           id
         }
@@ -85,6 +86,7 @@ export const getAllProposalsByUser = (id: string): Promise<any> => {
             expectedHours
             startDate
           }
+          expirationDate
         }
       }
     `;

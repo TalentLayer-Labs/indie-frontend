@@ -113,6 +113,7 @@ export type IProposalDetails = {
   startDate: string;
   expectedHours: string;
   service: IService;
+  expirationDate: string;
 };
 
 export type IProposal = {
@@ -128,6 +129,7 @@ export type IProposal = {
   createdAt: string;
   updatedAt: string;
   description?: IProposalDetails;
+  expirationDate: string;
 };
 
 export type IFees = {
