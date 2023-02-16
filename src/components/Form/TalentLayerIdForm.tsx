@@ -1,17 +1,15 @@
-import { getParsedEthersError } from '@enzoferey/ethers-error-parser';
-import { EthersError } from '@enzoferey/ethers-error-parser/dist/types';
 import { useWeb3Modal } from '@web3modal/react';
 import { ethers } from 'ethers';
 import { Field, Form, Formik } from 'formik';
 import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
 import { useProvider, useSigner } from 'wagmi';
 import * as Yup from 'yup';
 import { config } from '../../config';
 import TalentLayerContext from '../../context/talentLayer';
 import TalentLayerID from '../../contracts/ABI/TalentLayerID.json';
-import TransactionToast from '../TransactionToast';
+import { createTalentLayerIdTransactionToast } from '../../utils/toast';
+import HelpPopover from '../HelpPopover';
 import SubmitButton from './SubmitButton';
 
 interface IFormValues {
@@ -43,7 +41,7 @@ function TalentLayerIdForm() {
     submittedValues: IFormValues,
     { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void },
   ) => {
-    if (account && account.isConnected && provider && signer) {
+    if (account && account.address && account.isConnected && provider && signer) {
       try {
         const contract = new ethers.Contract(
           config.contracts.talentLayerId,
@@ -52,38 +50,21 @@ function TalentLayerIdForm() {
         );
 
         const tx = await contract.mint(import.meta.env.VITE_PLATFORM_ID, submittedValues.handle);
-        const receipt = await toast.promise(provider.waitForTransaction(tx.hash), {
-          pending: {
-            render() {
-              return (
-                <TransactionToast message='Your update is in progress' transactionHash={tx.hash} />
-              );
-            },
+        await createTalentLayerIdTransactionToast(
+          {
+            pending: 'Minting your Talent Layer Id...',
+            success: 'Congrats! Your Talent Layer Id is minted',
+            error: 'An error occurred while creating your Talent Layer Id',
           },
-          success: 'Transaction resolved',
-          error: `Congrats ${submittedValues.handle}! Your Talent Layer Id is minted`,
-        });
+          provider,
+          tx,
+          account.address,
+        );
 
         setSubmitting(false);
-
-        if (receipt.status === 1) {
-          toast.promise(
-            new Promise(resolve =>
-              setTimeout(() => {
-                navigate(0);
-                resolve(true);
-              }, 20000),
-            ),
-            {
-              pending: 'Refreshing your data',
-            },
-          );
-        } else {
-          console.error('error');
-        }
+        // TODO: add a refresh function on TL context and call it here rather than hard refresh
+        navigate(0);
       } catch (error) {
-        const parsedEthersError = getParsedEthersError(error as EthersError);
-        toast.error(`${parsedEthersError.errorCode} - ${parsedEthersError.context}`);
         console.error(error);
       }
     } else {
@@ -122,8 +103,43 @@ function TalentLayerIdForm() {
               />
             </div>
 
-            <div className='sm:px-4 sm:space-x-4'>
+            <div className='sm:px-4 sm:space-x-4 relative'>
               <SubmitButton isSubmitting={isSubmitting} />
+              <HelpPopover>
+                <h3 className='font-semibold text-gray-900 dark:text-white'>
+                  What is a TalentLayerID?
+                </h3>
+                <p>
+                  TalentLayer ID is a work identity that allows ownership and growth of reputation
+                  across many gig marketplaces. TalentLayer IDs are ERC-721 NFTs that live inside
+                  crypto wallets; this means that reputation is self-custodied by the wallet owner
+                  and lives separately from integrated platforms.
+                </p>
+                <h3 className='font-semibold text-gray-900 dark:text-white'>What is the handle?</h3>
+                <p>
+                  Your TalentLayer ID Handle is a unique string of characters and numbers that you
+                  can choose when you create your TalentLayer ID. This handle is how others can
+                  search for your reputation. You can have a maximum of 10 characters in your
+                  TalentLayer ID.
+                </p>
+                <a
+                  target='_blank'
+                  href='https://docs.talentlayer.org/basics/elements/what-is-talentlayer-id'
+                  className='flex items-center font-medium text-blue-600 dark:text-blue-500 dark:hover:text-blue-600 hover:text-blue-700'>
+                  Read more{' '}
+                  <svg
+                    className='w-4 h-4 ml-1'
+                    aria-hidden='true'
+                    fill='currentColor'
+                    viewBox='0 0 20 20'
+                    xmlns='http://www.w3.org/2000/svg'>
+                    <path
+                      fillRule='evenodd'
+                      d='M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z'
+                      clipRule='evenodd'></path>
+                  </svg>
+                </a>
+              </HelpPopover>
             </div>
           </div>
         </Form>

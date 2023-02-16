@@ -2,13 +2,13 @@ import { useCallback } from 'react';
 import ToastStep from './ToastStep';
 
 function MultiStepsTransactionToast({
-  message,
   transactionHash,
   currentStep,
+  hasOffchainData = true,
 }: {
-  message: string;
   transactionHash: string;
   currentStep: number;
+  hasOffchainData?: boolean;
 }) {
   const renderTransaction = useCallback(() => {
     return (
@@ -30,14 +30,18 @@ function MultiStepsTransactionToast({
       render: renderTransaction,
     },
     {
-      title: 'Synchronize with The Graph',
+      title: 'Synchronize onchain data',
       status: currentStep > 2 ? 'complete' : currentStep == 2 ? 'current' : 'upcomming',
     },
     {
-      title: 'Synchronize with IPFS',
+      title: 'Synchronize offchain data',
       status: currentStep > 3 ? 'complete' : currentStep == 3 ? 'current' : 'upcomming',
     },
   ];
+
+  if (hasOffchainData === false) {
+    steps.splice(2, 1);
+  }
 
   return (
     <div className='py-6 px-2'>
