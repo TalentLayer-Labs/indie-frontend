@@ -89,13 +89,13 @@ const fuji: Config = {
 
 const mumbai: Config = {
   networkId: NetworkEnum.MUMBAI,
-  subgraphUrl: 'https://api.thegraph.com/subgraphs/name/akugone/aku-mumbai-talent-layer',
+  subgraphUrl: 'https://api.thegraph.com/subgraphs/name/talentlayer/talent-layer-mumbai',
   contracts: {
-    talentLayerId: '0x2C8Bd9ebF75804CA666a086e3F78bf5a44f1E680',
-    serviceRegistry: '0xF93A58801c48e264Ace3226555E08eEF64F2Cbee',
-    talentLayerReview: '0x33FF1518b5093BF29f494352CE8Cc434825363ff',
-    talentLayerEscrow: '0x322c25E2E47f927fFfE83BaE4BBc9eEdeD781d5c',
-    talentLayerPlatformId: '0x87a5c4f7F9a62647175dC0E6C914a572E1718a05',
+    talentLayerId: '0x286D04de10977D47EF9F1d50a7072cdeAd088D3E',
+    serviceRegistry: '0x8d2587494796A1547702Ea78E9c6359351901c4B',
+    talentLayerReview: '0x8398B0FfE674Ea993Cb38AE2E4e0Ac7111fE5852',
+    talentLayerEscrow: '0x2F9EBAc36cc020B81c4c624AbcfeC7DC8958Cf54',
+    talentLayerPlatformId: '0xa6f853Ba54cF24F203751D81b106A7D4e4eBFF14',
   },
   escrowConfig: {
     adminFee: '0',
