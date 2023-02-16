@@ -46,6 +46,9 @@ function UserProposalItem({ proposal }: { proposal: IProposal }) {
             <p className='text-sm text-gray-500 mt-4'>
               <strong>Message:</strong> {proposal.description?.title}
             </p>
+            <p className='text-sm text-gray-500 mt-4'>
+              <strong>Expiration Date:</strong> {formatDate(Number(proposal.expirationDate) * 1000)}
+            </p>
           </div>
         </div>
         <div className='flex flex-row gap-4 justify-between items-center border-t border-gray-100 pt-4'>
