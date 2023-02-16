@@ -7,12 +7,13 @@ import { useProvider, useSigner } from 'wagmi';
 import * as Yup from 'yup';
 import { config } from '../../config';
 import TalentLayerContext from '../../context/talentLayer';
-import ServiceRegistry from '../../contracts/ABI/ServiceRegistry.json';
+import ServiceRegistry from '../../contracts/ABI/TalentLayerService.json';
 import { postToIPFS } from '../../utils/ipfs';
 import { createMultiStepsTransactionToast, showErrorTransactionToast } from '../../utils/toast';
 import { parseRateAmount } from '../../utils/web3';
 import SubmitButton from './SubmitButton';
 import useAllowedTokens from '../../hooks/useAllowedTokens';
+import useUsers from '../../hooks/useUsers';
 
 interface IFormValues {
   title: string;
@@ -40,9 +41,10 @@ const validationSchema = Yup.object({
 
 function ServiceForm() {
   const { open: openConnectModal } = useWeb3Modal();
-  const { account } = useContext(TalentLayerContext);
+  const { user, account } = useContext(TalentLayerContext);
   const provider = useProvider({ chainId: import.meta.env.VITE_NETWORK_ID });
   const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
+
   const navigate = useNavigate();
   const allowedTokenList = useAllowedTokens();
 
@@ -78,7 +80,7 @@ function ServiceForm() {
           ServiceRegistry.abi,
           signer,
         );
-        const tx = await contract.createOpenServiceFromBuyer(import.meta.env.VITE_PLATFORM_ID, cid);
+        const tx = await contract.createService(user?.id, import.meta.env.VITE_PLATFORM_ID, cid);
         const newId = await createMultiStepsTransactionToast(
           {
             pending: 'Creating your job...',

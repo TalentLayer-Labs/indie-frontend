@@ -18,7 +18,7 @@ const useAllowedTokens = (): IToken[] => {
       }
     };
     fetchData();
-  });
+  }, []);
 
   return allowedTokens;
 };

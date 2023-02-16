@@ -31,7 +31,6 @@ export const getAllProposalsByServiceId = (id: string): Promise<any> => {
           handle
           address
           cid
-          withPoh
           rating
           numReviews
         }
@@ -42,6 +41,7 @@ export const getAllProposalsByServiceId = (id: string): Promise<any> => {
           expectedHours
           startDate
         }
+        expirationDate
         platform {
           id
         }
@@ -86,6 +86,7 @@ export const getAllProposalsByUser = (id: string): Promise<any> => {
             expectedHours
             startDate
           }
+          expirationDate
         }
       }
     `;

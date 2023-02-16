@@ -1,10 +1,10 @@
 import { BigNumber } from 'ethers';
 import { Field, Form, Formik } from 'formik';
-import { useEffect, useMemo, useState } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import { useProvider, useSigner } from 'wagmi';
-import { config } from '../../config';
+import TalentLayerContext from '../../context/talentLayer';
 import { releasePayment } from '../../contracts/releasePayment';
-import { IService, ServiceStatusEnum } from '../../types';
+import { IService, IToken, ServiceStatusEnum } from '../../types';
 import { renderTokenAmount } from '../../utils/conversion';
 
 interface IFormValues {
@@ -13,7 +13,7 @@ interface IFormValues {
 
 interface IReleaseFormProps {
   totalInEscrow: BigNumber;
-  rateToken: string;
+  rateToken: IToken;
   service: IService;
   isBuyer: boolean;
   closeModal: () => void;
@@ -26,18 +26,18 @@ function ReleaseForm({
   closeModal,
   isBuyer,
 }: IReleaseFormProps) {
+  const { user } = useContext(TalentLayerContext);
   const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
   const provider = useProvider({ chainId: import.meta.env.VITE_NETWORK_ID });
   const [pourcent, setPourcentage] = useState(0);
-  const symbol = config.tokens[rateToken].symbol;
 
   const handleSubmit = async (values: any) => {
-    if (!signer || !provider) {
+    if (!user || !signer || !provider) {
       return;
     }
     const pourcentToToken = totalInEscrow.mul(pourcent).div(100);
 
-    await releasePayment(signer, provider, service.transaction.id, pourcentToToken);
+    await releasePayment(signer, provider, user.id, service.transaction.id, pourcentToToken);
     closeModal();
   };
 
@@ -109,8 +109,7 @@ function ReleaseForm({
               </div>
               {
                 <div className='pr-2 text-base font-semibold leading-4 text-gray-400  '>
-                  {amountSelected && renderTokenAmount(rateToken, amountSelected.toString())}
-                  {!amountSelected && '0 ' + `${symbol}`}
+                  {renderTokenAmount(rateToken, amountSelected ? amountSelected.toString() : '0')}
                 </div>
               }
             </div>
@@ -118,7 +117,7 @@ function ReleaseForm({
               {isBuyer && totalInEscrow.gt(0) && (
                 <button
                   type='submit'
-                  className='text-green-600 bg-green-50 hover:bg-green-500 hover:text-white px-5 py-2 rounded-lg'>
+                  className='hover:text-green-600 hover:bg-green-50 bg-green-500 text-white px-5 py-2 rounded-lg'>
                   Release the selected amount
                 </button>
               )}

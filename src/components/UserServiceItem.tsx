@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { renderTokenAmount } from '../utils/conversion';
+import { renderTokenAmount, renderTokenAmountFromConfig } from '../utils/conversion';
 import { IService, IUser, ServiceStatusEnum } from '../types';
 import { formatDate } from '../utils/dates';
 import ServiceStatus from './ServiceStatus';
@@ -17,7 +17,7 @@ function UserServiceItem({ user, service }: { user: IUser; service: IService }) 
               className='w-10 mr-4 rounded-full'
             />
             <div className='flex flex-col'>
-              <p className='text-gray-900 font-medium'>{service.description.title}</p>
+              <p className='text-gray-900 font-medium'>{service.description?.title}</p>
               <p className='text-xs text-gray-500'>
                 created by {service.buyer.handle} the {formatDate(Number(service.createdAt) * 1000)}
               </p>
@@ -29,7 +29,7 @@ function UserServiceItem({ user, service }: { user: IUser; service: IService }) 
 
           <div className=' border-t border-gray-100 pt-4'>
             <div>
-              {service.description.keywords_raw.split(',').map((keyword, i) => (
+              {service.description?.keywords_raw.split(',').map((keyword, i) => (
                 <span
                   key={i}
                   className='inline-block bg-gray-200 rounded-full px-2 py-1 text-xs font-semibold text-gray-700 mr-2 mb-2'>
@@ -38,22 +38,26 @@ function UserServiceItem({ user, service }: { user: IUser; service: IService }) 
               ))}
             </div>
             <p className='text-sm text-gray-500  line-clamp-1 mt-4'>
-              <strong>About:</strong> {service.description.about}
+              <strong>About:</strong> {service.description?.about}
             </p>
           </div>
         </div>
 
         <div className='flex flex-row gap-4 justify-between items-center border-t border-gray-100 pt-4'>
-          <p className='text-gray-900 font-bold line-clamp-1 max-w-[100px]'>
-            {renderTokenAmount(service.description.rateToken, service.description.rateAmount)}
-          </p>
+          {service.description?.rateToken && (
+            <p className='text-gray-900 font-bold line-clamp-1 max-w-[100px]'>
+              {renderTokenAmountFromConfig(
+                service.description.rateToken,
+                service.description.rateAmount,
+              )}
+            </p>
+          )}
           <NavLink
             className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg relative'
             to={`/services/${service.id}`}>
             Show details
             {isBuyer && service.status == ServiceStatusEnum.Opened && (
-              <div
-                className='inline-flex absolute -top-2 -right-2 justify-center items-center w-6 h-6 text-xs font-bold text-white bg-indigo-700 rounded-full border-2 border-white'>
+              <div className='inline-flex absolute -top-2 -right-2 justify-center items-center w-6 h-6 text-xs font-bold text-white bg-indigo-700 rounded-full border-2 border-white'>
                 {service.proposals.length}
               </div>
             )}

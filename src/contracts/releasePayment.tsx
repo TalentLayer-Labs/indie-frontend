@@ -10,6 +10,7 @@ import TalentLayerEscrow from './ABI/TalentLayerEscrow.json';
 export const releasePayment = async (
   signer: Signer,
   provider: Provider,
+  profileId: string,
   transactionId: string,
   amount: BigNumber,
 ): Promise<void> => {
@@ -20,7 +21,11 @@ export const releasePayment = async (
   );
 
   try {
-    const tx = await talentLayerEscrow.release(parseInt(transactionId, 10), amount.toString());
+    const tx = await talentLayerEscrow.release(
+      profileId,
+      parseInt(transactionId, 10),
+      amount.toString(),
+    );
 
     const receipt = await toast.promise(provider.waitForTransaction(tx.hash), {
       pending: {
@@ -41,6 +46,7 @@ export const releasePayment = async (
     }
   } catch (error: any) {
     let errorMessage;
+    console.error(error);
     if (typeof error?.code === 'string') {
       const parsedEthersError = getParsedEthersError(error as EthersError);
       errorMessage = `${parsedEthersError.errorCode} - ${parsedEthersError.context}`;

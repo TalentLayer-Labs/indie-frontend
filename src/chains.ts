@@ -35,5 +35,5 @@ export const customChains = {
       default: { name: 'testnet.snowTrace', url: 'https://testnet.snowtrace.io/' },
     },
     testnet: false,
-  };
+  },
 };

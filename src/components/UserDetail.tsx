@@ -4,6 +4,7 @@ import TalentLayerContext from '../context/talentLayer';
 import { IUser } from '../types';
 import Loading from './Loading';
 import Stars from './Stars';
+import PohModule from '../modules/Poh/PohModule';
 import useUserById from '../hooks/useUserById';
 
 function UserDetail({ user }: { user: IUser }) {
@@ -36,7 +37,7 @@ function UserDetail({ user }: { user: IUser }) {
       </div>
       <div className=' border-t border-gray-100 pt-4 w-full'>
         <p className='text-sm text-gray-500 mt-4'>
-          <strong>Skills:</strong> {userDescription?.skills}
+          <strong>Skills:</strong> {userDescription?.skills_raw}
         </p>
         <p className='text-sm text-gray-500 mt-4'>
           <strong>About:</strong> {userDescription?.about}

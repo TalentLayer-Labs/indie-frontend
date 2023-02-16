@@ -1,13 +1,10 @@
 import { useEffect, useState } from 'react';
+import { getProtocolAndPlatformsFees } from '../queries/fees';
 import { IFees } from '../types';
-import {
-  getOriginProposalValidatedPlatformId,
-  getProtocolAndOriginServiceFee,
-} from '../queries/fees';
 
 const useFees = (
-  originValidatedProposalPlatformId: number,
   originServicePlatformId: number,
+  originValidatedProposalPlatformId: number,
 ): IFees => {
   const [fees, setFees] = useState({
     protocolEscrowFeeRate: 0,
@@ -23,21 +20,18 @@ const useFees = (
     };
     const fetchData = async () => {
       try {
-        const response1 = await getProtocolAndOriginServiceFee(originServicePlatformId);
-
-        if (response1?.data?.data?.protocols && response1?.data?.data?.platforms) {
-          fees.protocolEscrowFeeRate = response1.data.data.protocols[0].protocolEscrowFeeRate;
-          response1.data.data.platforms[0].originServiceFeeRate;
-        }
-
-        const response2 = await getOriginProposalValidatedPlatformId(
+        const response = await getProtocolAndPlatformsFees(
+          originServicePlatformId,
           originValidatedProposalPlatformId,
         );
-
-        if (response2?.data?.data?.protocols && response2?.data?.data?.platforms) {
+        const data = response.data.data;
+        if (data) {
+          fees.protocolEscrowFeeRate = data.protocols[0].protocolEscrowFeeRate;
+          fees.originServiceFeeRate = data.servicePlatform[0].originServiceFeeRate;
           fees.originValidatedProposalFeeRate =
-            response2.data.data.platforms[0].originValidatedProposalFeeRate;
+            data.proposalPlatform[0].originValidatedProposalFeeRate;
         }
+
         setFees(fees);
       } catch (err: any) {
         // eslint-disable-next-line no-console
@@ -45,7 +39,7 @@ const useFees = (
       }
     };
     fetchData();
-  }, []);
+  }, [originServicePlatformId, originValidatedProposalPlatformId]);
 
   return fees;
 };

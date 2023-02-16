@@ -37,7 +37,7 @@ function ProfileForm() {
   const initialValues: IFormValues = {
     title: userDescription?.title || '',
     about: userDescription?.about || '',
-    skills: userDescription?.skills || '',
+    skills: userDescription?.skills_raw || '',
   };
 
   const onSubmit = async (

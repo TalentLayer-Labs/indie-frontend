@@ -4,16 +4,15 @@ export type IUser = {
   id: string;
   handle: string;
   address: string;
-  withPoh: boolean;
   rating: string;
   numReviews: string;
-  description: IUserDetails;
+  description?: IUserDetails;
 };
 
 export type IUserDetails = {
   title: string;
   about: string;
-  skills: string;
+  skills_raw: string;
 };
 
 export type IAccount = {
@@ -44,7 +43,8 @@ export type IService = {
   transaction: ITransaction;
   platformId: number;
   proposals: IProposal[];
-  description: IServiceDetails;
+  validatedProposal: IProposal[];
+  description?: IServiceDetails;
 };
 
 export type IKeyword = {
@@ -84,7 +84,7 @@ export type IReview = {
   uri: string;
   rating: number;
   createdAt: string;
-  description: IReviewDetails;
+  description?: IReviewDetails;
 };
 
 export type IReviewDetails = {
@@ -113,6 +113,7 @@ export type IProposalDetails = {
   startDate: string;
   expectedHours: string;
   service: IService;
+  expirationDate: string;
 };
 
 export type IProposal = {
@@ -127,7 +128,8 @@ export type IProposal = {
   platformId: number;
   createdAt: string;
   updatedAt: string;
-  description: IProposalDetails;
+  description?: IProposalDetails;
+  expirationDate: string;
 };
 
 export type IFees = {

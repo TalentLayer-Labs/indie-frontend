@@ -24,18 +24,18 @@ function ValidateProposalModal({ proposal, account }: { proposal: IProposal; acc
   const originValidatedProposalPlatformId = proposal.platformId;
   const originServicePlatformId = proposal.service.platformId;
   const { protocolEscrowFeeRate, originValidatedProposalFeeRate, originServiceFeeRate } = useFees(
-    originValidatedProposalPlatformId,
     originServicePlatformId,
+    originValidatedProposalPlatformId,
   );
 
   const jobRateAmount = ethers.BigNumber.from(proposal.rateAmount);
   const protocolFee = jobRateAmount.mul(protocolEscrowFeeRate).div(FEE_RATE_DIVIDER);
-  const originPlatformFee = jobRateAmount.mul(originServiceFeeRate).div(FEE_RATE_DIVIDER);
+  const originServiceFee = jobRateAmount.mul(originServiceFeeRate).div(FEE_RATE_DIVIDER);
   const originValidatedProposalFee = jobRateAmount
     .mul(originValidatedProposalFeeRate)
     .div(FEE_RATE_DIVIDER);
   const totalAmount = jobRateAmount
-    .add(originPlatformFee)
+    .add(originServiceFee)
     .add(originValidatedProposalFee)
     .add(protocolFee);
 
@@ -49,6 +49,7 @@ function ValidateProposalModal({ proposal, account }: { proposal: IProposal; acc
       proposal.service.id,
       proposal.seller.id,
       proposal.rateToken.address,
+      proposal.cid,
       totalAmount,
     );
     setShow(false);
@@ -122,7 +123,7 @@ function ValidateProposalModal({ proposal, account }: { proposal: IProposal; acc
                   <div className='flex justify-between w-full'>
                     <p className='text-base leading-4 text-gray-800'>Job rate</p>
                     <p className='text-base  leading-4 text-gray-600'>
-                      {renderTokenAmount(proposal.rateToken.address, proposal.rateAmount)}
+                      {renderTokenAmount(proposal.rateToken, proposal.rateAmount)}
                     </p>
                   </div>
                   <div className='flex justify-between items-center w-full'>
@@ -134,10 +135,7 @@ function ValidateProposalModal({ proposal, account }: { proposal: IProposal; acc
                     </p>
                     <p className='text-base  leading-4 text-gray-600'>
                       +
-                      {renderTokenAmount(
-                        proposal.rateToken.address,
-                        originValidatedProposalFee.toString(),
-                      )}
+                      {renderTokenAmount(proposal.rateToken, originValidatedProposalFee.toString())}
                     </p>
                   </div>
                   <div className='flex justify-between items-center w-full'>
@@ -152,7 +150,7 @@ function ValidateProposalModal({ proposal, account }: { proposal: IProposal; acc
                       </span>
                     </p>
                     <p className='text-base  leading-4 text-gray-600'>
-                      +{renderTokenAmount(proposal.rateToken.address, originPlatformFee.toString())}
+                      +{renderTokenAmount(proposal.rateToken, originServiceFee.toString())}
                     </p>
                   </div>
                   <div className='flex justify-between items-center w-full'>
@@ -163,14 +161,14 @@ function ValidateProposalModal({ proposal, account }: { proposal: IProposal; acc
                       </span>
                     </p>
                     <p className='text-base  leading-4 text-gray-600'>
-                      +{renderTokenAmount(proposal.rateToken.address, protocolFee.toString())}
+                      +{renderTokenAmount(proposal.rateToken, protocolFee.toString())}
                     </p>
                   </div>
                 </div>
                 <div className='flex justify-between items-center w-full'>
                   <p className='text-base font-semibold leading-4 text-gray-800'>Total</p>
                   <p className='text-base  font-semibold leading-4 text-gray-600'>
-                    {renderTokenAmount(proposal.rateToken.address, totalAmount.toString())}
+                    {renderTokenAmount(proposal.rateToken, totalAmount.toString())}
                   </p>
                 </div>
               </div>

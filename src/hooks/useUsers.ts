@@ -9,6 +9,7 @@ const useUsers = (searchQuery?: string): IUser[] => {
     const fetchData = async () => {
       try {
         const response = await getUsers(import.meta.env.VITE_PLATFORM_ID, searchQuery);
+
         if (response?.data?.data?.users.length > 0) {
           setUsers(response.data.data.users);
         }
