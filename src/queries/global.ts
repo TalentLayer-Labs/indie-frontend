@@ -30,15 +30,14 @@ export const checkEntityByUri = (entity: string, cid: string): Promise<any> => {
   if (entity.includes('Description')) {
     query = `
         {
-          ${entity}(where: {cid: "${cid}"}, first: 1) {
+          ${entity}(where: {id: "${cid}"}, first: 1) {
             id
-            cid
           }
         } `;
   } else {
     query = `
         {
-          ${entity}(where: {id: "${cid}"}, first: 1) {
+          ${entity}(where: {cid: "${cid}"}, first: 1) {
             id
           }
         } `;
