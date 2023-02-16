@@ -5,7 +5,7 @@ import { useProvider, useSigner } from 'wagmi';
 import * as Yup from 'yup';
 import { config } from '../../config';
 import ServiceRegistry from '../../contracts/ABI/TalentLayerService.json';
-import { IService } from '../../types';
+import { IService, IUser } from '../../types';
 import { postToIPFS } from '../../utils/ipfs';
 import { createMultiStepsTransactionToast, showErrorTransactionToast } from '../../utils/toast';
 import { parseRateAmount } from '../../utils/web3';
@@ -17,21 +17,24 @@ interface IFormValues {
   description: string;
   rateToken: string;
   rateAmount: number;
+  expirationDate: number;
 }
 
 const initialValues: IFormValues = {
   description: '',
   rateToken: '',
   rateAmount: 0,
+  expirationDate: 15,
 };
 
 const validationSchema = Yup.object({
   description: Yup.string().required('description is required'),
   rateToken: Yup.string().required('rate is required'),
   rateAmount: Yup.string().required('amount is required'),
+  expirationDate: Yup.number().integer().required('expiration date is required'),
 });
 
-function ProposalForm({ service }: { service: IService }) {
+function ProposalForm({ user, service }: { user: IUser; service: IService }) {
   const provider = useProvider({ chainId: import.meta.env.VITE_NETWORK_ID });
   const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
   const navigate = useNavigate();
@@ -52,6 +55,10 @@ function ProposalForm({ service }: { service: IService }) {
           values.rateToken,
           token.decimals,
         );
+        const now = Math.floor(Date.now() / 1000);
+        const convertExpirationDate = now + 60 * 60 * 24 * values.expirationDate;
+        const convertExpirationDateString = convertExpirationDate.toString();
+
         const parsedRateAmountString = parsedRateAmount.toString();
         const uri = await postToIPFS(
           JSON.stringify({
@@ -66,11 +73,13 @@ function ProposalForm({ service }: { service: IService }) {
         );
 
         const tx = await contract.createProposal(
+          user.id,
           service.id,
           values.rateToken,
           parsedRateAmountString,
           import.meta.env.VITE_PLATFORM_ID,
           uri,
+          convertExpirationDateString,
         );
         await createMultiStepsTransactionToast(
           {
@@ -124,7 +133,16 @@ function ProposalForm({ service }: { service: IService }) {
                   placeholder=''
                 />
               </label>
-
+              <label className='block flex-1 mr-4'>
+                <span className='text-gray-700'>Expiration Date (Days)</span>
+                <Field
+                  type='number'
+                  id='expirationDate'
+                  name='expirationDate'
+                  className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
+                  placeholder=''
+                />
+              </label>
               <label className='block'>
                 <span className='text-gray-700'>Token</span>
                 <Field
