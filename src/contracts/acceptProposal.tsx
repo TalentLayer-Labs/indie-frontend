@@ -25,7 +25,6 @@ export const validateProposal = async (
 
   try {
     if (rateToken === ethers.constants.AddressZero) {
-      console.log({ value: value.toString(), serviceId, proposalId, cid });
       const tx1 = await talentLayerEscrow.createETHTransaction(
         'meta_evidence',
         parseInt(serviceId, 10),
