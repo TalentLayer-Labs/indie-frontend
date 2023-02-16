@@ -22,7 +22,7 @@ import { Web3Modal } from '@web3modal/react';
 import { Chain, configureChains, createClient, WagmiConfig } from 'wagmi';
 import { customChains } from './chains';
 
-const chains: Chain[] = [customChains.fuji];
+const chains: Chain[] = [customChains.polygonMumbai];
 
 // Wagmi client
 const { provider } = configureChains(chains, [

@@ -4,7 +4,6 @@ export type IUser = {
   id: string;
   handle: string;
   address: string;
-  withPoh: boolean;
   rating: string;
   numReviews: string;
   description: IUserDetails;

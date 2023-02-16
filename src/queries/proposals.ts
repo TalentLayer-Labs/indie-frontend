@@ -31,7 +31,6 @@ export const getAllProposalsByServiceId = (id: string): Promise<any> => {
           handle
           address
           cid
-          withPoh
           rating
           numReviews
         }

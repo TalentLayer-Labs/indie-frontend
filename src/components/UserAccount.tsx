@@ -8,6 +8,7 @@ import UserSubMenu from './UserSubMenu';
 
 function UserAccount() {
   const { account, user } = useContext(TalentLayerContext);
+
   const { data: avatarImage } = useEnsAvatar();
 
   return (

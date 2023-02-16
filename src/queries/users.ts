@@ -12,7 +12,6 @@ export const getUsers = (platformId?: string, searchQuery?: string): Promise<any
         id
         address
         handle
-        withPoh
         numReviews
         rating
       }
@@ -28,7 +27,6 @@ export const getUserById = (id: string): Promise<any> => {
         id
         address
         handle
-        withPoh
         rating
         numReviews
         updatedAt
@@ -56,7 +54,6 @@ export const getUserByAddress = (address: string): Promise<any> => {
         id
         address
         handle
-        withPoh
         rating
         numReviews
         updatedAt
