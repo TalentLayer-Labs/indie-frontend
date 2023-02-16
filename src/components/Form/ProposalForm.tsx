@@ -14,21 +14,21 @@ import SubmitButton from './SubmitButton';
 import useAllowedTokens from '../../hooks/useAllowedTokens';
 
 interface IFormValues {
-  description: string;
+  about: string;
   rateToken: string;
   rateAmount: number;
   expirationDate: number;
 }
 
 const initialValues: IFormValues = {
-  description: '',
+  about: '',
   rateToken: '',
   rateAmount: 0,
   expirationDate: 15,
 };
 
 const validationSchema = Yup.object({
-  description: Yup.string().required('description is required'),
+  about: Yup.string().required('about is required'),
   rateToken: Yup.string().required('rate is required'),
   rateAmount: Yup.string().required('amount is required'),
   expirationDate: Yup.number().integer().required('expiration date is required'),
@@ -62,7 +62,7 @@ function ProposalForm({ user, service }: { user: IUser; service: IService }) {
         const parsedRateAmountString = parsedRateAmount.toString();
         const uri = await postToIPFS(
           JSON.stringify({
-            description: values.description,
+            about: values.about,
           }),
         );
 
@@ -111,12 +111,12 @@ function ProposalForm({ user, service }: { user: IUser; service: IService }) {
           <h2 className=' mt-8 mb-2 text-gray-900 font-bold'>Detailed your proposal:</h2>
           <div className='grid grid-cols-1 gap-6 border border-gray-200 rounded-md p-8'>
             <label className='block'>
-              <span className='text-gray-700'>Description</span>
+              <span className='text-gray-700'>about</span>
               <Field
                 as='textarea'
-                id='description'
+                id='about'
                 rows={8}
-                name='description'
+                name='about'
                 className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
                 placeholder=''
               />
