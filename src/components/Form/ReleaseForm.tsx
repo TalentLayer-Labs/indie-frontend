@@ -1,8 +1,8 @@
 import { BigNumber } from 'ethers';
 import { Field, Form, Formik } from 'formik';
-import { useEffect, useMemo, useState } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import { useProvider, useSigner } from 'wagmi';
-import { config } from '../../config';
+import TalentLayerContext from '../../context/talentLayer';
 import { releasePayment } from '../../contracts/releasePayment';
 import { IService, IToken, ServiceStatusEnum } from '../../types';
 import { renderTokenAmount } from '../../utils/conversion';
@@ -26,17 +26,18 @@ function ReleaseForm({
   closeModal,
   isBuyer,
 }: IReleaseFormProps) {
+  const { user } = useContext(TalentLayerContext);
   const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
   const provider = useProvider({ chainId: import.meta.env.VITE_NETWORK_ID });
   const [pourcent, setPourcentage] = useState(0);
 
   const handleSubmit = async (values: any) => {
-    if (!signer || !provider) {
+    if (!user || !signer || !provider) {
       return;
     }
     const pourcentToToken = totalInEscrow.mul(pourcent).div(100);
 
-    await releasePayment(signer, provider, service.transaction.id, pourcentToToken);
+    await releasePayment(signer, provider, user.id, service.transaction.id, pourcentToToken);
     closeModal();
   };
 
