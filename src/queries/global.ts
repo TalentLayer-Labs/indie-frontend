@@ -1,7 +1,8 @@
 import { processRequest } from '../utils/graphql';
+import { getUserByAddress } from './users';
 
 export const graphIsSynced = async (entity: string, cid: string): Promise<number> => {
-  return new Promise<number>(async (resolve, reject) => {
+  return new Promise<number>((resolve, reject) => {
     const interval = setInterval(async () => {
       const response = await checkEntityByUri(entity, cid);
       if (response?.data?.data?.[entity][0]) {
@@ -9,6 +10,18 @@ export const graphIsSynced = async (entity: string, cid: string): Promise<number
         resolve(response?.data?.data?.[entity][0].id);
       }
     }, 5000);
+  });
+};
+
+export const graphUserIsSynced = async (address: string): Promise<number> => {
+  return new Promise<number>((resolve, reject) => {
+    const interval = setInterval(async () => {
+      const response = await getUserByAddress(address);
+      if (response?.data?.data?.['users'][0]) {
+        clearInterval(interval);
+        resolve(response?.data?.data?.['users'][0].id);
+      }
+    }, 3000);
   });
 };
 
