@@ -1,4 +1,4 @@
-import UserPohProfile from '../../modules/Poh/components/UserPohProfile';
+import UserPohProfile from './components/UserPohProfile';
 import usePohUser from './hooks/usePohUsers';
 
 interface IProps {

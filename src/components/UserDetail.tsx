@@ -4,6 +4,7 @@ import TalentLayerContext from '../context/talentLayer';
 import { IUser } from '../types';
 import Loading from './Loading';
 import Stars from './Stars';
+import PohModule from '../modules/Poh/PohModule';
 import useUserById from '../hooks/useUserById';
 
 function UserDetail({ user }: { user: IUser }) {
