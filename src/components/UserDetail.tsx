@@ -37,7 +37,7 @@ function UserDetail({ user }: { user: IUser }) {
       </div>
       <div className=' border-t border-gray-100 pt-4 w-full'>
         <p className='text-sm text-gray-500 mt-4'>
-          <strong>Skills:</strong> {userDescription?.skills}
+          <strong>Skills:</strong> {userDescription?.skills_raw}
         </p>
         <p className='text-sm text-gray-500 mt-4'>
           <strong>About:</strong> {userDescription?.about}
