@@ -9,6 +9,7 @@ import useServiceById from '../hooks/useServiceById';
 
 function CreateProposal() {
   const { account, user } = useContext(TalentLayerContext);
+
   const { id } = useParams<{ id: string }>();
   const service = useServiceById(id || '1');
 
@@ -24,7 +25,7 @@ function CreateProposal() {
       </p>
 
       <Steps targetTitle={'Filled the proposal form'} />
-      {account?.isConnected && user && <ProposalForm service={service} />}
+      {account?.isConnected && user && <ProposalForm user={user} service={service} />}
     </div>
   );
 }
