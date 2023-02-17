@@ -35,7 +35,7 @@ export const createMultiStepsTransactionToast = async (
       ),
     });
 
-    const entityId = await graphIsSynced(entity, newUri);
+    const entityId = await graphIsSynced(`${entity}s`, newUri);
     currentStep = 3;
     toast.update(toastId, {
       render: (
@@ -43,7 +43,7 @@ export const createMultiStepsTransactionToast = async (
       ),
     });
 
-    await graphIsSynced(`${entity.replace('s', '')}Description`, newUri);
+    await graphIsSynced(`${entity}Descriptions`, newUri);
     toast.update(toastId, {
       type: toast.TYPE.SUCCESS,
       render: messages.success,

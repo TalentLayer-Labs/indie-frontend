@@ -89,7 +89,7 @@ function ProposalForm({ user, service }: { user: IUser; service: IService }) {
           },
           provider,
           tx,
-          'proposals',
+          'proposal',
           uri,
         );
         setSubmitting(false);

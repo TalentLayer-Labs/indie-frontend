@@ -89,7 +89,7 @@ function ServiceForm() {
           },
           provider,
           tx,
-          'services',
+          'service',
           cid,
         );
         setSubmitting(false);
