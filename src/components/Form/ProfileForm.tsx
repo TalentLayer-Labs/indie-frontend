@@ -69,7 +69,7 @@ function ProfileForm() {
           },
           provider,
           tx,
-          'users',
+          'user',
           cid,
         );
 

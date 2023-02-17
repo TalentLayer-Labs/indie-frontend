@@ -68,7 +68,7 @@ function ReviewForm({ serviceId }: { serviceId: string }) {
           },
           provider,
           tx,
-          'reviews',
+          'review',
           uri,
         );
         setSubmitting(false);
