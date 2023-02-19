@@ -1,18 +1,16 @@
 import { useContext } from 'react';
 import TalentLayerContext from '../context/talentLayer';
-import useProposalDetails from '../hooks/useProposalDetails';
-import useServiceDetails from '../hooks/useServiceDetails';
 import { renderTokenAmount } from '../utils/conversion';
 import { IProposal, ProposalStatusEnum } from '../types';
 import { formatDate } from '../utils/dates';
 import ValidateProposalModal from './Modal/ValidateProposalModal';
+import useServiceById from '../hooks/useServiceById';
 
 function ProposalItem({ proposal }: { proposal: IProposal }) {
   const { user, account } = useContext(TalentLayerContext);
-  const proposalDetail = useProposalDetails(proposal.uri);
-  const serviceDetail = useServiceDetails(proposal.service.uri);
+  const service = useServiceById(proposal.service.id);
 
-  if (!proposalDetail || !serviceDetail) {
+  if (!service) {
     return null;
   }
 
@@ -29,7 +27,7 @@ function ProposalItem({ proposal }: { proposal: IProposal }) {
             />
             <div className='flex flex-col'>
               <p className='text-gray-900 font-medium'>
-                {proposal.seller.handle} - {serviceDetail.title}
+                {proposal.seller.handle} - {service.description?.title}
               </p>
               <p className='text-xs text-gray-500'>
                 Proposal created the {formatDate(Number(proposal.createdAt) * 1000)}
@@ -43,13 +41,16 @@ function ProposalItem({ proposal }: { proposal: IProposal }) {
 
           <div className=' border-t border-gray-100 w-full'>
             <p className='text-sm text-gray-500 mt-4'>
-              <strong>Message:</strong> {proposalDetail.description}
+              <strong>Message:</strong> {proposal.description?.about}
+            </p>
+            <p className='text-sm text-gray-500 mt-4'>
+              <strong>Expiration Date:</strong> {formatDate(Number(proposal.expirationDate) * 1000)}
             </p>
           </div>
         </div>
         <div className='flex flex-row gap-4 justify-between items-center border-t border-gray-100 pt-4'>
           <p className='text-gray-900 font-bold line-clamp-1 flex-1'>
-            {renderTokenAmount(proposal.rateToken.address, proposal.rateAmount)}
+            {renderTokenAmount(proposal.rateToken, proposal.rateAmount)}
           </p>
           {account && isBuyer && proposal.status === ProposalStatusEnum.Pending && (
             <ValidateProposalModal proposal={proposal} account={account} />

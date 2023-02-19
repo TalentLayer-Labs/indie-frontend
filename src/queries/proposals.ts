@@ -6,12 +6,15 @@ export const getAllProposalsByServiceId = (id: string): Promise<any> => {
       proposals(where: {service_: {id: "${id}"}}) {
         service {
           id,
-          uri
+          cid
           buyer {
             id
           }
+          platform {
+            id
+          }
         }
-        uri
+        cid
         id
         status
         rateToken {
@@ -27,10 +30,20 @@ export const getAllProposalsByServiceId = (id: string): Promise<any> => {
           id
           handle
           address
-          uri
-          withPoh
+          cid
           rating
           numReviews
+        }
+        description {
+          title
+          id
+          about
+          expectedHours
+          startDate
+        }
+        expirationDate
+        platform {
+          id
         }
       }
     }
@@ -51,7 +64,7 @@ export const getAllProposalsByUser = (id: string): Promise<any> => {
             symbol
           }
           status
-          uri
+          cid
           createdAt
           seller {
             id
@@ -59,13 +72,21 @@ export const getAllProposalsByUser = (id: string): Promise<any> => {
           }
           service {
             id
-            uri
+            cid
             createdAt
             buyer {
               id
               handle
             }
           }
+          description {
+            title
+            id
+            about
+            expectedHours
+            startDate
+          }
+          expirationDate
         }
       }
     `;

@@ -1,14 +1,17 @@
 import { processRequest } from '../utils/graphql';
 
-export const getUsers = (): Promise<any> => {
+export const getUsers = (platformId?: string, searchQuery?: string): Promise<any> => {
+  let condition = ', where: {';
+  condition += platformId ? `, platform: "${platformId}"` : '';
+  condition += searchQuery ? `, handle_contains_nocase: "${searchQuery}"` : '';
+  condition += '}';
+
   const query = `
     {
-      users(orderBy: rating, orderDirection: desc) {
+      users(orderBy: rating, orderDirection: desc ${condition}) {
         id
         address
-        uri
         handle
-        withPoh
         numReviews
         rating
       }
@@ -23,11 +26,21 @@ export const getUserById = (id: string): Promise<any> => {
       user(id: "${id}") {
         id
         address
-        uri
         handle
-        withPoh
         rating
         numReviews
+        updatedAt
+        createdAt
+        description {
+          about
+          country
+          headline
+          id
+          picture
+          title
+          timezone
+          skills_raw
+        }
       }
     }
     `;
@@ -41,9 +54,20 @@ export const getUserByAddress = (address: string): Promise<any> => {
         id
         address
         handle
-        withPoh
         rating
         numReviews
+        updatedAt
+        createdAt
+        description {
+          about
+          country
+          headline
+          id
+          picture
+          title
+          timezone
+          skills_raw
+        }
       }
     }
     `;

@@ -36,7 +36,7 @@ function UserPayments({ user }: { user: IUser }) {
               </div>
               <div className='flex-grow flex flex-col ml-4'>
                 <span className='text-xl font-bold'>
-                  {renderTokenAmount(payment.rateToken.address, payment.amount)}
+                  {renderTokenAmount(payment.rateToken, payment.amount)}
                 </span>
                 <div className='flex items-center justify-between'>
                   <span className='text-gray-500'>receive the 11/10 at 08:03</span>

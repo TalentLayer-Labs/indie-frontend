@@ -33,12 +33,12 @@ function Step({
             </>
           )}
           {status === 'inprogress' && (
-            <>
+            <span className='flex items-center animate-pulse'>
               <span className='flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border-2 border-indigo-600'>
                 <span className='text-indigo-600'>0{order}</span>
               </span>
               <span className='ml-4 text-sm font-medium text-indigo-600'>{title}</span>
-            </>
+            </span>
           )}
           {status === 'todo' && (
             <>

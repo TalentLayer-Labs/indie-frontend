@@ -1,13 +1,18 @@
 import { useContext } from 'react';
 import { NavLink } from 'react-router-dom';
 import TalentLayerContext from '../context/talentLayer';
-import useUserDetails from '../hooks/useUserDetails';
 import { IUser } from '../types';
 import Stars from './Stars';
+import Loading from './Loading';
+import useUserById from '../hooks/useUserById';
 
 function UserItem({ user }: { user: IUser }) {
   const { user: currentUser } = useContext(TalentLayerContext);
-  const userDetails = useUserDetails(user?.uri);
+  const userDescription = user?.id ? useUserById(user?.id)?.description : null;
+
+  if (!user?.id) {
+    return <Loading />;
+  }
 
   return (
     <div className='flex flex-row gap-2 rounded-xl p-4 border border-gray-200'>
@@ -20,7 +25,7 @@ function UserItem({ user }: { user: IUser }) {
             />
             <div className='flex flex-col'>
               <p className='text-gray-900 font-medium'>{user.handle}</p>
-              <p className='text-xs text-gray-500'>{userDetails?.title || '-'}</p>
+              <p className='text-xs text-gray-500'>{userDescription?.title || '-'}</p>
             </div>
           </div>
         </div>

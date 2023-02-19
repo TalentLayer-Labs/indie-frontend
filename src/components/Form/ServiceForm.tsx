@@ -1,17 +1,19 @@
 import { useWeb3Modal } from '@web3modal/react';
 import { ethers } from 'ethers';
 import { Field, Form, Formik } from 'formik';
-import { useContext, useEffect } from 'react';
+import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useProvider, useSigner } from 'wagmi';
 import * as Yup from 'yup';
 import { config } from '../../config';
 import TalentLayerContext from '../../context/talentLayer';
-import ServiceRegistry from '../../contracts/ABI/ServiceRegistry.json';
+import ServiceRegistry from '../../contracts/ABI/TalentLayerService.json';
 import { postToIPFS } from '../../utils/ipfs';
 import { createMultiStepsTransactionToast, showErrorTransactionToast } from '../../utils/toast';
 import { parseRateAmount } from '../../utils/web3';
 import SubmitButton from './SubmitButton';
+import useAllowedTokens from '../../hooks/useAllowedTokens';
+import useUsers from '../../hooks/useUsers';
 
 interface IFormValues {
   title: string;
@@ -39,10 +41,12 @@ const validationSchema = Yup.object({
 
 function ServiceForm() {
   const { open: openConnectModal } = useWeb3Modal();
-  const { account } = useContext(TalentLayerContext);
+  const { user, account } = useContext(TalentLayerContext);
   const provider = useProvider({ chainId: import.meta.env.VITE_NETWORK_ID });
   const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
+
   const navigate = useNavigate();
+  const allowedTokenList = useAllowedTokens();
 
   const onSubmit = async (
     values: IFormValues,
@@ -51,14 +55,16 @@ function ServiceForm() {
       resetForm,
     }: { setSubmitting: (isSubmitting: boolean) => void; resetForm: () => void },
   ) => {
-    if (account?.isConnected === true && provider && signer) {
+    const token = allowedTokenList.find(token => token.address === values.rateToken);
+    if (account?.isConnected === true && provider && signer && token) {
       try {
         const parsedRateAmount = await parseRateAmount(
           values.rateAmount.toString(),
           values.rateToken,
+          token.decimals,
         );
         const parsedRateAmountString = parsedRateAmount.toString();
-        const uri = await postToIPFS(
+        const cid = await postToIPFS(
           JSON.stringify({
             title: values.title,
             about: values.about,
@@ -74,7 +80,7 @@ function ServiceForm() {
           ServiceRegistry.abi,
           signer,
         );
-        const tx = await contract.createOpenServiceFromBuyer('1', uri);
+        const tx = await contract.createService(user?.id, import.meta.env.VITE_PLATFORM_ID, cid);
         const newId = await createMultiStepsTransactionToast(
           {
             pending: 'Creating your job...',
@@ -83,8 +89,8 @@ function ServiceForm() {
           },
           provider,
           tx,
-          'services',
-          uri,
+          'service',
+          cid,
         );
         setSubmitting(false);
         resetForm();
@@ -158,9 +164,9 @@ function ServiceForm() {
                   className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
                   placeholder=''>
                   <option value=''>Select a token</option>
-                  {Object.keys(config.tokens).map((address, index) => (
-                    <option key={index} value={address}>
-                      {config.tokens[address].symbol}
+                  {allowedTokenList.map((token, index) => (
+                    <option key={index} value={token.address}>
+                      {token.symbol}
                     </option>
                   ))}
                 </Field>

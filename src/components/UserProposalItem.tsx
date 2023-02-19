@@ -1,18 +1,16 @@
 import { useContext } from 'react';
 import { NavLink } from 'react-router-dom';
 import TalentLayerContext from '../context/talentLayer';
-import useProposalDetails from '../hooks/useProposalDetails';
-import useServiceDetails from '../hooks/useServiceDetails';
 import { renderTokenAmount } from '../utils/conversion';
 import { IProposal, ProposalStatusEnum } from '../types';
 import { formatDate } from '../utils/dates';
+import useServiceById from '../hooks/useServiceById';
 
 function UserProposalItem({ proposal }: { proposal: IProposal }) {
   const { user } = useContext(TalentLayerContext);
-  const proposalDetail = useProposalDetails(proposal.uri);
-  const serviceDetail = useServiceDetails(proposal.service.uri);
+  const service = useServiceById(proposal.service.id);
 
-  if (!proposalDetail || !serviceDetail) {
+  if (!service) {
     return null;
   }
 
@@ -28,7 +26,7 @@ function UserProposalItem({ proposal }: { proposal: IProposal }) {
               className='w-10 mr-4 rounded-full'
             />
             <div className='flex flex-col'>
-              <p className='text-gray-900 font-medium'>{serviceDetail.title}</p>
+              <p className='text-gray-900 font-medium'>{service.description?.title}</p>
               <p className='text-xs text-gray-500'>
                 Job created by {proposal.service.buyer.handle} the{' '}
                 {formatDate(Number(proposal.service.createdAt) * 1000)}
@@ -46,13 +44,16 @@ function UserProposalItem({ proposal }: { proposal: IProposal }) {
               {formatDate(Number(proposal.createdAt) * 1000)}
             </p>
             <p className='text-sm text-gray-500 mt-4'>
-              <strong>Message:</strong> {proposalDetail.description}
+              <strong>Message:</strong> {proposal.description?.title}
+            </p>
+            <p className='text-sm text-gray-500 mt-4'>
+              <strong>Expiration Date:</strong> {formatDate(Number(proposal.expirationDate) * 1000)}
             </p>
           </div>
         </div>
         <div className='flex flex-row gap-4 justify-between items-center border-t border-gray-100 pt-4'>
           <p className='text-gray-900 font-bold line-clamp-1 flex-1'>
-            {renderTokenAmount(proposal.rateToken.address, proposal.rateAmount)}
+            {renderTokenAmount(proposal.rateToken, proposal.rateAmount)}
           </p>
           <NavLink
             className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg'

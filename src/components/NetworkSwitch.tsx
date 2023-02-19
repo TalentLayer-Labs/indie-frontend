@@ -12,6 +12,12 @@ const chainIdToName = (chainId: number) => {
       return 'Goerli';
     case 1337:
       return 'Localhost';
+    case 43113:
+      return 'Fuji';
+    case 80001:
+      return 'Mumbai';
+    case 137:
+      return 'Polygon';
     default:
       return 'Unknown';
   }
@@ -44,14 +50,13 @@ function NetworkSwitch() {
         leaveTo='transform opacity-0 scale-95'>
         <Menu.Items className='absolute right-0 z-10 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none'>
           <div className='py-1'>
-            <Menu.Item key={5}>
-              <NetworkLink chaindId={5} chainName='Goerli' />
+            <Menu.Item key={import.meta.env.VITE_NETWORK_ID}>
+              <NetworkLink
+                key={import.meta.env.VITE_NETWORK_ID}
+                chaindId={import.meta.env.VITE_NETWORK_ID.toString()}
+                chainName={chainIdToName(parseInt(import.meta.env.VITE_NETWORK_ID))}
+              />
             </Menu.Item>
-            {/* {import.meta.env.DEV && (
-              <Menu.Item key={1337}>
-                <NetworkLink chaindId={1337} chainName='Localhost' />
-              </Menu.Item>
-            )} */}
           </div>
         </Menu.Items>
       </Transition>

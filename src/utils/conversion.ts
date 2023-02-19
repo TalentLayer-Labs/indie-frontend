@@ -31,3 +31,13 @@ export const renderTokenAmount = (tokenAddress: string, value: string): string =
   const formattedValue = getTokenAmount(tokenAddress, value);
   return `${formattedValue} ${symbol}`;
 };
+
+// TODO: query tokens list from graph
+export const renderTokenAmountFromConfig = (tokenAddress: string, value: string): string | null => {
+  if (config.tokens[tokenAddress] === undefined || !value) {
+    return null;
+  }
+  const symbol = config.tokens[tokenAddress].symbol;
+  const formattedValue = ethers.utils.formatUnits(value, config.tokens[tokenAddress].decimals);
+  return `${formattedValue} ${symbol}`;
+};
