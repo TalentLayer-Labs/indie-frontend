@@ -1,9 +1,9 @@
 import { NavLink } from 'react-router-dom';
 import Loading from './Loading';
-import usePlatformDetails from '../hooks/usePlatformDetails';
+import usePlatform from '../hooks/usePlatform';
 
 function PlatformDetail({ platformId }: { platformId: string }) {
-  const platform = usePlatformDetails(platformId);
+  const platform = usePlatform(platformId);
   const platformFee = Number(platform?.fee) / 100;
 
   if (!platform) {

@@ -4,13 +4,18 @@ import PlatformGains from '../components/PlatformGains';
 import PlatformDetail from '../components/PlatformDetail';
 import PlatformServices from '../components/PlatformServices';
 import { useProvider, useSigner } from 'wagmi';
-import usePlatformIdOfConnectedAccount from '../hooks/usePlatformIdOfConnectedAccount';
+import usePlatformByAddress from '../hooks/usePlatformByAddress';
+import { useAsync } from '../hooks/useAsync';
 
 function Dashboard() {
   const { account } = useContext(TalentLayerContext);
   const provider = useProvider({ chainId: import.meta.env.VITE_NETWORK_ID });
   const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
-  const platformIdOfConnectedAccount = usePlatformIdOfConnectedAccount(signer, provider);
+  const address =
+    useAsync(async () => {
+      return signer?.getAddress();
+    }).value || undefined;
+  const platformIdOfConnectedAccount = usePlatformByAddress(address);
   if (account?.isConnected === false && account?.isConnecting === false) {
     return null;
   }

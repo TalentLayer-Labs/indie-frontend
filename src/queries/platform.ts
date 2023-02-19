@@ -1,17 +1,47 @@
 import { processRequest } from '../utils/graphql';
 
-export const getPlatformDetails = (id: string | undefined): Promise<any> => {
+const platformFields = `
+  id
+  name
+  address
+  arbitrationFeeTimeout
+  arbitrator
+  arbitratorExtraData
+  cid
+  createdAt
+  fee
+  updatedAt
+`;
+
+const platformDescriptionFields = `
+  about
+  id
+  logo
+  website
+`;
+
+export const getPlatform = (id: string | undefined): Promise<any> => {
   const query = `
     {
       platform(id: ${id}) {
-        address
-        arbitrator
-        arbitrationFeeTimeout
-        arbitratorExtraData
-        createdAt
-        fee
-        id
-        name
+        ${platformFields}
+        description {
+          ${platformDescriptionFields}
+        }
+      }
+    }
+    `;
+  return processRequest(query);
+};
+
+export const getPlatformByAddress = (address: string | undefined): Promise<any> => {
+  const query = `
+    {
+      platforms(where: {address: "${address}"}) {
+        ${platformFields}
+        description {
+          ${platformDescriptionFields}
+        }
       }
     }
     `;

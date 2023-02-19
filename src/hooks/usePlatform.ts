@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react';
 import { IPlatform } from '../types';
-import { getPlatformDetails } from '../queries/platform';
+import { getPlatform } from '../queries/platform';
 
-const usePlatformDetails = (platformId: string | undefined): IPlatform | null => {
+const usePlatform = (platformId: string | undefined): IPlatform | null => {
   const [platformDetails, setPlatformDetails] = useState<IPlatform | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await getPlatformDetails(platformId);
+        const response = await getPlatform(platformId);
         if (response?.data?.data?.platform?.id) {
           setPlatformDetails(response.data.data.platform);
         }
@@ -23,4 +23,4 @@ const usePlatformDetails = (platformId: string | undefined): IPlatform | null =>
   return platformDetails;
 };
 
-export default usePlatformDetails;
+export default usePlatform;
