@@ -8,6 +8,9 @@ import { config } from '../config';
 import ERC20 from './ABI/ERC20.json';
 import TalentLayerEscrow from './ABI/TalentLayerEscrow.json';
 
+// TODO: need to generate this json duynamically and post it to IPFS to be use for dispute resolution
+export const metaEvidenceCid = 'QmQ2hcACF6r2Gf8PDxG4NcBdurzRUopwcaYQHNhSah6a8v';
+
 export const validateProposal = async (
   signer: Signer,
   provider: Provider,
@@ -28,7 +31,7 @@ export const validateProposal = async (
       const tx1 = await talentLayerEscrow.createTransaction(
         parseInt(serviceId, 10),
         parseInt(proposalId, 10),
-        'meta_evidence',
+        metaEvidenceCid,
         cid,
         {
           value,
@@ -90,7 +93,7 @@ export const validateProposal = async (
       const tx2 = await talentLayerEscrow.createTransaction(
         parseInt(serviceId, 10),
         parseInt(proposalId, 10),
-        'meta_evidence',
+        metaEvidenceCid,
         cid,
       );
       const receipt2 = await toast.promise(provider.waitForTransaction(tx2.hash), {
