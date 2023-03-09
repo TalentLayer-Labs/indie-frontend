@@ -6,7 +6,6 @@ interface IMessageComposerProps {
   setMessageContent: Dispatch<SetStateAction<string>>;
   sendNewMessage: () => void;
   sendingPending: boolean;
-  messageSendingErrorMsg: string;
   peerUserExists: boolean;
 }
 
@@ -15,12 +14,11 @@ const MessageComposer = ({
   messageContent,
   sendNewMessage,
   sendingPending,
-  messageSendingErrorMsg,
   peerUserExists,
 }: IMessageComposerProps) => {
-  console.log('peerUserExists', peerUserExists);
+  console.log('peerUserExists - MessageComposer', peerUserExists);
 
-  //TODO Disabling button not working yet
+  //TODO Disabling button not working yet. YES WORKING but style not so good
   const renderSendButton = (peerUserExists: boolean, sendingPending: boolean) => {
     return (
       !sendingPending && (
@@ -42,16 +40,12 @@ const MessageComposer = ({
           type='text'
           onChange={e => setMessageContent(e.target.value)}
           placeholder='Write a message'
+          disabled={!peerUserExists}
           value={messageContent}
         />
         {sendingPending && <Loading />}
         {renderSendButton(peerUserExists, sendingPending)}
       </div>
-      {messageSendingErrorMsg && (
-        <div>
-          <p className={'text-red-400 ml-1'}>{messageSendingErrorMsg}</p>
-        </div>
-      )}
     </>
   );
 };

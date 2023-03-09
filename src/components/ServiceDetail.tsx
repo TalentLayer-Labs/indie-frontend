@@ -28,7 +28,7 @@ function ServiceDetail({ service }: { service: IService }) {
   const { initPush, conversationMessages } = useContext(PushContext);
   const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
 
-  const serviceDetail = useServiceDetails(service.uri);
+  const serviceDetail = useServiceDetails(service.cid);
   const { reviews } = useReviewsByService(service.id);
   const proposals = useProposalsByService(service.id);
   const payments = usePaymentsByService(service.id);

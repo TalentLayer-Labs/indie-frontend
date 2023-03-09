@@ -8,6 +8,8 @@ import useServiceById from '../hooks/useServiceById';
 
 function ProposalItem({ proposal }: { proposal: IProposal }) {
   const { user, account } = useContext(TalentLayerContext);
+  const proposalDetail = useProposalDetails(proposal.cid);
+  const serviceDetail = useServiceDetails(proposal.service.cid);
   const service = useServiceById(proposal.service.id);
 
   if (!service) {
