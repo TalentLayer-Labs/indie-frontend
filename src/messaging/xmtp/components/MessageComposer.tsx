@@ -6,7 +6,8 @@ interface IMessageComposerProps {
   setMessageContent: Dispatch<SetStateAction<string>>;
   sendNewMessage: () => void;
   sendingPending: boolean;
-  peerUserExists: boolean;
+  peerUserExistsOnXMTP: boolean;
+  peerUserExistsOnTalentLayer: boolean;
 }
 
 const MessageComposer = ({
@@ -14,18 +15,17 @@ const MessageComposer = ({
   messageContent,
   sendNewMessage,
   sendingPending,
-  peerUserExists,
+  peerUserExistsOnXMTP,
+  peerUserExistsOnTalentLayer,
 }: IMessageComposerProps) => {
-  console.log('peerUserExists - MessageComposer', peerUserExists);
 
-  //TODO Disabling button not working yet. YES WORKING but style not so good
   const renderSendButton = (peerUserExists: boolean, sendingPending: boolean) => {
     return (
       !sendingPending && (
         <button
           className='bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-full'
           onClick={sendNewMessage}
-          disabled={!peerUserExists}>
+          disabled={!peerUserExists || !peerUserExistsOnTalentLayer}>
           Send
         </button>
       )
@@ -40,11 +40,11 @@ const MessageComposer = ({
           type='text'
           onChange={e => setMessageContent(e.target.value)}
           placeholder='Write a message'
-          disabled={!peerUserExists}
+          disabled={!peerUserExistsOnXMTP || !peerUserExistsOnTalentLayer}
           value={messageContent}
         />
         {sendingPending && <Loading />}
-        {renderSendButton(peerUserExists, sendingPending)}
+        {renderSendButton(peerUserExistsOnXMTP, sendingPending)}
       </div>
     </>
   );
