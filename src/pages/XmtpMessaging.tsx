@@ -1,18 +1,18 @@
-import { useContext, useState } from 'react';
-import { XmtpContext } from '../messaging/xmtp/context/XmtpContext';
+import {useContext, useState} from 'react';
+import {XmtpContext} from '../messaging/xmtp/context/XmtpContext';
 import TalentLayerContext from '../context/talentLayer';
-import { useSigner } from 'wagmi';
-import { watchAccount } from '@wagmi/core';
+import {useSigner} from 'wagmi';
+import {watchAccount} from '@wagmi/core';
 import ConversationList from '../messaging/xmtp/components/ConversationList';
 import CardHeader from '../messaging/xmtp/components/CardHeader';
 import MessageList from '../messaging/xmtp/components/MessageList';
 import useStreamConversations from '../messaging/xmtp/hooks/useStreamConversations';
 import useSendMessage from '../messaging/xmtp/hooks/useSendMessage';
 import MessageComposer from '../messaging/xmtp/components/MessageComposer';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import {useLocation, useNavigate, useParams} from 'react-router-dom';
 import useUserByAddress from '../hooks/useUserByAddress';
-import { ChatMessageStatus, XmtpChatMessage } from '../types';
-import { NON_EXISTING_XMTP_USER_ERROR_MESSAGE } from '../messaging/xmtp/hooks/useStreamMessages';
+import {ChatMessageStatus, XmtpChatMessage} from '../types';
+import {NON_EXISTING_XMTP_USER_ERROR_MESSAGE} from '../messaging/xmtp/hooks/useStreamMessages';
 
 //TODO: Integrate "New message" + update when new conversation created
 //TODO: Register user to XMTP when profile being created ? When proposal + job being created + button if want before?
@@ -57,7 +57,7 @@ function XmtpMessaging() {
 
   watchAccount(() => {
     providerState?.disconnect?.();
-    navigate(`/messaging`);
+    selectedConversationPeerAddress ? navigate(`/messaging/${selectedConversationPeerAddress}`) : navigate(`/messaging`);
   });
 
   // Listens to new conversations ? ==> Yes, & sets them in "xmtp context". Stream stops "onDestroy"
@@ -134,24 +134,20 @@ function XmtpMessaging() {
    ...Rest
    */
 
-  return (
-    <div className='mx-auto text-gray-900 sm:px-4 lg:px-0'>
+  return (<div className='mx-auto text-gray-900 sm:px-4 lg:px-0'>
       <p className='text-5xl font-medium tracking-wider mb-8'>
         Indie <span className='text-indigo-600'>Chat </span>
       </p>
 
-      {!providerState?.client && (
-        <button
+      {!providerState?.client && (<button
           type='submit'
           className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
           onClick={() => handleXmtpConnect()}>
           Connect to XMTP
-        </button>
-      )}
-      {providerState?.client && (
-        // <div className='border-2 rounded-md'>
+        </button>)}
+      {providerState?.client && (// <div className='border-2 rounded-md'>
         <>
-          <CardHeader peerAddress={selectedConversationPeerAddress} />
+          <CardHeader peerAddress={selectedConversationPeerAddress}/>
           <div className='flex flex-row'>
             <div className='basis-1/4 h-[calc(100vh-16rem)] flex-no-wrap flex-none overflow-y-auto border-r-2'>
               <ConversationList
@@ -161,37 +157,34 @@ function XmtpMessaging() {
                 // setSelectedConversationPeerAddress={setSelectedConversationPeerAddress}
               />
             </div>
-            {providerState?.client && selectedConversationPeerAddress && user?.id && peerUser?.id && (
-              <div className='basis-3/4 w-full pl-5 flex flex-col justify-between h-[calc(100vh-16rem)]'>
-                <div className='overflow-y-auto'>
-                  <MessageList
-                    conversationMessages={
-                      providerState.conversationMessages.get(selectedConversationPeerAddress) ?? []
-                    }
-                    selectedConversationPeerAddress={selectedConversationPeerAddress}
-                    userId={user?.id}
-                    peerUserId={peerUser?.id}
-                    messagesLoading={providerState.loadingMessages}
-                    setMessageSendingErrorMsg={setMessageSendingErrorMsg}
+            {providerState?.client && selectedConversationPeerAddress && user?.id && // peerUser?.id &&
+              (<div className='basis-3/4 w-full pl-5 flex flex-col justify-between h-[calc(100vh-16rem)]'>
+                  <div className='overflow-y-auto'>
+                    <MessageList
+                      conversationMessages={providerState.conversationMessages.get(selectedConversationPeerAddress) ?? []}
+                      selectedConversationPeerAddress={selectedConversationPeerAddress}
+                      userId={user?.id}
+                      peerUserId={peerUser?.id as string}
+                      messagesLoading={providerState.loadingMessages}
+                      setMessageSendingErrorMsg={setMessageSendingErrorMsg}
+                      peerUserExists={messageSendingErrorMsg !== NON_EXISTING_XMTP_USER_ERROR_MESSAGE}
+                      isNewMessage={state?.newMessage}
+                    />
+                  </div>
+                  {!providerState.loadingMessages && <MessageComposer
+                    messageContent={messageContent}
+                    setMessageContent={setMessageContent}
+                    sendNewMessage={sendNewMessage}
+                    sendingPending={sendingPending}
                     peerUserExists={messageSendingErrorMsg !== NON_EXISTING_XMTP_USER_ERROR_MESSAGE}
-                    isNewMessage={state?.newMessage}
-                  />
-                </div>
-                <MessageComposer
-                  messageContent={messageContent}
-                  setMessageContent={setMessageContent}
-                  sendNewMessage={sendNewMessage}
-                  sendingPending={sendingPending}
-                  messageSendingErrorMsg={messageSendingErrorMsg}
-                  peerUserExists={messageSendingErrorMsg !== NON_EXISTING_XMTP_USER_ERROR_MESSAGE}
-                />
-              </div>
-            )}
+                  />}
+                </div>)}
           </div>
-        </>
-      )}
-    </div>
-  );
+          {messageSendingErrorMsg && (<div className={'text-center'}>
+              <p className={'text-red-400 ml-1'}>{messageSendingErrorMsg}</p>
+            </div>)}
+        </>)}
+    </div>);
 }
 
 export default XmtpMessaging;

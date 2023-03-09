@@ -5,7 +5,7 @@ export type IUser = {
   id: string;
   handle: string;
   address: string;
-  uri: string;
+  cid: string;
   withPoh: boolean;
   rating: string;
   numReviews: string;
@@ -39,7 +39,7 @@ export type IService = {
   seller: IUser;
   sender: IUser;
   recipient: IUser;
-  uri: string;
+  cid: string;
   createdAt: string;
   updatedAt: string;
   transaction: ITransaction;
@@ -75,7 +75,7 @@ export type IReview = {
   id: string;
   service: IService;
   to: IUser;
-  uri: string;
+  cid: string;
 };
 
 export type IReviewDetails = {
@@ -103,7 +103,7 @@ export type IProposalDetails = {
 
 export type IProposal = {
   id: string;
-  uri: string;
+  cid: string;
   status: ProposalStatusEnum;
   seller: IUser;
   rateToken: IToken;
@@ -139,6 +139,7 @@ export enum NetworkEnum {
   LOCAL = 1337,
   GOERLI = 5,
   FUJI = 43113,
+  MUMBAI = 80001,
 }
 
 export type IToken = {

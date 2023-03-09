@@ -22,7 +22,7 @@ export const getServices = (
         id
         status
         createdAt
-        uri
+        cid
         buyer {
           id
           handle
@@ -46,7 +46,7 @@ export const getServiceById = (id: string): Promise<any> => {
         id
         status
         createdAt
-        uri
+        cid
         transaction {
           id
         }

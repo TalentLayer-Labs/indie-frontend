@@ -13,7 +13,7 @@ export const getReviewsByService = (serviceId: string): Promise<any> => {
           id
           handle
         }
-        uri
+        cid
       }
     }
     `;
