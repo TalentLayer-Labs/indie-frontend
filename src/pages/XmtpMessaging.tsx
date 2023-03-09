@@ -171,17 +171,21 @@ function XmtpMessaging() {
                       isNewMessage={state?.newMessage}
                     />
                   </div>
-                  {!providerState.loadingMessages && <MessageComposer
+                  {(!providerState.loadingMessages || messageSendingErrorMsg) && <MessageComposer
                     messageContent={messageContent}
                     setMessageContent={setMessageContent}
                     sendNewMessage={sendNewMessage}
                     sendingPending={sendingPending}
-                    peerUserExists={messageSendingErrorMsg !== NON_EXISTING_XMTP_USER_ERROR_MESSAGE}
+                    peerUserExistsOnXMTP={(messageSendingErrorMsg !== NON_EXISTING_XMTP_USER_ERROR_MESSAGE)}
+                    peerUserExistsOnTalentLayer={(!!peerUser)}
                   />}
                 </div>)}
           </div>
           {messageSendingErrorMsg && (<div className={'text-center'}>
               <p className={'text-red-400 ml-1'}>{messageSendingErrorMsg}</p>
+            </div>)}
+          {!peerUser && (<div className={'text-center'}>
+              <p className={'text-red-400 ml-1'}>User is not registered with TalentLayer</p>
             </div>)}
         </>)}
     </div>);

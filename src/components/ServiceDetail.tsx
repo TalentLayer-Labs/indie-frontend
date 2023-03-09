@@ -48,7 +48,7 @@ function ServiceDetail({ service }: { service: IService }) {
         }
 
         const buyerAddress = ethers.utils.getAddress(service.buyer?.address);
-        let newMessage = false;
+        let newMessage: boolean;
         // Check if conversation exists
         conversationMessages?.get(buyerAddress)?.length === 0
           ? (newMessage = true)
@@ -70,7 +70,7 @@ function ServiceDetail({ service }: { service: IService }) {
           }
         }
         const buyerAddress = ethers.utils.getAddress(service.buyer?.address);
-        let newMessage = false;
+        let newMessage: boolean;
         // Check if conversation exists
         providerState?.conversationMessages?.get(buyerAddress)?.length === 0
           ? (newMessage = true)
