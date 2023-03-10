@@ -24,7 +24,7 @@ import { PushProvider } from './messaging/push/context/pushUser';
 import XmtpMessaging from './pages/XmtpMessaging';
 import { XmtpContextProvider } from './messaging/xmtp/context/XmtpContext';
 
-const chains = [chain.goerli];
+const chains = [chain.polygonMumbai];
 
 // Wagmi client
 const { provider } = configureChains(chains, [

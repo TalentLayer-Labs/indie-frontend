@@ -36,16 +36,21 @@ const MessageList = ({
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   });
 
-  console.log('messagesLoading', messagesLoading);
-  console.log('isNewMessage', isNewMessage);
+  // console.log('messagesLoading', messagesLoading);
+  // console.log('isNewMessage', isNewMessage);
+  // console.log('peerUserExists', peerUserExists);
+  // console.log('conversationMessages.length', conversationMessages.length);
+  // console.log('selectedConversationPeerAddress', selectedConversationPeerAddress);
   return (
     <div className='flex flex-col mt-5'>
-      {isNewMessage ||
-        !peerUserExists ||
-        (conversationMessages.length === 0 && selectedConversationPeerAddress && (
-          // messagesLoading &&
+      {
+        // isNewMessage ||
+        // !peerUserExists ||
+        // (conversationMessages.length === 0 && selectedConversationPeerAddress && (
+          messagesLoading &&
           <Loading />
-        ))}
+        // ))
+      }
       {conversationMessages.map((msg, index) => {
         const messageCard = (
           <div key={index}>

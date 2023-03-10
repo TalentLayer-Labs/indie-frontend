@@ -84,6 +84,36 @@ const fuji: Config = {
   },
 };
 
+const mumbai: Config = {
+  networkId: NetworkEnum.MUMBAI,
+  contracts: {
+    talentLayerId: '0xB5450307Cdd7B5dD9a54d75C5a6Fc5F853E92539',
+    serviceRegistry: '0x1c6d7630be1d1Fb496f2Fb49c7E7b7DaEC18f49F',
+    talentLayerReview: '0xb9E2c09A9Dc42d1a7d9DF99C96ce4EafE31A814c',
+    talentLayerEscrow: '0x940417dCFFb89821e1fac558DD725D5F88cD9AEb',
+    talentLayerPlatformId: '0x7d627A6748B6A1387961F2f592D117faDdDA86f5',
+  },
+  escrowConfig: {
+    adminFee: '0',
+    adminWallet: '0x9F89836C22f250595DEA30327af026bA1c029f28',
+    timeoutPayment: 3600 * 24 * 7,
+  },
+  tokens: {
+    [ethers.constants.AddressZero]: {
+      address: ethers.constants.AddressZero,
+      symbol: 'MATIC',
+      name: 'Matic',
+      decimals: 18,
+    },
+    '0xAF82969ECF299c1f1Bb5e1D12dDAcc9027431160': {
+      address: '0xAF82969ECF299c1f1Bb5e1D12dDAcc9027431160',
+      symbol: 'USDC',
+      name: 'USDC Stablecoin',
+      decimals: 6,
+    },
+  },
+};
+
 const local: Config = {
   networkId: NetworkEnum.LOCAL,
   contracts: {
@@ -116,6 +146,7 @@ const chains: { [networkId in NetworkEnum]: Config } = {
   [NetworkEnum.LOCAL]: local,
   [NetworkEnum.GOERLI]: goerli,
   [NetworkEnum.FUJI]: fuji,
+  [NetworkEnum.MUMBAI]: mumbai,
 };
 
 export const config = chains[+import.meta.env.VITE_NETWORK_ID as NetworkEnum];
