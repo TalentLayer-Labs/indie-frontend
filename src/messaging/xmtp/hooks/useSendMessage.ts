@@ -17,6 +17,7 @@ const useSendMessage = (peerAddress: string, senderId: string | undefined) => {
   //Normally returns a Promise<DecodedMessage>
   //TODO if implement contentType, check if it's a string or an object
   const sendMessage = async (message: string): Promise<DecodedMessage> => {
+    console.log("client, peerAddress, peerUser?.id, senderId", client, peerAddress, peerUser?.id, senderId)
     if (!client || !peerAddress || !peerUser?.id || !senderId) {
       throw new Error('Message sending failed');
     }

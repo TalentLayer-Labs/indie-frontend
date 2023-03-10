@@ -16,7 +16,7 @@ function CreateService() {
   const userExists = (): boolean => {
     if (import.meta.env.VITE_MESSENGING_TECH === 'push') {
       if (pushUser) {
-        return !pushUser;
+        return !!pushUser;
       }
     } else if (import.meta.env.VITE_MESSENGING_TECH === 'xmtp') {
       if (providerState) {

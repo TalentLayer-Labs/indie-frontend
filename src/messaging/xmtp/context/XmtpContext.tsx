@@ -99,6 +99,7 @@ export const XmtpContextProvider = ({ children }: { children: ReactNode }) => {
         const userExists = await Client.canMessage(walletAddress as string, { env: 'dev' });
         setProviderState({ ...providerState, userExists, initClient });
       }
+      console.log('ProviderState: ', providerState);
       console.log('InitClient: ', providerState.initClient);
     };
     checkUserExistence();

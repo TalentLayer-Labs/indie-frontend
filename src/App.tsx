@@ -28,6 +28,7 @@ import { chain, configureChains, createClient, WagmiConfig } from 'wagmi';
 import XmtpMessaging from './pages/XmtpMessaging';
 import { XmtpContextProvider } from './messaging/xmtp/context/XmtpContext';
 
+const chains = [chain.polygonMumbai];
 const chains: Chain[] = [customChains.polygonMumbai];
 
 // Wagmi client
