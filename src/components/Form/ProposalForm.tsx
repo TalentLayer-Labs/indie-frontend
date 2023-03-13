@@ -12,7 +12,7 @@ import { parseRateAmount } from '../../utils/web3';
 import ServiceItem from '../ServiceItem';
 import SubmitButton from './SubmitButton';
 import useAllowedTokens from '../../hooks/useAllowedTokens';
-import axios from 'axios';
+import { getProposalSignature } from '../../utils/signature';
 
 interface IFormValues {
   about: string;
@@ -68,15 +68,11 @@ function ProposalForm({ user, service }: { user: IUser; service: IService }) {
         );
 
         // Get platform signature
-        const res = await axios.post(import.meta.env.VITE_SIGNATURE_AUTOTASK_URL, {
-          method: 'createProposal',
-          args: {
-            profileId: user.id,
-            cid,
-            serviceId: service.id,
-          },
+        const signature = await getProposalSignature({
+          profileId: Number(user.id),
+          cid,
+          serviceId: Number(service.id),
         });
-        const signature = JSON.parse(res.data.result);
 
         const contract = new ethers.Contract(
           config.contracts.serviceRegistry,

@@ -13,7 +13,7 @@ import { createMultiStepsTransactionToast, showErrorTransactionToast } from '../
 import { parseRateAmount } from '../../utils/web3';
 import SubmitButton from './SubmitButton';
 import useAllowedTokens from '../../hooks/useAllowedTokens';
-import axios from 'axios';
+import { getServiceSignature } from '../../utils/signature';
 
 interface IFormValues {
   title: string;
@@ -76,15 +76,9 @@ function ServiceForm() {
         );
 
         // Get platform signature
-        const res = await axios.post(import.meta.env.VITE_SIGNATURE_AUTOTASK_URL, {
-          method: 'createService',
-          args: {
-            profileId: user?.id,
-            cid,
-          },
-        });
-        const signature = JSON.parse(res.data.result);
+        const signature = await getServiceSignature({ profileId: Number(user?.id), cid });
 
+        console.log('Signature: ', signature);
         const contract = new ethers.Contract(
           config.contracts.serviceRegistry,
           ServiceRegistry.abi,
