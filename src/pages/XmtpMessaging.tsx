@@ -13,9 +13,8 @@ import {useLocation, useNavigate, useParams} from 'react-router-dom';
 import useUserByAddress from '../hooks/useUserByAddress';
 import {ChatMessageStatus, XmtpChatMessage} from '../types';
 import {NON_EXISTING_XMTP_USER_ERROR_MESSAGE} from '../messaging/xmtp/hooks/useStreamMessages';
+import Steps from "../components/Steps";
 
-//TODO: Integrate "New message" + update when new conversation created
-//TODO: Register user to XMTP when profile being created ? When proposal + job being created + button if want before?
 
 function XmtpMessaging() {
   const { user } = useContext(TalentLayerContext);
@@ -29,8 +28,6 @@ function XmtpMessaging() {
 
   const { state } = useLocation();
 
-  // Apparently the context handles this as a signer change, and disconnects the user
-  // if (selectedConversationPeerAddress === user?.address) navigate('/messaging');
   const { sendMessage } = useSendMessage(
     selectedConversationPeerAddress ? selectedConversationPeerAddress : '',
     user?.id,
@@ -85,7 +82,7 @@ function XmtpMessaging() {
       try {
         //Send message
         // throw new Error('Test error');
-        setProviderState(providerState);
+        setProviderState({...providerState, conversationMessages: providerState.conversationMessages});
         const response = await sendMessage(messageContent);
         console.log('Message sent', response);
         // Update message status & timestamp
@@ -106,15 +103,14 @@ function XmtpMessaging() {
         // setProviderState(providerState);
         console.error(error);
       } finally {
-        setProviderState(providerState);
+        setProviderState({...providerState, conversationMessages: providerState.conversationMessages})
         setSendingPending(false);
         // setMessageContent('');
       }
     }
   };
-  /*TODO: Les ,msg ne chargent pas quand TheGraph est down car on a une condition sur le handle
+  /*TODO: Les msg ne chargent pas quand TheGraph est down car on a une condition sur le handle
    Du coup le listener ne s'active pas car il est dans "messageList"
-   ...Rest
    */
 
   return (<div className='mx-auto text-gray-900 sm:px-4 lg:px-0'>
@@ -122,7 +118,9 @@ function XmtpMessaging() {
         Indie <span className='text-indigo-600'>Chat </span>
       </p>
 
-      {!providerState?.client && (<button
+      <Steps targetTitle={'Access messaging'} />
+
+      {!providerState?.client && user && (<button
           type='submit'
           className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
           onClick={() => handleXmtpConnect()}>
@@ -165,7 +163,7 @@ function XmtpMessaging() {
           {messageSendingErrorMsg && (<div className={'text-center'}>
               <p className={'text-red-400 ml-1'}>{messageSendingErrorMsg}</p>
             </div>)}
-          {!peerUser && (<div className={'text-center'}>
+          {selectedConversationPeerAddress && !peerUser && (<div className={'text-center'}>
               <p className={'text-red-400 ml-1'}>User is not registered with TalentLayer</p>
             </div>)}
         </>)}
