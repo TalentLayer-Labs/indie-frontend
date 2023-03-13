@@ -142,7 +142,8 @@ export const XmtpContextProvider = ({ children }: { children: ReactNode }) => {
 
         // console.log('TLV2 conv', conv);
         Promise.all(
-          //TODO Here need to remove duplicates & find latest conversation + load its messages
+          //TODO Here need to remove duplicates
+          // & Find latest conversation + load its messages
           conv.map(async conversation => {
             if (conversation.peerAddress !== walletAddress) {
               let messages: DecodedMessage[] = [];
@@ -184,8 +185,13 @@ export const XmtpContextProvider = ({ children }: { children: ReactNode }) => {
     if (conversation.peerAddress !== walletAddress) {
       console.log('xmpt context - getting messages for conversation: ', conversation);
       const { conversationMessages } = providerState;
-      // Returns a list of all messages to/from the peerAddress
-      const messages: DecodedMessage[] = await conversation.messages();
+      let messages: DecodedMessage[] = [];
+      try{
+        // Returns a list of all messages to/from the peerAddress
+        messages = await conversation.messages();
+      } catch (e: any) {
+        console.log('Error listing messages - ', e);
+      }
       //Temp fix for conversation duplicates
       if (messages.length > 0) {
         console.log('xmpt context - messages', messages);

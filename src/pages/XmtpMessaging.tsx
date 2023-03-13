@@ -37,23 +37,6 @@ function XmtpMessaging() {
   );
   const peerUser = useUserByAddress(selectedConversationPeerAddress);
 
-  // if (
-  //   selectedConversationPeerAddress &&
-  //   providerState &&
-  //   providerState.conversations
-  //   // && !pageLoaded
-  // ) {
-  //   const conversation = providerState.conversations.get(selectedConversationPeerAddress);
-  //   if (conversation) {
-  //     try {
-  //       providerState.getOneConversationMessages(conversation);
-  //     } catch (e) {
-  //       console.error(e);
-  //     } finally {
-  //       // setPageLoaded(true);
-  //     }
-  //   }
-  // }
 
   watchAccount(() => {
     providerState?.disconnect?.();
@@ -62,8 +45,6 @@ function XmtpMessaging() {
 
   // Listens to new conversations ? ==> Yes, & sets them in "xmtp context". Stream stops "onDestroy"
   useStreamConversations();
-
-  // if (!providerState) return;
 
   const handleXmtpConnect = async () => {
     if (providerState && providerState.initClient && signer) {
@@ -87,14 +68,15 @@ function XmtpMessaging() {
       const messages = providerState.conversationMessages.get(selectedConversationPeerAddress);
       if (messages) {
         // If Last message in error, remove it & try to resend
-        console.log('last message in error');
         if (messageSendingErrorMsg) {
+          console.log('last message in error');
           messages.pop();
           setMessageSendingErrorMsg('');
         }
         messages.push(sentMessage);
       } else {
         // If no messages, create new ChatMessage array
+        console.log("New Conversation")
         providerState.conversationMessages.set(selectedConversationPeerAddress, [sentMessage]);
       }
       console.log('Messages updated', messages);
@@ -103,6 +85,7 @@ function XmtpMessaging() {
       try {
         //Send message
         // throw new Error('Test error');
+        setProviderState(providerState);
         const response = await sendMessage(messageContent);
         console.log('Message sent', response);
         // Update message status & timestamp
@@ -110,7 +93,7 @@ function XmtpMessaging() {
         sentMessage.timestamp = response.sent;
         messages?.pop();
         messages?.push(sentMessage);
-        setProviderState(providerState);
+        // setProviderState(providerState);
         setMessageContent('');
       } catch (error) {
         setMessageSendingErrorMsg(
@@ -120,17 +103,17 @@ function XmtpMessaging() {
         sentMessage.status = ChatMessageStatus.ERROR;
         messages?.pop();
         messages?.push(sentMessage);
-        setProviderState(providerState);
+        // setProviderState(providerState);
         console.error(error);
       } finally {
+        setProviderState(providerState);
         setSendingPending(false);
+        // setMessageContent('');
       }
     }
   };
   /*TODO: Les ,msg ne chargent pas quand TheGraph est down car on a une condition sur le handle
    Du coup le listener ne s'active pas car il est dans "messageList"
-   RAF: Loader sur convers
-   Autoscroll down
    ...Rest
    */
 
@@ -154,10 +137,9 @@ function XmtpMessaging() {
                 conversationMessages={providerState.conversationMessages}
                 selectedConversationPeerAddress={selectedConversationPeerAddress}
                 conversationsLoading={providerState.loadingConversations}
-                // setSelectedConversationPeerAddress={setSelectedConversationPeerAddress}
               />
             </div>
-            {providerState?.client && selectedConversationPeerAddress && user?.id && // peerUser?.id &&
+            {providerState?.client && selectedConversationPeerAddress && user?.id && peerUser?.id &&
               (<div className='basis-3/4 w-full pl-5 flex flex-col justify-between h-[calc(100vh-16rem)]'>
                   <div className='overflow-y-auto'>
                     <MessageList
@@ -166,9 +148,8 @@ function XmtpMessaging() {
                       userId={user?.id}
                       peerUserId={peerUser?.id as string}
                       messagesLoading={providerState.loadingMessages}
+                      sendingPending={sendingPending}
                       setMessageSendingErrorMsg={setMessageSendingErrorMsg}
-                      peerUserExists={messageSendingErrorMsg !== NON_EXISTING_XMTP_USER_ERROR_MESSAGE}
-                      isNewMessage={state?.newMessage}
                     />
                   </div>
                   {(!providerState.loadingMessages || messageSendingErrorMsg) && <MessageComposer

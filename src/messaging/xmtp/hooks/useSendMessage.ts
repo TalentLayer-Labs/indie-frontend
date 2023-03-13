@@ -11,26 +11,22 @@ const useSendMessage = (peerAddress: string, senderId: string | undefined) => {
   const { client } = providerState || {};
   // console.log('peerAddress', peerAddress);
   // console.log('senderId', senderId);
-  console.log('UseSendMessage peerUser', peerUser);
+  // console.log('UseSendMessage peerUser', peerUser);
   // console.log('client', client);
 
-  //Normally returns a Promise<DecodedMessage>
   //TODO if implement contentType, check if it's a string or an object
   const sendMessage = async (message: string): Promise<DecodedMessage> => {
-    console.log("client, peerAddress, peerUser?.id, senderId", client, peerAddress, peerUser?.id, senderId)
     if (!client || !peerAddress || !peerUser?.id || !senderId) {
       throw new Error('Message sending failed');
     }
 
     const conversationId = buildConversationId(senderId, peerUser.id);
-    console.log('conversationId from send message', conversationId);
 
     //Could add a context to define the linked job
     const context: InvitationContext = {
       conversationId: conversationId,
       metadata: { ['domain']: 'TalentLayer' },
     };
-    console.log('peerAddress', peerAddress);
     const conversation = await client.conversations.newConversation(peerAddress, context);
 
     // const conversation = await client.conversations.newConversation(peerAddress);

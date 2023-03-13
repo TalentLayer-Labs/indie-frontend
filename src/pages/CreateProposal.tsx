@@ -86,7 +86,7 @@ function CreateProposal() {
           </button>
         </div>
       )}
-      {account?.isConnected && user && userExists() && <ProposalForm service={service} />}
+      {account?.isConnected && user && userExists() && <ProposalForm user={user} service={service} />}
     </div>
   );
 }
