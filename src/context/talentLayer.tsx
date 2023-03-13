@@ -23,6 +23,8 @@ const TalentLayerProvider = ({ children }: { children: ReactNode }) => {
 
       try {
         const response = await getUserByAddress(account.address);
+        console.log('response', response);
+
         if (response?.data?.data?.users[0] !== null) {
           setUser(response.data.data.users[0]);
         }

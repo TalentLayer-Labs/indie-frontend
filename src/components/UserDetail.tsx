@@ -42,6 +42,9 @@ function UserDetail({ user }: { user: IUser }) {
         <p className='text-sm text-gray-500 mt-4'>
           <strong>About:</strong> {userDescription?.about}
         </p>
+        <p className='text-sm text-gray-500 mt-4'>
+          <strong>Role:</strong> {userDescription?.about}
+        </p>
       </div>
       {currentUser?.id === user.id && (
         <div className=' border-t border-gray-100 pt-4 w-full mt-4'>
