@@ -12,6 +12,7 @@ import { parseRateAmount } from '../../utils/web3';
 import ServiceItem from '../ServiceItem';
 import SubmitButton from './SubmitButton';
 import useAllowedTokens from '../../hooks/useAllowedTokens';
+import axios from 'axios';
 
 interface IFormValues {
   about: string;
@@ -60,11 +61,22 @@ function ProposalForm({ user, service }: { user: IUser; service: IService }) {
         const convertExpirationDateString = convertExpirationDate.toString();
 
         const parsedRateAmountString = parsedRateAmount.toString();
-        const uri = await postToIPFS(
+        const cid = await postToIPFS(
           JSON.stringify({
             about: values.about,
           }),
         );
+
+        // Get platform signature
+        const res = await axios.post(import.meta.env.VITE_SIGNATURE_AUTOTASK_URL, {
+          method: 'createProposal',
+          args: {
+            profileId: user.id,
+            cid,
+            serviceId: service.id,
+          },
+        });
+        const signature = JSON.parse(res.data.result);
 
         const contract = new ethers.Contract(
           config.contracts.serviceRegistry,
@@ -78,8 +90,9 @@ function ProposalForm({ user, service }: { user: IUser; service: IService }) {
           values.rateToken,
           parsedRateAmountString,
           import.meta.env.VITE_PLATFORM_ID,
-          uri,
+          cid,
           convertExpirationDateString,
+          signature,
         );
         await createMultiStepsTransactionToast(
           {
@@ -90,7 +103,7 @@ function ProposalForm({ user, service }: { user: IUser; service: IService }) {
           provider,
           tx,
           'proposal',
-          uri,
+          cid,
         );
         setSubmitting(false);
         resetForm();
