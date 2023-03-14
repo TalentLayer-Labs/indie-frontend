@@ -15,7 +15,8 @@ import useUserById from '../../hooks/useUserById';
 
 interface IFormValues {
   title?: string;
-  roles?: string;
+  role?: string;
+  name?: string;
   about?: string;
   skills?: string;
 }
@@ -37,7 +38,8 @@ function ProfileForm() {
 
   const initialValues: IFormValues = {
     title: userDescription?.title || '',
-    roles: userDescription?.roles || '',
+    role: userDescription?.role || '',
+    name: userDescription?.name || '',
     about: userDescription?.about || '',
     skills: userDescription?.skills_raw || '',
   };
@@ -51,7 +53,8 @@ function ProfileForm() {
         const cid = await postToIPFS(
           JSON.stringify({
             title: values.title,
-            roles: values.roles,
+            role: values.role,
+            name: values.name,
             about: values.about,
             skills: values.skills,
           }),
@@ -62,6 +65,9 @@ function ProfileForm() {
           TalentLayerID.abi,
           signer,
         );
+
+        //log the role
+        console.log('role', values.role);
 
         const tx = await contract.updateProfileData(user.id, cid);
         await createMultiStepsTransactionToast(
@@ -105,17 +111,27 @@ function ProfileForm() {
               />
             </label>
             <label className='block'>
-              <span className='text-gray-700'>Roles</span>
+              <span className='text-gray-700'>Name</span>
+              <Field
+                type='text'
+                id='name'
+                name='name'
+                className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
+                placeholder=''
+              />
+            </label>
+            <label className='block'>
+              <span className='text-gray-700'>Role</span>
               <Field
                 as='select'
-                id='roles'
-                name='roles'
+                id='role'
+                name='role'
                 className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
                 placeholder=''>
+                <option value='buyer'>None</option>
                 <option value='buyer'>Buyer</option>
                 <option value='seller'>Seller</option>
-                <option value='buyer-seller'>Buyer/Seller</option>
-                <option value='none'>none</option>
+                <option value='buyer-seller'>Both</option>
               </Field>
             </label>
 

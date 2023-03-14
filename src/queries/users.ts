@@ -14,7 +14,6 @@ export const getUsers = (platformId?: string, searchQuery?: string): Promise<any
         handle
         numReviews
         rating
-
       }
     }
     `;
@@ -34,6 +33,8 @@ export const getUserById = (id: string): Promise<any> => {
         createdAt
         description {
           about
+          role
+          name
           country
           headline
           id
@@ -59,9 +60,10 @@ export const getUserByAddress = (address: string): Promise<any> => {
         numReviews
         updatedAt
         createdAt
-
         description {
           about
+          role
+          name
           country
           headline
           id
