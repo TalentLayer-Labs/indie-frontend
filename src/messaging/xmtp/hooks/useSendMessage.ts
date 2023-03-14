@@ -9,18 +9,14 @@ const useSendMessage = (peerAddress: string, senderId: string | undefined) => {
   const { providerState } = useContext(XmtpContext);
   const peerUser = useUserByAddress(peerAddress);
   const { client } = providerState || {};
-  // console.log('peerAddress', peerAddress);
-  // console.log('senderId', senderId);
-  // console.log('UseSendMessage peerUser', peerUser);
-  // console.log('client', client);
 
-  //TODO if implement contentType, check if it's a string or an object
   const sendMessage = async (message: string): Promise<DecodedMessage> => {
     if (!client || !peerAddress || !peerUser?.id || !senderId) {
       throw new Error('Message sending failed');
     }
 
     const conversationId = buildConversationId(senderId, peerUser.id);
+    console.log('sendMsg - conversationId', conversationId);
 
     //Could add a context to define the linked job
     const context: InvitationContext = {
@@ -29,7 +25,6 @@ const useSendMessage = (peerAddress: string, senderId: string | undefined) => {
     };
     const conversation = await client.conversations.newConversation(peerAddress, context);
 
-    // const conversation = await client.conversations.newConversation(peerAddress);
     if (!conversation) throw new Error('Conversation not found');
     return await conversation.send(message);
   };
