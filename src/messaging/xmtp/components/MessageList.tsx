@@ -3,7 +3,7 @@ import MessageCard from './MessageCard';
 import { isDateOnSameDay } from '../utils/messaging';
 import { XmtpChatMessage } from '../../../types';
 import Loading from '../../../components/Loading';
-import { useLayoutEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 interface IMessageListProps {
   conversationMessages: XmtpChatMessage[];
@@ -11,9 +11,8 @@ interface IMessageListProps {
   peerUserId: string;
   userId: string;
   messagesLoading: boolean;
+  sendingPending: boolean;
   setMessageSendingErrorMsg: React.Dispatch<React.SetStateAction<string>>;
-  peerUserExists: boolean;
-  isNewMessage?: boolean;
 }
 
 const MessageList = ({
@@ -22,35 +21,21 @@ const MessageList = ({
   peerUserId,
   userId,
   messagesLoading,
+  sendingPending,
   setMessageSendingErrorMsg,
-  peerUserExists,
-  isNewMessage,
 }: IMessageListProps) => {
-  // TODO: We only listen to the active conversation
+  //We only listen to the active conversation
   useStreamMessages(selectedConversationPeerAddress, userId, peerUserId, setMessageSendingErrorMsg);
   let lastMessageDate: Date | undefined;
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  useLayoutEffect(() => {
-    console.log('fire');
+  useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  });
+  }, [sendingPending, conversationMessages, bottomRef]);
 
-  // console.log('messagesLoading', messagesLoading);
-  // console.log('isNewMessage', isNewMessage);
-  // console.log('peerUserExists', peerUserExists);
-  // console.log('conversationMessages.length', conversationMessages.length);
-  // console.log('selectedConversationPeerAddress', selectedConversationPeerAddress);
   return (
     <div className='flex flex-col mt-5'>
-      {
-        // isNewMessage ||
-        // !peerUserExists ||
-        // (conversationMessages.length === 0 && selectedConversationPeerAddress && (
-          messagesLoading &&
-          <Loading />
-        // ))
-      }
+      {messagesLoading && <Loading />}
       {conversationMessages.map((msg, index) => {
         const messageCard = (
           <div key={index}>
@@ -65,7 +50,7 @@ const MessageList = ({
         lastMessageDate = msg.timestamp as Date;
         return messageCard;
       })}
-      <div ref={bottomRef}></div>
+      <div ref={bottomRef} id='scroller' style={{ overflowAnchor: 'revert', height: '1px' }}></div>
     </div>
   );
 };
