@@ -63,7 +63,6 @@ export const XmtpContextProvider = ({ children }: { children: ReactNode }) => {
   const initClient = async (wallet: Signer) => {
     console.log('initClient w signer: ', wallet);
     if (wallet && !providerState.client && signer) {
-      // eslint-disable-next-line no-useless-catch
       try {
         const keys = await Client.getKeys(signer, { env: 'dev' });
         const client = await Client.create(null, {
