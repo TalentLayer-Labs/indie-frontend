@@ -91,11 +91,11 @@ const mumbai: Config = {
   networkId: NetworkEnum.MUMBAI,
   subgraphUrl: 'https://api.thegraph.com/subgraphs/name/talentlayer/talent-layer-mumbai',
   contracts: {
-    talentLayerId: '0x0CB10e5E4573de1411c4b007FEa96FBae26c3821',
-    serviceRegistry: '0x72C7a016320e9709fC4873110C1c3a1a25510774',
-    talentLayerReview: '0x6402e7bEaeD1f580F78942fac4466D758689e0CE',
-    talentLayerEscrow: '0x0fD26c83016C15e9cc9a8907BbE248164C114F7f',
-    talentLayerPlatformId: '0x1767Fba47BBdd8Bdc99A3Ea083992dE6c6a8e1B1',
+    talentLayerId: '0x286D04de10977D47EF9F1d50a7072cdeAd088D3E',
+    serviceRegistry: '0x8d2587494796A1547702Ea78E9c6359351901c4B',
+    talentLayerReview: '0x8398B0FfE674Ea993Cb38AE2E4e0Ac7111fE5852',
+    talentLayerEscrow: '0x2F9EBAc36cc020B81c4c624AbcfeC7DC8958Cf54',
+    talentLayerPlatformId: '0xa6f853Ba54cF24F203751D81b106A7D4e4eBFF14',
   },
   escrowConfig: {
     adminFee: '0',
