@@ -21,11 +21,9 @@ const useStreamMessages = (
   const [conversation, setConversation] = useState<Conversation>();
 
   useEffect(() => {
-    console.log('streamMessages - peerAddress', peerAddress);
     const getConversation = async () => {
       if (!providerState?.client || !peerAddress) return;
       const conversationId = buildConversationId(peerUserId, userId);
-      console.log('conversationId from stream msg', conversationId);
 
       //Could add a context to define the linked job
       const context: InvitationContext = {
@@ -42,7 +40,6 @@ const useStreamMessages = (
         setMessageSendingErrorMsg(NON_EXISTING_XMTP_USER_ERROR_MESSAGE);
         console.log('error', e);
       }
-      // setConversation(await providerState.client.conversations.newConversation(peerAddress));
     };
     getConversation();
 
@@ -52,36 +49,29 @@ const useStreamMessages = (
   }, [providerState?.client, peerAddress]);
 
   useEffect(() => {
-    if (!conversation) return;
-
     const streamMessages = async () => {
-      console.log('streaming messages');
-      const newMessageStream = await conversation.streamMessages();
-      setStream(newMessageStream);
-      for await (const msg of newMessageStream) {
-        if (providerState && setProviderState) {
-          const newMessages =
-            providerState.conversationMessages.get(conversation.peerAddress) ?? [];
-          // Default code provided by XMTP. I don't see its utility here so far. I would have put it in the context.
-          // const uniqueMessages = [
-          //   ...Array.from(new Map(newMessages.map(item => [item['id'], item])).values()),
-          // ];
-          if (getLatestMessage(newMessages)?.messageContent === msg.content) {
-            console.log('msgStream - message already exists', msg.content);
-            return;
-          }
-          const incomingChatMessage = buildChatMessage(msg);
-          newMessages.push(incomingChatMessage);
-          console.log('msgStream - newMessages', newMessages);
+      if (conversation) {
+        const newMessageStream = await conversation.streamMessages();
+        setStream(newMessageStream);
+        for await (const msg of newMessageStream) {
+          if (providerState && setProviderState) {
+            const newMessages =
+              providerState.conversationMessages.get(conversation.peerAddress) ?? [];
+            if (getLatestMessage(newMessages)?.messageContent === msg.content) {
+              return;
+            }
+            const incomingChatMessage = buildChatMessage(msg);
+            newMessages.push(incomingChatMessage);
 
-          // console.log('msgStream - uniqueMessages', uniqueMessages);
-          providerState.conversationMessages.set(conversation.peerAddress, newMessages);
-          // providerState.conversationMessages.set(conversation.peerAddress, uniqueMessages);
-          setProviderState({
-            ...providerState,
-            conversationMessages: providerState.conversationMessages,
-            // conversationMessages: new Map(providerState.conversationMessages),
-          });
+            providerState.conversationMessages.set(conversation.peerAddress, newMessages);
+
+            setProviderState({
+              ...providerState,
+              loadingConversations: false,
+              loadingMessages: false,
+              conversationMessages: providerState.conversationMessages,
+            });
+          }
         }
       }
     };
