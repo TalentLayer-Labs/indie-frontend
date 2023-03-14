@@ -16,7 +16,6 @@ const useSendMessage = (peerAddress: string, senderId: string | undefined) => {
     }
 
     const conversationId = buildConversationId(senderId, peerUser.id);
-    console.log('sendMsg - conversationId', conversationId);
 
     //Could add a context to define the linked job
     const context: InvitationContext = {
