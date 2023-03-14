@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export const getSignature = async (method: string, args: Record<string, any>) => {
-  const res = await axios.post(import.meta.env.VITE_SIGNATURE_AUTOTASK_URL, {
+  const res = await axios.post(import.meta.env.VITE_SIGNATURE_API_URL, {
     method,
     args,
   });
