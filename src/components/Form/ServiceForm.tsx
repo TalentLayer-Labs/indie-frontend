@@ -13,7 +13,7 @@ import { createMultiStepsTransactionToast, showErrorTransactionToast } from '../
 import { parseRateAmount } from '../../utils/web3';
 import SubmitButton from './SubmitButton';
 import useAllowedTokens from '../../hooks/useAllowedTokens';
-import useUsers from '../../hooks/useUsers';
+import { getServiceSignature } from '../../utils/signature';
 
 interface IFormValues {
   title: string;
@@ -75,12 +75,20 @@ function ServiceForm() {
           }),
         );
 
+        // Get platform signature
+        const signature = await getServiceSignature({ profileId: Number(user?.id), cid });
+
         const contract = new ethers.Contract(
           config.contracts.serviceRegistry,
           ServiceRegistry.abi,
           signer,
         );
-        const tx = await contract.createService(user?.id, import.meta.env.VITE_PLATFORM_ID, cid);
+        const tx = await contract.createService(
+          user?.id,
+          import.meta.env.VITE_PLATFORM_ID,
+          cid,
+          signature,
+        );
         const newId = await createMultiStepsTransactionToast(
           {
             pending: 'Creating your job...',
