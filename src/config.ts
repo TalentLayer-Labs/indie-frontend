@@ -120,7 +120,7 @@ const mumbai: Config = {
 
 const local: Config = {
   networkId: NetworkEnum.LOCAL,
-  subgraphUrl: 'http://localhost:8000/subgraphs/name/talentlayer/talent-layer-protocol',
+  subgraphUrl: 'http://localhost:8020/',
   contracts: {
     talentLayerId: '0x2475F87a2A73548b2E49351018E7f6a53D3d35A4',
     serviceRegistry: '0x3dE39C61d4281716c458ffdb3150aa9aF4fb752a',
