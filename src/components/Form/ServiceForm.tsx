@@ -78,7 +78,6 @@ function ServiceForm() {
         // Get platform signature
         const signature = await getServiceSignature({ profileId: Number(user?.id), cid });
 
-        console.log('Signature: ', signature);
         const contract = new ethers.Contract(
           config.contracts.serviceRegistry,
           ServiceRegistry.abi,
