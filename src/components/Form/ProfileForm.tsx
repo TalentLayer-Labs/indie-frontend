@@ -66,9 +66,6 @@ function ProfileForm() {
           signer,
         );
 
-        //log the role
-        console.log('role', values.role);
-
         const tx = await contract.updateProfileData(user.id, cid);
         await createMultiStepsTransactionToast(
           {
@@ -128,7 +125,7 @@ function ProfileForm() {
                 name='role'
                 className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
                 placeholder=''>
-                <option value='buyer'>None</option>
+                <option value='buyer'></option>
                 <option value='buyer'>Buyer</option>
                 <option value='seller'>Seller</option>
                 <option value='buyer-seller'>Both</option>

@@ -89,7 +89,7 @@ const fuji: Config = {
 
 const mumbai: Config = {
   networkId: NetworkEnum.MUMBAI,
-  subgraphUrl: 'https://api.thegraph.com/subgraphs/name/akugone/aku-mumbai-talent-layer',
+  subgraphUrl: 'https://api.thegraph.com/subgraphs/name/talentlayer/talent-layer-mumbai',
   contracts: {
     talentLayerId: '0x0CB10e5E4573de1411c4b007FEa96FBae26c3821',
     serviceRegistry: '0x72C7a016320e9709fC4873110C1c3a1a25510774',
@@ -122,11 +122,11 @@ const local: Config = {
   networkId: NetworkEnum.LOCAL,
   subgraphUrl: 'http://localhost:8000/subgraphs/name/talentlayer/talent-layer-protocol',
   contracts: {
-    talentLayerId: '0xf584E555B68EC5980D6B606Ae2EaafF512A9d6C9',
-    serviceRegistry: '0xdF8D3ED1E1C448c2BD290C7d45d8041E4e2aEc45',
-    talentLayerReview: '0xE78D331040386585529BfB379e66F39DF04a235F',
-    talentLayerEscrow: '0x91fBda7cCdD683D061d3137A15F96aaf66AD36B3',
-    talentLayerPlatformId: '0xa5BA0CCB83A45b4E5c85b41649F80ed7DAFD6e28',
+    talentLayerId: '0x2475F87a2A73548b2E49351018E7f6a53D3d35A4',
+    serviceRegistry: '0x3dE39C61d4281716c458ffdb3150aa9aF4fb752a',
+    talentLayerReview: '0xa3A183D6f70217362050040Ef365923a0c1989e8',
+    talentLayerEscrow: '0x91327C01CB952a95addDa72FcA59E4151fE42Cb3',
+    talentLayerPlatformId: '0xF39e4249b6dCcca8Ec7455E524C9685d1332fCD1',
   },
   escrowConfig: {
     timeoutPayment: 3600 * 24 * 7,
