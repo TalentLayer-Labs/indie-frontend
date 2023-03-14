@@ -4,6 +4,7 @@ import useUserByAddress from '../../../hooks/useUserByAddress';
 import { formatDateDivider } from '../../../utils/dates';
 import { formatDateTime } from '../utils/messaging';
 import { ChatMessageStatus, XmtpChatMessage } from '../../../types';
+import Loading from '../../../components/Loading';
 
 interface IMessageCardProps {
   message: XmtpChatMessage;
@@ -12,7 +13,7 @@ interface IMessageCardProps {
 
 const MessageCard = ({ message, dateHasChanged }: IMessageCardProps) => {
   const { user } = useContext(TalentLayerContext);
-  const peerUser = useUserByAddress(message.from);
+  const userSending = useUserByAddress(message.from);
 
   const isSender = message.from.toLowerCase() === user?.address.toLowerCase();
 
@@ -21,8 +22,8 @@ const MessageCard = ({ message, dateHasChanged }: IMessageCardProps) => {
 
   return (
     <>
-      {dateHasChanged && peerUser?.handle && <DateDivider date={message.timestamp} />}
-      {peerUser?.handle && (
+      {dateHasChanged && userSending?.handle && <DateDivider date={message.timestamp} />}
+      {userSending?.handle && (
         <div
           className={`flex ${isSender ? 'justify-end pr-5' : 'justify-start'} mb-4 items-center`}>
           {isSender && user && (
@@ -48,15 +49,40 @@ const MessageCard = ({ message, dateHasChanged }: IMessageCardProps) => {
                 : 'mr-2 bg-gray-400 rounded-bl-3xl rounded-tl-3xl rounded-tr-xl'
             }
           text-white`}>
-            <div>
-              <div>{peerUser && peerUser.handle && <b>{peerUser.handle}</b>}</div>
-            </div>
-            <div>{message.messageContent}</div>
+            {isSender && message.status === ChatMessageStatus.SENT && (
+              <>
+                <div>{userSending && userSending.handle && <b>{userSending.handle}</b>}</div>
+                <div>{message.messageContent}</div>
+              </>
+            )}
+            {isSender && message.status === ChatMessageStatus.PENDING && (
+              <div className='flex flex-row items-center'>
+                <div>
+                  <div>{userSending && userSending.handle && <b>{userSending.handle}</b>}</div>
+                  <div>{message.messageContent}</div>
+                </div>
+                <div className='ml-2'>
+                  <Loading size={'5'} />
+                </div>
+              </div>
+            )}
+            {isSender && message.status === ChatMessageStatus.ERROR && (
+              <>
+                <div>{userSending && userSending.handle && <b>{userSending.handle}</b>}</div>
+                <div>{message.messageContent}</div>
+              </>
+            )}
+            {!isSender && (
+              <>
+                <div>{userSending && userSending.handle && <b>{userSending.handle}</b>}</div>
+                <div>{message.messageContent}</div>
+              </>
+            )}
           </div>
           {!isSender && (
             <>
               <img
-                src={`/default-avatar-${Number(peerUser?.id) % 11}.jpeg`}
+                src={`/default-avatar-${Number(userSending?.id) % 11}.jpeg`}
                 className='object-cover h-12 w-12 rounded-full'
                 alt=''
               />

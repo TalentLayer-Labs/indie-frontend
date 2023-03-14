@@ -20,10 +20,9 @@ const useStreamConversations = () => {
       for await (const conversation of newStream) {
         if (
           conversation.peerAddress !== (await signer?.getAddress()) &&
-          //TODO Check if we keep context | Could use metadata if still duplicates issue
           conversation.context?.conversationId.startsWith(CONVERSATION_PREFIX)
         ) {
-          //IF a new conversation is detected, we get its messages
+          //If a new conversation is detected, we get its messages
           const messages = await conversation.messages();
           const chatMessages = messages.map(msg => {
             return buildChatMessage(msg);
