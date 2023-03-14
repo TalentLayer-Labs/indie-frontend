@@ -33,6 +33,8 @@ export const getUserById = (id: string): Promise<any> => {
         createdAt
         description {
           about
+          role
+          name
           country
           headline
           id
@@ -60,6 +62,8 @@ export const getUserByAddress = (address: string): Promise<any> => {
         createdAt
         description {
           about
+          role
+          name
           country
           headline
           id

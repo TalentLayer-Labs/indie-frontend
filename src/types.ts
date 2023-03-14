@@ -11,6 +11,8 @@ export type IUser = {
 
 export type IUserDetails = {
   title: string;
+  name: string;
+  role: string;
   about: string;
   skills_raw: string;
 };
