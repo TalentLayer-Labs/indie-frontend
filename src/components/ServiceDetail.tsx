@@ -4,11 +4,8 @@ import TalentLayerContext from '../context/talentLayer';
 import usePaymentsByService from '../hooks/usePaymentsByService';
 import useProposalsByService from '../hooks/useProposalsByService';
 import useReviewsByService from '../hooks/useReviewsByService';
-import useServiceDetails from '../hooks/useServiceDetails';
-import { renderTokenAmount } from '../utils/conversion';
-import { ConversationDisplayType, IService, ProposalStatusEnum, ServiceStatusEnum } from '../types';
-import { renderTokenAmount, renderTokenAmountFromConfig } from '../utils/conversion';
-import { IService, ProposalStatusEnum, ServiceStatusEnum } from '../types';
+import { renderTokenAmountFromConfig } from '../utils/conversion';
+import { IService, ProposalStatusEnum, ServiceStatusEnum, ConversationDisplayType } from '../types';
 import { formatDate } from '../utils/dates';
 import PaymentModal from './Modal/PaymentModal';
 import ReviewModal from './Modal/ReviewModal';
@@ -18,13 +15,11 @@ import ServiceStatus from './ServiceStatus';
 import Stars from './Stars';
 import PushContext from '../messaging/push/context/pushUser';
 import { ethers } from 'ethers';
-import { XmtpContext } from '../context/XmtpContext';
-import { XmtpContext } from '../messaging/context/XmtpContext';
+import { XmtpContext } from '../messaging/xmtp/context/XmtpContext';
 import { useSigner } from 'wagmi';
 
 function ServiceDetail({ service }: { service: IService }) {
   const { account, user } = useContext(TalentLayerContext);
-  const serviceDetail = useServiceDetails(service.cid);
   const { providerState } = useContext(XmtpContext);
   const { initPush, conversationMessages } = useContext(PushContext);
   const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
@@ -33,31 +28,26 @@ function ServiceDetail({ service }: { service: IService }) {
   const payments = usePaymentsByService(service.id);
   const navigate = useNavigate();
 
-  if (!serviceDetail) {
-    return null;
-  }
-
   const handleMessageUser = async (): Promise<void> => {
     if (import.meta.env.VITE_MESSENGING_TECH === 'push') {
-      console.log('handleMessageUser', initPush);
       if (user && initPush) {
-        console.log('handleMessageUser inside');
         try {
           await initPush(user.address);
         } catch (e) {
           console.log('ServiceDetail - Error initializing Push client: ', e);
           return;
         }
-
         const buyerAddress = ethers.utils.getAddress(service.buyer?.address);
         let newMessage: boolean;
         // Check if conversation exists
-        conversationMessages?.get(buyerAddress)?.length === 0
-          ? (newMessage = true)
-          : (newMessage = false);
-        navigate(`/messaging/${ConversationDisplayType.CONVERSATION}/${buyerAddress}`, {
-          state: { newMessage },
-        });
+        if (conversationMessages) {
+          conversationMessages?.get(buyerAddress)?.length === 0
+            ? (newMessage = true)
+            : (newMessage = false);
+          navigate(`/messaging/${ConversationDisplayType.CONVERSATION}/${buyerAddress}`, {
+            state: { newMessage },
+          });
+        }
       }
     }
     if (import.meta.env.VITE_MESSENGING_TECH === 'xmtp') {
@@ -77,10 +67,7 @@ function ServiceDetail({ service }: { service: IService }) {
         providerState?.conversationMessages?.get(buyerAddress)?.length === 0
           ? (newMessage = true)
           : (newMessage = false);
-        console.log('newMessage', newMessage);
-        navigate(`/messaging/${buyerAddress}`, {
-          state: { newMessage },
-        });
+        navigate(`/messaging/${buyerAddress}`);
       }
     }
   };
