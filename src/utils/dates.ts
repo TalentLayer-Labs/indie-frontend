@@ -25,7 +25,6 @@ export const formatStringDate = (timestamp: string) => {
   });
 };
 
-export const formatDateConversationCard = (timestamp: number | undefined) => {
 export const formatDateDivider = (d?: Date) =>
   d?.toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 

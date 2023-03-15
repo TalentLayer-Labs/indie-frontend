@@ -16,20 +16,16 @@ import Profile from './pages/Profile';
 import Service from './pages/Service';
 import Services from './pages/Services';
 import Talents from './pages/Talents';
-import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
 
 import { Web3Modal } from '@web3modal/react';
 
 import PushMessaging from './pages/PushMessaging';
+import { PushProvider } from './messaging/push/context/pushUser';
 import { Chain, configureChains, createClient, WagmiConfig } from 'wagmi';
 import { customChains } from './chains';
-import Messaging from './pages/Messaging';
-import { PushProvider } from './messaging/push/context/pushUser';
-import { chain, configureChains, createClient, WagmiConfig } from 'wagmi';
 import XmtpMessaging from './pages/XmtpMessaging';
 import { XmtpContextProvider } from './messaging/xmtp/context/XmtpContext';
 
-const chains = [chain.polygonMumbai];
 const chains: Chain[] = [customChains.polygonMumbai];
 
 // Wagmi client
