@@ -62,11 +62,6 @@ function ServiceDetail({ service }: { service: IService }) {
           }
         }
         const buyerAddress = ethers.utils.getAddress(service.buyer?.address);
-        let newMessage: boolean;
-        // Check if conversation exists
-        providerState?.conversationMessages?.get(buyerAddress)?.length === 0
-          ? (newMessage = true)
-          : (newMessage = false);
         navigate(`/messaging/${buyerAddress}`);
       }
     }
