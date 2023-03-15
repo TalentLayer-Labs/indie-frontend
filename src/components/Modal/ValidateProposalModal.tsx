@@ -74,13 +74,10 @@ function ValidateProposalModal({ proposal, account }: { proposal: IProposal; acc
 
   const handleMessageUser = async (): Promise<void> => {
     if (import.meta.env.VITE_MESSENGING_TECH === 'push') {
-      console.log('handleMessageUser', pushUser);
       if (pushUser && initPush) {
-        console.log('handleMessageUser inside');
         try {
           await initPush(account.address as string);
         } catch (e) {
-          console.log('ValidateProposalModal - Error initializing push client: ', e);
           return;
         }
         const sellerAddress = ethers.utils.getAddress(proposal.seller?.address);
@@ -104,18 +101,11 @@ function ValidateProposalModal({ proposal, account }: { proposal: IProposal; acc
         try {
           await providerState.initClient(signer);
         } catch (e) {
-          console.log('ValidateProposalModal - Error initializing XMTP client: ', e);
           return;
         }
         const sellerAddress = ethers.utils.getAddress(proposal.seller?.address);
-        let newMessage = false;
-        providerState?.conversationMessages?.get(sellerAddress)?.length === 0
-          ? (newMessage = true)
-          : (newMessage = false);
         // Check if conversation exists
-        navigate(`/messaging/${sellerAddress}`, {
-          state: { newMessage },
-        });
+        navigate(`/messaging/${sellerAddress}`);
       }
     }
   };
