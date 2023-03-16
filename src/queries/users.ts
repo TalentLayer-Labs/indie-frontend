@@ -95,3 +95,21 @@ export const getUserTotalGains = (id: string): Promise<any> => {
     `;
   return processRequest(query);
 };
+
+
+export const getUserDescription = (address: string): Promise<any> => {
+  const query = `
+    {
+      user(id: "${address}") {
+        description {
+          title
+          role
+          name
+          about
+          skills_raw
+        }
+      }
+    }
+    `;
+  return processRequest(query);
+};

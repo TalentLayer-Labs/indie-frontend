@@ -7,6 +7,7 @@ import NetworkSwitch from '../components/NetworkSwitch';
 import SideMenu from '../components/Layout/SideMenu';
 import UserAccount from '../components/UserAccount';
 import SideBottom from '../components/Layout/SideBottom';
+import Sismo from "../components/Sismo";
 
 function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -92,6 +93,7 @@ function Layout() {
               <Bars3BottomLeftIcon className='h-6 w-6' aria-hidden='true' />
             </button>
             <div className='flex flex-1'></div>
+            <Sismo />
             <NetworkSwitch />
             <UserAccount />
           </div>

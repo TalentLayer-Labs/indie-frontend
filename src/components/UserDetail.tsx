@@ -6,6 +6,7 @@ import Loading from './Loading';
 import Stars from './Stars';
 import PohModule from '../modules/Poh/PohModule';
 import useUserById from '../hooks/useUserById';
+import Sismo from "./Sismo";
 
 function UserDetail({ user }: { user: IUser }) {
   const { user: currentUser } = useContext(TalentLayerContext);
@@ -52,6 +53,7 @@ function UserDetail({ user }: { user: IUser }) {
       {currentUser?.id === user.id && (
         <div className=' border-t border-gray-100 pt-4 w-full mt-4'>
           <div className='flex flex-row gap-4 justify-end items-center'>
+            <Sismo />
             <NavLink
               className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg'
               to={`/profile/${user.id}`}>
