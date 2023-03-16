@@ -190,3 +190,9 @@ export type IUserGain = {
   token: IToken;
   totalGain: string;
 };
+
+export type ISismoGroup = {
+  description: string;
+  id: string;
+  userInGroup: boolean;
+}

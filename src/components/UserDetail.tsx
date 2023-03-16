@@ -6,10 +6,21 @@ import Loading from './Loading';
 import Stars from './Stars';
 import PohModule from '../modules/Poh/PohModule';
 import useUserById from '../hooks/useUserById';
+import useSismoGroupData from '../hooks/useSismoGroupData';
 
 function UserDetail({ user }: { user: IUser }) {
   const { user: currentUser } = useContext(TalentLayerContext);
   const userDescription = user?.id ? useUserById(user?.id)?.description : null;
+  const oneJobGroupUsers = useSismoGroupData(
+    import.meta.env.VITE_SISMO_ONE_JOB_GROUP_ID,
+    user.address,
+  );
+  const hasTLIDGroupUsers = useSismoGroupData(
+    import.meta.env.VITE_SISMO_HAS_TALENTLAYER_ID,
+    user.address,
+  );
+  console.log('oneJobGroupUsers', oneJobGroupUsers);
+  console.log('hasTLIDGroupUsers', hasTLIDGroupUsers);
 
   if (!user?.id) {
     return <Loading />;
@@ -48,6 +59,9 @@ function UserDetail({ user }: { user: IUser }) {
         <p className='text-sm text-gray-500 mt-4'>
           <strong>Role:</strong> {userDescription?.role}
         </p>
+      </div>
+      <div>
+        <div className=' border-t border-gray-100 pt-4 w-full mt-4' />
       </div>
       {currentUser?.id === user.id && (
         <div className=' border-t border-gray-100 pt-4 w-full mt-4'>
