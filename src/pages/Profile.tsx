@@ -1,11 +1,11 @@
 import { useParams } from 'react-router-dom';
 import Back from '../components/Back';
 import Loading from '../components/Loading';
+import UserBadges from '../components/UserBadges';
 import UserDetail from '../components/UserDetail';
 import UserServices from '../components/UserServices';
 import useUserById from '../hooks/useUserById';
 import LensModule from '../modules/Lens/LensModule';
-import PohModule from '../modules/Poh/PohModule';
 
 function Profile() {
   const { id } = useParams<{ id: string }>();
@@ -26,6 +26,9 @@ function Profile() {
           <div>
             <div className='mb-6'>
               <UserDetail user={user} />
+            </div>
+            <div className='mb-6'>
+              <UserBadges user={user} />
             </div>
             <div className='mb-6'>
               <UserServices user={user} type='buyer' />
