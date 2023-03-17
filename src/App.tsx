@@ -12,6 +12,7 @@ import Dashboard from './pages/Dashboard';
 import EditProfile from './pages/EditProfile';
 import Home from './pages/Home';
 import Layout from './pages/Layout';
+import Onboarding from './pages/Onboarding';
 import Profile from './pages/Profile';
 import Service from './pages/Service';
 import Services from './pages/Services';
@@ -21,7 +22,6 @@ import { Web3Modal } from '@web3modal/react';
 
 import { Chain, configureChains, createClient, WagmiConfig } from 'wagmi';
 import { customChains } from './chains';
-import Onboarding from './pages/Onboarding';
 
 const chains: Chain[] = [customChains.polygonMumbai];
 

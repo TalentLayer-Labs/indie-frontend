@@ -21,7 +21,7 @@ function Onboarding() {
     return renderStep2(setStep);
   } else if (step == 3) {
     return renderStep3(setStep);
-  } else if (step == 4) {
+  } else {
     return renderStep4();
   }
 }
