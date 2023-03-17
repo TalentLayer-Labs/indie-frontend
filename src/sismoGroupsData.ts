@@ -76,8 +76,7 @@ export const TALENTLAYER_GROUPS: ISismoGroup[] = [
     userInGroup: false,
     specs: 'Check if the user has earned more than one MATIC on TalentLayer protocol',
     name: 'Earned more than one MATIC on TalentLayer',
-    description:
-      'Congratulations ! You earned your first MATIC using the TalentLayer protocol. Now go earn more.',
+    description: 'The user need to have earned at least one MATIC on TalentLayer protocol',
     image: '/sismo-badges/sismo_workedfordoge.svg',
     link: 'https://testnets.sismo.io/?badge=talentlayer-earned-more-than',
   },
