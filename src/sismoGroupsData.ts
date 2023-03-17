@@ -38,7 +38,7 @@ export const TALENTLAYER_GROUPS: ISismoGroup[] = [
     name: 'Solidity dev',
     description: 'Be skilled in solidity',
     image: '/sismo-badges/sismo_1jobs_sol.svg',
-    link: 'https://testnets.sismo.io/?badge=talentlayer-solidity-1',
+    link: 'https://testnets.sismo.io/?badge=one-solidity-job-on-talentlayer',
   },
   {
     id: '0xda2adbb8da571d832ef0d6ba2e2d62e1',
@@ -70,5 +70,14 @@ export const TALENTLAYER_GROUPS: ISismoGroup[] = [
     description: 'Completed work for DogeCoin with minimum 5 as rating',
     image: '/sismo-badges/sismo_workedfordoge.svg',
     link: 'https://testnets.sismo.io/?badge=one-5-stars-job-completed-for-dogecoin-on-talentlayer-protocol',
+  },
+  {
+    id: '0xf711ddcc09bfbcc060b56c9cfe5296d0',
+    userInGroup: false,
+    specs: 'Check if the user has earned more than one MATIC on TalentLayer protocol',
+    name: 'Earned more than one MATIC on TalentLayer',
+    description: 'The user need to have earned at least one MATIC on TalentLayer protocol',
+    image: '/sismo-badges/sismo_workedfordoge.svg',
+    link: 'https://testnets.sismo.io/?badge=talentlayer-earned-more-than',
   },
 ];
