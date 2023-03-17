@@ -1,26 +1,38 @@
 import { useContext } from 'react';
 import { NavLink } from 'react-router-dom';
 import TalentLayerContext from '../context/talentLayer';
-import { IUser } from '../types';
+import { ISismoBadge, ISismoGroup, IUser } from '../types';
 import Loading from './Loading';
 import Stars from './Stars';
 import PohModule from '../modules/Poh/PohModule';
 import useUserById from '../hooks/useUserById';
 import useSismoGroupData from '../hooks/useSismoGroupData';
+import SismoGroupCard from './SismoGroupCard';
+import useSismoBadgesPerAddress from '../hooks/useSismoBadgesPerAddress';
+import SismoBadgeCard from './SismoBadgeCard';
+
+const TALENTLAYER_GROUP_IDS = [
+  '0x251d25c1e9192286e0e329bc4a46b84e',
+  '0xf2e9a70ce2d0afe45d96c6c642042e8d',
+  '0xb2f9ffd39037252f2be891b943bfcca4',
+  '0x8837536887a7f6458977b10cc464df4b',
+];
 
 function UserDetail({ user }: { user: IUser }) {
   const { user: currentUser } = useContext(TalentLayerContext);
   const userDescription = user?.id ? useUserById(user?.id)?.description : null;
-  const oneJobGroupUsers = useSismoGroupData(
-    import.meta.env.VITE_SISMO_ONE_JOB_GROUP_ID,
-    user.address,
-  );
-  const hasTLIDGroupUsers = useSismoGroupData(
-    import.meta.env.VITE_SISMO_HAS_TALENTLAYER_ID,
-    user.address,
-  );
-  console.log('oneJobGroupUsers', oneJobGroupUsers);
-  console.log('hasTLIDGroupUsers', hasTLIDGroupUsers);
+  const sismoBadges = useSismoBadgesPerAddress(user.address);
+  console.log('sismoBadges', sismoBadges);
+
+  const groupsData: ISismoGroup[] = [];
+
+  TALENTLAYER_GROUP_IDS.forEach(groupId => {
+    const groupData = useSismoGroupData(groupId, user.address);
+    if (groupData) {
+      groupsData.push(groupData);
+    }
+  });
+  console.log('groupsData', groupsData);
 
   if (!user?.id) {
     return <Loading />;
@@ -60,8 +72,34 @@ function UserDetail({ user }: { user: IUser }) {
           <strong>Role:</strong> {userDescription?.role}
         </p>
       </div>
-      <div>
-        <div className=' border-t border-gray-100 pt-4 w-full mt-4' />
+      {groupsData.length > 0 && (
+        <>
+          <div className=' border-t border-gray-100 pt-4 w-full mt-4' />
+          <p className='text-sm text-gray-500 mt-4 mb-4'>
+            <strong>TalentLayer groups:</strong>
+          </p>
+        </>
+      )}
+      <div className='flex'>
+        {groupsData.length > 0 &&
+          groupsData.map((groupData: ISismoGroup) => {
+            return <SismoGroupCard sismoGroupData={groupData} userAddrss={user.address} />;
+          })}
+      </div>
+      {sismoBadges && sismoBadges.length > 0 && (
+        <>
+          <div className=' border-t border-gray-100 pt-4 w-full mt-4' />
+          <p className='text-sm text-gray-500 mt-4 mb-4'>
+            <strong>Badges:</strong>
+          </p>
+        </>
+      )}
+      <div className='flex'>
+        {sismoBadges &&
+          sismoBadges.length > 0 &&
+          sismoBadges.map((badge: ISismoBadge) => {
+            return <SismoBadgeCard sismoBadgeData={badge} />;
+          })}
       </div>
       {currentUser?.id === user.id && (
         <div className=' border-t border-gray-100 pt-4 w-full mt-4'>

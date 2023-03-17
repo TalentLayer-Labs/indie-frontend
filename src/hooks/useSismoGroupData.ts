@@ -16,6 +16,8 @@ const useSismoGroupData = (sismoGroupId: string, userAddress: string): ISismoGro
           setGroupData({
             description: response.data.data.groups[0].description,
             id: response.data.data.groups[0].id,
+            name: response.data.data.groups[0].name,
+            specs: response.data.data.groups[0].specs,
             userInGroup,
           });
         }
