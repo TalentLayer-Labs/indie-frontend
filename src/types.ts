@@ -204,4 +204,5 @@ export type ISismoGroup = {
 export type ISismoBadge = {
   name: string;
   image: string;
+  description: string;
 };

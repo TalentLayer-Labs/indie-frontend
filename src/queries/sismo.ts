@@ -51,6 +51,7 @@ export const getSismoBadgesPerAddress = async (address: string): Promise<any> =>
           badge {
             name
             image
+            description,
           }
         }
       }

@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
-import {ISismoBadge, ISismoGroup, IUser} from '../types';
-import {getSismoBadgesPerAddress, getSismoGroupSnapshot} from '../queries/sismo';
-import { callUrl } from '../utils/rest';
+import { getSismoBadgesPerAddress } from '../queries/sismo';
+import { ISismoBadge } from '../types';
 
 const useSismoBadgesPerAddress = (userAddress: string): ISismoBadge[] | null => {
   const [badgesData, setBadgesData] = useState<ISismoBadge[] | null>(null);
@@ -17,6 +16,7 @@ const useSismoBadgesPerAddress = (userAddress: string): ISismoBadge[] | null => 
             allBadges.push({
               name: badge.badge.name,
               image: badge.badge.image,
+              description: badge.badge.description,
             });
           });
           setBadgesData(allBadges);
