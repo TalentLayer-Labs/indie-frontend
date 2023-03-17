@@ -31,7 +31,7 @@ function UserBadges({ user }: IProps) {
           <h2 className='mb-6 pb-4 border-b border-gray-gray-200 text-gray-900 font-medium'>
             {user.address === currentUser?.address ? 'Your badges' : 'Badges'}:
           </h2>
-          <div className='flex'>
+          <div className='flex mb-8'>
             {sismoBadges.map((badge: ISismoBadge, i: number) => {
               return <SismoBadgeCard key={i} sismoBadgeData={badge} />;
             })}
