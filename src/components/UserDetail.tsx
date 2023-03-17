@@ -1,29 +1,15 @@
 import { useContext } from 'react';
 import { NavLink } from 'react-router-dom';
 import TalentLayerContext from '../context/talentLayer';
-import { ISismoBadge, ISismoGroup, IUser } from '../types';
+import useUserById from '../hooks/useUserById';
+import PohModule from '../modules/Poh/pohModule';
+import { IUser } from '../types';
 import Loading from './Loading';
 import Stars from './Stars';
-import PohModule from '../modules/Poh/pohModule';
-import useUserById from '../hooks/useUserById';
-import SismoGroupCard from './SismoGroupCard';
-import useSismoBadgesPerAddress from '../hooks/useSismoBadgesPerAddress';
-import SismoBadgeCard from './SismoBadgeCard';
-import useIsUserInSismoGroup from '../hooks/useIsUserInSismoGroup';
-import { TALENTLAYER_GROUPS } from '../sismoGroupsData';
 
 function UserDetail({ user }: { user: IUser }) {
   const { user: currentUser } = useContext(TalentLayerContext);
   const userDescription = user?.id ? useUserById(user?.id)?.description : null;
-  const sismoBadges = useSismoBadgesPerAddress(user.address);
-
-  const groupsData: ISismoGroup[] = [...TALENTLAYER_GROUPS];
-
-  groupsData.map(group => {
-    if (user.address === currentUser?.address) {
-      group.userInGroup = useIsUserInSismoGroup(group.id, user.address);
-    }
-  });
 
   if (!user?.id) {
     return <Loading />;
@@ -63,35 +49,7 @@ function UserDetail({ user }: { user: IUser }) {
           <strong>Role:</strong> {userDescription?.role}
         </p>
       </div>
-      {groupsData.length > 0 && (
-        <>
-          <div className=' border-t border-gray-100 pt-4 w-full mt-4' />
-          <p className='text-sm text-gray-500 mt-4 mb-4'>
-            <strong>TalentLayer groups:</strong>
-          </p>
-        </>
-      )}
-      <div className='flex'>
-        {groupsData.length > 0 &&
-          groupsData.map((groupData: ISismoGroup, i: number) => {
-            return <SismoGroupCard key={i} sismoGroupData={groupData} userAddrss={user.address} />;
-          })}
-      </div>
-      {sismoBadges && sismoBadges.length > 0 && (
-        <>
-          <div className=' border-t border-gray-100 pt-4 w-full mt-4' />
-          <p className='text-sm text-gray-500 mt-4 mb-4'>
-            <strong>Badges:</strong>
-          </p>
-        </>
-      )}
-      <div className='flex'>
-        {sismoBadges &&
-          sismoBadges.length > 0 &&
-          sismoBadges.map((badge: ISismoBadge, i: number) => {
-            return <SismoBadgeCard key={i} sismoBadgeData={badge} />;
-          })}
-      </div>
+
       {currentUser?.id === user.id && (
         <div className=' border-t border-gray-100 pt-4 w-full mt-4'>
           <div className='flex flex-row gap-4 justify-end items-center'>
