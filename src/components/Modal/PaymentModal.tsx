@@ -89,7 +89,7 @@ function PaymentModal({ service, payments, isBuyer }: IPaymentModalProps) {
                       <p className='text-base leading-4 text-gray-800'>
                         <a
                           className='flex'
-                          href={`https://goerli.etherscan.io/tx/${payment.transactionHash}`}
+                          href={`https://mumbai.polygonscan.com/tx/${payment.transactionHash}`}
                           target='_blank'>
                           {payment.paymentType == PaymentTypeEnum.Release
                             ? 'Realease'

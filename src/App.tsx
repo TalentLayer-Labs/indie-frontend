@@ -21,6 +21,7 @@ import { Web3Modal } from '@web3modal/react';
 
 import { Chain, configureChains, createClient, WagmiConfig } from 'wagmi';
 import { customChains } from './chains';
+import Onboarding from './pages/Onboarding';
 
 const chains: Chain[] = [customChains.polygonMumbai];
 
@@ -62,6 +63,7 @@ function App() {
                   <Route path='/profile/:id' element={<Profile />} />
                   <Route path='/profile/edit' element={<EditProfile />} />
                 </Route>
+                <Route path='/onboarding' element={<Onboarding />} />
               </Routes>
             </div>
           </TalentLayerProvider>
