@@ -6,33 +6,24 @@ import Loading from './Loading';
 import Stars from './Stars';
 import PohModule from '../modules/Poh/PohModule';
 import useUserById from '../hooks/useUserById';
-import useSismoGroupData from '../hooks/useSismoGroupData';
 import SismoGroupCard from './SismoGroupCard';
 import useSismoBadgesPerAddress from '../hooks/useSismoBadgesPerAddress';
 import SismoBadgeCard from './SismoBadgeCard';
-
-const TALENTLAYER_GROUP_IDS = [
-  '0x251d25c1e9192286e0e329bc4a46b84e',
-  '0xf2e9a70ce2d0afe45d96c6c642042e8d',
-  '0xb2f9ffd39037252f2be891b943bfcca4',
-  '0x8837536887a7f6458977b10cc464df4b',
-];
+import useIsUserInSismoGroup from '../hooks/useIsUserInSismoGroup';
+import { TALENTLAYER_GROUPS } from '../sismoGroupsData';
 
 function UserDetail({ user }: { user: IUser }) {
   const { user: currentUser } = useContext(TalentLayerContext);
   const userDescription = user?.id ? useUserById(user?.id)?.description : null;
   const sismoBadges = useSismoBadgesPerAddress(user.address);
-  console.log('sismoBadges', sismoBadges);
 
-  const groupsData: ISismoGroup[] = [];
+  const groupsData: ISismoGroup[] = [...TALENTLAYER_GROUPS];
 
-  TALENTLAYER_GROUP_IDS.forEach(groupId => {
-    const groupData = useSismoGroupData(groupId, user.address);
-    if (groupData) {
-      groupsData.push(groupData);
+  groupsData.map(group => {
+    if (user.address === currentUser?.address) {
+      group.userInGroup = useIsUserInSismoGroup(group.id, user.address);
     }
   });
-  console.log('groupsData', groupsData);
 
   if (!user?.id) {
     return <Loading />;

@@ -21,6 +21,23 @@ export const getSismoGroupSnapshot = async (groupId: string): Promise<any> => {
 
   return processSismoRequest(query);
 };
+export const getSismoGroupSnapshotUrl = async (groupId: string): Promise<any> => {
+  let condition = ', where: {';
+  condition += groupId ? `, id: "${groupId}"` : '';
+  condition += '}';
+
+  const query = `
+    {
+      groups(${condition}) {
+        latestSnapshot {
+          dataUrl
+        }
+      }
+    }
+    `;
+
+  return processSismoRequest(query);
+};
 
 export const getSismoBadgesPerAddress = async (address: string): Promise<any> => {
   let condition = ', where: {';

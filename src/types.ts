@@ -197,8 +197,9 @@ export type ISismoGroup = {
   userInGroup: boolean;
   name: string;
   specs: string;
+  image: string;
+  link: string;
 };
-
 
 export type ISismoBadge = {
   name: string;
