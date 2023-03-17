@@ -10,7 +10,7 @@ function SismoBadgeCard({ sismoBadgeData }: { sismoBadgeData: ISismoBadge }) {
           <strong>Description:</strong> {sismoBadgeData.description}
         </p>
       </SismoHelpPopover>
-      <img src={`${sismoBadgeData.image}`} className='w-20 mr-4' />
+      <img src={`${sismoBadgeData.image}`} className='w-24 mr-4' />
     </a>
   );
 }
