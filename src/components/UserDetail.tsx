@@ -4,7 +4,7 @@ import TalentLayerContext from '../context/talentLayer';
 import { ISismoBadge, ISismoGroup, IUser } from '../types';
 import Loading from './Loading';
 import Stars from './Stars';
-import PohModule from '../modules/Poh/PohModule';
+import PohModule from '../modules/Poh/pohModule';
 import useUserById from '../hooks/useUserById';
 import SismoGroupCard from './SismoGroupCard';
 import useSismoBadgesPerAddress from '../hooks/useSismoBadgesPerAddress';
@@ -73,8 +73,8 @@ function UserDetail({ user }: { user: IUser }) {
       )}
       <div className='flex'>
         {groupsData.length > 0 &&
-          groupsData.map((groupData: ISismoGroup) => {
-            return <SismoGroupCard sismoGroupData={groupData} userAddrss={user.address} />;
+          groupsData.map((groupData: ISismoGroup, i: number) => {
+            return <SismoGroupCard key={i} sismoGroupData={groupData} userAddrss={user.address} />;
           })}
       </div>
       {sismoBadges && sismoBadges.length > 0 && (
@@ -88,8 +88,8 @@ function UserDetail({ user }: { user: IUser }) {
       <div className='flex'>
         {sismoBadges &&
           sismoBadges.length > 0 &&
-          sismoBadges.map((badge: ISismoBadge) => {
-            return <SismoBadgeCard sismoBadgeData={badge} />;
+          sismoBadges.map((badge: ISismoBadge, i: number) => {
+            return <SismoBadgeCard key={i} sismoBadgeData={badge} />;
           })}
       </div>
       {currentUser?.id === user.id && (
