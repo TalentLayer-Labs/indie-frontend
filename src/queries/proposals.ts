@@ -35,7 +35,6 @@ export const getAllProposalsByServiceId = (id: string): Promise<any> => {
           numReviews
         }
         description {
-          title
           id
           about
           expectedHours
@@ -80,7 +79,6 @@ export const getAllProposalsByUser = (id: string): Promise<any> => {
             }
           }
           description {
-            title
             id
             about
             expectedHours
