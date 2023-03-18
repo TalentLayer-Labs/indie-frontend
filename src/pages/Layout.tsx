@@ -1,15 +1,24 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { Bars3BottomLeftIcon, XMarkIcon } from '@heroicons/react/24/outline';
-import { Fragment, useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Fragment, useContext, useEffect, useState } from 'react';
+import { Outlet, redirect, useNavigate } from 'react-router-dom';
 import Logo from '../components/Layout/Logo';
 import NetworkSwitch from '../components/NetworkSwitch';
 import SideMenu from '../components/Layout/SideMenu';
 import UserAccount from '../components/UserAccount';
 import SideBottom from '../components/Layout/SideBottom';
+import TalentLayerContext from '../context/talentLayer';
 
 function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { account } = useContext(TalentLayerContext);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!account?.address) {
+      navigate('/onboarding');
+    }
+  }, [account]);
 
   return (
     <>
