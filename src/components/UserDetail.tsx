@@ -36,18 +36,22 @@ function UserDetail({ user }: { user: IUser }) {
         <Stars rating={Number(user.rating)} numReviews={user.numReviews} />
       </div>
       <div className=' border-t border-gray-100 pt-4 w-full'>
-        <p className='text-sm text-gray-500 mt-4'>
-          <strong>Name:</strong> {userDescription?.name}
-        </p>
+        {userDescription?.name && (
+          <p className='text-sm text-gray-500 mt-4'>
+            <strong>Name:</strong> {userDescription?.name}
+          </p>
+        )}
         <p className='text-sm text-gray-500 mt-4'>
           <strong>Skills:</strong> {userDescription?.skills_raw}
         </p>
         <p className='text-sm text-gray-500 mt-4'>
           <strong>About:</strong> {userDescription?.about}
         </p>
-        <p className='text-sm text-gray-500 mt-4'>
-          <strong>Role:</strong> {userDescription?.role}
-        </p>
+        {userDescription?.role && (
+          <p className='text-sm text-gray-500 mt-4'>
+            <strong>Role:</strong> {userDescription?.role}
+          </p>
+        )}
       </div>
 
       {currentUser?.id === user.id && (
