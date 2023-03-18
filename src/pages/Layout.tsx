@@ -1,12 +1,12 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { Bars3BottomLeftIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { Fragment, useContext, useEffect, useState } from 'react';
-import { Outlet, redirect, useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import Logo from '../components/Layout/Logo';
-import NetworkSwitch from '../components/NetworkSwitch';
-import SideMenu from '../components/Layout/SideMenu';
-import UserAccount from '../components/UserAccount';
 import SideBottom from '../components/Layout/SideBottom';
+import SideMenu from '../components/Layout/SideMenu';
+import NetworkSwitch from '../components/NetworkSwitch';
+import UserAccount from '../components/UserAccount';
 import TalentLayerContext from '../context/talentLayer';
 
 function Layout() {
