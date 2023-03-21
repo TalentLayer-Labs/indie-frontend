@@ -226,6 +226,14 @@ export type IPlatform = {
   name: string;
   totalPlatformGains: IPlatformGain;
   uri: string;
+  description?: IPlatformDescription;
+};
+
+export type IPlatformDescription = {
+  about: string;
+  id: string;
+  logo: string;
+  website: string;
 };
 
 export type IPlatformGain = {

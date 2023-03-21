@@ -31,8 +31,9 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
 import { Chain, configureChains, createClient, WagmiConfig } from 'wagmi';
 import { customChains } from './chains';
+import ConfigurationPresentation from './pages/ConfigurationPresentation';
 
-const chains: Chain[] = [customChains.polygonMumbai];
+const chains: Chain[] = [customChains.fuji];
 
 // Wagmi client
 const { provider } = configureChains(chains, [
@@ -71,6 +72,7 @@ function App() {
                   <Route path='/about' element={<About />} />
                   <Route path='/profile/:id' element={<Profile />} />
                   <Route path='/profile/edit' element={<EditProfile />} />
+                  <Route path='/configuration' element={<ConfigurationPresentation />} />
                 </Route>
               </Routes>
             </div>
