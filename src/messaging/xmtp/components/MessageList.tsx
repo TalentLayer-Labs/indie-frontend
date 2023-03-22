@@ -3,7 +3,8 @@ import MessageCard from './MessageCard';
 import { isDateOnSameDay } from '../utils/messaging';
 import { XmtpChatMessage } from '../../../types';
 import Loading from '../../../components/Loading';
-import { useEffect, useRef } from 'react';
+import { useContext, useEffect, useRef } from 'react';
+import { XmtpContext } from '../context/XmtpContext';
 
 interface IMessageListProps {
   conversationMessages: XmtpChatMessage[];
@@ -24,6 +25,7 @@ const MessageList = ({
   sendingPending,
   setMessageSendingErrorMsg,
 }: IMessageListProps) => {
+  const { providerState } = useContext(XmtpContext);
   //We only listen to the active conversation
   useStreamMessages(selectedConversationPeerAddress, userId, peerUserId, setMessageSendingErrorMsg);
   let lastMessageDate: Date | undefined;
@@ -31,7 +33,7 @@ const MessageList = ({
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [sendingPending, conversationMessages, bottomRef]);
+  }, [sendingPending, conversationMessages, bottomRef, providerState]);
 
   return (
     <div className='flex flex-col mt-5'>
@@ -50,7 +52,7 @@ const MessageList = ({
         lastMessageDate = msg.timestamp as Date;
         return messageCard;
       })}
-      <div ref={bottomRef} id='scroller' style={{ overflowAnchor: 'revert', height: '1px' }}></div>
+      <div ref={bottomRef} id='scroller'></div>
     </div>
   );
 };
