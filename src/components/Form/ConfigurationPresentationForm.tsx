@@ -25,7 +25,7 @@ const validationSchema = Yup.object({
 
 function ConfigurationPresentationForm() {
   const { open: openConnectModal } = useWeb3Modal();
-  const { user, platform } = useContext(TalentLayerContext);
+  const { platform } = useContext(TalentLayerContext);
   const provider = useProvider({ chainId: import.meta.env.VITE_NETWORK_ID });
   const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
 

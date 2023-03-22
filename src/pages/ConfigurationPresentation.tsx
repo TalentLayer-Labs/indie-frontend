@@ -6,12 +6,12 @@ import Steps from '../components/Steps';
 
 function ConfigurationPresentation() {
   const { account, platform } = useContext(TalentLayerContext);
-  const platformIdOfConnectedAccount = 1;
+  const platformIdOfConnectedAccount = platform?.id;
   if (account?.isConnected === false && account?.isConnecting === false) {
     return null;
   }
 
-  if (platformIdOfConnectedAccount === null) {
+  if (!platformIdOfConnectedAccount) {
     return <InfoNoPlatformId />;
   }
 

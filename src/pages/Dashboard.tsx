@@ -4,24 +4,22 @@ import PlatformGains from '../components/PlatformGains';
 import PlatformDetail from '../components/PlatformDetail';
 import PlatformServices from '../components/PlatformServices';
 import { useProvider, useSigner } from 'wagmi';
-import usePlatformByAddress from '../hooks/usePlatformByAddress';
 import { useAsync } from '../hooks/useAsync';
-import InfoNoPlatformId from "../components/InfoNoPlatformId";
+import InfoNoPlatformId from '../components/InfoNoPlatformId';
 
 function Dashboard() {
-  const { account } = useContext(TalentLayerContext);
+  const { account, platform } = useContext(TalentLayerContext);
   const provider = useProvider({ chainId: import.meta.env.VITE_NETWORK_ID });
   const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
   const address =
     useAsync(async () => {
       return signer?.getAddress();
     }).value || undefined;
-  // const platformIdOfConnectedAccount = usePlatformByAddress(address);
-  const platformIdOfConnectedAccount = 1;
+  const platformIdOfConnectedAccount = platform?.id;
   if (account?.isConnected === false && account?.isConnecting === false) {
     return null;
   }
-  if (platformIdOfConnectedAccount === null) {
+  if (!platformIdOfConnectedAccount) {
     return <InfoNoPlatformId />;
   }
 
