@@ -4,7 +4,10 @@ import usePlatform from '../hooks/usePlatform';
 
 function PlatformDetail({ platformId }: { platformId: string }) {
   const platform = usePlatform(platformId);
-  const platformFee = Number(platform?.fee) / 100;
+  let platformFee;
+  if (platform?.originServiceFeeRate !== undefined && platform?.originServiceFeeRate >= 0) {
+    platformFee = Number(platform?.originServiceFeeRate) / 100;
+  }
 
   if (!platform) {
     return <Loading />;
@@ -26,16 +29,18 @@ function PlatformDetail({ platformId }: { platformId: string }) {
           </div>
         </div>
       </div>
-      <div className=' border-t border-gray-100 pt-4 w-full'>
-        <p className='text-sm text-gray-500 mt-4'>
-          <strong>Fee Rate:</strong> {platformFee.toString()} %
-        </p>
-      </div>
+      {platformFee !== undefined && (
+        <div className=' border-t border-gray-100 pt-4 w-full'>
+          <p className='text-sm text-gray-500 mt-4'>
+            <strong>Fee Rate:</strong> {platformFee}%
+          </p>
+        </div>
+      )}
       <div className=' border-t border-gray-100 pt-4 w-full mt-4'>
         <div className='flex flex-row gap-4 justify-end items-center'>
           <NavLink
             className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg'
-            to={`/configuration/edit`}>
+            to={`/configuration/fees`}>
             Edit platform configuration
           </NavLink>
         </div>

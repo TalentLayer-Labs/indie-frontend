@@ -7,6 +7,10 @@ const platformFields = `
   arbitrationFeeTimeout
   arbitrator
   arbitratorExtraData
+  servicePostingFee
+  originServiceFeeRate
+  originValidatedProposalFeeRate
+  proposalPostingFee
   cid
   createdAt
   updatedAt

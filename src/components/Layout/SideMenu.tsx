@@ -14,18 +14,39 @@ const navigation = [
     isContainer: true,
   },
   {
-    name: 'Dispute',
-    href: '/dispute',
-    icon: ExclamationCircleIcon,
-    current: false,
-    isContainer: false,
-  },
-  {
     name: 'Configuration',
     href: '/configuration',
     icon: Cog6ToothIcon,
     current: false,
     isContainer: true,
+  },
+  {
+    name: 'Presentation',
+    href: '/configuration/presentation',
+    icon: Cog6ToothIcon,
+    current: false,
+    isContainer: false,
+  },
+  {
+    name: 'Control center',
+    href: '/configuration/control-center',
+    icon: Cog6ToothIcon,
+    current: false,
+    isContainer: false,
+  },
+  {
+    name: 'Fees Strategies',
+    href: '/configuration/fees',
+    icon: Cog6ToothIcon,
+    current: false,
+    isContainer: false,
+  },
+  {
+    name: 'Dispute',
+    href: '/configuration/dispute',
+    icon: ExclamationCircleIcon,
+    current: false,
+    isContainer: false,
   },
 ];
 
