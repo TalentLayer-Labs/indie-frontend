@@ -88,6 +88,8 @@ export const getUserTotalGains = (id: string): Promise<any> => {
           token {
             id
             name
+            symbol
+            decimals
           }
         }
       }

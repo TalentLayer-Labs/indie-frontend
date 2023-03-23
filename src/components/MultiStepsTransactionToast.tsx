@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import ToastStep from './ToastStep';
-import { useNetwork } from 'wagmi';
+import { renderExplorerName, renderExplorerUri } from '../utils/network';
 
 function MultiStepsTransactionToast({
   transactionHash,
@@ -11,46 +11,8 @@ function MultiStepsTransactionToast({
   currentStep: number;
   hasOffchainData?: boolean;
 }) {
-  const network = useNetwork();
-  const chainId = network?.chain?.id;
-  const renderExplorerUri = (chainId?: number) => {
-    switch (chainId) {
-      case 1:
-        return 'https://etherscan.io/tx/';
-      case 5:
-        return 'https://goerli.etherscan.io/tx/';
-      case 1337:
-        return 'Localhost';
-      case 43113:
-        return 'https://testnet.snowtrace.io/tx/';
-      case 80001:
-        return 'https://mumbai.polygonscan.com/tx/';
-      case 137:
-        return 'https://polygonscan.com/tx/';
-      default:
-        return 'Unknown';
-    }
-  };
-  const renderExplorerName = (chainId?: number) => {
-    switch (chainId) {
-      case 1:
-        return 'Check on etherscan';
-      case 5:
-        return 'Check on goerli etherscan';
-      case 1337:
-        return 'Localhost';
-      case 43113:
-        return 'Check on snowtrace';
-      case 80001:
-        return 'Check on mumbai polygonscan';
-      case 137:
-        return 'https://polygonscan.com/tx/';
-      default:
-        return 'Unknown';
-    }
-  };
   const renderTransaction = useCallback(() => {
-    const explorerUri = renderExplorerUri(chainId);
+    const explorerUri = renderExplorerUri();
     if (explorerUri === 'Localhost' || explorerUri === 'Unknown') return <></>;
     return (
       <a
@@ -58,7 +20,7 @@ function MultiStepsTransactionToast({
         target='_blank'
         href={`${explorerUri}${transactionHash}`}>
         <span className='inline-flex full-w justify-center w-full px-2 py-1.5 text-xs font-medium text-center text-gray-900 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 '>
-          {renderExplorerName(chainId)}
+          {renderExplorerName()}
         </span>
       </a>
     );
