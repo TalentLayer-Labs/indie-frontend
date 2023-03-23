@@ -13,7 +13,7 @@ function MultiStepsTransactionToast({
 }) {
   const renderTransaction = useCallback(() => {
     const explorerUri = renderExplorerUri();
-    if (explorerUri === 'Localhost' || explorerUri === 'Unknown') return <></>;
+
     return (
       <a
         className='flex flex-col text-sm font-normal w-full pt-2'
