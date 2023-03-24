@@ -57,8 +57,9 @@ const useStreamMessages = (
           if (providerState && setProviderState) {
             const newMessages =
               providerState.conversationMessages.get(conversation.peerAddress) ?? [];
+            //If the message is already in the list, don't add it again
             if (getLatestMessage(newMessages)?.messageContent === msg.content) {
-              return;
+              continue;
             }
             const incomingChatMessage = buildChatMessage(msg);
             newMessages.push(incomingChatMessage);
