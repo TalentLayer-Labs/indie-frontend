@@ -1,11 +1,12 @@
 import { useContext } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import TalentLayerContext from '../context/talentLayer';
 import usePaymentsByService from '../hooks/usePaymentsByService';
 import useProposalsByService from '../hooks/useProposalsByService';
 import useReviewsByService from '../hooks/useReviewsByService';
+import ContactButton from '../messaging/components/ContactButton';
+import { IService, ProposalStatusEnum, ServiceStatusEnum } from '../types';
 import { renderTokenAmountFromConfig } from '../utils/conversion';
-import { IService, ProposalStatusEnum, ServiceStatusEnum, ConversationDisplayType } from '../types';
 import { formatDate } from '../utils/dates';
 import PaymentModal from './Modal/PaymentModal';
 import ReviewModal from './Modal/ReviewModal';
@@ -13,59 +14,12 @@ import ProposalItem from './ProposalItem';
 import ReviewItem from './ReviewItem';
 import ServiceStatus from './ServiceStatus';
 import Stars from './Stars';
-import PushContext from '../messaging/push/context/pushUser';
-import { ethers } from 'ethers';
-import { XmtpContext } from '../messaging/xmtp/context/XmtpContext';
-import { useSigner } from 'wagmi';
 
 function ServiceDetail({ service }: { service: IService }) {
   const { account, user } = useContext(TalentLayerContext);
-  const { providerState } = useContext(XmtpContext);
-  const { initPush, conversationMessages } = useContext(PushContext);
-  const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
   const { reviews } = useReviewsByService(service.id);
   const proposals = useProposalsByService(service.id);
   const payments = usePaymentsByService(service.id);
-  const navigate = useNavigate();
-
-  const handleMessageUser = async (): Promise<void> => {
-    if (import.meta.env.VITE_MESSENGING_TECH === 'push') {
-      if (user && initPush) {
-        try {
-          await initPush(user.address);
-        } catch (e) {
-          console.log('ServiceDetail - Error initializing Push client: ', e);
-          return;
-        }
-        const buyerAddress = ethers.utils.getAddress(service.buyer?.address);
-        let newMessage: boolean;
-        // Check if conversation exists
-        if (conversationMessages) {
-          conversationMessages?.get(buyerAddress)?.length === 0
-            ? (newMessage = true)
-            : (newMessage = false);
-          navigate(`/messaging/${ConversationDisplayType.CONVERSATION}/${buyerAddress}`, {
-            state: { newMessage },
-          });
-        }
-      }
-    }
-    if (import.meta.env.VITE_MESSENGING_TECH === 'xmtp') {
-      if (signer && providerState) {
-        //If initClient() is in the context, then we can assume that the user has not already logged in
-        if (providerState.initClient) {
-          try {
-            await providerState.initClient(signer);
-          } catch (e) {
-            console.log('ServiceDetail - Error initializing XMTP client: ', e);
-            return;
-          }
-        }
-        const buyerAddress = ethers.utils.getAddress(service.buyer?.address);
-        navigate(`/messaging/${buyerAddress}`);
-      }
-    }
-  };
 
   const isBuyer = user?.id === service.buyer.id;
   const isSeller = user?.id === service.seller?.id;
@@ -146,13 +100,10 @@ function ServiceDetail({ service }: { service: IService }) {
                   to={`/services/${service.id}/create-proposal`}>
                   Create proposal
                 </NavLink>
-                <button
-                  className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg'
-                  onClick={() => {
-                    handleMessageUser();
-                  }}>
-                  Contact {service.buyer.handle}
-                </button>
+                <ContactButton
+                  userAddress={service.buyer?.address}
+                  userHandle={service.buyer.handle}
+                />
               </>
             )}
             {(isBuyer || isSeller) &&

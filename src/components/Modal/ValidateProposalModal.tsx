@@ -1,20 +1,16 @@
 import { ethers } from 'ethers';
 import { Check, X } from 'heroicons-react';
-import { useContext, useState } from 'react';
-import { validateProposal } from '../../contracts/acceptProposal';
-import { renderTokenAmount } from '../../utils/conversion';
-import { ConversationDisplayType, IAccount, IProposal } from '../../types';
-import Step from '../Step';
-import useFees from '../../hooks/useFees';
-import { FEE_RATE_DIVIDER } from '../../config';
+import { useState } from 'react';
 import { useBalance, useProvider, useSigner } from 'wagmi';
-import PushContext from '../../messaging/push/context/pushUser';
-import { XmtpContext } from '../../messaging/xmtp/context/XmtpContext';
-import { useNavigate } from 'react-router-dom';
+import { FEE_RATE_DIVIDER } from '../../config';
+import { validateProposal } from '../../contracts/acceptProposal';
+import useFees from '../../hooks/useFees';
+import ContactButton from '../../messaging/components/ContactButton';
+import { IAccount, IProposal } from '../../types';
+import { renderTokenAmount } from '../../utils/conversion';
+import Step from '../Step';
 
 function ValidateProposalModal({ proposal, account }: { proposal: IProposal; account: IAccount }) {
-  const { providerState } = useContext(XmtpContext);
-  const { initPush, pushUser, conversationMessages } = useContext(PushContext);
   const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
   const provider = useProvider({ chainId: import.meta.env.VITE_NETWORK_ID });
   const [show, setShow] = useState(false);
@@ -25,7 +21,6 @@ function ValidateProposalModal({ proposal, account }: { proposal: IProposal; acc
     enabled: !isProposalUseEth,
     token: proposal.rateToken.address,
   });
-  const navigate = useNavigate();
 
   const originValidatedProposalPlatformId = proposal.platformId;
   const originServicePlatformId = proposal.service.platformId;
@@ -71,53 +66,9 @@ function ValidateProposalModal({ proposal, account }: { proposal: IProposal; acc
     }
   };
 
-  const handleMessageUser = async (): Promise<void> => {
-    if (import.meta.env.VITE_MESSENGING_TECH === 'push') {
-      if (pushUser && initPush) {
-        try {
-          await initPush(account.address as string);
-        } catch (e) {
-          return;
-        }
-        const sellerAddress = ethers.utils.getAddress(proposal.seller?.address);
-        let newMessage = false;
-        // Check if conversation exists
-        conversationMessages?.get(sellerAddress)?.length === 0
-          ? (newMessage = true)
-          : (newMessage = false);
-        navigate(
-          `/messaging/${ConversationDisplayType.CONVERSATION}/${ethers.utils.getAddress(
-            proposal.seller?.address,
-          )}`,
-          {
-            state: { newMessage },
-          },
-        );
-      }
-    }
-    if (import.meta.env.VITE_MESSENGING_TECH === 'xmtp') {
-      if (signer && providerState && providerState.initClient) {
-        try {
-          await providerState.initClient(signer);
-        } catch (e) {
-          return;
-        }
-        const sellerAddress = ethers.utils.getAddress(proposal.seller?.address);
-        // Check if conversation exists
-        navigate(`/messaging/${sellerAddress}`);
-      }
-    }
-  };
-
   return (
     <>
-      <button
-        className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg'
-        onClick={() => {
-          handleMessageUser();
-        }}>
-        Contact {proposal.seller.handle}
-      </button>
+      <ContactButton userAddress={proposal.seller.address} userHandle={proposal.seller.handle} />
       <button
         onClick={() => setShow(true)}
         className='block text-green-600 bg-green-50 hover:bg-green-500 hover:text-white rounded-lg px-5 py-2.5 text-center'
