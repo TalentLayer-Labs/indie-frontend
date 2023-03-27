@@ -1,7 +1,7 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { Bars3BottomLeftIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { Fragment, useState } from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import Logo from '../components/Layout/Logo';
 import NetworkSwitch from '../components/NetworkSwitch';
 import SideMenu from '../components/Layout/SideMenu';
@@ -10,7 +10,6 @@ import SideBottom from '../components/Layout/SideBottom';
 
 function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const location = useLocation();
 
   return (
     <>
@@ -98,7 +97,7 @@ function Layout() {
           </div>
 
           <main>
-            <div className={`p-6 ${location.pathname.includes('messaging') ? '' : 'sm:p-12'}`}>
+            <div className={`p-6`}>
               <Outlet />
             </div>
           </main>
