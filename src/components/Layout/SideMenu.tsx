@@ -6,6 +6,7 @@ import {
   SparklesIcon,
 } from '@heroicons/react/24/outline';
 import { NavLink } from 'react-router-dom';
+import { ChatBubbleLeftIcon } from '@heroicons/react/20/solid';
 
 const navigation = [
   { name: 'Presentation', href: '/', icon: HomeIcon, current: false },
@@ -13,6 +14,7 @@ const navigation = [
   { name: 'Find jobs', href: '/services', icon: MagnifyingGlassIcon, current: false },
   { name: 'Post a job', href: '/services/create', icon: PlusIcon, current: false },
   { name: 'Find talents', href: '/talents', icon: SparklesIcon, current: false },
+  { name: 'Messaging', href: '/messaging', icon: ChatBubbleLeftIcon, current: false },
 ];
 
 function SideMenu() {

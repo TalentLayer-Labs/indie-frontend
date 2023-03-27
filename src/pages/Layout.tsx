@@ -97,7 +97,7 @@ function Layout() {
           </div>
 
           <main>
-            <div className='p-6 sm:p-12'>
+            <div className={`p-6`}>
               <Outlet />
             </div>
           </main>

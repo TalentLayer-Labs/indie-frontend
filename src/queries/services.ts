@@ -20,6 +20,7 @@ const serviceQueryFields = `
   buyer {
     id
     handle
+    address
     rating
     numReviews
   }

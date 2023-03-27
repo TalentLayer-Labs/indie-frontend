@@ -6,10 +6,12 @@ import Loading from '../components/Loading';
 import Steps from '../components/Steps';
 import TalentLayerContext from '../context/talentLayer';
 import useServiceById from '../hooks/useServiceById';
+import ConnectButton from '../messaging/components/ConnectButton';
+import MessagingContext from '../messaging/context/messging';
 
 function CreateProposal() {
   const { account, user } = useContext(TalentLayerContext);
-
+  const { userExists } = useContext(MessagingContext);
   const { id } = useParams<{ id: string }>();
   const service = useServiceById(id || '1');
 
@@ -25,7 +27,20 @@ function CreateProposal() {
       </p>
 
       <Steps targetTitle={'Filled the proposal form'} />
-      {account?.isConnected && user && <ProposalForm user={user} service={service} />}
+
+      {!userExists() && account?.isConnected && user && (
+        <div className='border border-gray-200 rounded-md p-8'>
+          <p className='text-gray-500 py-4'>
+            In order to create a proposal, you need to be registered to our decentralized messaging
+            service. Please sign in to our messaging service to verify your identity :
+          </p>
+          <ConnectButton />
+        </div>
+      )}
+
+      {userExists() && account?.isConnected && user && (
+        <ProposalForm user={user} service={service} />
+      )}
     </div>
   );
 }
