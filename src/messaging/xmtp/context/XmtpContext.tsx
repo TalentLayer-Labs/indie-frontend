@@ -31,7 +31,7 @@ export const XmtpContextProvider = ({ children }: { children: ReactNode }) => {
 
   const checkUserExistence = async (): Promise<boolean> => {
     if (signer) {
-      const keys = await Client.getKeys(signer, { env: 'dev' });
+      const keys = await Client.getKeys(signer, { env: import.meta.env.VITE_MESSENGING_ENV });
       return !!keys;
     }
     return false;
@@ -64,9 +64,9 @@ export const XmtpContextProvider = ({ children }: { children: ReactNode }) => {
     console.log('initClient w signer: ', wallet);
     if (wallet && !providerState.client && signer) {
       try {
-        const keys = await Client.getKeys(signer, { env: 'dev' });
+        const keys = await Client.getKeys(signer, { env: import.meta.env.VITE_MESSENGING_ENV });
         const client = await Client.create(null, {
-          env: 'dev',
+          env: import.meta.env.VITE_MESSENGING_ENV,
           privateKeyOverride: keys,
         });
         setProviderState({
@@ -85,7 +85,9 @@ export const XmtpContextProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const checkUserExistence = async (): Promise<void> => {
       if (signer) {
-        const userExists = await Client.canMessage(walletAddress as string, { env: 'dev' });
+        const userExists = await Client.canMessage(walletAddress as string, {
+          env: import.meta.env.VITE_MESSENGING_ENV,
+        });
         setProviderState({ ...providerState, userExists, initClient });
       }
     };
