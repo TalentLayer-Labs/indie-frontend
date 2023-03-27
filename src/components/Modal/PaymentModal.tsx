@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { renderTokenAmount } from '../../utils/conversion';
 import { IPayment, IService, PaymentTypeEnum, ServiceStatusEnum } from '../../types';
 import ReleaseForm from '../Form/ReleaseForm';
+import { useNetwork } from 'wagmi';
 
 interface IPaymentModalProps {
   service: IService;
@@ -15,6 +16,7 @@ function PaymentModal({ service, payments, isBuyer }: IPaymentModalProps) {
   const [show, setShow] = useState(false);
   const rateToken = service.validatedProposal[0].rateToken;
   const rateAmount = service.validatedProposal[0].rateAmount;
+  const network = useNetwork();
 
   const totalPayments = payments.reduce((acc, payment) => {
     return acc.add(ethers.BigNumber.from(payment.amount));
@@ -89,11 +91,11 @@ function PaymentModal({ service, payments, isBuyer }: IPaymentModalProps) {
                       <p className='text-base leading-4 text-gray-800'>
                         <a
                           className='flex'
-                          href={`https://goerli.etherscan.io/tx/${payment.transactionHash}`}
+                          href={`${network.chain?.blockExplorers?.default.url}/tx/${payment.transactionHash}`}
                           target='_blank'>
                           {payment.paymentType == PaymentTypeEnum.Release
                             ? 'Realease'
-                            : 'Reimbourse'}
+                            : 'Reimburse'}
                           <ArrowTopRightOnSquareIcon className='ml-2 w-4 h-4' />
                         </a>
                       </p>
@@ -114,7 +116,7 @@ function PaymentModal({ service, payments, isBuyer }: IPaymentModalProps) {
               </div>
               {totalInEscrow.eq(0) && (
                 <div className='p-4 mb-4 text-sm text-green-600 bg-green-50 rounded-lg'>
-                  All the payment has been released
+                  All payments have been released
                 </div>
               )}
             </div>
