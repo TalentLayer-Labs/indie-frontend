@@ -19,23 +19,15 @@ const ConversationCard = ({
   const navigate = useNavigate();
   const isConvSelected = peerAddress === selectedConversationPeerAddress;
 
-  // Display or not non TL profiles
-  // if (!user?.id) return;
-
-  // const isActiveConversation = () => return key === address;
-
   const handleSelectConversation = () => {
     navigate(`/messaging/${peerAddress}`);
   };
-
-  //${isConvSelected ? 'border-indigo-500 border-2' : 'border-b-2'}
 
   return (
     user && (
       <div
         onClick={() => handleSelectConversation()}
-        // onClick={() => setSelectedConversationPeerAddress(address)}
-        className={`flex justify-start py-4 px-2 justify-center items-center border-b-2 cursor-pointer  ${
+        className={`flex py-4 px-2 justify-center items-center border-b-2 cursor-pointer  ${
           isConvSelected ? 'bg-gray-200 ' : 'border-b-2'
         }`}>
         <div className='w-[40px]'>
