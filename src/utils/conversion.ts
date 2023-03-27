@@ -12,9 +12,6 @@ export const renderTokenAmountFromConfig = (tokenAddress: string, value: string)
   if (config.tokens[tokenAddress] === undefined || !value) {
     return null;
   }
-  if (!value) {
-    return 'undefined';
-  }
   const symbol = config.tokens[tokenAddress].symbol;
   const formattedValue = ethers.utils.formatUnits(value, config.tokens[tokenAddress].decimals);
   return `${formattedValue} ${symbol}`;

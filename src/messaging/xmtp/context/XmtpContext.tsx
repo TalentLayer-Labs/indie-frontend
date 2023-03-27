@@ -12,7 +12,6 @@ interface IProviderProps {
   loadingMessages: boolean;
   conversations: Map<string, Conversation>;
   conversationMessages: Map<string, XmtpChatMessage[]>;
-  // getOneConversationMessages: (conversation: Conversation) => Promise<void>;
   userExists: boolean;
   disconnect: (() => void) | undefined;
 }
@@ -29,14 +28,6 @@ export const XmtpContextProvider = ({ children }: { children: ReactNode }) => {
   const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
   const { address: walletAddress } = useAccount();
 
-  const checkUserExistence = async (): Promise<boolean> => {
-    if (signer) {
-      const keys = await Client.getKeys(signer, { env: import.meta.env.VITE_MESSENGING_ENV });
-      return !!keys;
-    }
-    return false;
-  };
-
   const [providerState, setProviderState] = useState<IProviderProps>({
     client: undefined,
     initClient: undefined,
@@ -44,8 +35,6 @@ export const XmtpContextProvider = ({ children }: { children: ReactNode }) => {
     loadingMessages: false,
     conversations: new Map<string, Conversation>(),
     conversationMessages: new Map<string, XmtpChatMessage[]>(),
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    // getOneConversationMessages: async () => {},
     userExists: false,
     disconnect: undefined,
   });
@@ -130,7 +119,6 @@ export const XmtpContextProvider = ({ children }: { children: ReactNode }) => {
                 conversationMessages.set(conversation.peerAddress, chatMessages);
                 conversations.set(conversation.peerAddress, conversation);
               }
-              // conversationMessages.set(conversation.peerAddress, []);
               setProviderState({
                 ...providerState,
                 conversationMessages,

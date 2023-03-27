@@ -26,7 +26,7 @@ const MessageList = ({
   setMessageSendingErrorMsg,
 }: IMessageListProps) => {
   const { providerState } = useContext(XmtpContext);
-  //We only listen to the active conversation
+  //We only listen to the active selected conversation
   useStreamMessages(selectedConversationPeerAddress, userId, peerUserId, setMessageSendingErrorMsg);
   let lastMessageDate: Date | undefined;
   const bottomRef = useRef<HTMLDivElement>(null);
