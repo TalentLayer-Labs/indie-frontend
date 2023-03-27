@@ -70,8 +70,9 @@ function CreateProposal() {
       </p>
 
       <Steps targetTitle={'Filled the proposal form'} />
-      {account?.isConnected && user && <ProposalForm user={user} service={service} />}
-      <Steps targetTitle={'Fill the proposal form'} />
+      {userExists() && account?.isConnected && user && (
+        <ProposalForm user={user} service={service} />
+      )}
       {!userExists() && account?.isConnected && user && (
         <div className='border border-gray-200 rounded-md p-8'>
           <p className='text-gray-500 py-4'>
@@ -86,7 +87,6 @@ function CreateProposal() {
           </button>
         </div>
       )}
-      {account?.isConnected && user && userExists() && <ProposalForm user={user} service={service} />}
     </div>
   );
 }
