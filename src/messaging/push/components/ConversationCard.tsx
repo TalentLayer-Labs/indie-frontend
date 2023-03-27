@@ -56,7 +56,7 @@ const ConversationCard = ({
       <div className='w-1/4'>
         <img
           src={`/default-avatar-${Number(user?.id) % 11}.jpeg`}
-          className='object-cover h-12 w-12 rounded-full'
+          className='object-cover h-12 w-12 rounded-full pr-2'
           alt=''
         />
       </div>
@@ -92,7 +92,7 @@ const ConversationCard = ({
         <div className='w-1/4'>
           <img
             src={`/default-avatar-${Number(user?.id) % 11}.jpeg`}
-            className='object-cover h-12 w-12 rounded-full'
+            className='object-cover h-12 w-12 rounded-full pr-2'
             alt=''
           />
         </div>

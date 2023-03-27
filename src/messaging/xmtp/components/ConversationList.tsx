@@ -25,7 +25,11 @@ const ConversationList = ({
 
   return (
     <>
-      <div className='flex flex-col mt-5'>{conversationsLoading && <Loading />}</div>
+      {conversationsLoading && (
+        <div className='flex flex-col mt-5'>
+          <Loading />
+        </div>
+      )}
       {!conversationsLoading &&
         Array.from(sortedConversations.keys()).map(peerAddress => {
           // if (sortedConversations.get(peerAddress).length > 0) {

@@ -113,10 +113,6 @@ function XmtpMessaging() {
 
   return (
     <div className='mx-auto text-gray-900 sm:px-4 lg:px-0'>
-      <p className='text-5xl font-medium tracking-wider mb-8'>
-        Indie <span className='text-indigo-600'>Chat </span>
-      </p>
-
       <Steps targetTitle={'Access messaging'} />
 
       {!providerState?.client && user && (
@@ -128,12 +124,12 @@ function XmtpMessaging() {
         </button>
       )}
       {providerState?.client && (
-        <>
+        <div className='-mx-6 -mt-6'>
           <CardHeader peerAddress={selectedConversationPeerAddress} />
           <div className='flex flex-row'>
             <div
               style={{ overflowAnchor: 'revert' }}
-              className='basis-1/4 h-[calc(100vh-16rem)] flex-no-wrap flex-none overflow-y-auto border-r-2'>
+              className='basis-1/4 h-[calc(100vh-128px)] flex-no-wrap flex-none overflow-y-auto border-r'>
               <ConversationList
                 conversationMessages={providerState.conversationMessages}
                 selectedConversationPeerAddress={selectedConversationPeerAddress}
@@ -141,7 +137,7 @@ function XmtpMessaging() {
               />
             </div>
             {providerState?.client && selectedConversationPeerAddress && user?.id && peerUser?.id && (
-              <div className='basis-3/4 w-full pl-5 flex flex-col justify-between h-[calc(100vh-16rem)]'>
+              <div className='basis-3/4 w-full pl-5 flex flex-col justify-between h-[calc(100vh-128px)]'>
                 <div className='overflow-y-auto'>
                   <MessageList
                     conversationMessages={
@@ -180,7 +176,7 @@ function XmtpMessaging() {
               <p className={'text-red-400 ml-1'}>User is not registered with TalentLayer</p>
             </div>
           )}
-        </>
+        </div>
       )}
     </div>
   );

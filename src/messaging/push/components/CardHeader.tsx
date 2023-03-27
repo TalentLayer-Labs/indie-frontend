@@ -14,12 +14,12 @@ const CardHeader = ({ peerAddress, handleDisplayChange }: ICardHeaderProps) => {
         <div className='flex flex-row'>
           <div
             onClick={() => handleDisplayChange(ConversationDisplayType.CONVERSATION)}
-            className='basis-1/2 text-ellipsis flex justify-start py-4 px-2 justify-center items-center border-b-2 border-t-2 border-r-2 cursor-pointer'>
+            className='basis-1/2 text-ellipsis flex py-4 px-2 justify-center items-center border-b-2 border-t-2 border-r-2 cursor-pointer'>
             <p className='text-xl font-medium tracking-wider max-w-lg text-center'>Conversations</p>
           </div>
           <div
             onClick={() => handleDisplayChange(ConversationDisplayType.REQUEST)}
-            className='basis-1/2 text-ellipsis flex justify-start py-4 px-2 justify-center items-center border-b-2 border-t-2 border-r-2 cursor-pointer'>
+            className='basis-1/2 text-ellipsis flex py-4 px-2 justify-center items-center border-b-2 border-t-2 border-r-2 cursor-pointer'>
             <p className='text-xl font-medium tracking-wider max-w-lg text-center'>Requests</p>
           </div>
         </div>
@@ -29,7 +29,7 @@ const CardHeader = ({ peerAddress, handleDisplayChange }: ICardHeaderProps) => {
         {peerAddress && (
           <p>
             To:
-            <span className='border-2 ml-2 pl-2 pr-2 border-gray-200 rounded-3xl'>
+            <span className='border-2 ml-2 pl-2 pr-2 border-gray-200 rounded-3xl text-xs'>
               {peerAddress}
             </span>
           </p>

@@ -167,10 +167,6 @@ function PushMessaging() {
 
   return (
     <div className='mx-auto text-gray-900 sm:px-4 lg:px-0 h-full'>
-      <p className='text-5xl font-medium tracking-wider mb-8'>
-        Indie <span className='text-indigo-600'>Chat </span>
-      </p>
-
       <Steps targetTitle={'Access messaging'} />
 
       {account?.isConnected && user && !conversations && (
@@ -189,7 +185,7 @@ function PushMessaging() {
           />
           <div className='flex flex-row'>
             {conversationType && (
-              <div className='basis-1/4 h-[calc(100vh-16rem)] flex-no-wrap flex-none overflow-y-auto border-r-2'>
+              <div className='basis-1/4 h-[calc(100vh-64px)] flex-no-wrap flex-none overflow-y-auto border-r-2'>
                 <ConversationList
                   conversations={
                     conversationType == ConversationDisplayType.CONVERSATION

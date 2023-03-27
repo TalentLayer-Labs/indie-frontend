@@ -20,7 +20,7 @@ const MessageComposer = ({
     <>
       <div className='flex flex-row space-x-5 py-5'>
         <input
-          className='w-full bg-gray-300 py-2 px-3 rounded-xl'
+          className='w-full py-2 px-3 rounded-xl'
           type='text'
           onChange={e => setMessageContent(e.target.value)}
           placeholder='Write a message'

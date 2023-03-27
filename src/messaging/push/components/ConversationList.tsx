@@ -20,7 +20,11 @@ const ConversationList = ({
 }: IConversationListProps) => {
   return (
     <>
-      <div className='flex flex-col mt-5'>{!conversationsLoaded && <Loading />}</div>
+      {!conversationsLoaded && (
+        <div className='flex flex-col mt-5'>
+          <Loading />
+        </div>
+      )}
       {conversationsLoaded &&
         conversations.map(message => {
           return (

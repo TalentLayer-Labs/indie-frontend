@@ -18,7 +18,6 @@ const MessageComposer = ({
   peerUserExistsOnXMTP,
   peerUserExistsOnTalentLayer,
 }: IMessageComposerProps) => {
-
   const renderSendButton = (peerUserExists: boolean, sendingPending: boolean) => {
     return (
       !sendingPending && (
@@ -34,9 +33,9 @@ const MessageComposer = ({
 
   return (
     <>
-      <div className='flex flex-row space-x-5 py-5'>
+      <div className='flex flex-row space-x-5 py-5 pr-5'>
         <input
-          className='w-full bg-gray-300 py-2 px-3 rounded-xl'
+          className='w-full  py-2 px-3 rounded-xl'
           type='text'
           onChange={e => setMessageContent(e.target.value)}
           placeholder='Write a message'
