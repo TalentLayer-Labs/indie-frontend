@@ -15,7 +15,6 @@ const useStreamMessages = (
   setMessageSendingErrorMsg: React.Dispatch<React.SetStateAction<string>>,
 ) => {
   const { account } = useContext(TalentLayerContext);
-  const walletAddress = account?.address;
   const { providerState, setProviderState } = useContext(XmtpContext);
   const [stream, setStream] = useState<Stream<DecodedMessage>>();
   const [conversation, setConversation] = useState<Conversation>();
@@ -46,7 +45,7 @@ const useStreamMessages = (
     return () => {
       setMessageSendingErrorMsg('');
     };
-  }, [providerState?.client, peerAddress]);
+  }, [providerState?.client, peerAddress, peerUserId, userId, account]);
 
   useEffect(() => {
     const streamMessages = async () => {
@@ -85,7 +84,7 @@ const useStreamMessages = (
       };
       closeStream();
     };
-  }, [providerState?.conversationMessages, walletAddress, conversation]);
+  }, [providerState, conversation, account]);
 };
 
 export default useStreamMessages;
