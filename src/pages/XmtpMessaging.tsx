@@ -111,10 +111,12 @@ function XmtpMessaging() {
     }
   };
 
+  if (!user) {
+    return <Steps targetTitle={'Access messaging'} />;
+  }
+
   return (
     <div className='mx-auto text-gray-900 sm:px-4 lg:px-0'>
-      <Steps targetTitle={'Access messaging'} />
-
       {!providerState?.client && user && (
         <button
           type='submit'

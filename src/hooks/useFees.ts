@@ -3,8 +3,8 @@ import { getProtocolAndPlatformsFees } from '../queries/fees';
 import { IFees } from '../types';
 
 const useFees = (
-  originServicePlatformId: number,
-  originValidatedProposalPlatformId: number,
+  originServicePlatformId: string,
+  originValidatedProposalPlatformId: string,
 ): IFees => {
   const [fees, setFees] = useState({
     protocolEscrowFeeRate: 0,
@@ -25,11 +25,12 @@ const useFees = (
           originValidatedProposalPlatformId,
         );
         const data = response.data.data;
+
         if (data) {
           fees.protocolEscrowFeeRate = data.protocols[0].protocolEscrowFeeRate;
-          fees.originServiceFeeRate = data.servicePlatform[0].originServiceFeeRate;
+          fees.originServiceFeeRate = data.servicePlatform.originServiceFeeRate;
           fees.originValidatedProposalFeeRate =
-            data.proposalPlatform[0].originValidatedProposalFeeRate;
+            data.proposalPlatform.originValidatedProposalFeeRate;
         }
 
         setFees(fees);

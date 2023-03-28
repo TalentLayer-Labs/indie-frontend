@@ -1,18 +1,18 @@
 import { processRequest } from '../utils/graphql';
 
 export const getProtocolAndPlatformsFees = (
-  originServicePlatformId: number,
-  originValidatedProposalPlatformId: number,
+  originServicePlatformId: string,
+  originValidatedProposalPlatformId: string,
 ): Promise<any> => {
   const query = `
   {
     protocols {
       protocolEscrowFeeRate
     }
-    servicePlatform: platforms(id:${originServicePlatformId}){
+    servicePlatform: platform(id:${originServicePlatformId}){
       originServiceFeeRate
     }
-    proposalPlatform: platforms(id:${originValidatedProposalPlatformId}){
+    proposalPlatform: platform(id:${originValidatedProposalPlatformId}){
       originValidatedProposalFeeRate
     }
   }

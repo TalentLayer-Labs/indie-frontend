@@ -43,10 +43,19 @@ export type IService = {
   createdAt: string;
   updatedAt: string;
   transaction: ITransaction;
-  platformId: number;
+  platform: IPlatform;
   proposals: IProposal[];
   validatedProposal: IProposal[];
   description?: IServiceDetails;
+};
+
+export type IPlatform = {
+  id: string;
+  name: string;
+  originServiceFeeRate: number;
+  originValidatedProposalFeeRate: number;
+  proposalPostingFee: string;
+  servicePostingFee: string;
 };
 
 export type IKeyword = {
@@ -127,7 +136,7 @@ export type IProposal = {
   rateAmount: string;
   service: IService;
   // transaction: ITransaction;
-  platformId: number;
+  platform: IPlatform;
   createdAt: string;
   updatedAt: string;
   description?: IProposalDetails;

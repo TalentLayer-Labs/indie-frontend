@@ -40,7 +40,7 @@ const ConversationCard = ({
         </div>
         <div className='flex-1 pl-2'>
           {user && user.handle && <b>{user.handle}</b>}
-          <p className='text-xs font-medium text-gray-500 text-ellipsis overflow-hidden whitespace-nowrap'>
+          <p className='text-xs font-medium text-gray-500 text-ellipsis overflow-hidden whitespace-nowrap max-w-[120px]'>
             {latestMessage && truncate(latestMessage.messageContent, 75)}
           </p>
           <div>
