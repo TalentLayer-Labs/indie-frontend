@@ -22,8 +22,9 @@ function ValidateProposalModal({ proposal, account }: { proposal: IProposal; acc
     token: proposal.rateToken.address,
   });
 
-  const originValidatedProposalPlatformId = proposal.platformId;
-  const originServicePlatformId = proposal.service.platformId;
+  const originValidatedProposalPlatformId = proposal.platform.id;
+  const originServicePlatformId = proposal.service.platform.id;
+
   const { protocolEscrowFeeRate, originValidatedProposalFeeRate, originServiceFeeRate } = useFees(
     originServicePlatformId,
     originValidatedProposalPlatformId,
@@ -135,8 +136,7 @@ function ValidateProposalModal({ proposal, account }: { proposal: IProposal; acc
                       </span>
                     </p>
                     <p className='text-base  leading-4 text-gray-600'>
-                      +
-                      {renderTokenAmount(proposal.rateToken, originValidatedProposalFee.toString())}
+                      +{renderTokenAmount(proposal.rateToken, originServiceFee.toString())}
                     </p>
                   </div>
                   <div className='flex justify-between items-center w-full'>
@@ -151,7 +151,8 @@ function ValidateProposalModal({ proposal, account }: { proposal: IProposal; acc
                       </span>
                     </p>
                     <p className='text-base  leading-4 text-gray-600'>
-                      +{renderTokenAmount(proposal.rateToken, originServiceFee.toString())}
+                      +
+                      {renderTokenAmount(proposal.rateToken, originValidatedProposalFee.toString())}
                     </p>
                   </div>
                   <div className='flex justify-between items-center w-full'>
