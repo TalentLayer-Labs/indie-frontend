@@ -4,8 +4,9 @@ import TalentLayerContext from '../context/talentLayer';
 import usePaymentsByService from '../hooks/usePaymentsByService';
 import useProposalsByService from '../hooks/useProposalsByService';
 import useReviewsByService from '../hooks/useReviewsByService';
-import { renderTokenAmount, renderTokenAmountFromConfig } from '../utils/conversion';
+import ContactButton from '../messaging/components/ContactButton';
 import { IService, ProposalStatusEnum, ServiceStatusEnum } from '../types';
+import { renderTokenAmountFromConfig } from '../utils/conversion';
 import { formatDate } from '../utils/dates';
 import PaymentModal from './Modal/PaymentModal';
 import ReviewModal from './Modal/ReviewModal';
@@ -93,11 +94,17 @@ function ServiceDetail({ service }: { service: IService }) {
 
           <div className='flex flex-row gap-4 items-center border-t border-gray-100 pt-4'>
             {!isBuyer && service.status == ServiceStatusEnum.Opened && (
-              <NavLink
-                className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg'
-                to={`/services/${service.id}/create-proposal`}>
-                Create proposal
-              </NavLink>
+              <>
+                <NavLink
+                  className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg'
+                  to={`/services/${service.id}/create-proposal`}>
+                  Create proposal
+                </NavLink>
+                <ContactButton
+                  userAddress={service.buyer?.address}
+                  userHandle={service.buyer.handle}
+                />
+              </>
             )}
             {(isBuyer || isSeller) &&
               service.status === ServiceStatusEnum.Finished &&

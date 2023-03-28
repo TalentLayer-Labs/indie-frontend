@@ -1,13 +1,14 @@
 import { ethers } from 'ethers';
 import { Check, X } from 'heroicons-react';
 import { useState } from 'react';
-import { validateProposal } from '../../contracts/acceptProposal';
-import { renderTokenAmount } from '../../utils/conversion';
-import { IAccount, IProposal } from '../../types';
-import Step from '../Step';
-import useFees from '../../hooks/useFees';
-import { FEE_RATE_DIVIDER } from '../../config';
 import { useBalance, useProvider, useSigner } from 'wagmi';
+import { FEE_RATE_DIVIDER } from '../../config';
+import { validateProposal } from '../../contracts/acceptProposal';
+import useFees from '../../hooks/useFees';
+import ContactButton from '../../messaging/components/ContactButton';
+import { IAccount, IProposal } from '../../types';
+import { renderTokenAmount } from '../../utils/conversion';
+import Step from '../Step';
 
 function ValidateProposalModal({ proposal, account }: { proposal: IProposal; account: IAccount }) {
   const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
@@ -241,6 +242,10 @@ function ValidateProposalModal({ proposal, account }: { proposal: IProposal; acc
                 className='text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 '>
                 Decline
               </button>
+              <ContactButton
+                userAddress={proposal.seller.address}
+                userHandle={proposal.seller.handle}
+              />
             </div>
           </div>
         </div>
