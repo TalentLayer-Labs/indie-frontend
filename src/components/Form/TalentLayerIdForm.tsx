@@ -11,6 +11,7 @@ import TalentLayerID from '../../contracts/ABI/TalentLayerID.json';
 import { createTalentLayerIdTransactionToast } from '../../utils/toast';
 import HelpPopover from '../HelpPopover';
 import SubmitButton from './SubmitButton';
+import { HandlePrice } from './handle-price';
 
 interface IFormValues {
   handle: string;
@@ -49,7 +50,11 @@ function TalentLayerIdForm() {
           signer,
         );
 
-        const tx = await contract.mint(import.meta.env.VITE_PLATFORM_ID, submittedValues.handle);
+        const handlePrice = await contract.getHandlePrice(submittedValues.handle);
+
+        const tx = await contract.mint(import.meta.env.VITE_PLATFORM_ID, submittedValues.handle, {
+          value: handlePrice,
+        });
         await createTalentLayerIdTransactionToast(
           {
             pending: 'Minting your Talent Layer Id...',
@@ -74,11 +79,11 @@ function TalentLayerIdForm() {
 
   return (
     <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
-      {({ isSubmitting }) => (
+      {({ isSubmitting, values }) => (
         <Form>
           <div className='flex divide-x bg-white py-4 px-4 sm:px-0 justify-center items-center flex-row drop-shadow-lg rounded-lg'>
             <div className='sm:px-6 flex flex-row items-center gap-2'>
-              <span className='text-gray-500'>
+              <span className='text-gray-500 hidden md:block'>
                 <svg
                   xmlns='http://www.w3.org/2000/svg'
                   className='h-6 w-6'
@@ -103,43 +108,50 @@ function TalentLayerIdForm() {
               />
             </div>
 
-            <div className='sm:px-4 sm:space-x-4 relative'>
-              <SubmitButton isSubmitting={isSubmitting} />
-              <HelpPopover>
-                <h3 className='font-semibold text-gray-900 dark:text-white'>
-                  What is a TalentLayerID?
-                </h3>
-                <p>
-                  TalentLayer ID is a work identity that allows ownership and growth of reputation
-                  across many gig marketplaces. TalentLayer IDs are ERC-721 NFTs that live inside
-                  crypto wallets; this means that reputation is self-custodied by the wallet owner
-                  and lives separately from integrated platforms.
-                </p>
-                <h3 className='font-semibold text-gray-900 dark:text-white'>What is the handle?</h3>
-                <p>
-                  Your TalentLayer ID Handle is a unique string of characters and numbers that you
-                  can choose when you create your TalentLayer ID. This handle is how others can
-                  search for your reputation. You can have a maximum of 10 characters in your
-                  TalentLayer ID.
-                </p>
-                <a
-                  target='_blank'
-                  href='https://docs.talentlayer.org/basics/elements/what-is-talentlayer-id'
-                  className='flex items-center font-medium text-blue-600 dark:text-blue-500 dark:hover:text-blue-600 hover:text-blue-700'>
-                  Read more{' '}
-                  <svg
-                    className='w-4 h-4 ml-1'
-                    aria-hidden='true'
-                    fill='currentColor'
-                    viewBox='0 0 20 20'
-                    xmlns='http://www.w3.org/2000/svg'>
-                    <path
-                      fillRule='evenodd'
-                      d='M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z'
-                      clipRule='evenodd'></path>
-                  </svg>
-                </a>
-              </HelpPopover>
+            <div className='flex items-center'>
+              {values.handle && <HandlePrice handle={values.handle} />}
+              <div>
+                <div className='sm:pl-2 sm:pr-4 sm:space-x-4 relative'>
+                  <SubmitButton isSubmitting={isSubmitting} />
+                  <HelpPopover>
+                    <h3 className='font-semibold text-gray-900 dark:text-white'>
+                      What is a TalentLayerID?
+                    </h3>
+                    <p>
+                      TalentLayer ID is a work identity that allows ownership and growth of
+                      reputation across many gig marketplaces. TalentLayer IDs are ERC-721 NFTs that
+                      live inside crypto wallets; this means that reputation is self-custodied by
+                      the wallet owner and lives separately from integrated platforms.
+                    </p>
+                    <h3 className='font-semibold text-gray-900 dark:text-white'>
+                      What is the handle?
+                    </h3>
+                    <p>
+                      Your TalentLayer ID Handle is a unique string of characters and numbers that
+                      you can choose when you create your TalentLayer ID. This handle is how others
+                      can search for your reputation. You can have a maximum of 10 characters in
+                      your TalentLayer ID.
+                    </p>
+                    <a
+                      target='_blank'
+                      href='https://docs.talentlayer.org/basics/elements/what-is-talentlayer-id'
+                      className='flex items-center font-medium text-blue-600 dark:text-blue-500 dark:hover:text-blue-600 hover:text-blue-700'>
+                      Read more{' '}
+                      <svg
+                        className='w-4 h-4 ml-1'
+                        aria-hidden='true'
+                        fill='currentColor'
+                        viewBox='0 0 20 20'
+                        xmlns='http://www.w3.org/2000/svg'>
+                        <path
+                          fillRule='evenodd'
+                          d='M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z'
+                          clipRule='evenodd'></path>
+                      </svg>
+                    </a>
+                  </HelpPopover>
+                </div>
+              </div>
             </div>
           </div>
         </Form>
