@@ -51,7 +51,6 @@ function TalentLayerIdForm() {
         );
 
         const handlePrice = await contract.getHandlePrice(submittedValues.handle);
-        console.log('handlePrice', handlePrice);
 
         const tx = await contract.mint(import.meta.env.VITE_PLATFORM_ID, submittedValues.handle, {
           value: handlePrice,
