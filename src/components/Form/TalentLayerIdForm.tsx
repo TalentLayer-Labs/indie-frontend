@@ -84,7 +84,7 @@ function TalentLayerIdForm() {
         <Form>
           <div className='flex divide-x bg-white py-4 px-4 sm:px-0 justify-center items-center flex-row drop-shadow-lg rounded-lg'>
             <div className='sm:px-6 flex flex-row items-center gap-2'>
-              <span className='text-gray-500'>
+              <span className='text-gray-500 hidden md:block'>
                 <svg
                   xmlns='http://www.w3.org/2000/svg'
                   className='h-6 w-6'
@@ -110,7 +110,7 @@ function TalentLayerIdForm() {
             </div>
 
             <div className='flex items-center'>
-              <div>{values.handle && <HandlePrice handle={values.handle} />}</div>
+              {values.handle && <HandlePrice handle={values.handle} />}
               <div>
                 <div className='sm:pl-2 sm:pr-4 sm:space-x-4 relative'>
                   <SubmitButton isSubmitting={isSubmitting} />

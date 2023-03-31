@@ -12,7 +12,7 @@ function SubmitButton({
   const { open: openConnectModal } = useWeb3Modal();
 
   return (
-    <div className='flex flex-row justify-between items-center sm:ml-5'>
+    <div className='flex flex-row justify-between items-center ml-4 sm:ml-2'>
       {isSubmitting ? (
         <button
           disabled
