@@ -83,6 +83,7 @@ export const getAllProposalsByUser = (id: string): Promise<any> => {
             about
             expectedHours
             startDate
+            video_url
           }
           expirationDate
         }
