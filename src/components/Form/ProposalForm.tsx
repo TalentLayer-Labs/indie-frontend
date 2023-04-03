@@ -19,6 +19,7 @@ interface IFormValues {
   rateToken: string;
   rateAmount: number;
   expirationDate: number;
+  video_url: string;
 }
 
 const initialValues: IFormValues = {
@@ -26,6 +27,7 @@ const initialValues: IFormValues = {
   rateToken: '',
   rateAmount: 0,
   expirationDate: 15,
+  video_url: '',
 };
 
 const validationSchema = Yup.object({
@@ -33,6 +35,10 @@ const validationSchema = Yup.object({
   rateToken: Yup.string().required('rate is required'),
   rateAmount: Yup.string().required('amount is required'),
   expirationDate: Yup.number().integer().required('expiration date is required'),
+  video_url: Yup.string().matches(
+    /^https:\/\/www\.loom\.com\/share\/([a-zA-Z0-9]+)$/,
+    'Please enter a valid Loom video URL',
+  ),
 });
 
 function ProposalForm({ user, service }: { user: IUser; service: IService }) {
@@ -61,9 +67,11 @@ function ProposalForm({ user, service }: { user: IUser; service: IService }) {
         const convertExpirationDateString = convertExpirationDate.toString();
 
         const parsedRateAmountString = parsedRateAmount.toString();
+
         const cid = await postToIPFS(
           JSON.stringify({
             about: values.about,
+            video_url: values.video_url,
           }),
         );
 
@@ -167,6 +175,16 @@ function ProposalForm({ user, service }: { user: IUser; service: IService }) {
                 name='expirationDate'
                 className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
                 placeholder=''
+              />
+            </label>
+            <label className='block flex-1'>
+              <span className='text-gray-700'>Loom Video URL (optionnal)</span>
+              <Field
+                type='text'
+                id='video_url'
+                name='video_url'
+                className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
+                placeholder='Enter Loom video URL'
               />
             </label>
 
