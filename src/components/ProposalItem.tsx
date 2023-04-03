@@ -46,6 +46,13 @@ function ProposalItem({ proposal }: { proposal: IProposal }) {
             <p className='text-sm text-gray-500 mt-4'>
               <strong>Expiration Date:</strong> {formatDate(Number(proposal.expirationDate) * 1000)}
             </p>
+            {proposal.description?.video_url && (
+              <p className='text-sm text-indigo-500 mt-4'>
+                <a target='_blank' href={`${proposal.description?.video_url}`}>
+                  Proposal video link
+                </a>
+              </p>
+            )}
           </div>
         </div>
         <div className='flex flex-row gap-4 justify-between items-center border-t border-gray-100 pt-4'>

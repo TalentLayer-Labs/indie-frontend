@@ -127,6 +127,7 @@ export type IProposalDetails = {
   expectedHours: string;
   service: IService;
   expirationDate: string;
+  video_url: string;
 };
 
 export type IProposal = {
