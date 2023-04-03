@@ -13,6 +13,8 @@ export type IUserDetails = {
   title: string;
   name: string;
   role: string;
+  image_url: string;
+  video_url?: string;
   about: string;
   skills_raw: string;
 };

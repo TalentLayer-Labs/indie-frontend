@@ -16,6 +16,8 @@ import useUserById from '../../hooks/useUserById';
 interface IFormValues {
   title?: string;
   role?: string;
+  image_url?: string;
+  video_url?: string;
   name?: string;
   about?: string;
   skills?: string;
@@ -39,6 +41,8 @@ function ProfileForm() {
   const initialValues: IFormValues = {
     title: userDescription?.title || '',
     role: userDescription?.role || '',
+    image_url: userDescription?.image_url || '',
+    video_url: userDescription?.video_url || '',
     name: userDescription?.name || '',
     about: userDescription?.about || '',
     skills: userDescription?.skills_raw || '',
@@ -54,6 +58,8 @@ function ProfileForm() {
           JSON.stringify({
             title: values.title,
             role: values.role,
+            image_url: values.image_url,
+            video_url: values.video_url,
             name: values.name,
             about: values.about,
             skills: values.skills,
