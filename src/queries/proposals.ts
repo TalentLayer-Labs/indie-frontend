@@ -39,6 +39,7 @@ export const getAllProposalsByServiceId = (id: string): Promise<any> => {
           about
           expectedHours
           startDate
+          video_url
         }
         expirationDate
         platform {
