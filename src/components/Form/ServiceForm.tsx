@@ -1,6 +1,6 @@
 import { useWeb3Modal } from '@web3modal/react';
 import { ethers } from 'ethers';
-import { Field, Form, Formik } from 'formik';
+import { ErrorMessage, Field, Form, Formik } from 'formik';
 import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useProvider, useSigner } from 'wagmi';
@@ -32,11 +32,13 @@ const initialValues: IFormValues = {
 };
 
 const validationSchema = Yup.object({
-  title: Yup.string().required('title is required'),
-  about: Yup.string().required('about is required'),
-  keywords: Yup.string().required('keywords are required'),
-  rateToken: Yup.string().required('rate is required'),
-  rateAmount: Yup.string().required('amount is required'),
+  title: Yup.string().required('Please provide a title for your service'),
+  about: Yup.string().required('Please provide a description of your service'),
+  keywords: Yup.string().required('Please provide keywords for your service'),
+  rateToken: Yup.string().required('Please pick a payment token'),
+  rateAmount: Yup.number()
+    .moreThan(0, 'amount must be greater than 0')
+    .required('amount is required'),
 });
 
 function ServiceForm() {
@@ -124,9 +126,12 @@ function ServiceForm() {
                 type='text'
                 id='title'
                 name='title'
-                className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
+                className='mt-1 mb-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
                 placeholder=''
               />
+              <span className='text-red-500'>
+                <ErrorMessage name='title' />
+              </span>
             </label>
 
             <label className='block'>
@@ -135,9 +140,12 @@ function ServiceForm() {
                 as='textarea'
                 id='about'
                 name='about'
-                className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
+                className='mt-1 mb-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
                 placeholder=''
               />
+              <span className='text-red-500'>
+                <ErrorMessage name='about' />
+              </span>
             </label>
 
             <label className='block'>
@@ -146,9 +154,12 @@ function ServiceForm() {
                 type='text'
                 id='keywords'
                 name='keywords'
-                className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
+                className='mt-1 mb-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
                 placeholder='keyword1, keyword2...'
               />
+              <span className='text-red-500'>
+                <ErrorMessage name='keywords' />
+              </span>
             </label>
 
             <div className='flex'>
@@ -158,9 +169,12 @@ function ServiceForm() {
                   type='number'
                   id='rateAmount'
                   name='rateAmount'
-                  className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
+                  className='mt-1 mb-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
                   placeholder=''
                 />
+                <span className='text-red-500 mt-2'>
+                  <ErrorMessage name='rateAmount' />
+                </span>
               </label>
 
               <label className='block'>
@@ -178,6 +192,9 @@ function ServiceForm() {
                     </option>
                   ))}
                 </Field>
+                <span className='text-red-500'>
+                  <ErrorMessage name='rateToken' />
+                </span>
               </label>
             </div>
 

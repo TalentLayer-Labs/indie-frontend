@@ -33,7 +33,6 @@ function TalentLayerIdForm() {
       .min(2)
       .max(10)
       .matches(/^[a-z0-9][a-z0-9-_]*$/, 'Only a-z, 0-9 and -_ allowed, and cannot begin with -_')
-      .required('Handle is required')
       .when('isConnected', {
         is: account && account.isConnected,
         then: schema => schema.required('handle is required'),
@@ -83,7 +82,7 @@ function TalentLayerIdForm() {
     <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
       {({ isSubmitting, values }) => (
         <Form>
-          <div className='flex divide-x bg-white py-4 px-4 sm:px-0 justify-center items-center flex-row drop-shadow-lg rounded-lg'>
+          <div className='flex divide-x bg-white py-4 px-4 mb-2 sm:px-0 justify-center items-center flex-row drop-shadow-lg rounded-lg'>
             <div className='sm:px-6 flex flex-row items-center gap-2'>
               <span className='text-gray-500 hidden md:block'>
                 <svg
@@ -156,11 +155,9 @@ function TalentLayerIdForm() {
               </div>
             </div>
           </div>
-          <label className='label mt-1 py-0'>
-            <span className='label-text text-red-500 mt-2'>
-              <ErrorMessage name='handle' />
-            </span>
-          </label>
+          <span className='label-text text-red-500 mt-2'>
+            <ErrorMessage name='handle' />
+          </span>
         </Form>
       )}
     </Formik>
