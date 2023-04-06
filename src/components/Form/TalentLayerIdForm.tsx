@@ -27,12 +27,13 @@ function TalentLayerIdForm() {
   const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
   const provider = useProvider({ chainId: import.meta.env.VITE_NETWORK_ID });
   const navigate = useNavigate();
-  const [error, setError] = useState<string | null>(null);
 
   const validationSchema = Yup.object().shape({
     handle: Yup.string()
       .min(2)
       .max(10)
+      .matches(/^[a-z0-9][a-z0-9-_]*$/, 'Only a-z, 0-9 and -_ allowed, and cannot begin with -_')
+      .required('Handle is required')
       .when('isConnected', {
         is: account && account.isConnected,
         then: schema => schema.required('handle is required'),
@@ -45,8 +46,6 @@ function TalentLayerIdForm() {
   ) => {
     if (account && account.address && account.isConnected && provider && signer) {
       try {
-        setError(null);
-
         const contract = new ethers.Contract(
           config.contracts.talentLayerId,
           TalentLayerID.abi,
@@ -81,94 +80,90 @@ function TalentLayerIdForm() {
   };
 
   return (
-    <>
-      <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
-        {({ isSubmitting, values }) => (
-          <Form>
-            <div className='flex divide-x bg-white py-4 px-4 sm:px-0 justify-center items-center flex-row drop-shadow-lg rounded-lg'>
-              <div className='sm:px-6 flex flex-row items-center gap-2'>
-                <span className='text-gray-500 hidden md:block'>
-                  <svg
-                    xmlns='http://www.w3.org/2000/svg'
-                    className='h-6 w-6'
-                    fill='none'
-                    viewBox='0 0 24 24'
-                    stroke='currentColor'
-                    strokeWidth='2'>
-                    <path
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                      d='M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z'
-                    />
-                  </svg>
-                </span>
-                <Field
-                  type='text'
-                  className='text-gray-500 py-2 focus:ring-0 outline-none text-sm sm:text-lg border-0'
-                  placeholder='Choose your handle'
-                  id='handle'
-                  name='handle'
-                  required
-                />
-              </div>
+    <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
+      {({ isSubmitting, values }) => (
+        <Form>
+          <div className='flex divide-x bg-white py-4 px-4 sm:px-0 justify-center items-center flex-row drop-shadow-lg rounded-lg'>
+            <div className='sm:px-6 flex flex-row items-center gap-2'>
+              <span className='text-gray-500 hidden md:block'>
+                <svg
+                  xmlns='http://www.w3.org/2000/svg'
+                  className='h-6 w-6'
+                  fill='none'
+                  viewBox='0 0 24 24'
+                  stroke='currentColor'
+                  strokeWidth='2'>
+                  <path
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                    d='M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z'
+                  />
+                </svg>
+              </span>
+              <Field
+                type='text'
+                className='text-gray-500 py-2 focus:ring-0 outline-none text-sm sm:text-lg border-0'
+                placeholder='Choose your handle'
+                id='handle'
+                name='handle'
+                required
+              />
+            </div>
 
-              <div className='flex items-center'>
-                {values.handle && <HandlePrice handle={values.handle} />}
-                <div>
-                  <div className='sm:pl-2 sm:pr-4 sm:space-x-4 relative'>
-                    <SubmitButton isSubmitting={isSubmitting} />
-                    <HelpPopover>
-                      <h3 className='font-semibold text-gray-900 dark:text-white'>
-                        What is a TalentLayerID?
-                      </h3>
-                      <p>
-                        TalentLayer ID is a work identity that allows ownership and growth of
-                        reputation across many gig marketplaces. TalentLayer IDs are ERC-721 NFTs
-                        that live inside crypto wallets; this means that reputation is
-                        self-custodied by the wallet owner and lives separately from integrated
-                        platforms.
-                      </p>
-                      <h3 className='font-semibold text-gray-900 dark:text-white'>
-                        What is the handle?
-                      </h3>
-                      <p>
-                        Your TalentLayer ID Handle is a unique string of characters and numbers that
-                        you can choose when you create your TalentLayer ID. This handle is how
-                        others can search for your reputation. You can have a maximum of 10
-                        characters in your TalentLayer ID.
-                      </p>
-                      <a
-                        target='_blank'
-                        href='https://docs.talentlayer.org/basics/elements/what-is-talentlayer-id'
-                        className='flex items-center font-medium text-blue-600 dark:text-blue-500 dark:hover:text-blue-600 hover:text-blue-700'>
-                        Read more{' '}
-                        <svg
-                          className='w-4 h-4 ml-1'
-                          aria-hidden='true'
-                          fill='currentColor'
-                          viewBox='0 0 20 20'
-                          xmlns='http://www.w3.org/2000/svg'>
-                          <path
-                            fillRule='evenodd'
-                            d='M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z'
-                            clipRule='evenodd'></path>
-                        </svg>
-                      </a>
-                    </HelpPopover>
-                  </div>
+            <div className='flex items-center'>
+              {values.handle && <HandlePrice handle={values.handle} />}
+              <div>
+                <div className='sm:pl-2 sm:pr-4 sm:space-x-4 relative'>
+                  <SubmitButton isSubmitting={isSubmitting} />
+                  <HelpPopover>
+                    <h3 className='font-semibold text-gray-900 dark:text-white'>
+                      What is a TalentLayerID?
+                    </h3>
+                    <p>
+                      TalentLayer ID is a work identity that allows ownership and growth of
+                      reputation across many gig marketplaces. TalentLayer IDs are ERC-721 NFTs that
+                      live inside crypto wallets; this means that reputation is self-custodied by
+                      the wallet owner and lives separately from integrated platforms.
+                    </p>
+                    <h3 className='font-semibold text-gray-900 dark:text-white'>
+                      What is the handle?
+                    </h3>
+                    <p>
+                      Your TalentLayer ID Handle is a unique string of characters and numbers that
+                      you can choose when you create your TalentLayer ID. This handle is how others
+                      can search for your reputation. You can have a maximum of 10 characters in
+                      your TalentLayer ID.
+                    </p>
+                    <a
+                      target='_blank'
+                      href='https://docs.talentlayer.org/basics/elements/what-is-talentlayer-id'
+                      className='flex items-center font-medium text-blue-600 dark:text-blue-500 dark:hover:text-blue-600 hover:text-blue-700'>
+                      Read more{' '}
+                      <svg
+                        className='w-4 h-4 ml-1'
+                        aria-hidden='true'
+                        fill='currentColor'
+                        viewBox='0 0 20 20'
+                        xmlns='http://www.w3.org/2000/svg'>
+                        <path
+                          fillRule='evenodd'
+                          d='M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z'
+                          clipRule='evenodd'></path>
+                      </svg>
+                    </a>
+                  </HelpPopover>
                 </div>
               </div>
             </div>
-          </Form>
-        )}
-      </Formik>
-      {error && (
-        <div className='text-red-500 max-w-2xl'>
-          <span className='font-bold'>An error occured while submitting: </span>
-          <span>{error}</span>
-        </div>
+          </div>
+          <label className='label mt-1 py-0'>
+            <span className='label-text text-red-500 mt-2'>
+              <ErrorMessage name='handle' />
+            </span>
+          </label>
+        </Form>
       )}
-    </>
+    </Formik>
   );
 }
 
