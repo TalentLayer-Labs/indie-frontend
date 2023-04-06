@@ -1,19 +1,17 @@
 import { useWeb3Modal } from '@web3modal/react';
 import { ethers } from 'ethers';
-import { Field, Form, Formik } from 'formik';
-import { useContext, useState } from 'react';
+import { ErrorMessage, Field, Form, Formik } from 'formik';
+import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useProvider, useSigner } from 'wagmi';
 import * as Yup from 'yup';
 import { config } from '../../config';
 import TalentLayerContext from '../../context/talentLayer';
 import TalentLayerID from '../../contracts/ABI/TalentLayerID.json';
-import { createTalentLayerIdTransactionToast } from '../../utils/toast';
+import { createTalentLayerIdTransactionToast, showErrorTransactionToast } from '../../utils/toast';
 import HelpPopover from '../HelpPopover';
 import SubmitButton from './SubmitButton';
 import { HandlePrice } from './handle-price';
-import { EthersError } from '@enzoferey/ethers-error-parser/dist/types';
-import { getParsedEthersError, RETURN_VALUE_ERROR_CODES } from '@enzoferey/ethers-error-parser';
 
 interface IFormValues {
   handle: string;
@@ -75,19 +73,7 @@ function TalentLayerIdForm() {
         // TODO: add a refresh function on TL context and call it here rather than hard refresh
         navigate(0);
       } catch (error: any) {
-        let errorMessage;
-        if (typeof error?.code === 'string') {
-          const parsedEthersError = getParsedEthersError(error as EthersError);
-          if (parsedEthersError.errorCode === RETURN_VALUE_ERROR_CODES.REJECTED_TRANSACTION) {
-            errorMessage = `${parsedEthersError.errorCode} - user rejected transaction`;
-          } else {
-            errorMessage = `${parsedEthersError.errorCode} - ${parsedEthersError.context}`;
-          }
-          console.log('err - ', parsedEthersError);
-        } else {
-          errorMessage = error?.message;
-        }
-        setError(errorMessage);
+        showErrorTransactionToast(error);
       }
     } else {
       openConnectModal();

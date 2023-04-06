@@ -1,6 +1,6 @@
 import { useWeb3Modal } from '@web3modal/react';
 import { ethers } from 'ethers';
-import { Field, Form, Formik } from 'formik';
+import { ErrorMessage, Field, Form, Formik } from 'formik';
 import { useContext } from 'react';
 import { useProvider, useSigner } from 'wagmi';
 import * as Yup from 'yup';
@@ -8,7 +8,7 @@ import { config } from '../../config';
 import TalentLayerContext from '../../context/talentLayer';
 import TalentLayerReview from '../../contracts/ABI/TalentLayerReview.json';
 import { postToIPFS } from '../../utils/ipfs';
-import { createMultiStepsTransactionToast } from '../../utils/toast';
+import { createMultiStepsTransactionToast, showErrorTransactionToast } from '../../utils/toast';
 import SubmitButton from './SubmitButton';
 
 interface IFormValues {
@@ -68,7 +68,7 @@ function ReviewForm({ serviceId }: { serviceId: string }) {
         setSubmitting(false);
         resetForm();
       } catch (error) {
-        console.error(error);
+        showErrorTransactionToast(error);
       }
     } else {
       openConnectModal();
