@@ -35,10 +35,8 @@ const validationSchema = Yup.object({
   title: Yup.string().required('Please provide a title for your service'),
   about: Yup.string().required('Please provide a description of your service'),
   keywords: Yup.string().required('Please provide keywords for your service'),
-  rateToken: Yup.string().required('Please pick a payment token'),
-  rateAmount: Yup.number()
-    .moreThan(0, 'amount must be greater than 0')
-    .required('amount is required'),
+  rateToken: Yup.string().required('Please select a payment token'),
+  rateAmount: Yup.string().required('Please provide an amount for your service'),
 });
 
 function ServiceForm() {
