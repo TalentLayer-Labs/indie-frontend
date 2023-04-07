@@ -1,7 +1,7 @@
 import { useWeb3Modal } from '@web3modal/react';
 import { ethers } from 'ethers';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useProvider, useSigner } from 'wagmi';
 import * as Yup from 'yup';
@@ -31,14 +31,6 @@ const initialValues: IFormValues = {
   rateAmount: 0,
 };
 
-const validationSchema = Yup.object({
-  title: Yup.string().required('Please provide a title for your service'),
-  about: Yup.string().required('Please provide a description of your service'),
-  keywords: Yup.string().required('Please provide keywords for your service'),
-  rateToken: Yup.string().required('Please select a payment token'),
-  rateAmount: Yup.string().required('Please provide an amount for your service'),
-});
-
 function ServiceForm() {
   const { open: openConnectModal } = useWeb3Modal();
   const { user, account } = useContext(TalentLayerContext);
@@ -47,6 +39,32 @@ function ServiceForm() {
 
   const navigate = useNavigate();
   const allowedTokenList = useAllowedTokens();
+  const [selectedToken, setSelectedToken] = useState('');
+
+  const validationSchema = Yup.object({
+    title: Yup.string().required('Please provide a title for your service'),
+    about: Yup.string().required('Please provide a description of your service'),
+    keywords: Yup.string().required('Please provide keywords for your service'),
+    rateToken: Yup.string().required('Please select a payment token'),
+    rateAmount: Yup.number()
+      .required('Please provide an amount for your service')
+      .when('rateToken', {
+        is: (rateToken: string) => rateToken !== '',
+        then: schema =>
+          schema.moreThan(
+            allowedTokenList.find(token => token.address === selectedToken)
+              ?.minimumTransactionAmount || 0,
+            `Amount must be greater than ${
+              allowedTokenList.find(token => token.address === selectedToken)
+                ?.minimumTransactionAmount || 0
+            }`,
+          ),
+      }),
+  });
+
+  useEffect(() => {
+    console.log('selectedToken', selectedToken);
+  }, [selectedToken]);
 
   const onSubmit = async (
     values: IFormValues,
@@ -56,6 +74,7 @@ function ServiceForm() {
     }: { setSubmitting: (isSubmitting: boolean) => void; resetForm: () => void },
   ) => {
     const token = allowedTokenList.find(token => token.address === values.rateToken);
+    console.log('rateToken', values.rateToken);
     if (account?.isConnected === true && provider && signer && token) {
       try {
         const parsedRateAmount = await parseRateAmount(
@@ -182,7 +201,10 @@ function ServiceForm() {
                   id='rateToken'
                   name='rateToken'
                   className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
-                  placeholder=''>
+                  placeholder=''
+                  onChange={event => {
+                    setSelectedToken(event.target.value);
+                  }}>
                   <option value=''>Select a token</option>
                   {allowedTokenList.map((token, index) => (
                     <option key={index} value={token.address}>
