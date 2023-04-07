@@ -17,7 +17,7 @@ interface IFormValues {
 }
 
 const validationSchema = Yup.object({
-  content: Yup.string().required('content is required'),
+  content: Yup.string().required('Please provide a content'),
   rating: Yup.string().required('rating is required'),
 });
 
@@ -97,6 +97,9 @@ function ReviewForm({ serviceId }: { serviceId: string }) {
                 placeholder=''
                 rows={5}
               />
+              <span className='text-red-500'>
+                <ErrorMessage name='content' />
+              </span>
             </label>
 
             <label className='block'>
@@ -109,6 +112,9 @@ function ReviewForm({ serviceId }: { serviceId: string }) {
                 max={5}
                 className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
               />
+              <span className='text-red-500'>
+                <ErrorMessage name='rating' />
+              </span>
             </label>
 
             <SubmitButton isSubmitting={isSubmitting} label='Post your review' />
