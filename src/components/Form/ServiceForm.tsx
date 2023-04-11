@@ -1,7 +1,7 @@
 import { useWeb3Modal } from '@web3modal/react';
 import { ethers, FixedNumber } from 'ethers';
-import { ErrorMessage, Field, Form, Formik, useFormikContext } from 'formik';
-import { SetStateAction, useContext, useEffect, useState } from 'react';
+import { ErrorMessage, Field, Form, Formik } from 'formik';
+import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useProvider, useSigner } from 'wagmi';
 import * as Yup from 'yup';
@@ -140,42 +140,9 @@ function ServiceForm() {
     }
   };
 
-  const RateTokenField = () => {
-    const formikProps = useFormikContext();
-
-    const handleChange = async (event: { target: { value: SetStateAction<string> } }) => {
-      const token = allowedTokenList.find(token => token.address === event.target.value);
-      setSelectedToken(token);
-      formikProps.setFieldValue('rateToken', event.target.value);
-    };
-
-    return (
-      <label className='block'>
-        <span className='text-gray-700'>Token</span>
-        <Field
-          component='select'
-          id='rateToken'
-          name='rateToken'
-          className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
-          placeholder=''
-          onChange={handleChange}>
-          <option value=''>Select a token</option>
-          {allowedTokenList.map((token, index) => (
-            <option key={index} value={token.address}>
-              {token.symbol}
-            </option>
-          ))}
-        </Field>
-        <span className='text-red-500'>
-          <ErrorMessage name='rateToken' />
-        </span>
-      </label>
-    );
-  };
-
   return (
     <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
-      {({ isSubmitting }) => (
+      {({ isSubmitting, setFieldValue }) => (
         <Form>
           <div className='grid grid-cols-1 gap-6 border border-gray-200 rounded-md p-8'>
             <label className='block'>
@@ -234,7 +201,30 @@ function ServiceForm() {
                   <ErrorMessage name='rateAmount' />
                 </span>
               </label>
-              <RateTokenField />
+              <label className='block'>
+                <span className='text-gray-700'>Token</span>
+                <Field
+                  component='select'
+                  id='rateToken'
+                  name='rateToken'
+                  className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
+                  placeholder=''
+                  onChange={(e: { target: { value: string } }) => {
+                    const token = allowedTokenList.find(token => token.address === e.target.value);
+                    setSelectedToken(token);
+                    setFieldValue('rateToken', e.target.value);
+                  }}>
+                  <option value=''>Select a token</option>
+                  {allowedTokenList.map((token, index) => (
+                    <option key={index} value={token.address}>
+                      {token.symbol}
+                    </option>
+                  ))}
+                </Field>
+                <span className='text-red-500'>
+                  <ErrorMessage name='rateToken' />
+                </span>
+              </label>
             </div>
 
             <SubmitButton isSubmitting={isSubmitting} label='Post' />
