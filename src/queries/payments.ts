@@ -1,9 +1,9 @@
 import { processRequest } from '../utils/graphql';
 
-export const getPaymentsByService = (serviceId: string): Promise<any> => {
+export const getPaymentsByService = (serviceId: string, paymentType: string): Promise<any> => {
   const query = `
     {
-      payments(where: { service: "${serviceId}" }, orderBy: id, orderDirection: asc) {
+      payments(where: { service: "${serviceId}" } paymentType: "${paymentType}"}, orderBy: id, orderDirection: asc) {
         id
         amount
         rateToken {
