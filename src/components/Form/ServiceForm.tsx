@@ -1,7 +1,7 @@
 import { useWeb3Modal } from '@web3modal/react';
-import { ethers } from 'ethers';
-import { ErrorMessage, Field, Form, Formik } from 'formik';
-import { useContext, useEffect, useState } from 'react';
+import { ethers, FixedNumber } from 'ethers';
+import { ErrorMessage, Field, Form, Formik, useFormikContext } from 'formik';
+import { SetStateAction, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useProvider, useSigner } from 'wagmi';
 import * as Yup from 'yup';
@@ -14,6 +14,7 @@ import { parseRateAmount } from '../../utils/web3';
 import SubmitButton from './SubmitButton';
 import useAllowedTokens from '../../hooks/useAllowedTokens';
 import { getServiceSignature } from '../../utils/signature';
+import { IToken } from '../../types';
 
 interface IFormValues {
   title: string;
@@ -39,7 +40,7 @@ function ServiceForm() {
 
   const navigate = useNavigate();
   const allowedTokenList = useAllowedTokens();
-  const [selectedToken, setSelectedToken] = useState('');
+  const [selectedToken, setSelectedToken] = useState<IToken>();
 
   const validationSchema = Yup.object({
     title: Yup.string().required('Please provide a title for your service'),
@@ -52,19 +53,27 @@ function ServiceForm() {
         is: (rateToken: string) => rateToken !== '',
         then: schema =>
           schema.moreThan(
-            allowedTokenList.find(token => token.address === selectedToken)
-              ?.minimumTransactionAmount || 0,
+            selectedToken
+              ? FixedNumber.from(
+                  ethers.utils.formatUnits(
+                    selectedToken?.minimumTransactionAmount,
+                    selectedToken?.decimals,
+                  ),
+                ).toUnsafeFloat()
+              : 0,
             `Amount must be greater than ${
-              allowedTokenList.find(token => token.address === selectedToken)
-                ?.minimumTransactionAmount || 0
+              selectedToken
+                ? FixedNumber.from(
+                    ethers.utils.formatUnits(
+                      selectedToken?.minimumTransactionAmount,
+                      selectedToken?.decimals,
+                    ),
+                  ).toUnsafeFloat()
+                : 0
             }`,
           ),
       }),
   });
-
-  useEffect(() => {
-    console.log('selectedToken', selectedToken);
-  }, [selectedToken]);
 
   const onSubmit = async (
     values: IFormValues,
@@ -74,7 +83,6 @@ function ServiceForm() {
     }: { setSubmitting: (isSubmitting: boolean) => void; resetForm: () => void },
   ) => {
     const token = allowedTokenList.find(token => token.address === values.rateToken);
-    console.log('rateToken', values.rateToken);
     if (account?.isConnected === true && provider && signer && token) {
       try {
         const parsedRateAmount = await parseRateAmount(
@@ -130,6 +138,39 @@ function ServiceForm() {
     } else {
       openConnectModal();
     }
+  };
+
+  const RateTokenField = () => {
+    const formikProps = useFormikContext();
+
+    const handleChange = async (event: { target: { value: SetStateAction<string> } }) => {
+      const token = allowedTokenList.find(token => token.address === event.target.value);
+      setSelectedToken(token);
+      formikProps.setFieldValue('rateToken', event.target.value);
+    };
+
+    return (
+      <label className='block'>
+        <span className='text-gray-700'>Token</span>
+        <Field
+          component='select'
+          id='rateToken'
+          name='rateToken'
+          className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
+          placeholder=''
+          onChange={handleChange}>
+          <option value=''>Select a token</option>
+          {allowedTokenList.map((token, index) => (
+            <option key={index} value={token.address}>
+              {token.symbol}
+            </option>
+          ))}
+        </Field>
+        <span className='text-red-500'>
+          <ErrorMessage name='rateToken' />
+        </span>
+      </label>
+    );
   };
 
   return (
@@ -193,29 +234,7 @@ function ServiceForm() {
                   <ErrorMessage name='rateAmount' />
                 </span>
               </label>
-
-              <label className='block'>
-                <span className='text-gray-700'>Token</span>
-                <Field
-                  component='select'
-                  id='rateToken'
-                  name='rateToken'
-                  className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
-                  placeholder=''
-                  onChange={event => {
-                    setSelectedToken(event.target.value);
-                  }}>
-                  <option value=''>Select a token</option>
-                  {allowedTokenList.map((token, index) => (
-                    <option key={index} value={token.address}>
-                      {token.symbol}
-                    </option>
-                  ))}
-                </Field>
-                <span className='text-red-500'>
-                  <ErrorMessage name='rateToken' />
-                </span>
-              </label>
+              <RateTokenField />
             </div>
 
             <SubmitButton isSubmitting={isSubmitting} label='Post' />
