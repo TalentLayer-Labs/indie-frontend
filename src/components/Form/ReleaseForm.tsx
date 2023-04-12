@@ -3,7 +3,7 @@ import { Field, Form, Formik } from 'formik';
 import { useContext, useMemo, useState } from 'react';
 import { useProvider, useSigner } from 'wagmi';
 import TalentLayerContext from '../../context/talentLayer';
-import { releasePayment } from '../../contracts/releasePayment';
+import { executePayment } from '../../contracts/executePayment';
 import { IService, IToken, ServiceStatusEnum } from '../../types';
 import { renderTokenAmount } from '../../utils/conversion';
 
@@ -37,7 +37,7 @@ function ReleaseForm({
     }
     const percentToToken = totalInEscrow.mul(percent).div(100);
 
-    await releasePayment(
+    await executePayment(
       signer,
       provider,
       user.id,
