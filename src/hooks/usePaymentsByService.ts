@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { getPaymentsByService } from '../queries/payments';
 import { IPayment, PaymentTypeEnum } from '../types';
 
-const usePaymentsByService = (id: string, paymentType: PaymentTypeEnum): IPayment[] => {
+const usePaymentsByService = (id: string, paymentType?: PaymentTypeEnum): IPayment[] => {
   const [payments, setPayments] = useState<IPayment[]>([]);
 
   useEffect(() => {
