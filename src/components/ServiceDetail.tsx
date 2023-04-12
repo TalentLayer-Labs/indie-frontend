@@ -5,7 +5,7 @@ import usePaymentsByService from '../hooks/usePaymentsByService';
 import useProposalsByService from '../hooks/useProposalsByService';
 import useReviewsByService from '../hooks/useReviewsByService';
 import ContactButton from '../messaging/components/ContactButton';
-import { IService, PaymentTypeEnum, ProposalStatusEnum, ServiceStatusEnum } from '../types';
+import { IService, ProposalStatusEnum, ServiceStatusEnum } from '../types';
 import { renderTokenAmountFromConfig } from '../utils/conversion';
 import { formatDate } from '../utils/dates';
 import PaymentModal from './Modal/PaymentModal';
@@ -14,14 +14,12 @@ import ProposalItem from './ProposalItem';
 import ReviewItem from './ReviewItem';
 import ServiceStatus from './ServiceStatus';
 import Stars from './Stars';
-import ReimburseModal from './Modal/ReimburseModal';
 
 function ServiceDetail({ service }: { service: IService }) {
   const { account, user } = useContext(TalentLayerContext);
   const { reviews } = useReviewsByService(service.id);
   const proposals = useProposalsByService(service.id);
-  const releasePayments = usePaymentsByService(service.id, PaymentTypeEnum.Release);
-  const reimbursePayments = usePaymentsByService(service.id, PaymentTypeEnum.Reimburse);
+  const payments = usePaymentsByService(service.id);
 
   const isBuyer = user?.id === service.buyer.id;
   const isSeller = user?.id === service.seller?.id;
@@ -117,14 +115,7 @@ function ServiceDetail({ service }: { service: IService }) {
                 />
               )}
             {account && service.status !== ServiceStatusEnum.Opened && (
-              <>
-                <PaymentModal service={service} payments={releasePayments} isBuyer={isBuyer} />
-                <ReimburseModal
-                  service={service}
-                  payments={reimbursePayments}
-                  isSeller={isSeller}
-                />
-              </>
+              <PaymentModal service={service} payments={payments} isBuyer={isBuyer} />
             )}
           </div>
         </div>

@@ -121,7 +121,7 @@ function PaymentModal({ service, payments, isBuyer }: IPaymentModalProps) {
               )}
             </div>
 
-            {isBuyer && totalInEscrow.gt(0) && show && (
+            {totalInEscrow.gt(0) && show && (
               <ReleaseForm
                 totalInEscrow={totalInEscrow}
                 rateToken={rateToken}

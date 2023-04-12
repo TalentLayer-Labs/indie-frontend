@@ -8,7 +8,7 @@ import { IService, IToken, ServiceStatusEnum } from '../../types';
 import { renderTokenAmount } from '../../utils/conversion';
 
 interface IFormValues {
-  pourcentField: string;
+  percentField: string;
 }
 
 interface IReleaseFormProps {
@@ -29,39 +29,46 @@ function ReleaseForm({
   const { user } = useContext(TalentLayerContext);
   const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
   const provider = useProvider({ chainId: import.meta.env.VITE_NETWORK_ID });
-  const [pourcent, setPourcentage] = useState(0);
+  const [percent, setPercentage] = useState(0);
 
   const handleSubmit = async (values: any) => {
     if (!user || !signer || !provider) {
       return;
     }
-    const pourcentToToken = totalInEscrow.mul(pourcent).div(100);
+    const percentToToken = totalInEscrow.mul(percent).div(100);
 
-    await releasePayment(signer, provider, user.id, service.transaction.id, pourcentToToken);
+    await releasePayment(
+      signer,
+      provider,
+      user.id,
+      service.transaction.id,
+      percentToToken,
+      isBuyer,
+    );
     closeModal();
   };
 
   const releaseMax = () => {
-    setPourcentage(100);
+    setPercentage(100);
   };
 
   const releaseMin = () => {
-    setPourcentage(1);
+    setPercentage(1);
   };
 
   const onChange = (e: any) => {
-    const pourcentOnChange = e.target.value;
-    if (pourcentOnChange <= 100 && pourcentOnChange >= 0) {
-      setPourcentage(pourcentOnChange);
+    const percentOnChange = e.target.value;
+    if (percentOnChange <= 100 && percentOnChange >= 0) {
+      setPercentage(percentOnChange);
     }
   };
 
   const amountSelected = useMemo(() => {
-    return pourcent ? totalInEscrow.mul(pourcent).div(100) : '';
-  }, [pourcent]);
+    return percent ? totalInEscrow.mul(percent).div(100) : '';
+  }, [percent]);
 
   const initialValues: IFormValues = {
-    pourcentField: '50',
+    percentField: '50',
   };
 
   return (
@@ -69,7 +76,7 @@ function ReleaseForm({
       <div className='flex flex-col px-4 py-6 md:p-6 xl:p-6 w-full bg-gray-50 space-y-6'>
         {service.status === ServiceStatusEnum.Confirmed && (
           <h3 className='text-xl font-semibold leading-5 text-gray-800'>
-            Select the pourcent to release
+            Select the % amount to release
           </h3>
         )}
         <div className='flex space-x-2 flex-row'>
@@ -103,7 +110,7 @@ function ReleaseForm({
                   id='pourcentField'
                   name='pourcentField'
                   required
-                  value={pourcent ? pourcent : ''}
+                  value={percent ? percent : ''}
                   onChange={onChange}
                 />
               </div>
@@ -114,11 +121,11 @@ function ReleaseForm({
               }
             </div>
             <div className='flex items-center pt-6 space-x-2 rounded-b border-gray-200 '>
-              {isBuyer && totalInEscrow.gt(0) && (
+              {totalInEscrow.gt(0) && (
                 <button
                   type='submit'
                   className='hover:text-green-600 hover:bg-green-50 bg-green-500 text-white px-5 py-2 rounded-lg'>
-                  Release the selected amount
+                  {isBuyer ? 'Release the selected amount' : 'Reimburse the selected amount'}
                 </button>
               )}
               <button
