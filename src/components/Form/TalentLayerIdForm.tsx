@@ -1,6 +1,6 @@
 import { useWeb3Modal } from '@web3modal/react';
 import { ethers } from 'ethers';
-import { Field, Form, Formik } from 'formik';
+import { ErrorMessage, Field, Form, Formik } from 'formik';
 import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useProvider, useSigner } from 'wagmi';
@@ -8,7 +8,7 @@ import * as Yup from 'yup';
 import { config } from '../../config';
 import TalentLayerContext from '../../context/talentLayer';
 import TalentLayerID from '../../contracts/ABI/TalentLayerID.json';
-import { createTalentLayerIdTransactionToast } from '../../utils/toast';
+import { createTalentLayerIdTransactionToast, showErrorTransactionToast } from '../../utils/toast';
 import HelpPopover from '../HelpPopover';
 import SubmitButton from './SubmitButton';
 import { HandlePrice } from './handle-price';
@@ -32,6 +32,7 @@ function TalentLayerIdForm() {
     handle: Yup.string()
       .min(2)
       .max(10)
+      .matches(/^[a-z0-9][a-z0-9-_]*$/, 'Only a-z, 0-9 and -_ allowed, and cannot begin with -_')
       .when('isConnected', {
         is: account && account.isConnected,
         then: schema => schema.required('handle is required'),
@@ -69,8 +70,8 @@ function TalentLayerIdForm() {
         setSubmitting(false);
         // TODO: add a refresh function on TL context and call it here rather than hard refresh
         navigate(0);
-      } catch (error) {
-        console.error(error);
+      } catch (error: any) {
+        showErrorTransactionToast(error);
       }
     } else {
       openConnectModal();
@@ -81,7 +82,7 @@ function TalentLayerIdForm() {
     <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
       {({ isSubmitting, values }) => (
         <Form>
-          <div className='flex divide-x bg-white py-4 px-4 sm:px-0 justify-center items-center flex-row drop-shadow-lg rounded-lg'>
+          <div className='flex divide-x bg-white py-4 px-4 mb-2 sm:px-0 justify-center items-center flex-row drop-shadow-lg rounded-lg'>
             <div className='sm:px-6 flex flex-row items-center gap-2'>
               <span className='text-gray-500 hidden md:block'>
                 <svg
@@ -154,6 +155,9 @@ function TalentLayerIdForm() {
               </div>
             </div>
           </div>
+          <span className='label-text text-red-500 mt-2'>
+            <ErrorMessage name='handle' />
+          </span>
         </Form>
       )}
     </Formik>

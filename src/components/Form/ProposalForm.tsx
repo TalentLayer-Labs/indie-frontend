@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { Field, Form, Formik } from 'formik';
+import { ErrorMessage, Field, Form, Formik } from 'formik';
 import { useNavigate } from 'react-router-dom';
 import { useProvider, useSigner } from 'wagmi';
 import * as Yup from 'yup';
@@ -19,7 +19,7 @@ interface IFormValues {
   rateToken: string;
   rateAmount: number;
   expirationDate: number;
-  video_url: string;
+  videoUrl: string;
 }
 
 const initialValues: IFormValues = {
@@ -27,15 +27,15 @@ const initialValues: IFormValues = {
   rateToken: '',
   rateAmount: 0,
   expirationDate: 15,
-  video_url: '',
+  videoUrl: '',
 };
 
 const validationSchema = Yup.object({
-  about: Yup.string().required('about is required'),
-  rateToken: Yup.string().required('rate is required'),
-  rateAmount: Yup.string().required('amount is required'),
-  expirationDate: Yup.number().integer().required('expiration date is required'),
-  video_url: Yup.string().matches(
+  about: Yup.string().required('Please provide a description of your service'),
+  rateToken: Yup.string().required('Please select a payment token'),
+  rateAmount: Yup.string().required('Please provide an amount for your service'),
+  expirationDate: Yup.number().integer().required('Please provide an expiration date'),
+  videoUrl: Yup.string().matches(
     /^https:\/\/www\.loom\.com\/share\/([a-zA-Z0-9]+)$/,
     'Please enter a valid Loom video URL',
   ),
@@ -71,7 +71,7 @@ function ProposalForm({ user, service }: { user: IUser; service: IService }) {
         const cid = await postToIPFS(
           JSON.stringify({
             about: values.about,
-            video_url: values.video_url,
+            videoUrl: values.videoUrl,
           }),
         );
 
@@ -134,9 +134,12 @@ function ProposalForm({ user, service }: { user: IUser; service: IService }) {
                 id='about'
                 rows={8}
                 name='about'
-                className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
+                className='mt-1 mb-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
                 placeholder=''
               />
+              <span className='text-red-500'>
+                <ErrorMessage name='about' />
+              </span>
             </label>
 
             <div className='flex'>
@@ -146,9 +149,12 @@ function ProposalForm({ user, service }: { user: IUser; service: IService }) {
                   type='number'
                   id='rateAmount'
                   name='rateAmount'
-                  className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
+                  className='mt-1 mb-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
                   placeholder=''
                 />
+                <span className='text-red-500'>
+                  <ErrorMessage name='rateAmount' />
+                </span>
               </label>
               <label className='block'>
                 <span className='text-gray-700'>Token</span>
@@ -156,7 +162,7 @@ function ProposalForm({ user, service }: { user: IUser; service: IService }) {
                   component='select'
                   id='rateToken'
                   name='rateToken'
-                  className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
+                  className='mt-1 mb-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
                   placeholder=''>
                   <option value=''>Select a token</option>
                   {allowedTokenList.map((token, index) => (
@@ -165,6 +171,9 @@ function ProposalForm({ user, service }: { user: IUser; service: IService }) {
                     </option>
                   ))}
                 </Field>
+                <span className='text-red-500'>
+                  <ErrorMessage name='rateToken' />
+                </span>
               </label>
             </div>
             <label className='block flex-1'>
@@ -173,19 +182,25 @@ function ProposalForm({ user, service }: { user: IUser; service: IService }) {
                 type='number'
                 id='expirationDate'
                 name='expirationDate'
-                className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
+                className='mt-1 mb-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
                 placeholder=''
               />
+              <span className='text-red-500'>
+                <ErrorMessage name='expirationDate' />
+              </span>
             </label>
             <label className='block flex-1'>
               <span className='text-gray-700'>Loom Video URL (optionnal)</span>
               <Field
                 type='text'
-                id='video_url'
-                name='video_url'
-                className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
+                id='videoUrl'
+                name='videoUrl'
+                className='mt-1 mb-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
                 placeholder='Enter Loom video URL'
               />
+              <span className='text-red-500'>
+                <ErrorMessage name='videoUrl' />
+              </span>
             </label>
 
             <SubmitButton isSubmitting={isSubmitting} label='Post' />

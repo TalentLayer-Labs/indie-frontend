@@ -1,11 +1,10 @@
-import { getParsedEthersError } from '@enzoferey/ethers-error-parser';
-import { EthersError } from '@enzoferey/ethers-error-parser/dist/types';
 import { Provider } from '@wagmi/core';
 import { BigNumber, Contract, Signer } from 'ethers';
 import { toast } from 'react-toastify';
 import TransactionToast from '../components/TransactionToast';
 import { config } from '../config';
 import TalentLayerEscrow from './ABI/TalentLayerEscrow.json';
+import { showErrorTransactionToast } from '../utils/toast';
 
 export const executePayment = async (
   signer: Signer,
@@ -47,14 +46,6 @@ export const executePayment = async (
       throw new Error('Approve Transaction failed');
     }
   } catch (error: any) {
-    let errorMessage;
-    console.error(error);
-    if (typeof error?.code === 'string') {
-      const parsedEthersError = getParsedEthersError(error as EthersError);
-      errorMessage = `${parsedEthersError.errorCode} - ${parsedEthersError.context}`;
-    } else {
-      errorMessage = error?.message;
-    }
-    toast.error(errorMessage);
+    showErrorTransactionToast(error);
   }
 };

@@ -42,7 +42,9 @@ function ReviewModal({ service, userToReview }: { service: IService; userToRevie
               </button>
             </div>
             <div className='p-6 space-y-6'>
-              <p className='text-gray-800 text-sm'>How the job went with {userToReview.handle}?</p>
+              <p className='text-gray-800 text-sm'>
+                How did the job go with {userToReview.handle}?
+              </p>
               {show && <ReviewForm serviceId={service.id} />}
             </div>
           </div>
