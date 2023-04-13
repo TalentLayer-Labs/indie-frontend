@@ -53,6 +53,7 @@ export const getAllowedTokenList = (): Promise<any> => {
             symbol
             name
             decimals
+            minimumTransactionAmount
         }
       }
       `;

@@ -180,6 +180,7 @@ export type IToken = {
   address: `0x${string}`;
   symbol: string;
   decimals: number;
+  minimumTransactionAmount: number;
 };
 
 export type ITokenFormattedValues = {

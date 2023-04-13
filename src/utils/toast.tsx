@@ -1,4 +1,4 @@
-import { getParsedEthersError } from '@enzoferey/ethers-error-parser';
+import { getParsedEthersError, RETURN_VALUE_ERROR_CODES } from '@enzoferey/ethers-error-parser';
 import { EthersError } from '@enzoferey/ethers-error-parser/dist/types';
 import { Provider } from '@wagmi/core';
 import { Transaction } from 'ethers';
@@ -53,11 +53,11 @@ export const createMultiStepsTransactionToast = async (
 
     return entityId;
   } catch (error) {
-    const parsedEthersError = getParsedEthersError(error as EthersError);
+    const errorMessage = getParsedErrorMessage(error);
     console.error(error);
     toast.update(toastId, {
       type: toast.TYPE.ERROR,
-      render: `${messages.error}: ${parsedEthersError.errorCode} - ${parsedEthersError.context}`,
+      render: errorMessage,
     });
   }
   return;
@@ -65,8 +65,8 @@ export const createMultiStepsTransactionToast = async (
 
 export const showErrorTransactionToast = (error: any) => {
   console.error(error);
-  const parsedEthersError = getParsedEthersError(error as EthersError);
-  toast.error(`${parsedEthersError.errorCode} - ${parsedEthersError.context}`);
+  const errorMessage = getParsedErrorMessage(error);
+  toast.error(errorMessage);
 };
 
 export const createTalentLayerIdTransactionToast = async (
@@ -110,12 +110,21 @@ export const createTalentLayerIdTransactionToast = async (
 
     return entityId;
   } catch (error) {
-    const parsedEthersError = getParsedEthersError(error as EthersError);
+    const errorMessage = getParsedErrorMessage(error);
     console.error(error);
     toast.update(toastId, {
       type: toast.TYPE.ERROR,
-      render: `${messages.error}: ${parsedEthersError.errorCode} - ${parsedEthersError.context}`,
+      render: errorMessage,
     });
   }
   return;
 };
+
+function getParsedErrorMessage(error: any) {
+  const parsedEthersError = getParsedEthersError(error as EthersError);
+  if (parsedEthersError.errorCode === RETURN_VALUE_ERROR_CODES.REJECTED_TRANSACTION) {
+    return `${parsedEthersError.errorCode} - user rejected transaction`;
+  } else {
+    return `${parsedEthersError.errorCode} - ${parsedEthersError.context}`;
+  }
+}

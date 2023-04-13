@@ -1,6 +1,6 @@
 import { useWeb3Modal } from '@web3modal/react';
 import { ethers } from 'ethers';
-import { Field, Form, Formik } from 'formik';
+import { ErrorMessage, Field, Form, Formik } from 'formik';
 import { useContext } from 'react';
 import { useProvider, useSigner } from 'wagmi';
 import * as Yup from 'yup';
@@ -8,7 +8,7 @@ import { config } from '../../config';
 import TalentLayerContext from '../../context/talentLayer';
 import TalentLayerReview from '../../contracts/ABI/TalentLayerReview.json';
 import { postToIPFS } from '../../utils/ipfs';
-import { createMultiStepsTransactionToast } from '../../utils/toast';
+import { createMultiStepsTransactionToast, showErrorTransactionToast } from '../../utils/toast';
 import SubmitButton from './SubmitButton';
 
 interface IFormValues {
@@ -17,7 +17,7 @@ interface IFormValues {
 }
 
 const validationSchema = Yup.object({
-  content: Yup.string().required('content is required'),
+  content: Yup.string().required('Please provide a content'),
   rating: Yup.string().required('rating is required'),
 });
 
@@ -68,7 +68,7 @@ function ReviewForm({ serviceId }: { serviceId: string }) {
         setSubmitting(false);
         resetForm();
       } catch (error) {
-        console.error(error);
+        showErrorTransactionToast(error);
       }
     } else {
       openConnectModal();
@@ -97,6 +97,9 @@ function ReviewForm({ serviceId }: { serviceId: string }) {
                 placeholder=''
                 rows={5}
               />
+              <span className='text-red-500'>
+                <ErrorMessage name='content' />
+              </span>
             </label>
 
             <label className='block'>
@@ -109,6 +112,9 @@ function ReviewForm({ serviceId }: { serviceId: string }) {
                 max={5}
                 className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
               />
+              <span className='text-red-500'>
+                <ErrorMessage name='rating' />
+              </span>
             </label>
 
             <SubmitButton isSubmitting={isSubmitting} label='Post your review' />
