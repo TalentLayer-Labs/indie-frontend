@@ -1,4 +1,4 @@
-import { ethers } from 'ethers';
+import { ethers, FixedNumber } from 'ethers';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import { useNavigate } from 'react-router-dom';
 import { useProvider, useSigner } from 'wagmi';
@@ -47,16 +47,25 @@ function ProposalForm({
   const navigate = useNavigate();
   const allowedTokenList = useAllowedTokens();
 
-  const existingExpirationDate = existingProposal?.expirationDate
-    ? (Number(existingProposal?.expirationDate) - Math.floor(Date.now() / 1000)) / (60 * 60 * 24)
-    : undefined;
+  let existingExpirationDate, existingRateTokenAmount;
+  if (existingProposal) {
+    existingExpirationDate = Math.floor(
+      (Number(existingProposal?.expirationDate) - Date.now() / 1000) / (60 * 60 * 24),
+    );
 
-  //TODO : Parse rateAmont
-  //TODO : Round exp date
+    const token = allowedTokenList.find(
+      token => token.address === existingProposal?.rateToken.address,
+    );
+
+    existingRateTokenAmount = FixedNumber.from(
+      ethers.utils.formatUnits(existingProposal.rateAmount, token?.decimals),
+    ).toUnsafeFloat();
+  }
+
   const initialValues: IFormValues = {
     about: existingProposal?.description?.about || '',
     rateToken: existingProposal?.rateToken.address || '',
-    rateAmount: Number(existingProposal?.rateAmount) || 0,
+    rateAmount: existingRateTokenAmount || 0,
     expirationDate: existingExpirationDate || 15,
     videoUrl: existingProposal?.description?.video_url || '',
   };
