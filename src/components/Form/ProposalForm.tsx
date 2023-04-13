@@ -5,7 +5,7 @@ import { useProvider, useSigner } from 'wagmi';
 import * as Yup from 'yup';
 import { config } from '../../config';
 import ServiceRegistry from '../../contracts/ABI/TalentLayerService.json';
-import { IService, IUser } from '../../types';
+import { IProposal, IService, IUser } from '../../types';
 import { postToIPFS } from '../../utils/ipfs';
 import { createMultiStepsTransactionToast, showErrorTransactionToast } from '../../utils/toast';
 import { parseRateAmount } from '../../utils/web3';
@@ -22,14 +22,6 @@ interface IFormValues {
   videoUrl: string;
 }
 
-const initialValues: IFormValues = {
-  about: '',
-  rateToken: '',
-  rateAmount: 0,
-  expirationDate: 15,
-  videoUrl: '',
-};
-
 const validationSchema = Yup.object({
   about: Yup.string().required('Please provide a description of your service'),
   rateToken: Yup.string().required('Please select a payment token'),
@@ -41,11 +33,31 @@ const validationSchema = Yup.object({
   ),
 });
 
-function ProposalForm({ user, service }: { user: IUser; service: IService }) {
+function ProposalForm({
+  user,
+  service,
+  existingProposal,
+}: {
+  user: IUser;
+  service: IService;
+  existingProposal?: IProposal;
+}) {
   const provider = useProvider({ chainId: import.meta.env.VITE_NETWORK_ID });
   const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
   const navigate = useNavigate();
   const allowedTokenList = useAllowedTokens();
+
+  const existingExpirationDate = existingProposal?.expirationDate
+    ? (Number(existingProposal?.expirationDate) - Math.floor(Date.now() / 1000)) / (60 * 60 * 24)
+    : undefined;
+
+  const initialValues: IFormValues = {
+    about: existingProposal?.description?.about || '',
+    rateToken: existingProposal?.rateToken.address || '',
+    rateAmount: Number(existingProposal?.rateAmount) || 0,
+    expirationDate: existingExpirationDate || 15,
+    videoUrl: existingProposal?.description?.video_url || '',
+  };
 
   const onSubmit = async (
     values: IFormValues,

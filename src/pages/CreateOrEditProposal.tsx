@@ -47,7 +47,7 @@ function CreateOrEditProposal() {
       )}
 
       {userExists() && account?.isConnected && user && (
-        <ProposalForm user={user} service={service} />
+        <ProposalForm user={user} service={service} existingProposal={existingProposal} />
       )}
     </div>
   );
