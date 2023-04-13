@@ -10,7 +10,7 @@ import ConnectButton from '../messaging/components/ConnectButton';
 import MessagingContext from '../messaging/context/messging';
 import useProposalById from '../hooks/useProposalById';
 
-function CreateOrUpdateProposal() {
+function CreateOrEditProposal() {
   const { account, user } = useContext(TalentLayerContext);
   const { userExists } = useContext(MessagingContext);
   const { id } = useParams<{ id: string }>();
@@ -26,7 +26,7 @@ function CreateOrUpdateProposal() {
       <Back />
       {existingProposal ? (
         <p className='text-5xl font-medium tracking-wider mb-8'>
-          Update <span className='text-indigo-600'>your proposal</span>
+          Edit <span className='text-indigo-600'>your proposal</span>
         </p>
       ) : (
         <p className='text-5xl font-medium tracking-wider mb-8'>
@@ -53,4 +53,4 @@ function CreateOrUpdateProposal() {
   );
 }
 
-export default CreateOrUpdateProposal;
+export default CreateOrEditProposal;

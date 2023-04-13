@@ -98,7 +98,7 @@ function ServiceDetail({ service }: { service: IService }) {
                 {!userProposal && (
                   <NavLink
                     className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg'
-                    to={`/services/${service.id}/create-proposal`}>
+                    to={`/services/${service.id}/proposal`}>
                     Create proposal
                   </NavLink>
                 )}
