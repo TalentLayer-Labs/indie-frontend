@@ -51,6 +51,8 @@ function ProposalForm({
     ? (Number(existingProposal?.expirationDate) - Math.floor(Date.now() / 1000)) / (60 * 60 * 24)
     : undefined;
 
+  //TODO : Parse rateAmont
+  //TODO : Round exp date
   const initialValues: IFormValues = {
     about: existingProposal?.description?.about || '',
     rateToken: existingProposal?.rateToken.address || '',
@@ -80,14 +82,12 @@ function ProposalForm({
 
         const parsedRateAmountString = parsedRateAmount.toString();
 
-        // const cid = await postToIPFS(
-        //   JSON.stringify({
-        //     about: values.about,
-        //     video_url: values.video_url,
-        //   }),
-        // );
-
-        const cid = 'QmbyAESGfkKQb9sKRoFjTquA2pBKjA22nA8WsoiDPrfCm9';
+        const cid = await postToIPFS(
+          JSON.stringify({
+            about: values.about,
+            videoUrl: values.videoUrl,
+          }),
+        );
 
         // Get platform signature
         const signature = await getProposalSignature({
@@ -102,16 +102,25 @@ function ProposalForm({
           signer,
         );
 
-        const tx = await contract.createProposal(
-          user.id,
-          service.id,
-          values.rateToken,
-          parsedRateAmountString,
-          import.meta.env.VITE_PLATFORM_ID,
-          cid,
-          convertExpirationDateString,
-          signature,
-        );
+        const tx = existingProposal
+          ? await contract.updateProposal(
+              user.id,
+              service.id,
+              values.rateToken,
+              parsedRateAmountString,
+              cid,
+              convertExpirationDateString,
+            )
+          : await contract.createProposal(
+              user.id,
+              service.id,
+              values.rateToken,
+              parsedRateAmountString,
+              import.meta.env.VITE_PLATFORM_ID,
+              cid,
+              convertExpirationDateString,
+              signature,
+            );
         await createMultiStepsTransactionToast(
           {
             pending: 'Creating your proposal...',
