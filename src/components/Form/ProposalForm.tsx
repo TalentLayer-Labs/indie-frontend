@@ -68,12 +68,14 @@ function ProposalForm({ user, service }: { user: IUser; service: IService }) {
 
         const parsedRateAmountString = parsedRateAmount.toString();
 
-        const cid = await postToIPFS(
-          JSON.stringify({
-            about: values.about,
-            videoUrl: values.videoUrl,
-          }),
-        );
+        // const cid = await postToIPFS(
+        //   JSON.stringify({
+        //     about: values.about,
+        //     video_url: values.video_url,
+        //   }),
+        // );
+
+        const cid = 'QmbyAESGfkKQb9sKRoFjTquA2pBKjA22nA8WsoiDPrfCm9';
 
         // Get platform signature
         const signature = await getProposalSignature({
@@ -125,7 +127,7 @@ function ProposalForm({ user, service }: { user: IUser; service: IService }) {
           <h2 className='mb-2 text-gray-900 font-bold'>For the job:</h2>
           <ServiceItem service={service} />
 
-          <h2 className=' mt-8 mb-2 text-gray-900 font-bold'>Detailed your proposal:</h2>
+          <h2 className=' mt-8 mb-2 text-gray-900 font-bold'>Describe your proposal in details:</h2>
           <div className='grid grid-cols-1 gap-6 border border-gray-200 rounded-md p-8'>
             <label className='block'>
               <span className='text-gray-700'>about</span>
