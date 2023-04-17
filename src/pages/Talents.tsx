@@ -1,5 +1,5 @@
 import UserItem from '../components/UserItem';
-import usePaginatedUsers from '../hooks/usePaginatedUsers';
+import useUsers from '../hooks/useUsers';
 import SearchTalentButton from '../components/Form/SearchTalentButton';
 import { useState } from 'react';
 
@@ -8,11 +8,7 @@ function Talents() {
   const queryString = window.location.search;
   const searchQuery = new URLSearchParams(queryString).get('s') || undefined;
   const [offset, setOffset] = useState(0);
-  const { users, noMoreData } = usePaginatedUsers(
-    searchQuery?.toLocaleLowerCase(),
-    PAGE_SIZE,
-    offset,
-  );
+  const { users, noMoreData } = useUsers(searchQuery?.toLocaleLowerCase(), PAGE_SIZE, offset);
   //TODO add loader
 
   const loadMore = () => {
