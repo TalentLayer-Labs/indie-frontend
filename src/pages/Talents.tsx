@@ -1,11 +1,17 @@
 import UserItem from '../components/UserItem';
-import useUsers from '../hooks/useUsers';
+import usePaginatedUsers from '../hooks/usePaginatedUsers';
 import SearchTalentButton from '../components/Form/SearchTalentButton';
+import { useState } from 'react';
 
 function Talents() {
   const queryString = window.location.search;
   const searchQuery = new URLSearchParams(queryString).get('s') || undefined;
-  const users = useUsers(searchQuery?.toLocaleLowerCase());
+  const [offset, setOffset] = useState(0);
+  const { users, noMoreData } = usePaginatedUsers(10, offset, searchQuery?.toLocaleLowerCase());
+
+  const loadMore = () => {
+    setOffset(offset + 10);
+  };
 
   return (
     <div className='max-w-7xl mx-auto text-gray-900 sm:px-4 lg:px-0'>
@@ -34,12 +40,22 @@ function Talents() {
         })}
       </div>
 
-      {users.length === 20 && (
-        <a
-          href='#'
-          className='px-5 py-2  border border-indigo-600 rounded-full text-indigo-600 hover:text-white hover:bg-indigo-700'>
-          Load More
-        </a>
+      {users.length > 0 && !noMoreData ? (
+        <div className='flex justify-center items-center gap-10 flex-col pb-5'>
+          <button
+            type='submit'
+            className={`px-5 py-2 mt-5 content-center border border-indigo-600 rounded-full text-indigo-600 
+              hover:text-white hover:bg-indigo-700
+            `}
+            disabled={noMoreData}
+            onClick={() => loadMore()}>
+            Load More
+          </button>
+        </div>
+      ) : (
+        <div className='flex justify-center items-center gap-10 flex-col pb-5 mt-5'>
+          <p>No more Users...</p>
+        </div>
       )}
     </div>
   );
