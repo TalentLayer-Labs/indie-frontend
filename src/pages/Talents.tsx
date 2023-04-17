@@ -9,10 +9,11 @@ function Talents() {
   const searchQuery = new URLSearchParams(queryString).get('s') || undefined;
   const [offset, setOffset] = useState(0);
   const { users, noMoreData } = usePaginatedUsers(
+    searchQuery?.toLocaleLowerCase(),
     PAGE_SIZE,
     offset,
-    searchQuery?.toLocaleLowerCase(),
   );
+  //TODO add loader
 
   const loadMore = () => {
     setOffset(offset + PAGE_SIZE);
@@ -45,7 +46,7 @@ function Talents() {
         })}
       </div>
 
-      {users.length > 0 && !noMoreData ? (
+      {users.length > 0 && !noMoreData && (
         <div className='flex justify-center items-center gap-10 flex-col pb-5'>
           <button
             type='submit'
@@ -57,7 +58,8 @@ function Talents() {
             Load More
           </button>
         </div>
-      ) : (
+      )}
+      {noMoreData && (
         <div className='flex justify-center items-center gap-10 flex-col pb-5 mt-5'>
           <p>No more Users...</p>
         </div>
