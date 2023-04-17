@@ -4,13 +4,18 @@ import SearchTalentButton from '../components/Form/SearchTalentButton';
 import { useState } from 'react';
 
 function Talents() {
+  const PAGE_SIZE = 10;
   const queryString = window.location.search;
   const searchQuery = new URLSearchParams(queryString).get('s') || undefined;
   const [offset, setOffset] = useState(0);
-  const { users, noMoreData } = usePaginatedUsers(10, offset, searchQuery?.toLocaleLowerCase());
+  const { users, noMoreData } = usePaginatedUsers(
+    PAGE_SIZE,
+    offset,
+    searchQuery?.toLocaleLowerCase(),
+  );
 
   const loadMore = () => {
-    setOffset(offset + 10);
+    setOffset(offset + PAGE_SIZE);
   };
 
   return (
