@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import { getPaginatedUsers, getUsers } from '../queries/users';
+import { getUsers } from '../queries/users';
 import { IUser } from '../types';
 
-const usePaginatedUsers = (
-  numberPerPage: number,
-  offset: number,
+const useUsers = (
   searchQuery?: string,
+  numberPerPage?: number,
+  offset?: number,
 ): { noMoreData: boolean; users: IUser[] } => {
   const [users, setUsers] = useState<IUser[]>([]);
   const [noMoreData, setNoMoreData] = useState(false);
@@ -13,14 +13,12 @@ const usePaginatedUsers = (
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await getPaginatedUsers(numberPerPage, offset, searchQuery);
+        const response = await getUsers(numberPerPage, offset, searchQuery);
 
         if (response?.data?.data?.users.length === numberPerPage) {
-          users.length > 0
-            ? setUsers([...users, ...response.data.data.users])
-            : setUsers(response.data.data.users);
+          setUsers([...users, ...response.data.data.users]);
         }
-        if (response?.data?.data?.users.length < numberPerPage) {
+        if (numberPerPage && response?.data?.data?.users.length < numberPerPage) {
           setNoMoreData(true);
         }
       } catch (err: any) {
@@ -34,4 +32,4 @@ const usePaginatedUsers = (
   return { users, noMoreData };
 };
 
-export default usePaginatedUsers;
+export default useUsers;
