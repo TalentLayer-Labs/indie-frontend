@@ -5,8 +5,10 @@ interface IProps {
   serviceStatus?: ServiceStatusEnum;
   buyerId?: string;
   sellerId?: string;
-  platformId?: string;
+  numberPerPage?: number;
+  offset?: number;
   searchQuery?: string;
+  platformId?: string;
 }
 
 const serviceQueryFields = `
@@ -58,7 +60,7 @@ const serviceDescriptionQueryFields = `
   }
 `;
 
-const getFilterCondition = (params: IProps) => {
+const getFilteredCondition = (params: IProps) => {
   let condition = ', where: {';
   condition += params.serviceStatus ? `status: "${params.serviceStatus}"` : '';
   condition += params.buyerId ? `, buyer: "${params.buyerId}"` : '';
@@ -69,9 +71,12 @@ const getFilterCondition = (params: IProps) => {
 };
 
 export const getServices = (params: IProps): Promise<any> => {
+  const pagination = params.numberPerPage
+    ? 'first: ' + params.numberPerPage + ', skip: ' + params.offset
+    : '';
   const query = `
     {
-      services(orderBy: id, orderDirection: desc ${getFilterCondition(params)}) {
+      services(orderBy: id, orderDirection: desc ${pagination} ${getFilteredCondition(params)}) {
         ${serviceQueryFields}
         description {
           ${serviceDescriptionQueryFields}
@@ -83,11 +88,14 @@ export const getServices = (params: IProps): Promise<any> => {
 };
 
 export const searchServices = (params: IProps): Promise<any> => {
+  const pagination = params.numberPerPage
+    ? 'first: ' + params.numberPerPage + ', skip: ' + params.offset
+    : '';
   const query = `
     {
       serviceDescriptionSearchRank(
         text: "${params.searchQuery}",
-        orderBy: id, orderDirection: desc ${getFilterCondition(params)}
+        orderBy: id, orderDirection: desc ${pagination} ${getFilteredCondition(params)}
       ){
         ${serviceDescriptionQueryFields}
         service {
