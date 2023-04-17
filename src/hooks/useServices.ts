@@ -7,8 +7,11 @@ const useServices = (
   buyerId?: string,
   sellerId?: string,
   searchQuery?: string,
-): IService[] => {
+  numberPerPage?: number,
+  offset?: number,
+): { noMoreData: boolean; services: IService[] } => {
   const [services, setServices] = useState<IService[]>([]);
+  const [noMoreData, setNoMoreData] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -19,11 +22,12 @@ const useServices = (
             serviceStatus,
             buyerId,
             sellerId,
-            platformId: import.meta.env.VITE_PLATFORM_ID,
+            numberPerPage,
+            offset,
             searchQuery,
           });
           if (response?.data?.data?.serviceDescriptionSearchRank.length > 0) {
-            const services = response.data.data.serviceDescriptionSearchRank.map(
+            const newServices = response.data.data.serviceDescriptionSearchRank.map(
               (serviceDescription: { service: any }) => {
                 return {
                   ...serviceDescription.service,
@@ -33,18 +37,27 @@ const useServices = (
                 };
               },
             );
-            setServices(services);
+            if (services.length > 0) {
+              setServices([...services, ...newServices]);
+            }
+            if (numberPerPage && newServices.length < numberPerPage) {
+              setNoMoreData(true);
+            }
           }
         } else {
           response = await getServices({
             serviceStatus,
             buyerId,
             sellerId,
-            platformId: import.meta.env.VITE_PLATFORM_ID,
-            searchQuery,
+            numberPerPage,
+            offset,
           });
-          if (response?.data?.data?.services.length > 0) {
-            setServices(response.data.data.services);
+          const newServices = response?.data?.data?.services;
+          if (newServices && newServices.length > 0) {
+            setServices([...services, ...newServices]);
+          }
+          if (numberPerPage && newServices.length < numberPerPage) {
+            setNoMoreData(true);
           }
         }
       } catch (err: any) {
@@ -53,9 +66,9 @@ const useServices = (
       }
     };
     fetchData();
-  }, [serviceStatus]);
+  }, [serviceStatus, numberPerPage, offset, searchQuery]);
 
-  return services;
+  return { noMoreData, services };
 };
 
 export default useServices;
