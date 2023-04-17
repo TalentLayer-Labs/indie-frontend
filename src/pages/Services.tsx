@@ -3,13 +3,14 @@ import useServices from '../hooks/useServices';
 import { IService, ServiceStatusEnum } from '../types';
 import SearchServiceButton from '../components/Form/SearchServiceButton';
 import { useState } from 'react';
+import Loading from '../components/Loading';
 
 function Services() {
   const PAGE_SIZE = 3;
   const queryString = window.location.search;
   const searchQuery = new URLSearchParams(queryString).get('s') || undefined;
   const [offset, setOffset] = useState(0);
-  const { noMoreData, services } = useServices(
+  const { noMoreData, services, loading } = useServices(
     ServiceStatusEnum.Opened,
     undefined,
     undefined,
@@ -18,7 +19,6 @@ function Services() {
     offset,
   );
 
-  //TODO add loader
   //TODO marche pas avec search
 
   const loadMore = () => {
@@ -51,7 +51,7 @@ function Services() {
         })}
       </div>
 
-      {services.length > 0 && !noMoreData && (
+      {services.length > 0 && !noMoreData && !loading && (
         <div className='flex justify-center items-center gap-10 flex-col pb-5'>
           <button
             type='submit'
@@ -62,6 +62,11 @@ function Services() {
             onClick={() => loadMore()}>
             Load More
           </button>
+        </div>
+      )}
+      {loading && (
+        <div className='flex justify-center items-center gap-10 flex-col pb-5 mt-5'>
+          <Loading />
         </div>
       )}
       {noMoreData && (

@@ -9,13 +9,15 @@ const useServices = (
   searchQuery?: string,
   numberPerPage?: number,
   offset?: number,
-): { noMoreData: boolean; services: IService[] } => {
+): { noMoreData: boolean; loading: boolean; services: IService[] } => {
   const [services, setServices] = useState<IService[]>([]);
   const [noMoreData, setNoMoreData] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true);
         let response;
         if (searchQuery) {
           response = await searchServices({
@@ -63,12 +65,14 @@ const useServices = (
       } catch (err: any) {
         // eslint-disable-next-line no-console
         console.error(err);
+      } finally {
+        setLoading(false);
       }
     };
     fetchData();
   }, [serviceStatus, numberPerPage, offset, searchQuery]);
 
-  return { noMoreData, services };
+  return { noMoreData, services, loading };
 };
 
 export default useServices;
