@@ -1,4 +1,4 @@
-function Loading({size = "8"}: {size?: string}) {
+function Loading({ size = '8' }: { size?: string }) {
   return (
     <div className='flex justify-center items-center'>
       <svg

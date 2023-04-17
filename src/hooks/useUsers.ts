@@ -6,13 +6,15 @@ const useUsers = (
   searchQuery?: string,
   numberPerPage?: number,
   offset?: number,
-): { noMoreData: boolean; users: IUser[] } => {
+): { noMoreData: boolean; loading: boolean; users: IUser[] } => {
   const [users, setUsers] = useState<IUser[]>([]);
   const [noMoreData, setNoMoreData] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true);
         const response = await getUsers(numberPerPage, offset, searchQuery);
 
         if (response?.data?.data?.users.length === numberPerPage) {
@@ -24,12 +26,14 @@ const useUsers = (
       } catch (err: any) {
         // eslint-disable-next-line no-console
         console.error(err);
+      } finally {
+        setLoading(false);
       }
     };
     fetchData();
   }, [numberPerPage, offset, searchQuery]);
 
-  return { users, noMoreData };
+  return { users, noMoreData, loading };
 };
 
 export default useUsers;

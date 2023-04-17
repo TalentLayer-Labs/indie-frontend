@@ -2,14 +2,18 @@ import UserItem from '../components/UserItem';
 import useUsers from '../hooks/useUsers';
 import SearchTalentButton from '../components/Form/SearchTalentButton';
 import { useState } from 'react';
+import Loading from '../components/Loading';
 
 function Talents() {
   const PAGE_SIZE = 10;
   const queryString = window.location.search;
   const searchQuery = new URLSearchParams(queryString).get('s') || undefined;
   const [offset, setOffset] = useState(0);
-  const { users, noMoreData } = useUsers(searchQuery?.toLocaleLowerCase(), PAGE_SIZE, offset);
-  //TODO add loader
+  const { users, noMoreData, loading } = useUsers(
+    searchQuery?.toLocaleLowerCase(),
+    PAGE_SIZE,
+    offset,
+  );
 
   const loadMore = () => {
     setOffset(offset + PAGE_SIZE);
@@ -42,7 +46,7 @@ function Talents() {
         })}
       </div>
 
-      {users.length > 0 && !noMoreData && (
+      {users.length > 0 && !noMoreData && !loading && (
         <div className='flex justify-center items-center gap-10 flex-col pb-5'>
           <button
             type='submit'
@@ -53,6 +57,11 @@ function Talents() {
             onClick={() => loadMore()}>
             Load More
           </button>
+        </div>
+      )}
+      {loading && (
+        <div className='flex justify-center items-center gap-10 flex-col pb-5 mt-5'>
+          <Loading />
         </div>
       )}
       {noMoreData && (
