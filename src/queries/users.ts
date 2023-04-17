@@ -19,6 +19,29 @@ export const getUsers = (platformId?: string, searchQuery?: string): Promise<any
     `;
   return processRequest(query);
 };
+export const getPaginatedUsers = (
+  numberPerPage: number,
+  offset: number,
+  searchQuery?: string,
+): Promise<any> => {
+  const pagination = 'first: ' + numberPerPage + ', skip: ' + offset;
+  let condition = ', where: {';
+  condition += searchQuery ? `, handle_contains_nocase: "${searchQuery}"` : '';
+  condition += '}';
+
+  const query = `
+    {
+      users(orderBy: rating, orderDirection: desc ${pagination} ${condition}) {
+        id
+        address
+        handle
+        numReviews
+        rating
+      }
+    }
+    `;
+  return processRequest(query);
+};
 
 export const getUserById = (id: string): Promise<any> => {
   const query = `
