@@ -15,7 +15,6 @@ const useStreamConversations = () => {
     const streamConversations = async () => {
       const newStream = await providerState.client?.conversations.stream();
       if (!newStream) return;
-      // /!\ in ex was set to 'stream' instead of 'newStream'
       setStream(newStream);
       for await (const conversation of newStream) {
         if (
