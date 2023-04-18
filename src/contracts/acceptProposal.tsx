@@ -1,5 +1,3 @@
-import { getParsedEthersError } from '@enzoferey/ethers-error-parser';
-import { EthersError } from '@enzoferey/ethers-error-parser/dist/types';
 import { Provider } from '@wagmi/core';
 import { Contract, ethers, Signer } from 'ethers';
 import { toast } from 'react-toastify';
@@ -7,6 +5,7 @@ import TransactionToast from '../components/TransactionToast';
 import { config } from '../config';
 import ERC20 from './ABI/ERC20.json';
 import TalentLayerEscrow from './ABI/TalentLayerEscrow.json';
+import { showErrorTransactionToast } from '../utils/toast';
 
 // TODO: need to generate this json duynamically and post it to IPFS to be use for dispute resolution
 export const metaEvidenceCid = 'QmQ2hcACF6r2Gf8PDxG4NcBdurzRUopwcaYQHNhSah6a8v';
@@ -115,13 +114,6 @@ export const validateProposal = async (
       }
     }
   } catch (error: any) {
-    let errorMessage;
-    if (typeof error?.code === 'string') {
-      const parsedEthersError = getParsedEthersError(error as EthersError);
-      errorMessage = `${parsedEthersError.errorCode} - ${parsedEthersError.context}`;
-    } else {
-      errorMessage = error?.message;
-    }
-    toast.error(errorMessage);
+    showErrorTransactionToast(error);
   }
 };

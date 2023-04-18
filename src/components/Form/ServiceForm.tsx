@@ -1,7 +1,7 @@
 import { useWeb3Modal } from '@web3modal/react';
-import { ethers } from 'ethers';
-import { Field, Form, Formik } from 'formik';
-import { useContext } from 'react';
+import { ethers, FixedNumber } from 'ethers';
+import { ErrorMessage, Field, Form, Formik } from 'formik';
+import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useProvider, useSigner } from 'wagmi';
 import * as Yup from 'yup';
@@ -14,6 +14,7 @@ import { parseRateAmount } from '../../utils/web3';
 import SubmitButton from './SubmitButton';
 import useAllowedTokens from '../../hooks/useAllowedTokens';
 import { getServiceSignature } from '../../utils/signature';
+import { IToken } from '../../types';
 
 interface IFormValues {
   title: string;
@@ -31,14 +32,6 @@ const initialValues: IFormValues = {
   rateAmount: 0,
 };
 
-const validationSchema = Yup.object({
-  title: Yup.string().required('title is required'),
-  about: Yup.string().required('about is required'),
-  keywords: Yup.string().required('keywords are required'),
-  rateToken: Yup.string().required('rate is required'),
-  rateAmount: Yup.string().required('amount is required'),
-});
-
 function ServiceForm() {
   const { open: openConnectModal } = useWeb3Modal();
   const { user, account } = useContext(TalentLayerContext);
@@ -47,6 +40,40 @@ function ServiceForm() {
 
   const navigate = useNavigate();
   const allowedTokenList = useAllowedTokens();
+  const [selectedToken, setSelectedToken] = useState<IToken>();
+
+  const validationSchema = Yup.object({
+    title: Yup.string().required('Please provide a title for your service'),
+    about: Yup.string().required('Please provide a description of your service'),
+    keywords: Yup.string().required('Please provide keywords for your service'),
+    rateToken: Yup.string().required('Please select a payment token'),
+    rateAmount: Yup.number()
+      .required('Please provide an amount for your service')
+      .when('rateToken', {
+        is: (rateToken: string) => rateToken !== '',
+        then: schema =>
+          schema.moreThan(
+            selectedToken
+              ? FixedNumber.from(
+                  ethers.utils.formatUnits(
+                    selectedToken?.minimumTransactionAmount,
+                    selectedToken?.decimals,
+                  ),
+                ).toUnsafeFloat()
+              : 0,
+            `Amount must be greater than ${
+              selectedToken
+                ? FixedNumber.from(
+                    ethers.utils.formatUnits(
+                      selectedToken?.minimumTransactionAmount,
+                      selectedToken?.decimals,
+                    ),
+                  ).toUnsafeFloat()
+                : 0
+            }`,
+          ),
+      }),
+  });
 
   const onSubmit = async (
     values: IFormValues,
@@ -115,7 +142,7 @@ function ServiceForm() {
 
   return (
     <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
-      {({ isSubmitting }) => (
+      {({ isSubmitting, setFieldValue }) => (
         <Form>
           <div className='grid grid-cols-1 gap-6 border border-gray-200 rounded-md p-8'>
             <label className='block'>
@@ -124,9 +151,12 @@ function ServiceForm() {
                 type='text'
                 id='title'
                 name='title'
-                className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
+                className='mt-1 mb-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
                 placeholder=''
               />
+              <span className='text-red-500'>
+                <ErrorMessage name='title' />
+              </span>
             </label>
 
             <label className='block'>
@@ -135,9 +165,12 @@ function ServiceForm() {
                 as='textarea'
                 id='about'
                 name='about'
-                className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
+                className='mt-1 mb-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
                 placeholder=''
               />
+              <span className='text-red-500'>
+                <ErrorMessage name='about' />
+              </span>
             </label>
 
             <label className='block'>
@@ -146,9 +179,12 @@ function ServiceForm() {
                 type='text'
                 id='keywords'
                 name='keywords'
-                className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
+                className='mt-1 mb-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
                 placeholder='keyword1, keyword2...'
               />
+              <span className='text-red-500'>
+                <ErrorMessage name='keywords' />
+              </span>
             </label>
 
             <div className='flex'>
@@ -158,11 +194,13 @@ function ServiceForm() {
                   type='number'
                   id='rateAmount'
                   name='rateAmount'
-                  className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
+                  className='mt-1 mb-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
                   placeholder=''
                 />
+                <span className='text-red-500 mt-2'>
+                  <ErrorMessage name='rateAmount' />
+                </span>
               </label>
-
               <label className='block'>
                 <span className='text-gray-700'>Token</span>
                 <Field
@@ -170,7 +208,12 @@ function ServiceForm() {
                   id='rateToken'
                   name='rateToken'
                   className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
-                  placeholder=''>
+                  placeholder=''
+                  onChange={(e: { target: { value: string } }) => {
+                    const token = allowedTokenList.find(token => token.address === e.target.value);
+                    setSelectedToken(token);
+                    setFieldValue('rateToken', e.target.value);
+                  }}>
                   <option value=''>Select a token</option>
                   {allowedTokenList.map((token, index) => (
                     <option key={index} value={token.address}>
@@ -178,6 +221,9 @@ function ServiceForm() {
                     </option>
                   ))}
                 </Field>
+                <span className='text-red-500'>
+                  <ErrorMessage name='rateToken' />
+                </span>
               </label>
             </div>
 
