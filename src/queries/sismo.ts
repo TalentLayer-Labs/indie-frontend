@@ -60,25 +60,3 @@ export const getSismoBadgesPerAddress = async (address: string): Promise<any> =>
 
   return processSismoRequest(query);
 };
-
-// export const getSismoGroupsSnapshot = async (groupIds: string[]): Promise<any> => {
-//   let condition = ', where: {';
-//   condition += groupId ? `, id: "${groupId}"` : '';
-//   condition += '}';
-//
-//   const query = `
-//     {
-//       groups(${condition}) {
-//         description
-//         id
-//         latestSnapshot {
-//           dataUrl
-//         }
-//         name
-//         specs
-//       }
-//     }
-//     `;
-//
-//   return processSismoRequest(query);
-// };
