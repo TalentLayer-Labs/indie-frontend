@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { getServices, searchServices } from '../queries/services';
-import { IService, IServiceDetails, ServiceStatusEnum } from '../types';
+import { IService, ServiceStatusEnum } from '../types';
 
 const useServices = (
   serviceStatus?: ServiceStatusEnum,
