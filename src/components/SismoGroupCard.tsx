@@ -11,7 +11,7 @@ function SismoGroupCard({
   userAddrss: string;
 }) {
   const { user } = useContext(TalentLayerContext);
-  const isCOnnectedUser = () => {
+  const isConnectedUser = () => {
     return user?.address === userAddrss;
   };
 
@@ -38,7 +38,7 @@ function SismoGroupCard({
           </div>
         </div>
 
-        {isCOnnectedUser() && (
+        {isConnectedUser() && (
           <div className='flex flex-row gap-4 justify-between items-center border-t border-gray-100 pt-4'>
             <a
               target={'_blank'}
