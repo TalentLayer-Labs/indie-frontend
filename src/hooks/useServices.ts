@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { getServices, searchServices } from '../queries/services';
-import { IService, ServiceStatusEnum } from '../types';
+import { IService, IServiceDetails, ServiceStatusEnum } from '../types';
 
 const useServices = (
   serviceStatus?: ServiceStatusEnum,
@@ -39,9 +39,7 @@ const useServices = (
                 };
               },
             );
-            if (services.length > 0) {
-              setServices([...services, ...newServices]);
-            }
+            setServices([...services, ...newServices]);
             if (numberPerPage && newServices.length < numberPerPage) {
               setNoMoreData(true);
             }

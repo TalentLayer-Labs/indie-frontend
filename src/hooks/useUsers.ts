@@ -16,10 +16,7 @@ const useUsers = (
       try {
         setLoading(true);
         const response = await getUsers(numberPerPage, offset, searchQuery);
-
-        if (response?.data?.data?.users.length === numberPerPage) {
-          setUsers([...users, ...response.data.data.users]);
-        }
+        setUsers([...users, ...response.data.data.users]);
         if (numberPerPage && response?.data?.data?.users.length < numberPerPage) {
           setNoMoreData(true);
         }
