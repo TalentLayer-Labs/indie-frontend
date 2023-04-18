@@ -36,9 +36,10 @@ function PaymentModal({ service, payments, isBuyer }: IPaymentModalProps) {
         } hover:text-white rounded-lg px-5 py-2.5 text-center`}
         type='button'
         data-modal-toggle='defaultModal'>
-        {(service.status === ServiceStatusEnum.Confirmed && !isBuyer) ||
-        service.status === ServiceStatusEnum.Finished
+        {service.status === ServiceStatusEnum.Finished
           ? 'Payment summary'
+          : service.status === ServiceStatusEnum.Confirmed && !isBuyer
+          ? 'Reimburse payment'
           : 'Release payment'}
       </button>
 
@@ -121,7 +122,7 @@ function PaymentModal({ service, payments, isBuyer }: IPaymentModalProps) {
               )}
             </div>
 
-            {isBuyer && totalInEscrow.gt(0) && show && (
+            {totalInEscrow.gt(0) && show && (
               <ReleaseForm
                 totalInEscrow={totalInEscrow}
                 rateToken={rateToken}

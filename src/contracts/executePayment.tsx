@@ -6,12 +6,13 @@ import { config } from '../config';
 import TalentLayerEscrow from './ABI/TalentLayerEscrow.json';
 import { showErrorTransactionToast } from '../utils/toast';
 
-export const releasePayment = async (
+export const executePayment = async (
   signer: Signer,
   provider: Provider,
   profileId: string,
   transactionId: string,
   amount: BigNumber,
+  isBuyer: boolean,
 ): Promise<void> => {
   const talentLayerEscrow = new Contract(
     config.contracts.talentLayerEscrow,
@@ -20,24 +21,25 @@ export const releasePayment = async (
   );
 
   try {
-    const tx = await talentLayerEscrow.release(
-      profileId,
-      parseInt(transactionId, 10),
-      amount.toString(),
-    );
+    const tx = isBuyer
+      ? await talentLayerEscrow.release(profileId, parseInt(transactionId, 10), amount.toString())
+      : await talentLayerEscrow.reimburse(
+          profileId,
+          parseInt(transactionId, 10),
+          amount.toString(),
+        );
+
+    const message = isBuyer
+      ? 'Your payment release is in progress'
+      : 'Your payment reimbursement is in progress';
 
     const receipt = await toast.promise(provider.waitForTransaction(tx.hash), {
       pending: {
         render() {
-          return (
-            <TransactionToast
-              message='Your payment release is in progress'
-              transactionHash={tx.hash}
-            />
-          );
+          return <TransactionToast message={message} transactionHash={tx.hash} />;
         },
       },
-      success: 'Payment release validated',
+      success: isBuyer ? 'Payment release validated' : 'Payment reimbursement validated',
       error: 'An error occurred while validating your transaction',
     });
     if (receipt.status !== 1) {
