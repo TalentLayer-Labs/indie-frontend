@@ -19,8 +19,6 @@ function Services() {
     offset,
   );
 
-  //TODO marche pas avec search
-
   const loadMore = () => {
     setOffset(offset + PAGE_SIZE);
   };
