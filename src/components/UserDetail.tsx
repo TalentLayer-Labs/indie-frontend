@@ -6,10 +6,12 @@ import Loading from './Loading';
 import Stars from './Stars';
 import PohModule from '../modules/Poh/PohModule';
 import useUserById from '../hooks/useUserById';
+import usePaymentsForUser from '../hooks/usePaymentsForUser';
 
 function UserDetail({ user }: { user: IUser }) {
   const { user: currentUser } = useContext(TalentLayerContext);
   const userDescription = user?.id ? useUserById(user?.id)?.description : null;
+  const payments = usePaymentsForUser(user.id || '1');
 
   if (!user?.id) {
     return <Loading />;
@@ -62,11 +64,13 @@ function UserDetail({ user }: { user: IUser }) {
               to={`/profile/edit`}>
               Edit profile
             </NavLink>
-            <NavLink
-              className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg'
-              to={`/incomes/${user.id}`}>
-              Your incomes
-            </NavLink>
+            {payments.length > 0 && (
+              <NavLink
+                className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg'
+                to={`/incomes/${user.id}`}>
+                Your incomes
+              </NavLink>
+            )}
           </div>
         </div>
       )}

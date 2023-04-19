@@ -1,8 +1,6 @@
 import { useParams } from 'react-router-dom';
 import Back from '../components/Back';
 import Loading from '../components/Loading';
-import UserDetail from '../components/UserDetail';
-import UserServices from '../components/UserServices';
 import useUserById from '../hooks/useUserById';
 import usePaymentsForUser from '../hooks/usePaymentsForUser';
 import UserIncomes from '../components/UserIncomes';
@@ -11,7 +9,6 @@ function Incomes() {
   const { id } = useParams<{ id: string }>();
   const user = useUserById(id || '1');
   const payments = usePaymentsForUser(id || '1');
-  console.log('payments', payments);
 
   if (!user || !payments) {
     return <Loading />;
