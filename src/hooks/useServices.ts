@@ -8,11 +8,11 @@ const useServices = (
   sellerId?: string,
   searchQuery?: string,
   numberPerPage?: number,
-  offset?: number,
-): { noMoreData: boolean; loading: boolean; services: IService[] } => {
+): { hasMoreData: boolean; loading: boolean; services: IService[]; loadMore: () => void } => {
   const [services, setServices] = useState<IService[]>([]);
-  const [noMoreData, setNoMoreData] = useState(false);
+  const [hasMoreData, setHasMoreData] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [offset, setOffset] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -41,7 +41,7 @@ const useServices = (
             );
             setServices([...services, ...newServices]);
             if (numberPerPage && newServices.length < numberPerPage) {
-              setNoMoreData(true);
+              setHasMoreData(false);
             }
           }
         } else {
@@ -57,7 +57,7 @@ const useServices = (
             setServices([...services, ...newServices]);
           }
           if (numberPerPage && newServices.length < numberPerPage) {
-            setNoMoreData(true);
+            setHasMoreData(false);
           }
         }
       } catch (err: any) {
@@ -70,7 +70,11 @@ const useServices = (
     fetchData();
   }, [serviceStatus, numberPerPage, offset, searchQuery]);
 
-  return { noMoreData, services, loading };
+  const loadMore = () => {
+    numberPerPage ? setOffset(offset + numberPerPage) : '';
+  };
+
+  return { hasMoreData: hasMoreData, services, loading, loadMore };
 };
 
 export default useServices;
