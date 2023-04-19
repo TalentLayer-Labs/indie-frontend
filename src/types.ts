@@ -189,6 +189,7 @@ export type ITokenFormattedValues = {
 };
 
 export type IPayment = {
+  createdAt: number;
   id: string;
   amount: string;
   rateToken: IToken;
