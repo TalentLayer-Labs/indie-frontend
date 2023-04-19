@@ -9,7 +9,7 @@ function UserIncomes({ payments }: { payments: IPayment[] }) {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(2);
+  const [itemsPerPage, setItemsPerPage] = useState(50);
 
   if (!payments || payments.length === 0) {
     return <Loading />;
@@ -85,11 +85,9 @@ function UserIncomes({ payments }: { payments: IPayment[] }) {
             value={itemsPerPage}
             onChange={e => setItemsPerPage(parseInt(e.target.value, 10))}
             className='border border-gray-300 rounded p-3'>
-            <option value={5}>5</option>
-            <option value={10}>10</option>
-            <option value={25}>25</option>
             <option value={50}>50</option>
             <option value={100}>100</option>
+            <option value={200}>200</option>
           </select>
         </div>
       </div>
