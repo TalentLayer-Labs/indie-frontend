@@ -62,6 +62,11 @@ function UserDetail({ user }: { user: IUser }) {
               to={`/profile/edit`}>
               Edit profile
             </NavLink>
+            <NavLink
+              className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg'
+              to={`/incomes/${user.id}`}>
+              Your incomes
+            </NavLink>
           </div>
         </div>
       )}

@@ -17,6 +17,7 @@ export const getPaymentsByService = (serviceId: string, paymentType?: string): P
         }
         paymentType
         transactionHash
+        createdAt
       }
     }
     `;
@@ -37,6 +38,7 @@ export const getPaymentsForUser = (userId: string): Promise<any> => {
         amount
         transactionHash
         paymentType
+        createdAt
         service {
           id, 
           cid

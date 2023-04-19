@@ -1,3 +1,4 @@
+import { BigNumber } from 'ethers';
 import { Connector } from 'wagmi';
 
 export type IUser = {
@@ -195,6 +196,7 @@ export type IPayment = {
   paymentType: PaymentTypeEnum;
   transactionHash: string;
   service: IService;
+  createdAt: string;
 };
 
 export type IUserGain = {

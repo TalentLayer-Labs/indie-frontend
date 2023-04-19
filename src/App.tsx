@@ -26,6 +26,7 @@ import { customChains } from './chains';
 import XmtpMessaging from './pages/XmtpMessaging';
 import { XmtpContextProvider } from './messaging/xmtp/context/XmtpContext';
 import { MessagingProvider } from './messaging/context/messging';
+import Incomes from './pages/Incomes';
 
 const chains: Chain[] = [customChains.polygonMumbai];
 
@@ -94,6 +95,7 @@ function App() {
                       <Route path='/about' element={<About />} />
                       <Route path='/profile/:id' element={<Profile />} />
                       <Route path='/profile/edit' element={<EditProfile />} />
+                      <Route path='/incomes/:id' element={<Incomes />} />
                     </Route>
                   </Routes>
                 </div>
