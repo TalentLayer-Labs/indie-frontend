@@ -5,11 +5,11 @@ import { IUser } from '../types';
 const useUsers = (
   searchQuery?: string,
   numberPerPage?: number,
-  offset?: number,
-): { noMoreData: boolean; loading: boolean; users: IUser[] } => {
+): { hasMoreData: boolean; loading: boolean; users: IUser[]; loadMore: () => void } => {
   const [users, setUsers] = useState<IUser[]>([]);
-  const [noMoreData, setNoMoreData] = useState(false);
+  const [hasMoreData, setHasMoreData] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [offset, setOffset] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -18,7 +18,7 @@ const useUsers = (
         const response = await getUsers(numberPerPage, offset, searchQuery);
         setUsers([...users, ...response.data.data.users]);
         if (numberPerPage && response?.data?.data?.users.length < numberPerPage) {
-          setNoMoreData(true);
+          setHasMoreData(false);
         }
       } catch (err: any) {
         // eslint-disable-next-line no-console
@@ -30,7 +30,11 @@ const useUsers = (
     fetchData();
   }, [numberPerPage, offset, searchQuery]);
 
-  return { users, noMoreData, loading };
+  const loadMore = () => {
+    numberPerPage ? setOffset(offset + numberPerPage) : '';
+  };
+
+  return { users, hasMoreData: hasMoreData, loading, loadMore };
 };
 
 export default useUsers;
