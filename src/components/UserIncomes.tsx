@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { IPayment } from '../types';
 import Loading from './Loading';
+import { saveAs } from 'file-saver';
 import { renderTokenAmount } from '../utils/conversion';
 import { formatStringCompleteDate } from '../utils/dates';
 
@@ -29,6 +30,23 @@ function UserIncomes({ payments }: { payments: IPayment[] }) {
     }
   });
 
+  const exportToCSV = () => {
+    const headers = ['Amount', 'Date', 'Token', 'Service', 'Transaction details'];
+
+    const data = filteredPayments.map(payment => [
+      renderTokenAmount(payment.rateToken, payment.amount),
+      payment.createdAt,
+      payment.rateToken.symbol,
+      `Service n°${payment.service.id}`,
+      `https://polygonscan.com/tx/${payment.transactionHash}`,
+    ]);
+
+    const csvContent = headers.join(',') + '\n' + data.map(e => e.join(',')).join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    saveAs(blob, 'payments.csv');
+  };
+
   return (
     <>
       <div className='pb-10'>
@@ -42,17 +60,23 @@ function UserIncomes({ payments }: { payments: IPayment[] }) {
           value={startDate}
           onChange={e => setStartDate(e.target.value)}
         />
-        <label className='font-bold pl-4' htmlFor='end'>
-          End date:{' '}
-        </label>
-        <input
-          type='date'
-          id='end'
-          name='end'
-          value={endDate}
-          onChange={e => setEndDate(e.target.value)}
-        />
+        <span className='px-4'>
+          <label className='font-bold' htmlFor='end'>
+            End date:{' '}
+          </label>
+          <input
+            type='date'
+            id='end'
+            name='end'
+            value={endDate}
+            onChange={e => setEndDate(e.target.value)}
+          />
+        </span>
+        <button onClick={exportToCSV} className='bg-blue-500 text-white p-2 rounded'>
+          Export to CSV
+        </button>
       </div>
+
       <div className=''>
         <table className='p-4 border border-gray-200 w-full table-fixed'>
           <thead>
