@@ -84,7 +84,7 @@ function UserIncomes({ payments }: { payments: IPayment[] }) {
             id='itemsPerPage'
             value={itemsPerPage}
             onChange={e => setItemsPerPage(parseInt(e.target.value, 10))}
-            className='border border-gray-300 rounded p-1'>
+            className='border border-gray-300 rounded p-3'>
             <option value={5}>5</option>
             <option value={10}>10</option>
             <option value={25}>25</option>
