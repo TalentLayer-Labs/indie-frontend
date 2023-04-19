@@ -34,28 +34,24 @@ const goerli: Config = {
       symbol: 'ETH',
       name: 'ETH',
       decimals: 18,
-      minimumTransactionAmount: 0.01,
     },
     '0x73967c6a0904aa032c103b4104747e88c566b1a2': {
       address: '0x73967c6a0904aa032c103b4104747e88c566b1a2',
       symbol: 'DAI',
       name: 'DAI Stablecoin',
       decimals: 18,
-      minimumTransactionAmount: 0.01,
     },
     '0x07865c6e87b9f70255377e024ace6630c1eaa37f': {
       address: '0x07865c6e87b9f70255377e024ace6630c1eaa37f',
       symbol: 'USDC',
       name: 'USDC Stablecoin',
       decimals: 6,
-      minimumTransactionAmount: 0.01,
     },
     '0xd80d331d3b6dca0a20f4af2edc9c9645cd1f10c8': {
       address: '0xd80d331d3b6dca0a20f4af2edc9c9645cd1f10c8',
       symbol: 'SERC20',
       name: 'Simple ERC20',
       decimals: 18,
-      minimumTransactionAmount: 0.01,
     },
   },
 };
@@ -81,14 +77,12 @@ const fuji: Config = {
       symbol: 'AVAX',
       name: 'Avalanche',
       decimals: 18,
-      minimumTransactionAmount: 0.01,
     },
     '0xAF82969ECF299c1f1Bb5e1D12dDAcc9027431160': {
       address: '0xAF82969ECF299c1f1Bb5e1D12dDAcc9027431160',
       symbol: 'USDC',
       name: 'USDC Stablecoin',
       decimals: 6,
-      minimumTransactionAmount: 0.01,
     },
   },
 };
@@ -114,14 +108,12 @@ const mumbai: Config = {
       symbol: 'MATIC',
       name: 'Matic',
       decimals: 18,
-      minimumTransactionAmount: 0.01,
     },
     '0xe6b8a5CF854791412c1f6EFC7CAf629f5Df1c747': {
       address: '0xe6b8a5CF854791412c1f6EFC7CAf629f5Df1c747',
       symbol: 'USDC',
       name: 'USDC Stablecoin',
       decimals: 6,
-      minimumTransactionAmount: 0.01,
     },
   },
 };
@@ -145,14 +137,12 @@ const local: Config = {
       symbol: 'ETH',
       name: 'ETH',
       decimals: 18,
-      minimumTransactionAmount: 0.01,
     },
     '0xfF695df29837B571c4DAE01B5711500f6306E93f': {
       address: '0xfF695df29837B571c4DAE01B5711500f6306E93f',
       symbol: 'ERC20',
       name: 'Simple ERC20',
       decimals: 18,
-      minimumTransactionAmount: 0.01,
     },
   },
 };
