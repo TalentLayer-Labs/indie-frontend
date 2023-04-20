@@ -5,7 +5,7 @@ import Loading from '../components/Loading';
 import { useEffect, useRef } from 'react';
 
 function Talents() {
-  const PAGE_SIZE = 10;
+  const PAGE_SIZE = 36;
   const queryString = window.location.search;
   const searchQuery = new URLSearchParams(queryString).get('s') || undefined;
   const bottomRef = useRef<HTMLDivElement>(null);
