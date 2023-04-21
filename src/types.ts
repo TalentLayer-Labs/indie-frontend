@@ -106,11 +106,11 @@ export type IReviewDetails = {
 };
 
 export enum ServiceStatusEnum {
-  Filled = 'Filled',
+  Opened = 'Opened',
   Confirmed = 'Confirmed',
   Finished = 'Finished',
-  Rejected = 'Rejected',
-  Opened = 'Opened',
+  Cancelled = 'Cancelled',
+  Uncompleted = 'Uncompleted',
 }
 
 export enum ProposalStatusEnum {
