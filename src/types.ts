@@ -19,6 +19,10 @@ export type IUserDetails = {
   skills_raw: string;
 };
 
+export type Skill = {
+  name: string;
+};
+
 export type IAccount = {
   address?: `0x${string}`;
   connector?: Connector;
