@@ -9,7 +9,7 @@ import {
   Title,
   Tooltip,
 } from 'chart.js';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
@@ -23,8 +23,12 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
 import { Chain, configureChains, createClient, WagmiConfig } from 'wagmi';
 import { customChains } from './chains';
+import ConfigurationPresentation from './pages/ConfigurationPresentation';
+import ConfigurationFees from './pages/ConfigurationFees';
+import ConfigurationDispute from './pages/ConfigurationDispute';
+import ConfigurationControlCenter from './pages/ConfigurationControlCenter';
 
-const chains: Chain[] = [customChains.polygonMumbai];
+const chains: Chain[] = [customChains.fuji];
 
 // Wagmi client
 const { provider } = configureChains(chains, [
@@ -55,6 +59,20 @@ function App() {
                 <Route path='/' element={<Layout />}>
                   <Route index element={<Home />} />
                   <Route path='/dashboard' element={<Dashboard />} />
+                  <Route
+                    path='/configuration'
+                    element={<Navigate to='/configuration/presentation' />}
+                  />
+                  <Route
+                    path='/configuration/presentation'
+                    element={<ConfigurationPresentation />}
+                  />
+                  <Route
+                    path='/configuration/control-center'
+                    element={<ConfigurationControlCenter />}
+                  />
+                  <Route path='/configuration/fees' element={<ConfigurationFees />} />
+                  <Route path='/configuration/dispute' element={<ConfigurationDispute />} />
                 </Route>
               </Routes>
             </div>

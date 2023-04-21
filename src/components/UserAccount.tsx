@@ -7,7 +7,7 @@ import { truncateAddress } from '../utils';
 import UserSubMenu from './UserSubMenu';
 
 function UserAccount() {
-  const { account, user } = useContext(TalentLayerContext);
+  const { account, user, platform } = useContext(TalentLayerContext);
 
   const { data: avatarImage } = useEnsAvatar();
 
@@ -36,7 +36,7 @@ function UserAccount() {
                   <p
                     className='text-sm font-medium text-gray-700 group-hover:text-gray-900'
                     style={{ marginBottom: '-3px' }}>
-                    {user?.handle ? user.handle : ''}
+                    {platform?.name ? platform.name : ''}
                   </p>
                   <p className='text-xs font-medium text-gray-500 group-hover:text-gray-700'>
                     {account.address && truncateAddress(account.address)}

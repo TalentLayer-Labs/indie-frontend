@@ -219,12 +219,20 @@ export type IPlatform = {
   arbitrator: `0x${string}`;
   arbitratorExtraData: `0x${string}`;
   createdAt: string;
-  fee: number;
+  originServiceFeeRate: number;
   feeClaims: IFeeClaim[];
   feePayments: IFeePayments;
   name: string;
   totalPlatformGains: IPlatformGain;
   uri: string;
+  description?: IPlatformDescription;
+};
+
+export type IPlatformDescription = {
+  about: string;
+  id: string;
+  logo: string;
+  website: string;
 };
 
 export type IPlatformGain = {
