@@ -33,7 +33,7 @@ function UserProposalItem({ proposal }: { proposal: IProposal }) {
               </p>
             </div>
 
-            <span className='absolute right-0 inline-flex items-center rounded-full bg-indigo-100 px-2.5 py-1 text-xs font-medium text-indigo-800'>
+            <span className='absolute right-0 inline-flex items-center rounded-full bg-zinc-100 px-2.5 py-1 text-xs font-medium text-zinc-800'>
               {proposal.status}
             </span>
           </div>
@@ -56,7 +56,7 @@ function UserProposalItem({ proposal }: { proposal: IProposal }) {
             {renderTokenAmount(proposal.rateToken, proposal.rateAmount)}
           </p>
           <NavLink
-            className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg'
+            className='text-zinc-600 bg-zinc-50 hover:bg-zinc-500 hover:text-white px-5 py-2 rounded-lg'
             to={`/services/${proposal.service.id}`}>
             Show Job
           </NavLink>

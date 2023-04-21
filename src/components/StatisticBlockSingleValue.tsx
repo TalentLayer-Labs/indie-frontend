@@ -22,10 +22,10 @@ function StatisticBlockSingleValue({
           <div
             className={`
                 flex flex-shrink-0 items-center justify-center 
-                ${isGrowing ? 'bg-green-200' : 'bg-red-200'} h-16 w-16 rounded
+                ${isGrowing ? 'bg-green-200' : 'bg-zinc-200'} h-16 w-16 rounded
               `}>
             <svg
-              className={`-6 h-6 fill-current ${isGrowing ? 'text-green-700' : 'text-red-700'}`}
+              className={`-6 h-6 fill-current ${isGrowing ? 'text-green-700' : 'text-zinc-900'}`}
               xmlns='http://www.w3.org/2000/svg'
               viewBox='0 0 20 20'
               fill='currentColor'>

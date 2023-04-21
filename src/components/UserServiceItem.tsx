@@ -53,11 +53,11 @@ function UserServiceItem({ user, service }: { user: IUser; service: IService }) 
             </p>
           )}
           <NavLink
-            className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg relative'
+            className='text-zinc-600 bg-zinc-50 hover:bg-zinc-500 hover:text-white px-5 py-2 rounded-lg relative'
             to={`/services/${service.id}`}>
             Show details
             {isBuyer && service.status == ServiceStatusEnum.Opened && (
-              <div className='inline-flex absolute -top-2 -right-2 justify-center items-center w-6 h-6 text-xs font-bold text-white bg-indigo-700 rounded-full border-2 border-white'>
+              <div className='inline-flex absolute -top-2 -right-2 justify-center items-center w-6 h-6 text-xs font-bold text-white bg-zinc-900 rounded-full border-2 border-white'>
                 {service.proposals.length}
               </div>
             )}

@@ -34,7 +34,7 @@ function ProposalItem({ proposal }: { proposal: IProposal }) {
               </p>
             </div>
 
-            <span className='absolute right-0 inline-flex items-center rounded-full bg-indigo-100 px-2.5 py-1 text-xs font-medium text-indigo-800'>
+            <span className='absolute right-0 inline-flex items-center rounded-full bg-zinc-100 px-2.5 py-1 text-xs font-medium text-zinc-800'>
               {proposal.status}
             </span>
           </div>

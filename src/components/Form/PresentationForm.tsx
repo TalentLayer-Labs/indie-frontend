@@ -24,7 +24,7 @@ const validationSchema = Yup.object({
   name: Yup.string().required('platform name is required'),
 });
 
-function ConfigurationPresentationForm() {
+function PresentationForm() {
   const { open: openConnectModal } = useWeb3Modal();
   const { platform } = useContext(TalentLayerContext);
   const provider = useProvider({ chainId: import.meta.env.VITE_NETWORK_ID });
@@ -106,7 +106,7 @@ function ConfigurationPresentationForm() {
                 type='text'
                 id='name'
                 name='name'
-                className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
+                className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-zinc-300 focus:ring focus:ring-zinc-200 focus:ring-opacity-50'
                 placeholder=''
               />
             </label>
@@ -117,7 +117,7 @@ function ConfigurationPresentationForm() {
                 type='text'
                 id='website'
                 name='website'
-                className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
+                className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-zinc-300 focus:ring focus:ring-zinc-200 focus:ring-opacity-50'
                 placeholder='platform.io'
               />
             </label>
@@ -129,7 +129,7 @@ function ConfigurationPresentationForm() {
                 id='about'
                 name='about'
                 rows='5'
-                className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
+                className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-zinc-300 focus:ring focus:ring-zinc-200 focus:ring-opacity-50'
                 placeholder=''
               />
             </label>
@@ -141,7 +141,7 @@ function ConfigurationPresentationForm() {
                 id='image_url'
                 name='image_url'
                 rows='8'
-                className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
+                className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-zinc-300 focus:ring focus:ring-zinc-200 focus:ring-opacity-50'
                 placeholder=''
               />
             </label>
@@ -153,7 +153,7 @@ function ConfigurationPresentationForm() {
                 id='video_url'
                 name='video_url'
                 rows='8'
-                className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
+                className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-zinc-300 focus:ring focus:ring-zinc-200 focus:ring-opacity-50'
                 placeholder=''
               />
             </label>
@@ -166,4 +166,4 @@ function ConfigurationPresentationForm() {
   );
 }
 
-export default ConfigurationPresentationForm;
+export default PresentationForm;

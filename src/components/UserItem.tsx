@@ -33,7 +33,7 @@ function UserItem({ user }: { user: IUser }) {
 
         <div className='flex flex-row gap-4 justify-end items-center'>
           <NavLink
-            className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg'
+            className='text-zinc-600 bg-zinc-50 hover:bg-zinc-500 hover:text-white px-5 py-2 rounded-lg'
             to={`/profile/${user.id}`}>
             View profile
           </NavLink>

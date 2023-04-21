@@ -23,7 +23,7 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
 import { Chain, configureChains, createClient, WagmiConfig } from 'wagmi';
 import { customChains } from './chains';
-import ConfigurationPresentation from './pages/ConfigurationPresentation';
+import Presentation from './pages/Presentation';
 import ConfigurationFees from './pages/ConfigurationFees';
 import ConfigurationDispute from './pages/ConfigurationDispute';
 import ConfigurationControlCenter from './pages/ConfigurationControlCenter';
@@ -63,10 +63,7 @@ function App() {
                     path='/configuration'
                     element={<Navigate to='/configuration/presentation' />}
                   />
-                  <Route
-                    path='/configuration/presentation'
-                    element={<ConfigurationPresentation />}
-                  />
+                  <Route path='/configuration/presentation' element={<Presentation />} />
                   <Route
                     path='/configuration/control-center'
                     element={<ConfigurationControlCenter />}

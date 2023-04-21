@@ -8,16 +8,6 @@ function UserSubMenu() {
 
   return (
     <>
-      <Menu.Item key='editProfile'>
-        {({ active }) => (
-          <NavLink
-            to='/profile/edit'
-            className={`block px-4 py-2 text-sm text-gray-700' ${active ? 'bg-gray-100' : ''}`}>
-            Edit my profile
-          </NavLink>
-        )}
-      </Menu.Item>
-
       <Menu.Item key='Log out'>
         {({ active }) => (
           <button
@@ -26,7 +16,7 @@ function UserSubMenu() {
               disconnect();
               navigate('/');
             }}
-            className={`block px-4 py-2 text-sm text-left text-red-700 w-full ${
+            className={`block px-4 py-2 text-sm text-left text-zinc-900 w-full ${
               active ? 'bg-gray-100' : ''
             }`}>
             Log out

@@ -169,7 +169,7 @@ function SingleValueForm({
                   component='select'
                   id={valueName}
                   name={valueName}
-                  className='mt-1 mr-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
+                  className='mt-1 mr-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-zinc-300 focus:ring focus:ring-zinc-200 focus:ring-opacity-50'
                   placeholder=''>
                   <option value=''>Select a value</option>
                   {selectOptions.map((selectOption, index) => (
@@ -184,7 +184,7 @@ function SingleValueForm({
                   id={valueName}
                   name={valueName}
                   step='any'
-                  className='mt-1 mr-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
+                  className='mt-1 mr-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-zinc-300 focus:ring focus:ring-zinc-200 focus:ring-opacity-50'
                   placeholder=''
                 />
               )}

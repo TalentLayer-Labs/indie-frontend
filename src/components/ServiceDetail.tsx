@@ -56,7 +56,7 @@ function ServiceDetail({ service }: { service: IService }) {
                 <NavLink
                   className='text-sm text-gray-500 mt-4'
                   to={`/profile/${service.seller.id}`}>
-                  Job handle by <span className='text-indigo-600'>{service.seller.handle}</span>
+                  Job handle by <span className='text-zinc-600'>{service.seller.handle}</span>
                 </NavLink>
               )}
               <div className='text-sm text-gray-500 mt-4'>
@@ -94,7 +94,7 @@ function ServiceDetail({ service }: { service: IService }) {
           <div className='flex flex-row gap-4 items-center border-t border-gray-100 pt-4'>
             {!isBuyer && service.status == ServiceStatusEnum.Opened && (
               <NavLink
-                className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg'
+                className='text-zinc-600 bg-zinc-50 hover:bg-zinc-500 hover:text-white px-5 py-2 rounded-lg'
                 to={`/services/${service.id}/create-proposal`}>
                 Create proposal
               </NavLink>

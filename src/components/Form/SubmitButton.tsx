@@ -38,7 +38,7 @@ function SubmitButton({
       ) : isConnected ? (
         <button
           type='submit'
-          className='px-5 py-2 border border-indigo-600 rounded-md hover:text-indigo-600 hover:bg-white text-white bg-indigo-700'>
+          className='px-5 py-2 border border-zinc-600 rounded-md hover:text-zinc-600 hover:bg-white text-white bg-zinc-900'>
           {label}
         </button>
       ) : (
@@ -47,7 +47,7 @@ function SubmitButton({
             openConnectModal();
           }}
           type='button'
-          className='px-5 py-2 border border-indigo-600 rounded-md hover:text-indigo-600 hover:bg-white text-white bg-indigo-700'>
+          className='px-5 py-2 border border-zinc-600 rounded-md hover:text-zinc-600 hover:bg-white text-white bg-zinc-900'>
           {'Connect first'}
         </button>
       )}

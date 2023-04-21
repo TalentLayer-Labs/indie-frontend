@@ -15,7 +15,7 @@ function SideBottom() {
                 network?.chain?.name == 'Ethereum' ? 'www' : network?.chain?.name.toLowerCase()
               }.etherscan.io/block/${blockNumber}`}
               target='_blank'
-              className='text-xs font-medium text-indigo-100 flex items-center'>
+              className='text-xs font-medium text-zinc-100 flex items-center'>
               <span
                 style={{
                   width: '8px',
