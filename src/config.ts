@@ -4,7 +4,6 @@ import { IToken, NetworkEnum } from './types';
 export type Config = {
   networkId: NetworkEnum;
   subgraphUrl: string;
-  escrowConfig: { [key: string]: any };
   contracts: { [key: string]: `0x${string}` };
   tokens: { [key: string]: IToken };
 };
@@ -15,71 +14,26 @@ export const maxDecimals = {
 
 export const FEE_RATE_DIVIDER = 10_000;
 
-const goerli: Config = {
-  networkId: NetworkEnum.GOERLI,
-  subgraphUrl: 'https://api.thegraph.com/subgraphs/name/talentlayer/talent-layer-protocol',
+const polygon: Config = {
+  networkId: NetworkEnum.POLYGON,
+  subgraphUrl: 'https://api.thegraph.com/subgraphs/name/talentlayer/talentlayer-polygon',
   contracts: {
-    talentLayerId: '0x11119eD887aeC1302e2cAF49942F891667A31BBc',
-    serviceRegistry: '0xf0EECbBf164D81261C7Ce4D22D16f38DC63fBAbd',
-    talentLayerReview: '0xCf7577fB4749fA9Ae38296D52C53C654F9A9367f',
-    talentLayerEscrow: '0x34FCF4b0A418011682F6EdC86c49a0Faacc8A667',
-    talentLayerPlatformId: '0x08FB56537F118Cf35C4d3eB280444737f6D1bE46',
-  },
-  escrowConfig: {
-    timeoutPayment: 3600 * 24 * 7,
+    talentLayerId: '0xD7D1B2b0A665F03618cb9a45Aa3070f789cb91f2',
+    serviceRegistry: '0xae8Bba1a403816568230d92099ccB87f41BbcA78',
+    talentLayerReview: '0x7bBC20c8Fcb75A126810161DFB1511f6D3B1f2bE',
+    talentLayerEscrow: '0x21C716673897f4a2A3c12053f3973F51Ce7b0cf6',
+    talentLayerPlatformId: '0x09FF07297d48eD9aD870caCE4b33BF30869C1D17',
+    talentLayerArbitrator: '0x4502E695A747F1b382a16D6C8AE3FD94DA78e7a0',
   },
   tokens: {
     [ethers.constants.AddressZero]: {
       address: ethers.constants.AddressZero,
-      symbol: 'ETH',
-      name: 'ETH',
+      symbol: 'MATIC',
+      name: 'Matic',
       decimals: 18,
     },
-    '0x73967c6a0904aa032c103b4104747e88c566b1a2': {
-      address: '0x73967c6a0904aa032c103b4104747e88c566b1a2',
-      symbol: 'DAI',
-      name: 'DAI Stablecoin',
-      decimals: 18,
-    },
-    '0x07865c6e87b9f70255377e024ace6630c1eaa37f': {
-      address: '0x07865c6e87b9f70255377e024ace6630c1eaa37f',
-      symbol: 'USDC',
-      name: 'USDC Stablecoin',
-      decimals: 6,
-    },
-    '0xd80d331d3b6dca0a20f4af2edc9c9645cd1f10c8': {
-      address: '0xd80d331d3b6dca0a20f4af2edc9c9645cd1f10c8',
-      symbol: 'SERC20',
-      name: 'Simple ERC20',
-      decimals: 18,
-    },
-  },
-};
-
-const fuji: Config = {
-  networkId: NetworkEnum.FUJI,
-  subgraphUrl: 'https://api.thegraph.com/subgraphs/name/talentlayer/talent-layer-fuji',
-  contracts: {
-    talentLayerId: '0x9a76eA2C056B6Bee5A1179BBece77D28FceE48C4',
-    serviceRegistry: '0x9EA2678d5A69CEDEc52ecafA367659b1d2Ff7824',
-    talentLayerReview: '0xD8c4fD1D8Dd2f3a6E4d26BeB167e73D9E28db7F0',
-    talentLayerEscrow: '0x8754a129D3F53222dd94Ce45749134c15C9Ed119',
-    talentLayerPlatformId: '0x8799479a39b6e563969126328e2323cbA01e8742',
-  },
-  escrowConfig: {
-    adminFee: '0',
-    adminWallet: '0x96573C632c88996711de69389b501F4D9005Ff4e',
-    timeoutPayment: 3600 * 24 * 7,
-  },
-  tokens: {
-    [ethers.constants.AddressZero]: {
-      address: ethers.constants.AddressZero,
-      symbol: 'AVAX',
-      name: 'Avalanche',
-      decimals: 18,
-    },
-    '0xAF82969ECF299c1f1Bb5e1D12dDAcc9027431160': {
-      address: '0xAF82969ECF299c1f1Bb5e1D12dDAcc9027431160',
+    '0xe6b8a5CF854791412c1f6EFC7CAf629f5Df1c747': {
+      address: '0xe6b8a5CF854791412c1f6EFC7CAf629f5Df1c747',
       symbol: 'USDC',
       name: 'USDC Stablecoin',
       decimals: 6,
@@ -91,16 +45,11 @@ const mumbai: Config = {
   networkId: NetworkEnum.MUMBAI,
   subgraphUrl: 'https://api.thegraph.com/subgraphs/name/talentlayer/talent-layer-mumbai',
   contracts: {
-    talentLayerId: '0x286D04de10977D47EF9F1d50a7072cdeAd088D3E',
-    serviceRegistry: '0x8d2587494796A1547702Ea78E9c6359351901c4B',
-    talentLayerReview: '0x8398B0FfE674Ea993Cb38AE2E4e0Ac7111fE5852',
-    talentLayerEscrow: '0x2F9EBAc36cc020B81c4c624AbcfeC7DC8958Cf54',
-    talentLayerPlatformId: '0xa6f853Ba54cF24F203751D81b106A7D4e4eBFF14',
-  },
-  escrowConfig: {
-    adminFee: '0',
-    adminWallet: '0xC01FcDfDE3B2ABA1eab76731493C617FfAED2F10',
-    timeoutPayment: 3600 * 24 * 7,
+    talentLayerId: '0x3F87289e6Ec2D05C32d8A74CCfb30773fF549306',
+    serviceRegistry: '0x27ED516dC1df64b4c1517A64aa2Bb72a434a5A6D',
+    talentLayerReview: '0x050F59E1871d3B7ca97e6fb9DCE64b3818b14B18',
+    talentLayerEscrow: '0x4bE920eC3e8552292B2147480111063E0dc36872',
+    talentLayerPlatformId: '0xEFD8dbC421380Ee04BAdB69216a0FD97F64CbFD4',
   },
   tokens: {
     [ethers.constants.AddressZero]: {
@@ -128,9 +77,6 @@ const local: Config = {
     talentLayerEscrow: '0x91327C01CB952a95addDa72FcA59E4151fE42Cb3',
     talentLayerPlatformId: '0xF39e4249b6dCcca8Ec7455E524C9685d1332fCD1',
   },
-  escrowConfig: {
-    timeoutPayment: 3600 * 24 * 7,
-  },
   tokens: {
     [ethers.constants.AddressZero]: {
       address: ethers.constants.AddressZero,
@@ -149,9 +95,8 @@ const local: Config = {
 
 const chains: { [networkId in NetworkEnum]: Config } = {
   [NetworkEnum.LOCAL]: local,
-  [NetworkEnum.GOERLI]: goerli,
-  [NetworkEnum.FUJI]: fuji,
   [NetworkEnum.MUMBAI]: mumbai,
+  [NetworkEnum.POLYGON]: polygon,
 };
 
 export const config = chains[+import.meta.env.VITE_NETWORK_ID as NetworkEnum];
