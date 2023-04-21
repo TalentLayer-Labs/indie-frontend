@@ -16,7 +16,8 @@ interface IFormValues {
   name?: string;
   website?: string;
   about?: string;
-  logoUrl?: string;
+  image_url?: string;
+  video_url?: string;
 }
 
 const validationSchema = Yup.object({
@@ -37,7 +38,8 @@ function ConfigurationPresentationForm() {
     name: platform?.name || '',
     about: platform?.description?.about || '',
     website: platform?.description?.website || '',
-    logoUrl: platform?.description?.logo || '',
+    image_url: platform?.description?.image_url || '',
+    video_url: platform?.description?.video_url || '',
   };
 
   const onSubmit = async (
@@ -52,7 +54,8 @@ function ConfigurationPresentationForm() {
             name: values.name,
             about: values.about,
             website: values.website,
-            logo: values.logoUrl,
+            image_url: values.image_url,
+            video_url: values.video_url,
           }),
         );
 
@@ -125,7 +128,7 @@ function ConfigurationPresentationForm() {
                 as='textarea'
                 id='about'
                 name='about'
-                rows='8'
+                rows='5'
                 className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
                 placeholder=''
               />
@@ -135,8 +138,20 @@ function ConfigurationPresentationForm() {
               <span className='text-gray-700'>Logo (url)</span>
               <Field
                 type='url'
-                id='logo_url'
-                name='logo_url'
+                id='image_url'
+                name='image_url'
+                rows='8'
+                className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
+                placeholder=''
+              />
+            </label>
+
+            <label className='block'>
+              <span className='text-gray-700'>Video presentation (url)</span>
+              <Field
+                type='url'
+                id='video_url'
+                name='video_url'
                 rows='8'
                 className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
                 placeholder=''

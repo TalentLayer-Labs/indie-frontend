@@ -30,7 +30,7 @@ export const checkEntityByUri = (entity: string, cid: string): Promise<any> => {
   if (entity.includes('Description')) {
     query = `
         {
-          ${entity}(where: {id: "${cid}"}, first: 1) {
+          ${entity}(where: {${entity.replace('Descriptions', '')}_ : {cid: "${cid}"}}, first: 1) {
             id
           }
         } `;
@@ -53,6 +53,7 @@ export const getAllowedTokenList = (): Promise<any> => {
             symbol
             name
             decimals
+            minimumTransactionAmount
         }
       }
       `;
