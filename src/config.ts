@@ -61,6 +61,7 @@ const fuji: Config = {
   subgraphUrl: 'https://api.thegraph.com/subgraphs/name/talentlayer/talent-layer-fuji',
   contracts: {
     talentLayerId: '0x9a76eA2C056B6Bee5A1179BBece77D28FceE48C4',
+    talentLayerArbitrator: '0x9a76eA2C056B6Bee5A1179BBece77D28FceE48C4',
     serviceRegistry: '0x9EA2678d5A69CEDEc52ecafA367659b1d2Ff7824',
     talentLayerReview: '0xD8c4fD1D8Dd2f3a6E4d26BeB167e73D9E28db7F0',
     talentLayerEscrow: '0x8754a129D3F53222dd94Ce45749134c15C9Ed119',

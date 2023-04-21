@@ -1,4 +1,4 @@
-import { processRequest } from '../utils/graphql';
+import { processRequest, processRequestByChain } from '../utils/graphql';
 
 const platformFields = `
   id
@@ -7,9 +7,12 @@ const platformFields = `
   arbitrationFeeTimeout
   arbitrator
   arbitratorExtraData
+  servicePostingFee
+  originServiceFeeRate
+  originValidatedProposalFeeRate
+  proposalPostingFee
   cid
   createdAt
-  fee
   updatedAt
 `;
 
