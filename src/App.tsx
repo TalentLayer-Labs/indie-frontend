@@ -1,7 +1,8 @@
-import { EthereumClient, modalConnectors, walletConnectProvider } from '@web3modal/ethereum';
+import { EthereumClient, modalConnectors } from '@web3modal/ethereum';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
 import './App.css';
 import { TalentLayerProvider } from './context/talentLayer';
 import About from './pages/About';
@@ -15,16 +16,31 @@ import Profile from './pages/Profile';
 import Service from './pages/Service';
 import Services from './pages/Services';
 import Talents from './pages/Talents';
-
 import { Web3Modal } from '@web3modal/react';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+// Global chartJS register
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-import { chain, configureChains, createClient, WagmiConfig } from 'wagmi';
+import { Chain, configureChains, createClient, WagmiConfig } from 'wagmi';
+import { customChains } from './chains';
 
-const chains = [chain.goerli];
+const chains: Chain[] = [customChains.polygonMumbai];
 
 // Wagmi client
 const { provider } = configureChains(chains, [
-  walletConnectProvider({ projectId: `${import.meta.env.VITE_WALLECT_CONNECT_PROJECT_ID}` }),
+  jsonRpcProvider({
+    rpc: chain => {
+      return { http: chain.rpcUrls.default };
+    },
+  }),
 ]);
 const wagmiClient = createClient({
   autoConnect: true,

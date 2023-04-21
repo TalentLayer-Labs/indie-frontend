@@ -22,6 +22,20 @@ Platform Frontend is an open-source fork-able codebase that is available for mar
 - [ESLint](https://eslint.org)
 - [Prettier](https://prettier.io)
 
+## Steps for setup
+
+- Init the react app with typescript using Vite: `npm create vite@latest dapp -- --template react-ts`
+- Install ESLint: `npm install --save-dev @typescript-eslint/parser @typescript-eslint/eslint-plugin eslint typescript`
+- Install Tailwind:
+  - `npm install -D tailwindcss postcss autoprefixer`
+  - `npx tailwindcss init -p`
+- Install React Router: `npm install react-router-dom@6`
+- Install Wagmi: `npm i wagmi ethers`
+- Install web3modal: `npm install @web3modal/react @web3modal/ethereum ethers`
+  - Create env file: `touch .env`
+  - Define the wallect connect project Id: `VITE_WALLECT_CONNECT_PROJECT_ID`
+- Install Heroicons: `npm i `
+
 ## Steps to run in local
 
 - `npm install`

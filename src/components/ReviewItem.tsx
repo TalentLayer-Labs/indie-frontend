@@ -1,10 +1,8 @@
-import useReviewDetails from '../hooks/useReviewDetails';
 import { IReview } from '../types';
+import { formatDate } from '../utils/dates';
 
 function ReviewItem({ review }: { review: IReview }) {
-  const reviewDetail = useReviewDetails(review.uri);
-
-  if (!reviewDetail) {
+  if (!review) {
     return null;
   }
 
@@ -20,18 +18,17 @@ function ReviewItem({ review }: { review: IReview }) {
             <div className='flex flex-col'>
               <p className='text-gray-900 font-medium'>{review.to.handle}</p>
               <p className='text-xs text-gray-500'>
-                Review created the 09/22
-                {/* {formatDate(Number(review.createdAt) * 1000)} */}
+                Review created the {formatDate(Number(review.createdAt) * 1000)}
               </p>
             </div>
           </div>
 
           <div className=' border-t border-gray-100 w-full'>
             <p className='text-sm text-gray-500 mt-4'>
-              <strong>Rating:</strong> {reviewDetail.rating}
+              <strong>Rating:</strong> {review.rating}
             </p>
             <p className='text-sm text-gray-500 mt-4'>
-              <strong>Message:</strong> {reviewDetail.content}
+              <strong>Message:</strong> {review.description?.content}
             </p>
           </div>
         </div>

@@ -3,9 +3,9 @@ import { useContext } from 'react';
 import TalentLayerContext from '../../context/talentLayer';
 
 function CreateId() {
-  const { user } = useContext(TalentLayerContext);
+  const { account } = useContext(TalentLayerContext);
 
-  if (user) {
+  if (account?.isConnected) {
     return null;
   }
 

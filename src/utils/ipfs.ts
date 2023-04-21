@@ -3,7 +3,7 @@ import { create, IPFSHTTPClient } from 'ipfs-http-client';
 
 export const postToIPFS = async (data: any): Promise<string> => {
   let ipfs: IPFSHTTPClient | undefined;
-  let uri = '';
+  let cid = '';
   try {
     const authorization =
       'Basic ' + btoa(import.meta.env.VITE_INFURA_ID + ':' + import.meta.env.VITE_INFURA_SECRET);
@@ -14,19 +14,18 @@ export const postToIPFS = async (data: any): Promise<string> => {
       },
     });
     const result = await (ipfs as IPFSHTTPClient).add(data);
-    uri = `${result.path}`;
+    cid = `${result.path}`;
   } catch (error) {
     console.error('IPFS error ', error);
   }
-  return uri;
+  return cid;
 };
 
-export const IpfsIsSynced = async (uri: string): Promise<boolean> => {
+export const IpfsIsSynced = async (cid: string): Promise<boolean> => {
   return new Promise<boolean>(async (resolve, reject) => {
     const interval = setInterval(async () => {
-      const response = await fetch(uri);
-      const data = await response.json();
-      if (data) {
+      const response = await fetch(cid);
+      if (response.status === 200) {
         clearInterval(interval);
         resolve(true);
       }

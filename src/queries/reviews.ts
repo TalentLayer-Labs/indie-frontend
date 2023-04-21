@@ -5,6 +5,8 @@ export const getReviewsByService = (serviceId: string): Promise<any> => {
     {
       reviews(where: { service: "${serviceId}" }, orderBy: id, orderDirection: desc) {
         id
+        rating
+        createdAt
         service {
           id
           status
@@ -13,7 +15,10 @@ export const getReviewsByService = (serviceId: string): Promise<any> => {
           id
           handle
         }
-        uri
+        description{
+          id
+          content
+        }
       }
     }
     `;

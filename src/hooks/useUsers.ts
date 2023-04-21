@@ -1,14 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { getUsers } from '../queries/users';
 import { IUser } from '../types';
 
-const useUsers = (): { users: IUser[] } => {
+const useUsers = (searchQuery?: string): IUser[] => {
   const [users, setUsers] = useState<IUser[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await getUsers();
+        const response = await getUsers(import.meta.env.VITE_PLATFORM_ID, searchQuery);
+
         if (response?.data?.data?.users.length > 0) {
           setUsers(response.data.data.users);
         }
@@ -20,7 +21,7 @@ const useUsers = (): { users: IUser[] } => {
     fetchData();
   }, []);
 
-  return { users };
+  return users;
 };
 
 export default useUsers;

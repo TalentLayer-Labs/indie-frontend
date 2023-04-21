@@ -3,6 +3,7 @@ import { IToken, NetworkEnum } from './types';
 
 export type Config = {
   networkId: NetworkEnum;
+  subgraphUrl: string;
   escrowConfig: { [key: string]: any };
   contracts: { [key: string]: `0x${string}` };
   tokens: { [key: string]: IToken };
@@ -16,6 +17,7 @@ export const FEE_RATE_DIVIDER = 10_000;
 
 const goerli: Config = {
   networkId: NetworkEnum.GOERLI,
+  subgraphUrl: 'https://api.thegraph.com/subgraphs/name/talentlayer/talent-layer-protocol',
   contracts: {
     talentLayerId: '0x11119eD887aeC1302e2cAF49942F891667A31BBc',
     serviceRegistry: '0xf0EECbBf164D81261C7Ce4D22D16f38DC63fBAbd',
@@ -56,12 +58,13 @@ const goerli: Config = {
 
 const fuji: Config = {
   networkId: NetworkEnum.FUJI,
+  subgraphUrl: 'https://api.thegraph.com/subgraphs/name/talentlayer/talent-layer-fuji',
   contracts: {
-    talentLayerId: '0xD1B87CCe7f9FA272c6643Fa89085F135A2AbB234',
-    serviceRegistry: '0x9Af3080e73FB1054896e3799a786F0063965bA46',
-    talentLayerReview: '0xc9c87d5b85fd88d375000f9e3e26195690934F50',
-    talentLayerEscrow: '0x754278520467fAdBB1D0230E082E436E70505EE2',
-    talentLayerPlatformId: '0xC30859CFa06D0cB9D66837feBB36a856BF78865E',
+    talentLayerId: '0x9a76eA2C056B6Bee5A1179BBece77D28FceE48C4',
+    serviceRegistry: '0x9EA2678d5A69CEDEc52ecafA367659b1d2Ff7824',
+    talentLayerReview: '0xD8c4fD1D8Dd2f3a6E4d26BeB167e73D9E28db7F0',
+    talentLayerEscrow: '0x8754a129D3F53222dd94Ce45749134c15C9Ed119',
+    talentLayerPlatformId: '0x8799479a39b6e563969126328e2323cbA01e8742',
   },
   escrowConfig: {
     adminFee: '0',
@@ -84,14 +87,46 @@ const fuji: Config = {
   },
 };
 
+const mumbai: Config = {
+  networkId: NetworkEnum.MUMBAI,
+  subgraphUrl: 'https://api.thegraph.com/subgraphs/name/talentlayer/talent-layer-mumbai',
+  contracts: {
+    talentLayerId: '0x286D04de10977D47EF9F1d50a7072cdeAd088D3E',
+    serviceRegistry: '0x8d2587494796A1547702Ea78E9c6359351901c4B',
+    talentLayerReview: '0x8398B0FfE674Ea993Cb38AE2E4e0Ac7111fE5852',
+    talentLayerEscrow: '0x2F9EBAc36cc020B81c4c624AbcfeC7DC8958Cf54',
+    talentLayerPlatformId: '0xa6f853Ba54cF24F203751D81b106A7D4e4eBFF14',
+  },
+  escrowConfig: {
+    adminFee: '0',
+    adminWallet: '0xC01FcDfDE3B2ABA1eab76731493C617FfAED2F10',
+    timeoutPayment: 3600 * 24 * 7,
+  },
+  tokens: {
+    [ethers.constants.AddressZero]: {
+      address: ethers.constants.AddressZero,
+      symbol: 'MATIC',
+      name: 'Matic',
+      decimals: 18,
+    },
+    '0xe6b8a5CF854791412c1f6EFC7CAf629f5Df1c747': {
+      address: '0xe6b8a5CF854791412c1f6EFC7CAf629f5Df1c747',
+      symbol: 'USDC',
+      name: 'USDC Stablecoin',
+      decimals: 6,
+    },
+  },
+};
+
 const local: Config = {
   networkId: NetworkEnum.LOCAL,
+  subgraphUrl: 'http://localhost:8020/',
   contracts: {
-    talentLayerId: '0x2F9EBAc36cc020B81c4c624AbcfeC7DC8958Cf54',
-    serviceRegistry: '0x8E86d82214c391281a908e3e31a766fcb9FaB3cA',
-    talentLayerReview: '0x66676968c176aA328124f04f53F8653db6b35ff9',
-    talentLayerEscrow: '0x182980458E0F93167Fab56c494776b694A07C030',
-    talentLayerPlatformId: '0xc0aB487a8e374807B86291CE5BE4b0dE4540529d',
+    talentLayerId: '0x2475F87a2A73548b2E49351018E7f6a53D3d35A4',
+    serviceRegistry: '0x3dE39C61d4281716c458ffdb3150aa9aF4fb752a',
+    talentLayerReview: '0xa3A183D6f70217362050040Ef365923a0c1989e8',
+    talentLayerEscrow: '0x91327C01CB952a95addDa72FcA59E4151fE42Cb3',
+    talentLayerPlatformId: '0xF39e4249b6dCcca8Ec7455E524C9685d1332fCD1',
   },
   escrowConfig: {
     timeoutPayment: 3600 * 24 * 7,
@@ -103,8 +138,8 @@ const local: Config = {
       name: 'ETH',
       decimals: 18,
     },
-    '0x67EE2a1f75788794f516b8F9919496D63109A380': {
-      address: '0x67EE2a1f75788794f516b8F9919496D63109A380',
+    '0xfF695df29837B571c4DAE01B5711500f6306E93f': {
+      address: '0xfF695df29837B571c4DAE01B5711500f6306E93f',
       symbol: 'ERC20',
       name: 'Simple ERC20',
       decimals: 18,
@@ -116,6 +151,7 @@ const chains: { [networkId in NetworkEnum]: Config } = {
   [NetworkEnum.LOCAL]: local,
   [NetworkEnum.GOERLI]: goerli,
   [NetworkEnum.FUJI]: fuji,
+  [NetworkEnum.MUMBAI]: mumbai,
 };
 
 export const config = chains[+import.meta.env.VITE_NETWORK_ID as NetworkEnum];

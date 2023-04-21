@@ -4,7 +4,7 @@ function Logo() {
   return (
     <h1 className='text-2xl text-white'>
       <NavLink to='/'>
-        TL<span className='text-indigo-300'>indie</span>
+        TL<span className='text-indigo-300'>platform indie</span>
       </NavLink>
     </h1>
   );
