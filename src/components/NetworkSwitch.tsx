@@ -6,14 +6,8 @@ import NetworkLink from './NetworkLink';
 
 const chainIdToName = (chainId: number) => {
   switch (chainId) {
-    case 1:
-      return 'Ethereum';
-    case 5:
-      return 'Goerli';
     case 1337:
       return 'Localhost';
-    case 43113:
-      return 'Fuji';
     case 80001:
       return 'Mumbai';
     case 137:

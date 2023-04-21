@@ -1,4 +1,4 @@
-import CreateId from '../components/Home/CreateId';
+import ConnectId from '../components/ConnectId';
 import Dashboard from './Dashboard';
 import { useAccount } from 'wagmi';
 
@@ -9,7 +9,7 @@ function Home() {
     return <Dashboard />;
   }
 
-  return <CreateId />;
+  return <ConnectId />;
 }
 
 export default Home;

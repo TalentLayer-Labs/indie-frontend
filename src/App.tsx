@@ -28,7 +28,7 @@ import ConfigurationFees from './pages/ConfigurationFees';
 import ConfigurationDispute from './pages/ConfigurationDispute';
 import ConfigurationControlCenter from './pages/ConfigurationControlCenter';
 
-const chains: Chain[] = [customChains.fuji];
+const chains: Chain[] = [customChains.polygonMumbai];
 
 // Wagmi client
 const { provider } = configureChains(chains, [

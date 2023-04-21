@@ -1,8 +1,8 @@
 import { ConnectButton } from '@web3modal/react';
 import { useContext } from 'react';
-import TalentLayerContext from '../../context/talentLayer';
+import TalentLayerContext from '../context/talentLayer';
 
-function CreateId() {
+function ConnectId() {
   const { account } = useContext(TalentLayerContext);
 
   if (account?.isConnected) {
@@ -32,4 +32,4 @@ function CreateId() {
   );
 }
 
-export default CreateId;
+export default ConnectId;

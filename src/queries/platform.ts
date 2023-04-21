@@ -17,9 +17,10 @@ const platformFields = `
 `;
 
 const platformDescriptionFields = `
-  about
   id
-  logo
+  about
+  image_url
+  video_url
   website
 `;
 

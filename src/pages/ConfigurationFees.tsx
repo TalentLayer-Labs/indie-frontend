@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import TalentLayerContext from '../context/talentLayer';
 import InfoNoPlatformId from '../components/InfoNoPlatformId';
-import SingleValueForm, {CustomValueTypes} from '../components/Form/_SingleValueForm';
+import SingleValueForm, { CustomValueTypes } from '../components/Form/SingleValueForm';
 
 function ConfigurationFees() {
   const { account, platform } = useContext(TalentLayerContext);

@@ -70,7 +70,8 @@ function SingleValueForm({
     }
     // TODO: update
     case 'EscrowFeesWorker': {
-      contractFunctionName = '';
+      contractFunctionName = 'updateOriginValidatedProposalFeeRate';
+      initialValue = platform.originValidatedProposalFeeRate.toString();
       validationSchema = Yup.object({
         value: Yup.number().required('value is required'),
       });

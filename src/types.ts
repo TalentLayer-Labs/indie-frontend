@@ -220,6 +220,7 @@ export type IPlatform = {
   arbitratorExtraData: `0x${string}`;
   createdAt: string;
   originServiceFeeRate: number;
+  originValidatedProposalFeeRate: number;
   feeClaims: IFeeClaim[];
   feePayments: IFeePayments;
   name: string;
@@ -229,9 +230,10 @@ export type IPlatform = {
 };
 
 export type IPlatformDescription = {
-  about: string;
   id: string;
-  logo: string;
+  about: string;
+  image_url: string;
+  video_url: string;
   website: string;
 };
 
