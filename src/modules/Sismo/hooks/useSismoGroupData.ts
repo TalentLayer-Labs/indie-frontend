@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { ISismoGroup, IUser } from '../../../types';
+import { ISismoGroup } from '../utils/types';
 import { getSismoGroupSnapshot } from '../queries/sismo';
-import { callUrl } from '../../../utils/rest';
+import { callUrl } from '../utils/rest';
 
 const useSismoGroupData = (sismoGroupId: string, userAddress: string): ISismoGroup | null => {
   const [groupData, setGroupData] = useState<ISismoGroup | null>(null);
