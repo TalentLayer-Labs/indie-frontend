@@ -1,4 +1,4 @@
-import { processSismoRequest } from '../utils/graphql';
+import { processSismoRequest } from '../../../utils/graphql';
 
 export const getSismoGroupSnapshot = async (groupId: string): Promise<any> => {
   let condition = ', where: {';

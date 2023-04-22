@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { getSismoGroupSnapshotUrl } from '../queries/sismo';
-import { callUrl } from '../utils/rest';
+import { callUrl } from '../../../utils/rest';
 
 const useIsUserInSismoGroup = (sismoGroupId: string, userAddress: string): boolean => {
   const [userInGroup, setUserInGroup] = useState<boolean>(false);

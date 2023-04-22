@@ -1,9 +1,9 @@
 import { useContext } from 'react';
-import TalentLayerContext from '../context/talentLayer';
+import TalentLayerContext from '../../../context/talentLayer';
 import useIsUserInSismoGroup from '../hooks/useIsUserInSismoGroup';
 import useSismoBadgesPerAddress from '../hooks/useSismoBadgesPerAddress';
-import { TALENTLAYER_GROUPS } from '../sismoGroupsData';
-import { ISismoBadge, ISismoGroup, IUser } from '../types';
+import { TALENTLAYER_GROUPS } from '../utils/sismoGroupsData';
+import { ISismoBadge, ISismoGroup, IUser } from '../../../types';
 import SismoBadgeCard from './SismoBadgeCard';
 import SismoGroupCard from './SismoGroupCard';
 

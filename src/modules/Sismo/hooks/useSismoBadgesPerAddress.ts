@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { getSismoBadgesPerAddress } from '../queries/sismo';
-import { ISismoBadge } from '../types';
+import { ISismoBadge } from '../../../types';
 
 const useSismoBadgesPerAddress = (userAddress: string): ISismoBadge[] | null => {
   const [badgesData, setBadgesData] = useState<ISismoBadge[] | null>(null);

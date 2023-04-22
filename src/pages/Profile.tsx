@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom';
 import Back from '../components/Back';
 import Loading from '../components/Loading';
-import UserBadges from '../components/UserBadges';
+import UserBadges from '../modules/Sismo/components/UserBadges';
 import UserDetail from '../components/UserDetail';
 import UserServices from '../components/UserServices';
 import useUserById from '../hooks/useUserById';

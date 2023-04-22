@@ -1,6 +1,6 @@
-import { ISismoGroup } from '../types';
+import { ISismoGroup } from '../utils/types';
 import { useContext } from 'react';
-import TalentLayerContext from '../context/talentLayer';
+import TalentLayerContext from '../../../context/talentLayer';
 import SismoHelpPopover from './SismoHelpPopover';
 
 function SismoGroupCard({

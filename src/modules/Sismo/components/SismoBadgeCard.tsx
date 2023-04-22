@@ -1,4 +1,4 @@
-import { ISismoBadge } from '../types';
+import { ISismoBadge } from '../utils/types';
 import SismoHelpPopover from './SismoHelpPopover';
 
 function SismoBadgeCard({ sismoBadgeData }: { sismoBadgeData: ISismoBadge }) {
