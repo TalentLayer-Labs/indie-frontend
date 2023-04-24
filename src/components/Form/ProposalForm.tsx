@@ -1,11 +1,11 @@
-import { ethers } from 'ethers';
+import { ethers, FixedNumber } from 'ethers';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import { useNavigate } from 'react-router-dom';
 import { useProvider, useSigner } from 'wagmi';
 import * as Yup from 'yup';
 import { config } from '../../config';
 import ServiceRegistry from '../../contracts/ABI/TalentLayerService.json';
-import { IService, IUser } from '../../types';
+import { IProposal, IService, IUser } from '../../types';
 import { postToIPFS } from '../../utils/ipfs';
 import { createMultiStepsTransactionToast, showErrorTransactionToast } from '../../utils/toast';
 import { parseRateAmount } from '../../utils/web3';
@@ -22,14 +22,6 @@ interface IFormValues {
   videoUrl: string;
 }
 
-const initialValues: IFormValues = {
-  about: '',
-  rateToken: '',
-  rateAmount: 0,
-  expirationDate: 15,
-  videoUrl: '',
-};
-
 const validationSchema = Yup.object({
   about: Yup.string().required('Please provide a description of your service'),
   rateToken: Yup.string().required('Please select a payment token'),
@@ -41,11 +33,42 @@ const validationSchema = Yup.object({
   ),
 });
 
-function ProposalForm({ user, service }: { user: IUser; service: IService }) {
+function ProposalForm({
+  user,
+  service,
+  existingProposal,
+}: {
+  user: IUser;
+  service: IService;
+  existingProposal?: IProposal;
+}) {
   const provider = useProvider({ chainId: import.meta.env.VITE_NETWORK_ID });
   const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
   const navigate = useNavigate();
   const allowedTokenList = useAllowedTokens();
+
+  let existingExpirationDate, existingRateTokenAmount;
+  if (existingProposal) {
+    existingExpirationDate = Math.floor(
+      (Number(existingProposal?.expirationDate) - Date.now() / 1000) / (60 * 60 * 24),
+    );
+
+    const token = allowedTokenList.find(
+      token => token.address === existingProposal?.rateToken.address,
+    );
+
+    existingRateTokenAmount = FixedNumber.from(
+      ethers.utils.formatUnits(existingProposal.rateAmount, token?.decimals),
+    ).toUnsafeFloat();
+  }
+
+  const initialValues: IFormValues = {
+    about: existingProposal?.description?.about || '',
+    rateToken: existingProposal?.rateToken.address || '',
+    rateAmount: existingRateTokenAmount || 0,
+    expirationDate: existingExpirationDate || 15,
+    videoUrl: existingProposal?.description?.video_url || '',
+  };
 
   const onSubmit = async (
     values: IFormValues,
@@ -88,16 +111,25 @@ function ProposalForm({ user, service }: { user: IUser; service: IService }) {
           signer,
         );
 
-        const tx = await contract.createProposal(
-          user.id,
-          service.id,
-          values.rateToken,
-          parsedRateAmountString,
-          import.meta.env.VITE_PLATFORM_ID,
-          cid,
-          convertExpirationDateString,
-          signature,
-        );
+        const tx = existingProposal
+          ? await contract.updateProposal(
+              user.id,
+              service.id,
+              values.rateToken,
+              parsedRateAmountString,
+              cid,
+              convertExpirationDateString,
+            )
+          : await contract.createProposal(
+              user.id,
+              service.id,
+              values.rateToken,
+              parsedRateAmountString,
+              import.meta.env.VITE_PLATFORM_ID,
+              cid,
+              convertExpirationDateString,
+              signature,
+            );
         await createMultiStepsTransactionToast(
           {
             pending: 'Creating your proposal...',
@@ -125,7 +157,7 @@ function ProposalForm({ user, service }: { user: IUser; service: IService }) {
           <h2 className='mb-2 text-gray-900 font-bold'>For the job:</h2>
           <ServiceItem service={service} />
 
-          <h2 className=' mt-8 mb-2 text-gray-900 font-bold'>Detailed your proposal:</h2>
+          <h2 className=' mt-8 mb-2 text-gray-900 font-bold'>Describe your proposal in details:</h2>
           <div className='grid grid-cols-1 gap-6 border border-gray-200 rounded-md p-8'>
             <label className='block'>
               <span className='text-gray-700'>about</span>

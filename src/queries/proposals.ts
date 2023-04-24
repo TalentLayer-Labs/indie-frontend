@@ -92,3 +92,23 @@ export const getAllProposalsByUser = (id: string): Promise<any> => {
     `;
   return processRequest(query);
 };
+
+export const getProposalById = (id: string): Promise<any> => {
+  const query = `
+      {
+        proposals(where: {id: "${id}"}) {
+          rateToken {
+            address
+          }
+          rateAmount
+          description {
+            about
+            video_url
+          }
+          status
+          expirationDate
+        }
+      }
+    `;
+  return processRequest(query);
+};
