@@ -6,14 +6,16 @@ function ServiceStatus({ status }: { status: ServiceStatusEnum }) {
     case ServiceStatusEnum.Opened:
       color = 'indigo';
       break;
-    case ServiceStatusEnum.Filled:
     case ServiceStatusEnum.Confirmed:
       color = 'green';
       break;
     case ServiceStatusEnum.Finished:
       color = 'gray';
       break;
-    case ServiceStatusEnum.Rejected:
+    case ServiceStatusEnum.Cancelled:
+      color = 'red';
+      break;
+    case ServiceStatusEnum.Uncompleted:
       color = 'red';
       break;
   }

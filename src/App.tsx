@@ -6,7 +6,7 @@ import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
 import './App.css';
 import { TalentLayerProvider } from './context/talentLayer';
 import About from './pages/About';
-import CreateProposal from './pages/CreateProposal';
+import CreateOrEditProposal from './pages/CreateOrEditProposal';
 import CreateService from './pages/CreateService';
 import Dashboard from './pages/Dashboard';
 import EditProfile from './pages/EditProfile';
@@ -74,7 +74,7 @@ function App() {
                       <Route path='/services' element={<Services />} />
                       <Route path='/services/:id' element={<Service />} />
                       <Route path='/services/create' element={<CreateService />} />
-                      <Route path='/services/:id/create-proposal' element={<CreateProposal />} />
+                      <Route path='/services/:id/proposal' element={<CreateOrEditProposal />} />
                       <Route path='/talents' element={<Talents />} />
                       {import.meta.env.VITE_MESSENGING_TECH === 'push' && (
                         <>

@@ -30,6 +30,10 @@ function ServiceDetail({ service }: { service: IService }) {
     return proposal.seller.id === user?.id;
   });
 
+  const validatedProposal = proposals.find(proposal => {
+    return proposal.status === ProposalStatusEnum.Validated;
+  });
+
   return (
     <>
       <div className='flex flex-row gap-2 rounded-xl p-4 border border-gray-200'>
@@ -95,11 +99,13 @@ function ServiceDetail({ service }: { service: IService }) {
           <div className='flex flex-row gap-4 items-center border-t border-gray-100 pt-4'>
             {!isBuyer && service.status == ServiceStatusEnum.Opened && (
               <>
-                <NavLink
-                  className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg'
-                  to={`/services/${service.id}/create-proposal`}>
-                  Create proposal
-                </NavLink>
+                {!userProposal && (
+                  <NavLink
+                    className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg'
+                    to={`/services/${service.id}/proposal`}>
+                    Create proposal
+                  </NavLink>
+                )}
                 <ContactButton
                   userAddress={service.buyer?.address}
                   userHandle={service.buyer.handle}
@@ -148,16 +154,20 @@ function ServiceDetail({ service }: { service: IService }) {
                 :
               </p>
               <div className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4'>
-                {proposals.map((proposal, i) => {
-                  return (
-                    <div key={i}>
-                      {(service.status === ServiceStatusEnum.Opened ||
-                        proposal.status === ProposalStatusEnum.Validated) && (
-                        <ProposalItem proposal={proposal} />
-                      )}
-                    </div>
-                  );
-                })}
+                {validatedProposal ? (
+                  <ProposalItem proposal={validatedProposal} />
+                ) : (
+                  proposals.map((proposal, i) => {
+                    return (
+                      <div key={i}>
+                        {(service.status === ServiceStatusEnum.Opened ||
+                          proposal.status === ProposalStatusEnum.Validated) && (
+                          <ProposalItem proposal={proposal} />
+                        )}
+                      </div>
+                    );
+                  })
+                )}
               </div>
             </>
           ) : (

@@ -1,10 +1,11 @@
 import { useContext } from 'react';
 import TalentLayerContext from '../context/talentLayer';
 import { renderTokenAmount } from '../utils/conversion';
-import { IProposal, ProposalStatusEnum } from '../types';
+import { IProposal, ProposalStatusEnum, ServiceStatusEnum } from '../types';
 import { formatDate } from '../utils/dates';
 import ValidateProposalModal from './Modal/ValidateProposalModal';
 import useServiceById from '../hooks/useServiceById';
+import { NavLink } from 'react-router-dom';
 
 function ProposalItem({ proposal }: { proposal: IProposal }) {
   const { user, account } = useContext(TalentLayerContext);
@@ -63,6 +64,18 @@ function ProposalItem({ proposal }: { proposal: IProposal }) {
             <ValidateProposalModal proposal={proposal} account={account} />
           )}
         </div>
+        {account &&
+          !isBuyer &&
+          proposal.status === ProposalStatusEnum.Pending &&
+          service.status === ServiceStatusEnum.Opened && (
+            <div className='flex flex-row gap-4 items-center border-t border-gray-100 pt-4'>
+              <NavLink
+                className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg'
+                to={`/services/${service.id}/proposal`}>
+                Edit proposal
+              </NavLink>
+            </div>
+          )}
       </div>
     </div>
   );

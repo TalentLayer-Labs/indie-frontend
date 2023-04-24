@@ -107,11 +107,11 @@ export type IReviewDetails = {
 };
 
 export enum ServiceStatusEnum {
-  Filled = 'Filled',
+  Opened = 'Opened',
   Confirmed = 'Confirmed',
   Finished = 'Finished',
-  Rejected = 'Rejected',
-  Opened = 'Opened',
+  Cancelled = 'Cancelled',
+  Uncompleted = 'Uncompleted',
 }
 
 export enum ProposalStatusEnum {
@@ -181,7 +181,7 @@ export type IToken = {
   address: `0x${string}`;
   symbol: string;
   decimals: number;
-  minimumTransactionAmount: number;
+  minimumTransactionAmount?: BigNumber;
 };
 
 export type ITokenFormattedValues = {
@@ -190,6 +190,7 @@ export type ITokenFormattedValues = {
 };
 
 export type IPayment = {
+  createdAt: number;
   id: string;
   amount: string;
   rateToken: IToken;

@@ -2,6 +2,7 @@ import { NavLink } from 'react-router-dom';
 import usePaymentsForUser from '../hooks/usePaymentsForUser';
 import { IUser } from '../types';
 import { renderTokenAmount } from '../utils/conversion';
+import { formatStringCompleteDate } from '../utils/dates';
 
 function UserPayments({ user }: { user: IUser }) {
   const { payments } = usePaymentsForUser(user.id);
@@ -39,7 +40,9 @@ function UserPayments({ user }: { user: IUser }) {
                   {renderTokenAmount(payment.rateToken, payment.amount)}
                 </span>
                 <div className='flex items-center justify-between'>
-                  <span className='text-gray-500'>receive the 11/10 at 08:03</span>
+                  <span className='text-gray-500'>
+                    received the {formatStringCompleteDate(payment.createdAt)}
+                  </span>
                 </div>
               </div>
             </NavLink>

@@ -45,7 +45,7 @@ const MessagingProvider = ({ children }: { children: ReactNode }) => {
           await createUserIfNecessary({ account: user.address });
         }
       } catch (e) {
-        console.error('CreateProposal - Error initializing Push client :', e);
+        console.error('Error initializing Push client :', e);
       }
     }
     if (import.meta.env.VITE_MESSENGING_TECH === 'xmtp') {
@@ -54,7 +54,7 @@ const MessagingProvider = ({ children }: { children: ReactNode }) => {
           await providerState.initClient(signer);
         }
       } catch (e) {
-        console.error('CreateProposal - Error initializing XMTP client :', e);
+        console.error('Error initializing XMTP client :', e);
       }
     }
   };
