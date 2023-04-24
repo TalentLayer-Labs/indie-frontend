@@ -30,6 +30,10 @@ function ServiceDetail({ service }: { service: IService }) {
     return proposal.seller.id === user?.id;
   });
 
+  const validatedProposal = proposals.find(proposal => {
+    return proposal.status === ProposalStatusEnum.Validated;
+  });
+
   return (
     <>
       <div className='flex flex-row gap-2 rounded-xl p-4 border border-gray-200'>
@@ -150,16 +154,20 @@ function ServiceDetail({ service }: { service: IService }) {
                 :
               </p>
               <div className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4'>
-                {proposals.map((proposal, i) => {
-                  return (
-                    <div key={i}>
-                      {(service.status === ServiceStatusEnum.Opened ||
-                        proposal.status === ProposalStatusEnum.Validated) && (
-                        <ProposalItem proposal={proposal} />
-                      )}
-                    </div>
-                  );
-                })}
+                {validatedProposal ? (
+                  <ProposalItem proposal={validatedProposal} />
+                ) : (
+                  proposals.map((proposal, i) => {
+                    return (
+                      <div key={i}>
+                        {(service.status === ServiceStatusEnum.Opened ||
+                          proposal.status === ProposalStatusEnum.Validated) && (
+                          <ProposalItem proposal={proposal} />
+                        )}
+                      </div>
+                    );
+                  })
+                )}
               </div>
             </>
           ) : (
