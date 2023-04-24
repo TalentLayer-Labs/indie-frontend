@@ -4,7 +4,7 @@ import { IPayment } from '../types';
 
 const usePaymentsForUser = (
   id: string,
-  numberPerPage?: number,
+  numberPerPage?: number | 10,
   startDate?: string,
   endDate?: string,
 ): { hasMoreData: boolean; loading: boolean; payments: IPayment[]; loadMore: () => void } => {
@@ -18,19 +18,28 @@ const usePaymentsForUser = (
       try {
         setLoading(true);
         const response = await getPaymentsForUser(id, numberPerPage, offset, startDate, endDate);
-        if (response?.data?.data?.payments) {
-          setPayments(response.data.data.payments);
-        }
+        console.log('response', response);
+
+        console.log('id', id);
+        console.log('numberPerPage', numberPerPage);
+        console.log('offset', offset);
+        console.log('startDate', startDate);
+        console.log('endDate', endDate);
+
+        setPayments([...payments, ...response.data.data.payments]);
+
         if (numberPerPage && response?.data?.data?.payments?.length < numberPerPage) {
           setHasMoreData(false);
         }
       } catch (error: any) {
         // eslint-disable-next-line no-console
         console.error(error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchData();
-  }, [numberPerPage, offset, id]);
+  }, [numberPerPage, offset, id, startDate, endDate]);
 
   const loadMore = () => {
     numberPerPage ? setOffset(offset + numberPerPage) : '';

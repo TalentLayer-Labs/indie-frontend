@@ -32,8 +32,16 @@ export const getPaymentsForUser = (
   endDate?: string,
 ): Promise<any> => {
   const pagination = numberPerPage ? 'first: ' + numberPerPage + ', skip: ' + offset : '';
-  const startDateFilter = startDate ? `, createdAt_gte: "${startDate}"` : '';
-  const endDateFilter = endDate ? `, createdAt_lte: "${endDate}"` : '';
+
+  const defaultStartDate = '1900-01-01';
+  const defaultEndDate = new Date().toISOString().split('T')[0];
+
+  const startDateFilter = startDate
+    ? `, createdAt_gte: "${startDate}"`
+    : `, createdAt_gte: "${defaultStartDate}"`;
+  const endDateFilter = endDate
+    ? `, createdAt_lte: "${endDate}"`
+    : `, createdAt_lte: "${defaultEndDate}"`;
 
   const query = `
     {

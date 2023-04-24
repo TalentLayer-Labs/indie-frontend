@@ -4,15 +4,19 @@ import Loading from './Loading';
 import { saveAs } from 'file-saver';
 import { renderTokenAmount } from '../utils/conversion';
 import { formatStringCompleteDate } from '../utils/dates';
+import usePaymentsForUser from '../hooks/usePaymentsForUser';
 
-function UserIncomes({ payments }: { payments: IPayment[] }) {
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(50);
+function UserIncomes(id: string) {
+  const ROW_SIZE = 50;
+  const [startDate, setStartDate] = useState<string | undefined>();
+  const [endDate, setEndDate] = useState<string | undefined>();
+  console.log(id);
+
+  const { payments, hasMoreData, loading } = usePaymentsForUser(id, ROW_SIZE, startDate, endDate);
+  console.log('tototo', payments);
 
   if (!payments || payments.length === 0) {
-    return <Loading />;
+    return <p className='text-2xl font-medium tracking-wider mb-8'>No incomes found</p>;
   }
 
   const filteredPayments = payments.filter(payment => {
@@ -73,7 +77,7 @@ function UserIncomes({ payments }: { payments: IPayment[] }) {
             onChange={e => setEndDate(e.target.value)}
           />
         </span>
-        <button onClick={exportToCSV} className='bg-blue-500 text-white p-2 rounded'>
+        {/* <button onClick={exportToCSV} className='bg-blue-500 text-white p-2 rounded'>
           Export to CSV
         </button>
         <div className='flex items-center mt-4'>
@@ -89,7 +93,7 @@ function UserIncomes({ payments }: { payments: IPayment[] }) {
             <option value={100}>100</option>
             <option value={200}>200</option>
           </select>
-        </div>
+        </div> */}
       </div>
 
       <div className=''>
@@ -104,7 +108,7 @@ function UserIncomes({ payments }: { payments: IPayment[] }) {
             </tr>
           </thead>
           <tbody>
-            {filteredPayments
+            {/* {filteredPayments
               .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
               .map((payment, i) => {
                 return (
@@ -132,7 +136,7 @@ function UserIncomes({ payments }: { payments: IPayment[] }) {
                     </td>
                   </tr>
                 );
-              })}
+              })} */}
             <tr>
               <td className='border border-gray-200 p-2 font-medium'>
                 Total :
@@ -150,7 +154,7 @@ function UserIncomes({ payments }: { payments: IPayment[] }) {
         </table>
       </div>
       <div className='flex justify-between mt-4'>
-        <button
+        {/* <button
           className='bg-blue-500 text-white p-2 rounded'
           onClick={() => setCurrentPage(currentPage > 1 ? currentPage - 1 : 1)}
           disabled={currentPage === 1}>
@@ -170,7 +174,7 @@ function UserIncomes({ payments }: { payments: IPayment[] }) {
           }
           disabled={currentPage === Math.ceil(filteredPayments.length / itemsPerPage)}>
           Next
-        </button>
+        </button> */}
       </div>
     </>
   );
