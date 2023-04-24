@@ -1,5 +1,6 @@
 import { useContext } from 'react';
 import Steps from '../components/Steps';
+import UserBadges from '../modules/Sismo/components/UserBadges';
 import UserDetail from '../components/UserDetail';
 import UserGains from '../components/UserGains';
 import UserPayments from '../components/UserPayments';
@@ -25,6 +26,9 @@ function Dashboard() {
               Your profile
             </h2>
             <UserDetail user={user} />
+          </div>
+          <div className='mb-6'>
+            <UserBadges user={user} />
           </div>
           <div className='mb-6'>
             <UserPayments user={user} />

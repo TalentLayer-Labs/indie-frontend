@@ -1,11 +1,11 @@
 import { useContext } from 'react';
 import { NavLink } from 'react-router-dom';
 import TalentLayerContext from '../context/talentLayer';
+import useUserById from '../hooks/useUserById';
+import PohModule from '../modules/Poh/PohModule';
 import { IUser } from '../types';
 import Loading from './Loading';
 import Stars from './Stars';
-import PohModule from '../modules/Poh/PohModule';
-import useUserById from '../hooks/useUserById';
 
 function UserDetail({ user }: { user: IUser }) {
   const { user: currentUser } = useContext(TalentLayerContext);
@@ -36,19 +36,24 @@ function UserDetail({ user }: { user: IUser }) {
         <Stars rating={Number(user.rating)} numReviews={user.numReviews} />
       </div>
       <div className=' border-t border-gray-100 pt-4 w-full'>
-        <p className='text-sm text-gray-500 mt-4'>
-          <strong>Name:</strong> {userDescription?.name}
-        </p>
+        {userDescription?.name && (
+          <p className='text-sm text-gray-500 mt-4'>
+            <strong>Name:</strong> {userDescription?.name}
+          </p>
+        )}
         <p className='text-sm text-gray-500 mt-4'>
           <strong>Skills:</strong> {userDescription?.skills_raw}
         </p>
         <p className='text-sm text-gray-500 mt-4'>
           <strong>About:</strong> {userDescription?.about}
         </p>
-        <p className='text-sm text-gray-500 mt-4'>
-          <strong>Role:</strong> {userDescription?.role}
-        </p>
+        {userDescription?.role && (
+          <p className='text-sm text-gray-500 mt-4'>
+            <strong>Role:</strong> {userDescription?.role}
+          </p>
+        )}
       </div>
+
       {currentUser?.id === user.id && (
         <div className=' border-t border-gray-100 pt-4 w-full mt-4'>
           <div className='flex flex-row gap-4 justify-end items-center'>
