@@ -37,6 +37,7 @@ export const getPaymentsForUser = (userId: string): Promise<any> => {
         amount
         transactionHash
         paymentType
+        createdAt
         service {
           id, 
           cid

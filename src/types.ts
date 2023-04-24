@@ -1,3 +1,4 @@
+import { BigNumber } from 'ethers';
 import { Connector } from 'wagmi';
 
 export type IUser = {
@@ -180,7 +181,7 @@ export type IToken = {
   address: `0x${string}`;
   symbol: string;
   decimals: number;
-  minimumTransactionAmount: number;
+  minimumTransactionAmount?: BigNumber;
 };
 
 export type ITokenFormattedValues = {
@@ -189,6 +190,7 @@ export type ITokenFormattedValues = {
 };
 
 export type IPayment = {
+  createdAt: number;
   id: string;
   amount: string;
   rateToken: IToken;
