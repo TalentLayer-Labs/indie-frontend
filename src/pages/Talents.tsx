@@ -1,11 +1,22 @@
 import UserItem from '../components/UserItem';
 import useUsers from '../hooks/useUsers';
 import SearchTalentButton from '../components/Form/SearchTalentButton';
+import Loading from '../components/Loading';
+import { useEffect, useRef } from 'react';
 
 function Talents() {
+  const PAGE_SIZE = 36;
   const queryString = window.location.search;
   const searchQuery = new URLSearchParams(queryString).get('s') || undefined;
-  const users = useUsers(searchQuery?.toLocaleLowerCase());
+  const bottomRef = useRef<HTMLDivElement>(null);
+  const { users, hasMoreData, loading, loadMore } = useUsers(
+    searchQuery?.toLocaleLowerCase(),
+    PAGE_SIZE,
+  );
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [users]);
 
   return (
     <div className='max-w-7xl mx-auto text-gray-900 sm:px-4 lg:px-0'>
@@ -34,13 +45,30 @@ function Talents() {
         })}
       </div>
 
-      {users.length === 20 && (
-        <a
-          href='#'
-          className='px-5 py-2  border border-indigo-600 rounded-full text-indigo-600 hover:text-white hover:bg-indigo-700'>
-          Load More
-        </a>
+      {users.length > 0 && hasMoreData && !loading && (
+        <div className='flex justify-center items-center gap-10 flex-col pb-5'>
+          <button
+            type='submit'
+            className={`px-5 py-2 mt-5 content-center border border-indigo-600 rounded-full text-indigo-600 
+              hover:text-white hover:bg-indigo-700
+            `}
+            disabled={!hasMoreData}
+            onClick={() => loadMore()}>
+            Load More
+          </button>
+        </div>
       )}
+      {loading && (
+        <div className='flex justify-center items-center gap-10 flex-col pb-5 mt-5'>
+          <Loading />
+        </div>
+      )}
+      {!hasMoreData && (
+        <div className='flex justify-center items-center gap-10 flex-col pb-5 mt-5'>
+          <p>No more Users...</p>
+        </div>
+      )}
+      <div ref={bottomRef} id='scroller'></div>
     </div>
   );
 }
