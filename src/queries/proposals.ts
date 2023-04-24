@@ -105,6 +105,7 @@ export const getProposalById = (id: string): Promise<any> => {
             about
             video_url
           }
+          status
           expirationDate
         }
       }
