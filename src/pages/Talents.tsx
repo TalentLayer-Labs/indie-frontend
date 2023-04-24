@@ -6,6 +6,7 @@ function Talents() {
   const queryString = window.location.search;
   const searchQuery = new URLSearchParams(queryString).get('s') || undefined;
   const users = useUsers(searchQuery?.toLocaleLowerCase());
+  console.log(users);
 
   return (
     <div className='max-w-7xl mx-auto text-gray-900 sm:px-4 lg:px-0'>

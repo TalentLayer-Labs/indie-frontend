@@ -24,10 +24,20 @@ export const getPaymentsByService = (serviceId: string, paymentType?: string): P
   return processRequest(query);
 };
 
-export const getPaymentsForUser = (userId: string): Promise<any> => {
+export const getPaymentsForUser = (
+  userId: string,
+  numberPerPage?: number,
+  offset?: number,
+  startDate?: string,
+  endDate?: string,
+): Promise<any> => {
+  const pagination = numberPerPage ? 'first: ' + numberPerPage + ', skip: ' + offset : '';
+  const startDateFilter = startDate ? `, createdAt_gte: "${startDate}"` : '';
+  const endDateFilter = endDate ? `, createdAt_lte: "${endDate}"` : '';
+
   const query = `
     {
-      payments(where: {service_: {seller: "${userId}"} }){
+      payments(where: {service_: {seller: "${userId}"}${startDateFilter}${endDateFilter}} orderDirection: desc ${pagination}){
         id, 
         rateToken {
           address
@@ -45,7 +55,6 @@ export const getPaymentsForUser = (userId: string): Promise<any> => {
         }
       }
     }
-    
     `;
   return processRequest(query);
 };

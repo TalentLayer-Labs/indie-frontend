@@ -2,16 +2,27 @@ import { useEffect, useState } from 'react';
 import { getPaymentsForUser } from '../queries/payments';
 import { IPayment } from '../types';
 
-const usePaymentsForUser = (id: string): IPayment[] => {
+const usePaymentsForUser = (
+  id: string,
+  numberPerPage?: number,
+  startDate?: string,
+  endDate?: string,
+): { hasMoreData: boolean; loading: boolean; payments: IPayment[]; loadMore: () => void } => {
   const [payments, setPayments] = useState<IPayment[]>([]);
+  const [hasMoreData, setHasMoreData] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [offset, setOffset] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await getPaymentsForUser(id);
-
+        setLoading(true);
+        const response = await getPaymentsForUser(id, numberPerPage, offset, startDate, endDate);
         if (response?.data?.data?.payments) {
           setPayments(response.data.data.payments);
+        }
+        if (numberPerPage && response?.data?.data?.payments?.length < numberPerPage) {
+          setHasMoreData(false);
         }
       } catch (error: any) {
         // eslint-disable-next-line no-console
@@ -19,9 +30,13 @@ const usePaymentsForUser = (id: string): IPayment[] => {
       }
     };
     fetchData();
-  }, [id]);
+  }, [numberPerPage, offset, id]);
 
-  return payments;
+  const loadMore = () => {
+    numberPerPage ? setOffset(offset + numberPerPage) : '';
+  };
+
+  return { payments, hasMoreData: hasMoreData, loading, loadMore };
 };
 
 export default usePaymentsForUser;

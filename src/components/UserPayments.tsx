@@ -4,7 +4,7 @@ import { IUser } from '../types';
 import { renderTokenAmount } from '../utils/conversion';
 
 function UserPayments({ user }: { user: IUser }) {
-  const payments = usePaymentsForUser(user.id);
+  const { payments } = usePaymentsForUser(user.id);
 
   if (payments.length === 0) {
     return null;
