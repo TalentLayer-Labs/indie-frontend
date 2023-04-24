@@ -17,10 +17,10 @@ function Incomes() {
   return (
     <div className='max-w-7xl mx-auto text-gray-900 sm:px-4 lg:px-0'>
       <Back />
-      {payments && (
+      {payments && payments.length > 0 ? (
         <>
           <p className='text-5xl font-medium tracking-wider mb-8'>
-            Your incomes summary : <span className='text-indigo-600'>{user.handle}</span>
+            Your incomes summary : <span className='text-indigo-600'>{user?.handle}</span>
           </p>
           <div>
             <div className='mb-6'>
@@ -28,6 +28,10 @@ function Incomes() {
             </div>
           </div>
         </>
+      ) : (
+        <p className='text-2xl font-medium tracking-wider mb-8'>
+          No incomes found for <span className='text-indigo-600'>{user?.handle}</span>
+        </p>
       )}
     </div>
   );
