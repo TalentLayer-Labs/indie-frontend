@@ -1,15 +1,16 @@
-import { useEffect, useState } from 'react';
-import { IPayment } from '../types';
+import { useState } from 'react';
 import Loading from './Loading';
-import { saveAs } from 'file-saver';
 import { renderTokenAmount } from '../utils/conversion';
 import { formatStringCompleteDate } from '../utils/dates';
 import usePaymentsForUser from '../hooks/usePaymentsForUser';
+import { useNetwork } from 'wagmi';
 
 function UserIncomes({ id }: { id: string }) {
   const ROW_SIZE = 1;
   const [startDate, setStartDate] = useState<string>('');
   const [endDate, setEndDate] = useState<string>('');
+  const network = useNetwork();
+  console.log('network', network.chain?.id);
 
   const { payments, hasMoreData, loading, loadMore } = usePaymentsForUser(
     id,
@@ -96,11 +97,19 @@ function UserIncomes({ id }: { id: string }) {
                     </a>
                   </td>
                   <td className='border border-gray-200 p-2 text-blue-500'>
-                    <a
-                      target='_blank'
-                      href={`https://polygonscan.com/tx/${payment.transactionHash}`}>
-                      Tx
-                    </a>
+                    {network.chain?.id === 137 ? (
+                      <a
+                        target='_blank'
+                        href={`https://polygonscan.com/tx/${payment.transactionHash}`}>
+                        Tx
+                      </a>
+                    ) : network.chain?.id === 80001 ? (
+                      <a
+                        target='_blank'
+                        href={`https://mumbai.polygonscan.com/tx/${payment.transactionHash}`}>
+                        Tx
+                      </a>
+                    ) : null}
                   </td>
                 </tr>
               );
