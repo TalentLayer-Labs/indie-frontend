@@ -19,7 +19,6 @@ const usePaymentsForUser = (
         setLoading(true);
         const response = await getPaymentsForUser(id, numberPerPage, offset, startDate, endDate);
         console.log('response', response);
-
         console.log('id', id);
         console.log('numberPerPage', numberPerPage);
         console.log('offset', offset);

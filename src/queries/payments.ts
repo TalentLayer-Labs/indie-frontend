@@ -33,19 +33,18 @@ export const getPaymentsForUser = (
 ): Promise<any> => {
   const pagination = numberPerPage ? 'first: ' + numberPerPage + ', skip: ' + offset : '';
 
-  const defaultStartDate = '1900-01-01';
-  const defaultEndDate = new Date().toISOString().split('T')[0];
-
-  const startDateFilter = startDate
-    ? `, createdAt_gte: "${startDate}"`
-    : `, createdAt_gte: "${defaultStartDate}"`;
-  const endDateFilter = endDate
-    ? `, createdAt_lte: "${endDate}"`
-    : `, createdAt_lte: "${defaultEndDate}"`;
+  const startDataCondition = startDate ? `, createdAt_gte: "${startDate}"` : '';
+  const endDateCondition = endDate ? `, createdAt_lte: "${endDate}"` : '';
+  console.log('ghghggg', userId);
 
   const query = `
     {
-      payments(where: {service_: {seller: "${userId}"}${startDateFilter}${endDateFilter}} orderDirection: desc ${pagination}){
+      payments(where: {
+        service_: {seller: "${userId}"}
+        ${startDataCondition}
+        ${endDateCondition}
+      }, 
+      orderDirection: desc ${pagination}){
         id, 
         rateToken {
           address

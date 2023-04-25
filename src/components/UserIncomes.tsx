@@ -10,17 +10,15 @@ function UserIncomes(id: string) {
   const ROW_SIZE = 50;
   const [startDate, setStartDate] = useState<string | undefined>();
   const [endDate, setEndDate] = useState<string | undefined>();
-  console.log(id);
 
-  const { payments, hasMoreData, loading } = usePaymentsForUser(id, ROW_SIZE, startDate, endDate);
-  console.log('tototo', payments);
+  const { payments, hasMoreData, loading } = usePaymentsForUser(id);
 
   if (!payments || payments.length === 0) {
     return <p className='text-2xl font-medium tracking-wider mb-8'>No incomes found</p>;
   }
 
   const filteredPayments = payments.filter(payment => {
-    const paymentTimestamp = parseInt(payment.createdAt, 10);
+    const paymentTimestamp = payment.createdAt;
     const start = startDate ? new Date(startDate).getTime() / 1000 : null; // Convert start date to timestamp
     const end = endDate ? new Date(endDate).getTime() / 1000 : null; // Convert end date to timestamp
 
