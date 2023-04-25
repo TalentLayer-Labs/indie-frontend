@@ -24,9 +24,9 @@ export type IUserStats = {
   numReceivedReviews: number;
   numGivenReviews: number;
   numCreatedServices: number;
-  numFinishedServices: number;
+  numFinishedServicesAsBuyer: number;
   numCreatedProposals: number;
-  numFinishedProposals: number;
+  numFinishedServicesAsSeller: number;
 };
 
 export type IAccount = {
