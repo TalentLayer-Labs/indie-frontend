@@ -35,7 +35,6 @@ export const getPaymentsForUser = (
 
   const startDataCondition = startDate ? `, createdAt_gte: "${startDate}"` : '';
   const endDateCondition = endDate ? `, createdAt_lte: "${endDate}"` : '';
-  console.log('ghghggg', userId);
 
   const query = `
     {

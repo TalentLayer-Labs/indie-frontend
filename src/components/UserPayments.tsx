@@ -6,7 +6,6 @@ import { formatStringCompleteDate } from '../utils/dates';
 
 function UserPayments({ user }: { user: IUser }) {
   const { payments } = usePaymentsForUser(user.id);
-  console.log('payments', payments);
 
   if (payments.length === 0) {
     return null;

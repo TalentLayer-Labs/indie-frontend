@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { IPayment } from '../types';
 import Loading from './Loading';
 import { saveAs } from 'file-saver';
@@ -6,12 +6,18 @@ import { renderTokenAmount } from '../utils/conversion';
 import { formatStringCompleteDate } from '../utils/dates';
 import usePaymentsForUser from '../hooks/usePaymentsForUser';
 
-function UserIncomes(id: string) {
-  const ROW_SIZE = 50;
-  const [startDate, setStartDate] = useState<string | undefined>();
-  const [endDate, setEndDate] = useState<string | undefined>();
+function UserIncomes({ id }: { id: string }) {
+  const ROW_SIZE = 1;
+  const [startDate, setStartDate] = useState<string>('');
+  const [endDate, setEndDate] = useState<string>('');
 
-  const { payments, hasMoreData, loading } = usePaymentsForUser(id);
+  const { payments, hasMoreData, loading, loadMore } = usePaymentsForUser(
+    id,
+    ROW_SIZE,
+    startDate,
+    endDate,
+  );
+  console.log('payments', payments);
 
   if (!payments || payments.length === 0) {
     return <p className='text-2xl font-medium tracking-wider mb-8'>No incomes found</p>;
@@ -32,23 +38,6 @@ function UserIncomes(id: string) {
       return true;
     }
   });
-
-  const exportToCSV = () => {
-    const headers = ['Amount', 'Date', 'Token', 'Service', 'Transaction details'];
-
-    const data = filteredPayments.map(payment => [
-      renderTokenAmount(payment.rateToken, payment.amount),
-      payment.createdAt,
-      payment.rateToken.symbol,
-      `Service n°${payment.service.id}`,
-      `https://polygonscan.com/tx/${payment.transactionHash}`,
-    ]);
-
-    const csvContent = headers.join(',') + '\n' + data.map(e => e.join(',')).join('\n');
-
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    saveAs(blob, 'payments.csv');
-  };
 
   return (
     <>
@@ -75,23 +64,6 @@ function UserIncomes(id: string) {
             onChange={e => setEndDate(e.target.value)}
           />
         </span>
-        {/* <button onClick={exportToCSV} className='bg-blue-500 text-white p-2 rounded'>
-          Export to CSV
-        </button>
-        <div className='flex items-center mt-4'>
-          <label htmlFor='itemsPerPage' className='mr-2'>
-            Items per page:
-          </label>
-          <select
-            id='itemsPerPage'
-            value={itemsPerPage}
-            onChange={e => setItemsPerPage(parseInt(e.target.value, 10))}
-            className='border border-gray-300 rounded p-3'>
-            <option value={50}>50</option>
-            <option value={100}>100</option>
-            <option value={200}>200</option>
-          </select>
-        </div> */}
       </div>
 
       <div className=''>
@@ -106,35 +78,33 @@ function UserIncomes(id: string) {
             </tr>
           </thead>
           <tbody>
-            {/* {filteredPayments
-              .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
-              .map((payment, i) => {
-                return (
-                  <tr key={i}>
-                    <td className='border border-gray-200 p-2 font-bold'>
-                      {renderTokenAmount(payment.rateToken, payment.amount)}
-                    </td>
-                    <td className='border border-gray-200 p-2 text-gray-500'>
-                      {formatStringCompleteDate(parseInt(payment.createdAt))}
-                    </td>
-                    <td className='border border-gray-200 p-2 text-gray-500'>
-                      {payment.rateToken.symbol}
-                    </td>
-                    <td className='border border-gray-200 p-2 text-blue-500'>
-                      <a target='_blank' href={`/services/${payment.service.id}`}>
-                        Service n°{payment.service.id}{' '}
-                      </a>
-                    </td>
-                    <td className='border border-gray-200 p-2 text-blue-500'>
-                      <a
-                        target='_blank'
-                        href={`https://polygonscan.com/tx/${payment.transactionHash}`}>
-                        Tx
-                      </a>
-                    </td>
-                  </tr>
-                );
-              })} */}
+            {filteredPayments.map((payment, i) => {
+              return (
+                <tr key={i}>
+                  <td className='border border-gray-200 p-2 font-bold'>
+                    {renderTokenAmount(payment.rateToken, payment.amount)}
+                  </td>
+                  <td className='border border-gray-200 p-2 text-gray-500'>
+                    {formatStringCompleteDate(payment.createdAt)}
+                  </td>
+                  <td className='border border-gray-200 p-2 text-gray-500'>
+                    {payment.rateToken.symbol}
+                  </td>
+                  <td className='border border-gray-200 p-2 text-blue-500'>
+                    <a target='_blank' href={`/services/${payment.service.id}`}>
+                      Service n°{payment.service.id}{' '}
+                    </a>
+                  </td>
+                  <td className='border border-gray-200 p-2 text-blue-500'>
+                    <a
+                      target='_blank'
+                      href={`https://polygonscan.com/tx/${payment.transactionHash}`}>
+                      Tx
+                    </a>
+                  </td>
+                </tr>
+              );
+            })}
             <tr>
               <td className='border border-gray-200 p-2 font-medium'>
                 Total :
@@ -152,27 +122,24 @@ function UserIncomes(id: string) {
         </table>
       </div>
       <div className='flex justify-between mt-4'>
-        {/* <button
-          className='bg-blue-500 text-white p-2 rounded'
-          onClick={() => setCurrentPage(currentPage > 1 ? currentPage - 1 : 1)}
-          disabled={currentPage === 1}>
-          Previous
-        </button>
-        <span>
-          Page {currentPage} of {Math.ceil(filteredPayments.length / itemsPerPage)}
-        </span>
-        <button
-          className='bg-blue-500 text-white p-2 rounded'
-          onClick={() =>
-            setCurrentPage(
-              currentPage < Math.ceil(filteredPayments.length / itemsPerPage)
-                ? currentPage + 1
-                : currentPage,
-            )
-          }
-          disabled={currentPage === Math.ceil(filteredPayments.length / itemsPerPage)}>
-          Next
-        </button> */}
+        {filteredPayments.length > 0 && hasMoreData && !loading && (
+          <div className='flex justify-center items-center gap-10 flex-col pb-5'>
+            <button
+              type='submit'
+              className={`px-5 py-2 mt-5 content-center border border-indigo-600 rounded-full text-indigo-600 
+              hover:text-white hover:bg-indigo-700
+            `}
+              disabled={!hasMoreData}
+              onClick={() => loadMore()}>
+              Load More
+            </button>
+          </div>
+        )}
+        {loading && (
+          <div className='flex justify-center items-center gap-10 flex-col pb-5 mt-5'>
+            <Loading />
+          </div>
+        )}
       </div>
     </>
   );

@@ -14,9 +14,7 @@ function Incomes() {
         Your incomes summary : <span className='text-indigo-600'>{user?.handle}</span>
       </p>
       <div>
-        <div className='mb-6'>
-          <UserIncomes id={user?.id} />
-        </div>
+        <div className='mb-6'>{user?.id && <UserIncomes id={user.id} />}</div>
       </div>
     </div>
   );
