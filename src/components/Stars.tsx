@@ -1,4 +1,4 @@
-function Stars({ rating, numReviews }: { rating: number; numReviews: string }) {
+function Stars({ rating, numReviews }: { rating: number; numReviews: number }) {
   return (
     <div className='flex items-center mt-2.5 mb-5'>
       {[...Array(5)].map((_, i) => (
@@ -17,7 +17,7 @@ function Stars({ rating, numReviews }: { rating: number; numReviews: string }) {
         {rating}/5
       </span>
       <span className='text-xs text-gray-400'>
-        {numReviews} review{parseInt(numReviews) > 1 ? 's' : ''}
+        {numReviews} review{numReviews > 1 ? 's' : ''}
       </span>
     </div>
   );
