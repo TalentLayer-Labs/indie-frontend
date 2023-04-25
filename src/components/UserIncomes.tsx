@@ -6,7 +6,7 @@ import usePaymentsForUser from '../hooks/usePaymentsForUser';
 import { useNetwork } from 'wagmi';
 
 function UserIncomes({ id }: { id: string }) {
-  const ROW_SIZE = 1;
+  const ROW_SIZE = 50;
   const [startDate, setStartDate] = useState<string>('');
   const [endDate, setEndDate] = useState<string>('');
   const network = useNetwork();
