@@ -34,7 +34,7 @@ const usePaymentsForUser = (
       }
     };
     fetchData();
-  }, [numberPerPage, offset, id, startDate, endDate]);
+  }, [numberPerPage, offset, id]);
 
   const loadMore = () => {
     numberPerPage ? setOffset(offset + numberPerPage) : '';

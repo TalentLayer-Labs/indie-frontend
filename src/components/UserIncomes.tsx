@@ -63,6 +63,15 @@ function UserIncomes({ id }: { id: string }) {
             onChange={e => setEndDate(e.target.value)}
           />
         </span>
+        <button
+          type='button'
+          className='ml-4 px-3 py-1 border border-gray-400 rounded text-gray-600 hover:bg-gray-200'
+          onClick={() => {
+            setStartDate('');
+            setEndDate('');
+          }}>
+          Clear Dates
+        </button>
       </div>
 
       <div className=''>
