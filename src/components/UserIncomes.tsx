@@ -24,8 +24,8 @@ function UserIncomes({ id }: { id: string }) {
 
   const filteredPayments = payments.filter(payment => {
     const paymentTimestamp = payment.createdAt;
-    const start = startDate ? new Date(startDate).getTime() / 1000 : null; // Convert start date to timestamp
-    const end = endDate ? new Date(endDate).getTime() / 1000 : null; // Convert end date to timestamp
+    const start = startDate ? new Date(startDate).getTime() / 1000 : null;
+    const end = endDate ? new Date(endDate).getTime() / 1000 : null;
 
     if (start && end) {
       return paymentTimestamp >= start && paymentTimestamp <= end;
