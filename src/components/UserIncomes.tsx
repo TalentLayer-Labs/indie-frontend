@@ -10,7 +10,6 @@ function UserIncomes({ id }: { id: string }) {
   const [startDate, setStartDate] = useState<string>('');
   const [endDate, setEndDate] = useState<string>('');
   const network = useNetwork();
-  console.log('network', network.chain?.id);
 
   const { payments, hasMoreData, loading, loadMore } = usePaymentsForUser(
     id,
@@ -18,7 +17,6 @@ function UserIncomes({ id }: { id: string }) {
     startDate,
     endDate,
   );
-  console.log('payments', payments);
 
   if (!payments || payments.length === 0) {
     return <p className='text-2xl font-medium tracking-wider mb-8'>No incomes found</p>;
@@ -118,11 +116,13 @@ function UserIncomes({ id }: { id: string }) {
               <td className='border border-gray-200 p-2 font-medium'>
                 Total :
                 <span className='font-bold pl-2'>
-                  {filteredPayments.reduce(
-                    (total, payment) =>
-                      total + parseFloat(renderTokenAmount(payment.rateToken, payment.amount)),
-                    0,
-                  )}
+                  {filteredPayments
+                    .reduce(
+                      (total, payment) =>
+                        total + parseFloat(renderTokenAmount(payment.rateToken, payment.amount)),
+                      0,
+                    )
+                    .toFixed(3)}
                   <span className='pl-2'>MATIC</span>
                 </span>
               </td>
