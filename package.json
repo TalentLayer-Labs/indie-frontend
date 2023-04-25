@@ -16,7 +16,6 @@
     "@xmtp/xmtp-js": "7.13.1",
     "axios": "^1.1.3",
     "ethers": "^5.7.2",
-    "file-saver": "^2.0.5",
     "formik": "^2.2.9",
     "heroicons-react": "^1.4.1",
     "ipfs-http-client": "^59.0.0",
@@ -55,7 +54,6 @@
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.3",
     "@tailwindcss/line-clamp": "^0.4.2",
-    "@types/file-saver": "^2.0.5",
     "@typescript-eslint/eslint-plugin": "^5.41.0",
     "@typescript-eslint/parser": "^5.41.0",
     "@vitejs/plugin-react": "^2.2.0",
