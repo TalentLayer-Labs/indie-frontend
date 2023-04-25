@@ -197,7 +197,6 @@ export type IPayment = {
   paymentType: PaymentTypeEnum;
   transactionHash: string;
   service: IService;
-  createdAt: string;
 };
 
 export type IUserGain = {
