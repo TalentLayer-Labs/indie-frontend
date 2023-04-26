@@ -74,7 +74,7 @@ function ServiceDetail({ service }: { service: IService }) {
               <p className='text-sm text-gray-500 mt-4'>
                 <strong>About:</strong> {service.description?.about}
               </p>
-              {service.description?.rateToken && (
+              {service.description?.rateToken && service.description?.rateAmount && (
                 <p className='text-sm text-gray-500 mt-4'>
                   <strong>Budget:</strong>{' '}
                   {renderTokenAmountFromConfig(
@@ -85,7 +85,7 @@ function ServiceDetail({ service }: { service: IService }) {
               )}
               <p className='text-sm text-gray-500 mt-4'>
                 <strong>Keywords:</strong>{' '}
-                {service.description?.keywords_raw.split(',').map((keyword, i) => (
+                {service.description?.keywords_raw?.split(',').map((keyword, i) => (
                   <span
                     key={i}
                     className='inline-block bg-gray-100 rounded-full px-2 py-1 text-xs font-semibold text-gray-700 mr-2 mb-2'>
