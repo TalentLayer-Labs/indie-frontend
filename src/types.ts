@@ -6,8 +6,8 @@ export type IUser = {
   handle: string;
   address: string;
   rating: string;
-  numReviews: string;
   description?: IUserDetails;
+  userStats: IUserStats;
 };
 
 export type IUserDetails = {
@@ -18,6 +18,15 @@ export type IUserDetails = {
   video_url?: string;
   about: string;
   skills_raw: string;
+};
+
+export type IUserStats = {
+  numReceivedReviews: number;
+  numGivenReviews: number;
+  numCreatedServices: number;
+  numFinishedServicesAsBuyer: number;
+  numCreatedProposals: number;
+  numFinishedServicesAsSeller: number;
 };
 
 export type IAccount = {

@@ -16,7 +16,9 @@ export const getUsers = (
         id
         address
         handle
-        numReviews
+        userStats {
+          numReceivedReviews
+        }
         rating
       }
     }
@@ -32,7 +34,9 @@ export const getUserById = (id: string): Promise<any> => {
         address
         handle
         rating
-        numReviews
+        userStats {
+          numReceivedReviews
+        }
         updatedAt
         createdAt
         description {
@@ -62,7 +66,9 @@ export const getUserByAddress = (address: string): Promise<any> => {
         address
         handle
         rating
-        numReviews
+        userStats {
+          numReceivedReviews
+        }
         updatedAt
         createdAt
         description {
