@@ -75,15 +75,15 @@ export type IKeyword = {
 };
 
 export type IServiceDetails = {
-  title: string;
-  about: string;
-  keywords: IKeyword[];
-  rateAmount: string;
-  rateToken: string;
   id: string;
-  keywords_raw: string;
-  startDate: string;
-  expectedEndDate: string;
+  title?: string;
+  about?: string;
+  keywords: IKeyword[];
+  rateAmount?: string;
+  rateToken?: string;
+  keywords_raw?: string;
+  startDate?: string;
+  expectedEndDate?: string;
 };
 
 export type IServiceDetailsBuyer = {

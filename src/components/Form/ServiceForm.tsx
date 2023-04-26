@@ -1,5 +1,5 @@
 import { useWeb3Modal } from '@web3modal/react';
-import { ethers, FixedNumber } from 'ethers';
+import { BigNumberish, ethers, FixedNumber } from 'ethers';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -56,7 +56,7 @@ function ServiceForm() {
             selectedToken
               ? FixedNumber.from(
                   ethers.utils.formatUnits(
-                    selectedToken?.minimumTransactionAmount,
+                    selectedToken?.minimumTransactionAmount as BigNumberish,
                     selectedToken?.decimals,
                   ),
                 ).toUnsafeFloat()
@@ -65,7 +65,7 @@ function ServiceForm() {
               selectedToken
                 ? FixedNumber.from(
                     ethers.utils.formatUnits(
-                      selectedToken?.minimumTransactionAmount,
+                      selectedToken?.minimumTransactionAmount as BigNumberish,
                       selectedToken?.decimals,
                     ),
                   ).toUnsafeFloat()
