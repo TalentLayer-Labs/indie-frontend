@@ -23,7 +23,7 @@ function ServiceItem({ service }: { service: IService }) {
 
           <div className=' border-t border-gray-100 pt-4'>
             <div>
-              {service.description?.keywords_raw.split(',').map((keyword, i) => (
+              {service.description?.keywords_raw?.split(',').map((keyword, i) => (
                 <span
                   key={i}
                   className='inline-block bg-gray-200 rounded-full px-2 py-1 text-xs font-semibold text-gray-700 mr-2 mb-2'>
