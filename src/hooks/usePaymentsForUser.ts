@@ -4,25 +4,30 @@ import { IPayment } from '../types';
 
 const usePaymentsForUser = (
   id: string,
-  numberPerPage?: number,
+  numberPerPage: number,
   startDate?: string,
   endDate?: string,
 ): { hasMoreData: boolean; loading: boolean; payments: IPayment[]; loadMore: () => void } => {
   const [payments, setPayments] = useState<IPayment[]>([]);
   const [hasMoreData, setHasMoreData] = useState(true);
   const [loading, setLoading] = useState(false);
-  const [offset, setOffset] = useState(0);
+  const [click, setClick] = useState(1);
+
+  const total = click * numberPerPage;
+
+  const start = startDate ? new Date(startDate).getTime() / 1000 : '';
+  const end = endDate ? new Date(endDate).getTime() / 1000 : '';
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await getPaymentsForUser(id, numberPerPage, offset, startDate, endDate);
+        const response = await getPaymentsForUser(id, total, 0, start.toString(), end.toString());
 
         if (response && response.data && response.data.data) {
-          setPayments([...payments, ...response.data.data.payments]);
+          setPayments([...response.data.data.payments]);
 
-          if (numberPerPage && response.data.data.payments.length < numberPerPage) {
+          if (response.data.data.payments.length < total) {
             setHasMoreData(false);
           }
         }
@@ -34,10 +39,17 @@ const usePaymentsForUser = (
       }
     };
     fetchData();
-  }, [numberPerPage, offset, id]);
+  }, [total, id, start, end]);
+
+  useEffect(() => {
+    if (!!start && !!end) {
+      setClick(1);
+      setHasMoreData(true);
+    }
+  }, [start, end]);
 
   const loadMore = () => {
-    numberPerPage ? setOffset(offset + numberPerPage) : '';
+    setClick(click + 1);
   };
 
   return { payments, hasMoreData: hasMoreData, loading, loadMore };
