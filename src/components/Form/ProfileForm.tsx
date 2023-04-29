@@ -12,6 +12,7 @@ import { createMultiStepsTransactionToast, showErrorTransactionToast } from '../
 import Loading from '../Loading';
 import SubmitButton from './SubmitButton';
 import useUserById from '../../hooks/useUserById';
+import RichText from './RichText/RichText';
 
 interface IFormValues {
   title?: string;
@@ -32,7 +33,9 @@ function ProfileForm({ callback }: { callback?: () => void }) {
   const { user } = useContext(TalentLayerContext);
   const provider = useProvider({ chainId: import.meta.env.VITE_NETWORK_ID });
   const userDescription = user?.id ? useUserById(user?.id)?.description : null;
-  const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
+  const { data: signer } = useSigner({
+    chainId: import.meta.env.VITE_NETWORK_ID,
+  });
 
   if (!user?.id) {
     return <Loading />;
@@ -145,15 +148,16 @@ function ProfileForm({ callback }: { callback?: () => void }) {
             <label className='block'>
               <span className='text-gray-700'>About</span>
               <Field
-                as='textarea'
                 id='about'
+                type='hidden'
                 name='about'
                 rows='4'
                 className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
                 placeholder=''
+                value='bonjoru'
               />
             </label>
-
+            <RichText />
             <label className='block'>
               <span className='text-gray-700'>Skills</span>
               <Field
