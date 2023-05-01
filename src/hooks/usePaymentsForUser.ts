@@ -11,9 +11,9 @@ const usePaymentsForUser = (
   const [payments, setPayments] = useState<IPayment[]>([]);
   const [hasMoreData, setHasMoreData] = useState(true);
   const [loading, setLoading] = useState(false);
-  const [click, setClick] = useState(1);
+  const [offset, setOffset] = useState(1);
 
-  const total = click * numberPerPage;
+  const total = offset * numberPerPage;
 
   const start = startDate ? new Date(startDate).getTime() / 1000 : '';
   const end = endDate ? new Date(endDate).getTime() / 1000 : '';
@@ -43,13 +43,13 @@ const usePaymentsForUser = (
 
   useEffect(() => {
     if (!!start && !!end) {
-      setClick(1);
+      setOffset(1);
       setHasMoreData(true);
     }
   }, [start, end]);
 
   const loadMore = () => {
-    setClick(click + 1);
+    setOffset(offset + 1);
   };
 
   return { payments, hasMoreData: hasMoreData, loading, loadMore };

@@ -104,22 +104,6 @@ function UserIncomes({ id }: { id: string }) {
                     </tr>
                   );
                 })}
-                <tr>
-                  <td className='border border-gray-200 p-2 font-medium'>
-                    Total :
-                    <span className='font-bold pl-2'>
-                      {payments
-                        .reduce(
-                          (total, payment) =>
-                            total +
-                            parseFloat(renderTokenAmount(payment.rateToken, payment.amount)),
-                          0,
-                        )
-                        .toFixed(3)}
-                      <span className='pl-2'>MATIC</span>
-                    </span>
-                  </td>
-                </tr>
               </tbody>
             </table>
           </div>
