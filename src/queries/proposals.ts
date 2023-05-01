@@ -32,7 +32,9 @@ export const getAllProposalsByServiceId = (id: string): Promise<any> => {
           address
           cid
           rating
-          numReviews
+          userStats {
+            numReceivedReviews
+          }
         }
         description {
           id

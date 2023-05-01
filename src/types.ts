@@ -6,8 +6,8 @@ export type IUser = {
   handle: string;
   address: string;
   rating: string;
-  numReviews: string;
   description?: IUserDetails;
+  userStats: IUserStats;
 };
 
 export type IUserDetails = {
@@ -18,6 +18,15 @@ export type IUserDetails = {
   video_url?: string;
   about: string;
   skills_raw: string;
+};
+
+export type IUserStats = {
+  numReceivedReviews: number;
+  numGivenReviews: number;
+  numCreatedServices: number;
+  numFinishedServicesAsBuyer: number;
+  numCreatedProposals: number;
+  numFinishedServicesAsSeller: number;
 };
 
 export type IAccount = {
@@ -66,15 +75,15 @@ export type IKeyword = {
 };
 
 export type IServiceDetails = {
-  title: string;
-  about: string;
-  keywords: IKeyword[];
-  rateAmount: string;
-  rateToken: string;
   id: string;
-  keywords_raw: string;
-  startDate: string;
-  expectedEndDate: string;
+  title?: string;
+  about?: string;
+  keywords: IKeyword[];
+  rateAmount?: string;
+  rateToken?: string;
+  keywords_raw?: string;
+  startDate?: string;
+  expectedEndDate?: string;
 };
 
 export type IServiceDetailsBuyer = {

@@ -33,7 +33,7 @@ function UserDetail({ user }: { user: IUser }) {
             </div>
           </div>
         </div>
-        <Stars rating={Number(user.rating)} numReviews={user.numReviews} />
+        <Stars rating={Number(user.rating)} numReviews={user.userStats.numReceivedReviews} />
       </div>
       <div className=' border-t border-gray-100 pt-4 w-full'>
         {userDescription?.name && (

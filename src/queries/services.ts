@@ -24,7 +24,9 @@ const serviceQueryFields = `
     handle
     address
     rating
-    numReviews
+    userStats {
+      numReceivedReviews
+    }
   }
   seller {
     id

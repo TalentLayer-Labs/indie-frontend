@@ -68,13 +68,13 @@ function ServiceDetail({ service }: { service: IService }) {
                 <strong>Employer rating:</strong>
                 <Stars
                   rating={Number(service.buyer.rating)}
-                  numReviews={service.buyer.numReviews}
+                  numReviews={service.buyer.userStats.numReceivedReviews}
                 />
               </div>
               <p className='text-sm text-gray-500 mt-4'>
                 <strong>About:</strong> {service.description?.about}
               </p>
-              {service.description?.rateToken && (
+              {service.description?.rateToken && service.description?.rateAmount && (
                 <p className='text-sm text-gray-500 mt-4'>
                   <strong>Budget:</strong>{' '}
                   {renderTokenAmountFromConfig(
