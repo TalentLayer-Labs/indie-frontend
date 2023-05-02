@@ -1,11 +1,11 @@
-import { useContext } from 'react';
-import { useRouter } from 'next/router';
-import TalentLayerContext from '../context/talentLayer';
-import { IUser } from '../types';
-import Stars from './Stars';
-import Loading from './Loading';
-import useUserById from '../hooks/useUserById';
+import Image from 'next/image';
 import Link from 'next/link';
+import { useContext } from 'react';
+import TalentLayerContext from '../context/talentLayer';
+import useUserById from '../hooks/useUserById';
+import { IUser } from '../types';
+import Loading from './Loading';
+import Stars from './Stars';
 
 function UserItem({ user }: { user: IUser }) {
   const { user: currentUser } = useContext(TalentLayerContext);
@@ -20,9 +20,10 @@ function UserItem({ user }: { user: IUser }) {
       <div className='flex flex-col items-top justify-between w-full'>
         <div className='flex flex-col justify-start items-start gap-4'>
           <div className='flex items-center justify-start mb-4'>
-            <img
-              src={`/default-avatar-${Number(user?.id ? user.id : '1') % 11}.jpeg`}
+            <Image
+              src={`/images/default-avatar-${Number(user?.id ? user.id : '1') % 11}.jpeg`}
               className='w-10 mr-4 rounded-full'
+              alt='default avatar'
             />
             <div className='flex flex-col'>
               <p className='text-gray-900 font-medium'>{user.handle}</p>

@@ -1,12 +1,8 @@
 import { Transition } from '@headlessui/react';
-import { useAccount } from 'wagmi';
 import Image from 'next/image';
-
 import { Container } from './container';
 
 export const Navbar = () => {
-  const { isConnecting, isReconnecting } = useAccount();
-
   return (
     <header className='sticky top-0 z-50 bg-black/90 py-7 backdrop-blur-sm lg:py-5'>
       <Container>

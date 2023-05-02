@@ -1,8 +1,8 @@
-import { useRouter } from 'next/router';
-import { renderTokenAmountFromConfig } from '../utils/conversion';
-import { IService } from '../types';
-import { formatDate } from '../utils/dates';
 import Link from 'next/link';
+import { IService } from '../types';
+import { renderTokenAmountFromConfig } from '../utils/conversion';
+import { formatDate } from '../utils/dates';
+import Image from 'next/image';
 
 function ServiceItem({ service }: { service: IService }) {
   return (
@@ -10,9 +10,10 @@ function ServiceItem({ service }: { service: IService }) {
       <div className='flex flex-col items-top justify-between gap-4 w-full'>
         <div className='flex flex-col justify-start items-start gap-4'>
           <div className='flex items-center justify-start'>
-            <img
-              src={`/default-avatar-${Number(service.buyer.id) % 11}.jpeg`}
+            <Image
+              src={`/images/default-avatar-${Number(service.buyer.id) % 11}.jpeg`}
               className='w-10 mr-4 rounded-full'
+              alt='default avatar'
             />
             <div className='flex flex-col'>
               <p className='text-gray-900 font-medium'>{service.description?.title}</p>

@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { buildMediaUrl } from '../utils/ipfs';
 import { IlensUser } from '../utils/types';
 interface IProps {
@@ -10,10 +11,11 @@ function UserLensProfile({ lensUser }: IProps) {
       {lensUser?.id && (
         <div className='card bg-white border border-gray-200 rounded-xl'>
           {lensUser?.picture.original.url && (
-            <img
+            <Image
               className='w-32 pt-2  mx-auto rounded-full border-8 border-white'
               src={buildMediaUrl(lensUser?.picture.original.url)}
-              alt=''></img>
+              alt=''
+            />
           )}
           <div className='text-center text-gray-900 text-lg font-medium'>{lensUser?.name}</div>
           <div className='text-center text-green-500 text-sm'>@{lensUser?.handle}</div>

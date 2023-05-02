@@ -1,12 +1,12 @@
+import Link from 'next/link';
 import { useContext } from 'react';
-import { useRouter } from 'next/router';
 import TalentLayerContext from '../context/talentLayer';
 import useUserById from '../hooks/useUserById';
 import PohModule from '../modules/Poh/PohModule';
 import { IUser } from '../types';
 import Loading from './Loading';
 import Stars from './Stars';
-import Link from 'next/link';
+import Image from 'next/image';
 
 function UserDetail({ user }: { user: IUser }) {
   const { user: currentUser } = useContext(TalentLayerContext);
@@ -21,9 +21,10 @@ function UserDetail({ user }: { user: IUser }) {
       <div className='flex items-top justify-between w-full'>
         <div className='flex flex-col justify-start items-start gap-4'>
           <div className='flex items-center justify-start mb-4'>
-            <img
-              src={`/default-avatar-${Number(user?.id ? user.id : '1') % 11}.jpeg`}
+            <Image
+              src={`/images/default-avatar-${Number(user?.id ? user.id : '1') % 11}.jpeg`}
               className='w-10 mr-4 rounded-full'
+              alt='default avatar'
             />
             <div className='flex flex-col'>
               <p className='text-gray-900 font-medium'>{user?.handle}</p>

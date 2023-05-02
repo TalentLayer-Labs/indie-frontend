@@ -1,10 +1,8 @@
-import { createUserIfNecessary } from '@pushprotocol/restapi/src/lib/chat/helpers';
 import { ethers } from 'ethers';
-import { createContext, ReactNode, useContext, useMemo } from 'react';
 import { useRouter } from 'next/router';
+import { createContext, ReactNode, useContext, useMemo } from 'react';
 import { useSigner } from 'wagmi';
 import TalentLayerContext from '../../context/talentLayer';
-import { ConversationDisplayType } from '../../types';
 import { XmtpContext } from '../xmtp/context/XmtpContext';
 
 const MessagingContext = createContext<{

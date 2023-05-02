@@ -1,12 +1,12 @@
+import Link from 'next/link';
 import { useContext } from 'react';
 import TalentLayerContext from '../context/talentLayer';
-import { renderTokenAmount } from '../utils/conversion';
+import useServiceById from '../hooks/useServiceById';
 import { IProposal, ProposalStatusEnum, ServiceStatusEnum } from '../types';
+import { renderTokenAmount } from '../utils/conversion';
 import { formatDate } from '../utils/dates';
 import ValidateProposalModal from './Modal/ValidateProposalModal';
-import useServiceById from '../hooks/useServiceById';
-import { useRouter } from 'next/router';
-import Link from 'next/link';
+import Image from 'next/image';
 
 function ProposalItem({ proposal }: { proposal: IProposal }) {
   const { user, account } = useContext(TalentLayerContext);
@@ -23,9 +23,10 @@ function ProposalItem({ proposal }: { proposal: IProposal }) {
       <div className='flex flex-col items-top justify-between gap-4 w-full'>
         <div className='flex flex-col justify-start items-start gap-4'>
           <div className='flex items-center justify-start w-full  relative'>
-            <img
-              src={`/default-avatar-${Number(proposal.seller.id) % 11}.jpeg`}
+            <Image
+              src={`/images/default-avatar-${Number(proposal.seller.id) % 11}.jpeg`}
               className='w-10 mr-4 rounded-full'
+              alt='default avatar'
             />
             <div className='flex flex-col'>
               <p className='text-gray-900 font-medium'>

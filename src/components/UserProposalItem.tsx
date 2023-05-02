@@ -6,6 +6,7 @@ import { IProposal, ProposalStatusEnum } from '../types';
 import { formatDate } from '../utils/dates';
 import useServiceById from '../hooks/useServiceById';
 import Link from 'next/link';
+import Image from 'next/image';
 
 function UserProposalItem({ proposal }: { proposal: IProposal }) {
   const { user } = useContext(TalentLayerContext);
@@ -22,9 +23,10 @@ function UserProposalItem({ proposal }: { proposal: IProposal }) {
       <div className='flex flex-col items-top justify-between gap-4 w-full'>
         <div className='flex flex-col justify-start items-start gap-4'>
           <div className='flex items-center justify-start w-full  relative'>
-            <img
-              src={`/default-avatar-${Number(proposal.service.buyer.id) % 11}.jpeg`}
+            <Image
+              src={`/images/default-avatar-${Number(proposal.service.buyer.id) % 11}.jpeg`}
               className='w-10 mr-4 rounded-full'
+              alt='default avatar'
             />
             <div className='flex flex-col'>
               <p className='text-gray-900 font-medium'>{service.description?.title}</p>

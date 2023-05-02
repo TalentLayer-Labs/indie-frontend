@@ -1,5 +1,6 @@
+import Image from 'next/image';
+import Link from 'next/link';
 import { useContext } from 'react';
-import { useRouter } from 'next/router';
 import TalentLayerContext from '../context/talentLayer';
 import usePaymentsByService from '../hooks/usePaymentsByService';
 import useProposalsByService from '../hooks/useProposalsByService';
@@ -14,7 +15,6 @@ import ProposalItem from './ProposalItem';
 import ReviewItem from './ReviewItem';
 import ServiceStatus from './ServiceStatus';
 import Stars from './Stars';
-import Link from 'next/link';
 
 function ServiceDetail({ service }: { service: IService }) {
   const { account, user } = useContext(TalentLayerContext);
@@ -41,9 +41,10 @@ function ServiceDetail({ service }: { service: IService }) {
         <div className='flex flex-col items-top justify-between gap-4 w-full'>
           <div className='flex flex-col justify-start items-start gap-4'>
             <div className='flex items-center justify-start w-full relative'>
-              <img
-                src={`/default-avatar-${Number(service.buyer.id) % 11}.jpeg`}
+              <Image
+                src={`/images/default-avatar-${Number(service.buyer.id) % 11}.jpeg`}
                 className='w-10 mr-4 rounded-full'
+                alt='default avatar'
               />
               <div className='flex flex-col'>
                 <p className='text-gray-900 font-medium'>{service.description?.title}</p>

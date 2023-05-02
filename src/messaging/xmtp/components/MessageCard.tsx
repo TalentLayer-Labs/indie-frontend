@@ -5,6 +5,7 @@ import { formatDateDivider } from '../../../utils/dates';
 import { formatDateTime } from '../utils/messaging';
 import { ChatMessageStatus, XmtpChatMessage } from '../../../types';
 import Loading from '../../../components/Loading';
+import Image from 'next/image';
 
 interface IMessageCardProps {
   message: XmtpChatMessage;
@@ -28,8 +29,8 @@ const MessageCard = ({ message, dateHasChanged }: IMessageCardProps) => {
               <span className='text-sm pr-3 text-gray-400'>
                 {formatDateTime(message.timestamp)}
               </span>
-              <img
-                src={`/default-avatar-${Number(user?.id ? user.id : '1') % 11}.jpeg`}
+              <Image
+                src={`/images/default-avatar-${Number(user?.id ? user.id : '1') % 11}.jpeg`}
                 className='object-cover h-12 w-12 rounded-full'
                 alt=''
               />
@@ -78,8 +79,8 @@ const MessageCard = ({ message, dateHasChanged }: IMessageCardProps) => {
           </div>
           {!isSender && (
             <>
-              <img
-                src={`/default-avatar-${Number(userSending?.id) % 11}.jpeg`}
+              <Image
+                src={`/images/default-avatar-${Number(userSending?.id) % 11}.jpeg`}
                 className='object-cover h-12 w-12 rounded-full'
                 alt=''
               />

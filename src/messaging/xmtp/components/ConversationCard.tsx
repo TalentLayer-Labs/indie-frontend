@@ -3,6 +3,7 @@ import useUserByAddress from '../../../hooks/useUserByAddress';
 import { useRouter } from 'next/router';
 import { formatDateConversationCard } from '../../../utils/dates';
 import { XmtpChatMessage } from '../../../types';
+import Image from 'next/image';
 
 interface IConversationCardProps {
   peerAddress: string;
@@ -31,8 +32,8 @@ const ConversationCard = ({
           isConvSelected ? 'bg-gray-200 ' : 'border-b-2'
         }`}>
         <div className='w-[40px]'>
-          <img
-            src={`/default-avatar-${Number(user?.id) % 11}.jpeg`}
+          <Image
+            src={`/images/default-avatar-${Number(user?.id) % 11}.jpeg`}
             className='object-cover w-[40px] h-[40px] rounded-full'
             width={40}
             alt=''
