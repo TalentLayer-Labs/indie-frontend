@@ -5,7 +5,7 @@ import { useBalance, useProvider, useSigner } from 'wagmi';
 import { FEE_RATE_DIVIDER } from '../../config';
 import { validateProposal } from '../../contracts/acceptProposal';
 import useFees from '../../hooks/useFees';
-import ContactButton from '../../messaging/components/ContactButton';
+import ContactButton from '../../modules/Messaging/components/ContactButton';
 import { IAccount, IProposal } from '../../types';
 import { renderTokenAmount } from '../../utils/conversion';
 import Step from '../Step';

@@ -29,6 +29,8 @@ function UserAccount() {
                       className='h-8 w-8 rounded-full'
                       alt=''
                       src={`/images/default-avatar-${Number(user?.id ? user.id : '1') % 11}.jpeg`}
+                      width={50}
+                      height={50}
                     />
                   )}
                 </Menu.Button>
@@ -49,7 +51,6 @@ function UserAccount() {
             )}
           </div>
           <Transition
-            show={false}
             as={Fragment}
             enter='transition ease-out duration-100'
             enterFrom='transform opacity-0 scale-95'

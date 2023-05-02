@@ -3,7 +3,7 @@ import { Client, Conversation, DecodedMessage } from '@xmtp/xmtp-js';
 import { Signer } from 'ethers';
 import { useAccount, useSigner } from 'wagmi';
 import { buildChatMessage, CONVERSATION_PREFIX } from '../utils/messaging';
-import { XmtpChatMessage } from '../../../types';
+import { XmtpChatMessage } from '../utils/types';
 
 type clientEnv = 'local' | 'dev' | 'production' | undefined;
 

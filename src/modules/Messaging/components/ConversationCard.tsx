@@ -35,7 +35,8 @@ const ConversationCard = ({
           <Image
             src={`/images/default-avatar-${Number(user?.id) % 11}.jpeg`}
             className='object-cover w-[40px] h-[40px] rounded-full'
-            width={40}
+            width={50}
+            height={50}
             alt=''
           />
         </div>

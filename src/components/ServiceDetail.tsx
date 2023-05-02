@@ -5,7 +5,7 @@ import TalentLayerContext from '../context/talentLayer';
 import usePaymentsByService from '../hooks/usePaymentsByService';
 import useProposalsByService from '../hooks/useProposalsByService';
 import useReviewsByService from '../hooks/useReviewsByService';
-import ContactButton from '../messaging/components/ContactButton';
+import ContactButton from '../modules/Messaging/components/ContactButton';
 import { IService, ProposalStatusEnum, ServiceStatusEnum } from '../types';
 import { renderTokenAmountFromConfig } from '../utils/conversion';
 import { formatDate } from '../utils/dates';
@@ -44,6 +44,8 @@ function ServiceDetail({ service }: { service: IService }) {
               <Image
                 src={`/images/default-avatar-${Number(service.buyer.id) % 11}.jpeg`}
                 className='w-10 mr-4 rounded-full'
+                width={50}
+                height={50}
                 alt='default avatar'
               />
               <div className='flex flex-col'>

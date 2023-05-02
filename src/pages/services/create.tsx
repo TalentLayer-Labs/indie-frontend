@@ -2,8 +2,8 @@ import { useContext } from 'react';
 import ServiceForm from '../../components/Form/ServiceForm';
 import Steps from '../../components/Steps';
 import TalentLayerContext from '../../context/talentLayer';
-import ConnectButton from '../../messaging/components/ConnectButton';
-import MessagingContext from '../../messaging/context/messging';
+import ConnectButton from '../../modules/Messaging/components/ConnectButton';
+import MessagingContext from '../../modules/Messaging/context/messging';
 
 function CreateService() {
   const { account, user } = useContext(TalentLayerContext);

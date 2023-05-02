@@ -2,8 +2,8 @@ import { ethers } from 'ethers';
 import { useRouter } from 'next/router';
 import { createContext, ReactNode, useContext, useMemo } from 'react';
 import { useSigner } from 'wagmi';
-import TalentLayerContext from '../../context/talentLayer';
-import { XmtpContext } from '../xmtp/context/XmtpContext';
+import TalentLayerContext from '../../../context/talentLayer';
+import { XmtpContext } from './XmtpContext';
 
 const MessagingContext = createContext<{
   userExists: () => boolean;

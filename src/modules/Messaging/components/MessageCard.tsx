@@ -32,6 +32,8 @@ const MessageCard = ({ message, dateHasChanged }: IMessageCardProps) => {
               <Image
                 src={`/images/default-avatar-${Number(user?.id ? user.id : '1') % 11}.jpeg`}
                 className='object-cover h-12 w-12 rounded-full'
+                width={50}
+                height={50}
                 alt=''
               />
             </>
@@ -82,6 +84,8 @@ const MessageCard = ({ message, dateHasChanged }: IMessageCardProps) => {
               <Image
                 src={`/images/default-avatar-${Number(userSending?.id) % 11}.jpeg`}
                 className='object-cover h-12 w-12 rounded-full'
+                width={50}
+                height={50}
                 alt=''
               />
               <span className='text-sm pl-3 text-gray-400'>

@@ -15,6 +15,8 @@ function ReviewItem({ review }: { review: IReview }) {
             <Image
               src={`/images/default-avatar-${Number(review.to.id) % 11}.jpeg`}
               className='w-10 mr-4 rounded-full'
+              width={50}
+              height={50}
               alt='default avatar'
             />
             <div className='flex flex-col'>
