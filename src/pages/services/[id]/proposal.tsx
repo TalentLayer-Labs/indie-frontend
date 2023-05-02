@@ -1,22 +1,28 @@
 import { useContext } from 'react';
 import { useParams } from 'react-router-dom';
-import Back from '../components/Back';
-import ProposalForm from '../components/Form/ProposalForm';
-import Loading from '../components/Loading';
-import Steps from '../components/Steps';
-import TalentLayerContext from '../context/talentLayer';
-import useServiceById from '../hooks/useServiceById';
-import ConnectButton from '../messaging/components/ConnectButton';
-import MessagingContext from '../messaging/context/messging';
-import useProposalById from '../hooks/useProposalById';
-import { ProposalStatusEnum, ServiceStatusEnum } from '../types';
+import Back from '../../../components/Back';
+import ProposalForm from '../../../components/Form/ProposalForm';
+import Loading from '../../../components/Loading';
+import Steps from '../../../components/Steps';
+import TalentLayerContext from '../../../context/talentLayer';
+import useServiceById from '../../../hooks/useServiceById';
+import ConnectButton from '../../../messaging/components/ConnectButton';
+import MessagingContext from '../../../messaging/context/messging';
+import useProposalById from '../../../hooks/useProposalById';
+import { ProposalStatusEnum, ServiceStatusEnum } from '../../../types';
+import { useRouter } from 'next/router';
 
 function CreateOrEditProposal() {
   const { account, user } = useContext(TalentLayerContext);
   const { userExists } = useContext(MessagingContext);
-  const { id } = useParams<{ id: string }>();
-  const service = useServiceById(id || '1');
+  const router = useRouter();
+  const { id } = router.query;
+  const service = useServiceById(id as string);
   const existingProposal = useProposalById(`${id}-${user?.id}`);
+
+  console.log({
+    existingProposal,
+  });
 
   if (!service) {
     return <Loading />;

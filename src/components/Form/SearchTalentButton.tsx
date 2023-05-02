@@ -10,7 +10,7 @@ function SearchTalentButton(props?: { value?: string }) {
     const formElm = e.target as HTMLFormElement;
     const searchQueryRef = formElm.querySelector('input')!.value;
     const serviceUrl = searchQueryRef.length > 0 ? `/talents?s=${searchQueryRef}` : '/talents';
-    navigate(serviceUrl);
+    router.push(serviceUrl);
     window.location.reload();
   }, []);
 

@@ -1,12 +1,12 @@
 import { useContext } from 'react';
-import Steps from '../components/Steps';
-import UserBadges from '../modules/Sismo/components/UserBadges';
-import UserDetail from '../components/UserDetail';
-import UserGains from '../components/UserGains';
-import UserPayments from '../components/UserPayments';
-import UserProposals from '../components/UserProposals';
-import UserServices from '../components/UserServices';
-import TalentLayerContext from '../context/talentLayer';
+import Steps from '../../components/Steps';
+import UserBadges from '../../modules/Sismo/components/UserBadges';
+import UserDetail from '../../components/UserDetail';
+import UserGains from '../../components/UserGains';
+import UserPayments from '../../components/UserPayments';
+import UserProposals from '../../components/UserProposals';
+import UserServices from '../../components/UserServices';
+import TalentLayerContext from '../../context/talentLayer';
 
 function Dashboard() {
   const { account, user } = useContext(TalentLayerContext);

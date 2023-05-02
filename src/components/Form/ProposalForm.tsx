@@ -45,6 +45,12 @@ function ProposalForm({
   const router = useRouter();
   const allowedTokenList = useAllowedTokens();
 
+  console.log({ allowedTokenList });
+
+  if (allowedTokenList.length === 0) {
+    return <div>Loading...</div>;
+  }
+
   let existingExpirationDate, existingRateTokenAmount;
   if (existingProposal) {
     existingExpirationDate = Math.floor(
@@ -58,6 +64,8 @@ function ProposalForm({
     existingRateTokenAmount = FixedNumber.from(
       ethers.utils.formatUnits(existingProposal.rateAmount, token?.decimals),
     ).toUnsafeFloat();
+
+    console.log({ existingRateTokenAmount });
   }
 
   const initialValues: IFormValues = {
@@ -141,7 +149,7 @@ function ProposalForm({
         );
         setSubmitting(false);
         resetForm();
-        navigate(-1);
+        router.back();
       } catch (error) {
         showErrorTransactionToast(error);
       }

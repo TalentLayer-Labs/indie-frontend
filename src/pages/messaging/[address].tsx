@@ -1,19 +1,19 @@
 import { useContext, useState } from 'react';
-import { XmtpContext } from '../messaging/xmtp/context/XmtpContext';
-import TalentLayerContext from '../context/talentLayer';
+import { XmtpContext } from '../../messaging/xmtp/context/XmtpContext';
+import TalentLayerContext from '../../context/talentLayer';
 import { useSigner } from 'wagmi';
 import { watchAccount } from '@wagmi/core';
-import ConversationList from '../messaging/xmtp/components/ConversationList';
-import CardHeader from '../messaging/xmtp/components/CardHeader';
-import MessageList from '../messaging/xmtp/components/MessageList';
-import useStreamConversations from '../messaging/xmtp/hooks/useStreamConversations';
-import useSendMessage from '../messaging/xmtp/hooks/useSendMessage';
-import MessageComposer from '../messaging/xmtp/components/MessageComposer';
-import { useNavigate, useParams } from 'react-router-dom';
-import useUserByAddress from '../hooks/useUserByAddress';
-import { ChatMessageStatus, XmtpChatMessage } from '../types';
-import { NON_EXISTING_XMTP_USER_ERROR_MESSAGE } from '../messaging/xmtp/hooks/useStreamMessages';
-import Steps from '../components/Steps';
+import ConversationList from '../../messaging/xmtp/components/ConversationList';
+import CardHeader from '../../messaging/xmtp/components/CardHeader';
+import MessageList from '../../messaging/xmtp/components/MessageList';
+import useStreamConversations from '../../messaging/xmtp/hooks/useStreamConversations';
+import useSendMessage from '../../messaging/xmtp/hooks/useSendMessage';
+import MessageComposer from '../../messaging/xmtp/components/MessageComposer';
+import useUserByAddress from '../../hooks/useUserByAddress';
+import { ChatMessageStatus, XmtpChatMessage } from '../../types';
+import { NON_EXISTING_XMTP_USER_ERROR_MESSAGE } from '../../messaging/xmtp/hooks/useStreamMessages';
+import Steps from '../../components/Steps';
+import { useRouter } from 'next/router';
 
 function XmtpMessaging() {
   const { user } = useContext(TalentLayerContext);
@@ -22,8 +22,8 @@ function XmtpMessaging() {
   });
   const { providerState, setProviderState } = useContext(XmtpContext);
   const [messageContent, setMessageContent] = useState<string>('');
-  const { address: selectedConversationPeerAddress = '' } = useParams();
   const router = useRouter();
+  const { address: selectedConversationPeerAddress = '' } = router.query;
   const [sendingPending, setSendingPending] = useState(false);
   const [messageSendingErrorMsg, setMessageSendingErrorMsg] = useState('');
 
@@ -36,8 +36,8 @@ function XmtpMessaging() {
   watchAccount(() => {
     providerState?.disconnect?.();
     selectedConversationPeerAddress
-      ? navigate(`/messaging/${selectedConversationPeerAddress}`)
-      : navigate(`/messaging`);
+      ? router.push(`/messaging/${selectedConversationPeerAddress}`)
+      : router.push(`/messaging`);
   });
 
   // Listens to new conversations ? ==> Yes, & sets them in "xmtp context". Stream stops "onDestroy"

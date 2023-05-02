@@ -75,7 +75,7 @@ function TalentLayerIdForm() {
 
         setSubmitting(false);
         // TODO: add a refresh function on TL context and call it here rather than hard refresh
-        navigate(0);
+        router.reload();
       } catch (error: any) {
         showErrorTransactionToast(error);
       }

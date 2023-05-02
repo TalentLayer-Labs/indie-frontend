@@ -1,7 +1,7 @@
 import { useContext } from 'react';
-import ProfileForm from '../components/Form/ProfileForm';
-import Steps from '../components/Steps';
-import TalentLayerContext from '../context/talentLayer';
+import ProfileForm from '../../components/Form/ProfileForm';
+import Steps from '../../components/Steps';
+import TalentLayerContext from '../../context/talentLayer';
 
 function EditProfile() {
   const { account, user } = useContext(TalentLayerContext);

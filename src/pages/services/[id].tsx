@@ -1,12 +1,13 @@
-import { useParams } from 'react-router-dom';
-import Back from '../components/Back';
-import Loading from '../components/Loading';
-import ServiceDetail from '../components/ServiceDetail';
-import useServiceById from '../hooks/useServiceById';
+import { useRouter } from 'next/router';
+import Back from '../../components/Back';
+import Loading from '../../components/Loading';
+import ServiceDetail from '../../components/ServiceDetail';
+import useServiceById from '../../hooks/useServiceById';
 
 function Service() {
-  const { id } = useParams<{ id: string }>();
-  const service = useServiceById(id || '1');
+  const router = useRouter();
+  const { id } = router.query;
+  const service = useServiceById(id as string);
 
   return (
     <div className='max-w-7xl mx-auto text-gray-900 sm:px-4 lg:px-0'>

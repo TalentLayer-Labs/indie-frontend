@@ -1,11 +1,15 @@
-import { useParams } from 'react-router-dom';
-import Back from '../components/Back';
-import useUserById from '../hooks/useUserById';
-import UserIncomes from '../components/UserIncomes';
+import { useContext } from 'react';
+import Back from '../../components/Back';
+import Loading from '../../components/Loading';
+import UserIncomes from '../../components/UserIncomes';
+import TalentLayerContext from '../../context/talentLayer';
 
 function Incomes() {
-  const { id } = useParams<{ id: string }>();
-  const user = useUserById(id || '1');
+  const { user } = useContext(TalentLayerContext);
+
+  if (!user) {
+    return <Loading />;
+  }
 
   return (
     <div className='max-w-7xl mx-auto text-gray-900 sm:px-4 lg:px-0'>

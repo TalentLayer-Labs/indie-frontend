@@ -1,8 +1,8 @@
-import ServiceItem from '../components/ServiceItem';
-import useServices from '../hooks/useServices';
-import { IService, ServiceStatusEnum } from '../types';
-import SearchServiceButton from '../components/Form/SearchServiceButton';
-import Loading from '../components/Loading';
+import ServiceItem from '../../components/ServiceItem';
+import useServices from '../../hooks/useServices';
+import { IService, ServiceStatusEnum } from '../../types';
+import SearchServiceButton from '../../components/Form/SearchServiceButton';
+import Loading from '../../components/Loading';
 import { useEffect, useRef } from 'react';
 
 function Services() {

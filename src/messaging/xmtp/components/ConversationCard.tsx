@@ -20,7 +20,7 @@ const ConversationCard = ({
   const isConvSelected = peerAddress === selectedConversationPeerAddress;
 
   const handleSelectConversation = () => {
-    navigate(`/messaging/${peerAddress}`);
+    router.push(`/messaging/${peerAddress}`);
   };
 
   return (

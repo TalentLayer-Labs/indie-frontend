@@ -132,7 +132,7 @@ function ServiceForm() {
         setSubmitting(false);
         resetForm();
         if (newId) {
-          navigate(`/services/${newId}`);
+          router.push(`/services/${newId}`);
         }
       } catch (error) {
         showErrorTransactionToast(error);
