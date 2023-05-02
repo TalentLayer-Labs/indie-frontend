@@ -12,13 +12,26 @@ const useUsers = (
   const [offset, setOffset] = useState(0);
 
   useEffect(() => {
+    setUsers([]);
+    setOffset(0);
+  }, [searchQuery]);
+
+  useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
         const response = await getUsers(numberPerPage, offset, searchQuery);
-        setUsers([...users, ...response.data.data.users]);
+
+        if (offset === 0) {
+          setUsers(response.data.data.users);
+        } else {
+          setUsers([...users, ...response.data.data.users]);
+        }
+
         if (numberPerPage && response?.data?.data?.users.length < numberPerPage) {
           setHasMoreData(false);
+        } else {
+          setHasMoreData(true);
         }
       } catch (err: any) {
         // eslint-disable-next-line no-console
