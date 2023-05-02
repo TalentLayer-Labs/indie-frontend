@@ -37,7 +37,7 @@ View a video demo of the Indie Frontend [here](https://youtu.be/8Y6E282Nwtc).
 - Install Wagmi: `npm i wagmi ethers`
 - Install web3modal: `npm install @web3modal/react @web3modal/ethereum ethers`
   - Create env file: `touch .env`
-  - Define the wallect connect project Id: `VITE_WALLECT_CONNECT_PROJECT_ID`
+  - Define the wallect connect project Id: `NEXT_PUBLIC_WALLECT_CONNECT_PROJECT_ID`
 - Install Heroicons: `npm i `
 
 ## VSCode useful plugins

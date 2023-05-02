@@ -1,8 +1,8 @@
 import { FormEvent, useCallback, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/router';
 
 function SearchTalentButton(props?: { value?: string }) {
-  const navigate = useNavigate();
+  const router = useRouter();
   const [searchQuery, setSearchQuery] = useState(props!.value || '');
 
   const handleSubmit = useCallback((e: FormEvent) => {

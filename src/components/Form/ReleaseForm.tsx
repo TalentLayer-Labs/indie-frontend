@@ -27,8 +27,10 @@ function ReleaseForm({
   isBuyer,
 }: IReleaseFormProps) {
   const { user } = useContext(TalentLayerContext);
-  const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
-  const provider = useProvider({ chainId: import.meta.env.VITE_NETWORK_ID });
+  const { data: signer } = useSigner({
+    chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
+  });
+  const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
   const [percent, setPercentage] = useState(0);
 
   const handleSubmit = async (values: any) => {

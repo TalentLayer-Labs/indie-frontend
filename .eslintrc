@@ -15,8 +15,5 @@
   "plugins": [
       "@typescript-eslint"
   ],
-  "rules": {
-      "react/jsx-filename-extension": [1, { "extensions": [".tsx"] }]
-  },
   "ignorePatterns": ["src/**/*.test.ts"]
 }

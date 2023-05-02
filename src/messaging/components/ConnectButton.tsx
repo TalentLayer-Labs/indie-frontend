@@ -5,8 +5,8 @@ function ConnectButton() {
   const { handleRegisterToMessaging } = useContext(MessagingContext);
 
   const renderText = () => {
-    if (import.meta.env.VITE_MESSENGING_TECH === 'xmtp') return 'Connect to XMTP';
-    else if (import.meta.env.VITE_MESSENGING_TECH === 'push') return 'Connect to Push';
+    if (process.env.NEXT_PUBLIC_MESSENGING_TECH === 'xmtp') return 'Connect to XMTP';
+    else if (process.env.NEXT_PUBLIC_MESSENGING_TECH === 'push') return 'Connect to Push';
   };
 
   return (

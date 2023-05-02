@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom';
+import { useRouter } from 'next/router';
 import { renderTokenAmountFromConfig } from '../utils/conversion';
 import { IService } from '../types';
 import { formatDate } from '../utils/dates';
@@ -48,7 +48,7 @@ function ServiceItem({ service }: { service: IService }) {
           )}
           <NavLink
             className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg'
-            to={`/services/${service.id}`}>
+            href={`/services/${service.id}`}>
             Show details
           </NavLink>
         </div>

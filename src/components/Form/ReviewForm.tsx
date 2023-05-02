@@ -29,8 +29,10 @@ const initialValues: IFormValues = {
 function ReviewForm({ serviceId }: { serviceId: string }) {
   const { open: openConnectModal } = useWeb3Modal();
   const { user } = useContext(TalentLayerContext);
-  const provider = useProvider({ chainId: import.meta.env.VITE_NETWORK_ID });
-  const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
+  const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
+  const { data: signer } = useSigner({
+    chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
+  });
 
   const onSubmit = async (
     values: IFormValues,

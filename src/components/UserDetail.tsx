@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { NavLink } from 'react-router-dom';
+import { useRouter } from 'next/router';
 import TalentLayerContext from '../context/talentLayer';
 import useUserById from '../hooks/useUserById';
 import PohModule from '../modules/Poh/PohModule';
@@ -59,17 +59,17 @@ function UserDetail({ user }: { user: IUser }) {
           <div className='flex flex-row gap-4 justify-end items-center'>
             <NavLink
               className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg'
-              to={`/profile/${user.id}`}>
+              href={`/profile/${user.id}`}>
               View profile
             </NavLink>
             <NavLink
               className='text-green-600 bg-green-50 hover:bg-green-500 hover:text-white px-5 py-2 rounded-lg'
-              to={`/profile/edit`}>
+              href={`/profile/edit`}>
               Edit profile
             </NavLink>
             <NavLink
               className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg'
-              to={`/incomes/${user.id}`}>
+              href={`/incomes/${user.id}`}>
               Your incomes
             </NavLink>
           </div>

@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom';
+import { useRouter } from 'next/router';
 import { renderTokenAmount, renderTokenAmountFromConfig } from '../utils/conversion';
 import { IService, IUser, ServiceStatusEnum } from '../types';
 import { formatDate } from '../utils/dates';
@@ -54,7 +54,7 @@ function UserServiceItem({ user, service }: { user: IUser; service: IService }) 
           )}
           <NavLink
             className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg relative'
-            to={`/services/${service.id}`}>
+            href={`/services/${service.id}`}>
             Show details
             {isBuyer && service.status == ServiceStatusEnum.Opened && (
               <div className='inline-flex absolute -top-2 -right-2 justify-center items-center w-6 h-6 text-xs font-bold text-white bg-indigo-700 rounded-full border-2 border-white'>

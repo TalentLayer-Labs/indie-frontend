@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { NavLink } from 'react-router-dom';
+import { useRouter } from 'next/router';
 import TalentLayerContext from '../context/talentLayer';
 import { renderTokenAmount } from '../utils/conversion';
 import { IProposal, ProposalStatusEnum } from '../types';
@@ -57,7 +57,7 @@ function UserProposalItem({ proposal }: { proposal: IProposal }) {
           </p>
           <NavLink
             className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg'
-            to={`/services/${proposal.service.id}`}>
+            href={`/services/${proposal.service.id}`}>
             Show Job
           </NavLink>
           {isBuyer && proposal.status === ProposalStatusEnum.Pending && (

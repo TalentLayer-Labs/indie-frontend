@@ -10,7 +10,7 @@ import CreateOrEditProposal from './pages/CreateOrEditProposal';
 import CreateService from './pages/CreateService';
 import Dashboard from './pages/Dashboard';
 import EditProfile from './pages/EditProfile';
-import Home from './pages/Home';
+import Home from './pages';
 import Layout from './pages/Layout';
 import Profile from './pages/Profile';
 import Service from './pages/Service';
@@ -48,9 +48,9 @@ const wagmiClient = createClient({
 const ethereumClient = new EthereumClient(wagmiClient, chains);
 
 const WrapInMessagingContext = ({ children }: { children: JSX.Element }): JSX.Element => {
-  if (import.meta.env.VITE_MESSENGING_TECH === 'xmtp') {
+  if (process.env.NEXT_PUBLIC_MESSENGING_TECH === 'xmtp') {
     return <XmtpContextProvider>{children}</XmtpContextProvider>;
-  } else if (import.meta.env.VITE_MESSENGING_TECH === 'push') {
+  } else if (process.env.NEXT_PUBLIC_MESSENGING_TECH === 'push') {
     return <PushProvider>{children}</PushProvider>;
   } else {
     return children;
@@ -76,7 +76,7 @@ function App() {
                       <Route path='/services/create' element={<CreateService />} />
                       <Route path='/services/:id/proposal' element={<CreateOrEditProposal />} />
                       <Route path='/talents' element={<Talents />} />
-                      {import.meta.env.VITE_MESSENGING_TECH === 'push' && (
+                      {process.env.NEXT_PUBLIC_MESSENGING_TECH === 'push' && (
                         <>
                           <Route path='/messaging/' element={<PushMessaging />} />
                           <Route path='/messaging/:conversationType' element={<PushMessaging />} />
@@ -86,7 +86,7 @@ function App() {
                           />
                         </>
                       )}
-                      {import.meta.env.VITE_MESSENGING_TECH === 'xmtp' && (
+                      {process.env.NEXT_PUBLIC_MESSENGING_TECH === 'xmtp' && (
                         <>
                           <Route path='/messaging' element={<XmtpMessaging />} />
                           <Route path='/messaging/:address' element={<XmtpMessaging />} />
@@ -104,7 +104,7 @@ function App() {
           </TalentLayerProvider>
         </BrowserRouter>
         <Web3Modal
-          projectId={`${import.meta.env.VITE_WALLECT_CONNECT_PROJECT_ID}`}
+          projectId={`${process.env.NEXT_PUBLIC_WALLECT_CONNECT_PROJECT_ID}`}
           ethereumClient={ethereumClient}
         />
       </WagmiConfig>

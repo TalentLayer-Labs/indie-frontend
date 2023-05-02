@@ -1,7 +1,7 @@
 import { createUserIfNecessary } from '@pushprotocol/restapi/src/lib/chat/helpers';
 import { ethers } from 'ethers';
 import { createContext, ReactNode, useContext, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/router';
 import { useSigner } from 'wagmi';
 import TalentLayerContext from '../../context/talentLayer';
 import { ConversationDisplayType } from '../../types';
@@ -22,15 +22,17 @@ const MessagingProvider = ({ children }: { children: ReactNode }) => {
   const { user } = useContext(TalentLayerContext);
   const { providerState } = useContext(XmtpContext);
   const { initPush, conversationMessages, pushUser } = useContext(PushContext);
-  const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
-  const navigate = useNavigate();
+  const { data: signer } = useSigner({
+    chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
+  });
+  const router = useRouter();
 
   const userExists = (): boolean => {
-    if (import.meta.env.VITE_MESSENGING_TECH === 'push') {
+    if (process.env.NEXT_PUBLIC_MESSENGING_TECH === 'push') {
       if (pushUser) {
         return !pushUser;
       }
-    } else if (import.meta.env.VITE_MESSENGING_TECH === 'xmtp') {
+    } else if (process.env.NEXT_PUBLIC_MESSENGING_TECH === 'xmtp') {
       if (providerState) {
         return providerState?.userExists;
       }
@@ -39,7 +41,7 @@ const MessagingProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const handleRegisterToMessaging = async (): Promise<void> => {
-    if (import.meta.env.VITE_MESSENGING_TECH === 'push') {
+    if (process.env.NEXT_PUBLIC_MESSENGING_TECH === 'push') {
       try {
         if (user?.address) {
           await createUserIfNecessary({ account: user.address });
@@ -48,7 +50,7 @@ const MessagingProvider = ({ children }: { children: ReactNode }) => {
         console.error('Error initializing Push client :', e);
       }
     }
-    if (import.meta.env.VITE_MESSENGING_TECH === 'xmtp') {
+    if (process.env.NEXT_PUBLIC_MESSENGING_TECH === 'xmtp') {
       try {
         if (user?.address && providerState?.initClient && signer) {
           await providerState.initClient(signer);
@@ -60,7 +62,7 @@ const MessagingProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const handleMessageUser = async (userAddress: string): Promise<void> => {
-    if (import.meta.env.VITE_MESSENGING_TECH === 'push') {
+    if (process.env.NEXT_PUBLIC_MESSENGING_TECH === 'push') {
       if (user && initPush) {
         try {
           await initPush(user.address);
@@ -81,7 +83,7 @@ const MessagingProvider = ({ children }: { children: ReactNode }) => {
         }
       }
     }
-    if (import.meta.env.VITE_MESSENGING_TECH === 'xmtp') {
+    if (process.env.NEXT_PUBLIC_MESSENGING_TECH === 'xmtp') {
       if (signer && providerState) {
         //If initClient() is in the context, then we can assume that the user has not already logged in
         if (providerState.initClient) {

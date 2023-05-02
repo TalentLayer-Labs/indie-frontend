@@ -12,7 +12,7 @@ const useServiceDetails = (cid: string): IServiceDetails | null => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const fullSeviceDetailsUri = `${import.meta.env.VITE_IPFS_BASE_URL}${cid}`;
+        const fullSeviceDetailsUri = `${process.env.NEXT_PUBLIC_IPFS_BASE_URL}${cid}`;
 
         const response = await fetch(fullSeviceDetailsUri);
 

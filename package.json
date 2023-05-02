@@ -19,6 +19,10 @@
     "formik": "^2.2.9",
     "heroicons-react": "^1.4.1",
     "ipfs-http-client": "^59.0.0",
+    "next": "^13.3.4",
+    "next-seo": "^6.0.0",
+    "next-themes": "^0.2.1",
+    "nextjs-google-analytics": "^2.3.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.4.2",
@@ -27,9 +31,9 @@
     "yup": "^0.32.11"
   },
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
     "format": "prettier --config .prettierrc 'src/**/*.{js,ts,tsx}' --write",
     "lint": "tsc --noEmit && eslint",
     "lint:fix": "tsc --noEmit && eslint --fix"
@@ -56,7 +60,6 @@
     "@tailwindcss/line-clamp": "^0.4.2",
     "@typescript-eslint/eslint-plugin": "^5.41.0",
     "@typescript-eslint/parser": "^5.41.0",
-    "@vitejs/plugin-react": "^2.2.0",
     "autoprefixer": "^10.4.12",
     "eslint": "^8.26.0",
     "eslint-config-prettier": "^8.5.0",
@@ -64,7 +67,6 @@
     "postcss": "^8.4.18",
     "prettier": "2.7.1",
     "tailwindcss": "^3.2.1",
-    "typescript": "^4.8.4",
-    "vite": "^3.2.0"
+    "typescript": "^4.8.4"
   }
 }

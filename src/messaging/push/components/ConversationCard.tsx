@@ -1,6 +1,6 @@
 import { shortAddress, truncate } from '../utils/messaging';
 import useUserByAddress from '../../../hooks/useUserByAddress';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/router';
 import { ConversationDisplayType } from '../../../types';
 import { chat as chatApi } from '@pushprotocol/restapi/src/lib';
 import { pCAIP10ToWallet } from '@pushprotocol/restapi/src/lib/helpers';
@@ -27,7 +27,7 @@ const ConversationCard = ({
   setPageLoaded,
 }: IConversationCardProps) => {
   const user = useUserByAddress(pCAIP10ToWallet(peerAddress));
-  const navigate = useNavigate();
+  const router = useRouter();
   const isConvSelected = pCAIP10ToWallet(peerAddress) === selectedConversationPeerAddress;
 
   const approveRequest = () => {

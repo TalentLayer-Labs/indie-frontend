@@ -45,7 +45,9 @@ const PushContext = createContext<{
 });
 
 const PushProvider = ({ children }: { children: ReactNode }) => {
-  const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
+  const { data: signer } = useSigner({
+    chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
+  });
   const [pushUser, setPushUser] = useState<IUser | undefined>();
   const [privateKey, setPrivateKey] = useState<string | undefined>();
   const [conversations, setConversations] = useState<Message[] | undefined>();

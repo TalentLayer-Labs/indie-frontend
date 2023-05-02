@@ -2,7 +2,7 @@ import { useWeb3Modal } from '@web3modal/react';
 import { BigNumberish, ethers, FixedNumber } from 'ethers';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import { useContext, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/router';
 import { useProvider, useSigner } from 'wagmi';
 import * as Yup from 'yup';
 import { config } from '../../config';
@@ -35,10 +35,12 @@ const initialValues: IFormValues = {
 function ServiceForm() {
   const { open: openConnectModal } = useWeb3Modal();
   const { user, account } = useContext(TalentLayerContext);
-  const provider = useProvider({ chainId: import.meta.env.VITE_NETWORK_ID });
-  const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
+  const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
+  const { data: signer } = useSigner({
+    chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
+  });
 
-  const navigate = useNavigate();
+  const router = useRouter();
   const allowedTokenList = useAllowedTokens();
   const [selectedToken, setSelectedToken] = useState<IToken>();
 
@@ -112,7 +114,7 @@ function ServiceForm() {
         );
         const tx = await contract.createService(
           user?.id,
-          import.meta.env.VITE_PLATFORM_ID,
+          process.env.NEXT_PUBLIC_PLATFORM_ID,
           cid,
           signature,
         );

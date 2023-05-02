@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { NavLink } from 'react-router-dom';
+import { useRouter } from 'next/router';
 import TalentLayerContext from '../context/talentLayer';
 import usePaymentsByService from '../hooks/usePaymentsByService';
 import useProposalsByService from '../hooks/useProposalsByService';
@@ -60,7 +60,7 @@ function ServiceDetail({ service }: { service: IService }) {
               {service.seller && (
                 <NavLink
                   className='text-sm text-gray-500 mt-4'
-                  to={`/profile/${service.seller.id}`}>
+                  href={`/profile/${service.seller.id}`}>
                   Job handle by <span className='text-indigo-600'>{service.seller.handle}</span>
                 </NavLink>
               )}
@@ -102,7 +102,7 @@ function ServiceDetail({ service }: { service: IService }) {
                 {!userProposal && (
                   <NavLink
                     className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg'
-                    to={`/services/${service.id}/proposal`}>
+                    href={`/services/${service.id}/proposal`}>
                     Create proposal
                   </NavLink>
                 )}

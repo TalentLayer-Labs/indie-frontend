@@ -5,7 +5,9 @@ import { Conversation, Stream } from '@xmtp/xmtp-js';
 import { buildChatMessage, CONVERSATION_PREFIX } from '../utils/messaging';
 
 const useStreamConversations = () => {
-  const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
+  const { data: signer } = useSigner({
+    chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
+  });
   const { providerState, setProviderState } = useContext(XmtpContext);
   const [stream, setStream] = useState<Stream<Conversation> | undefined>();
 

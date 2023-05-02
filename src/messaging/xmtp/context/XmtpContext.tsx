@@ -5,6 +5,8 @@ import { useAccount, useSigner } from 'wagmi';
 import { buildChatMessage, CONVERSATION_PREFIX } from '../utils/messaging';
 import { XmtpChatMessage } from '../../../types';
 
+type clientEnv = 'local' | 'dev' | 'production' | undefined;
+
 interface IProviderProps {
   client: Client | undefined;
   initClient: ((wallet: Signer) => Promise<void>) | undefined;
@@ -25,7 +27,9 @@ export const XmtpContext = createContext<{
 });
 
 export const XmtpContextProvider = ({ children }: { children: ReactNode }) => {
-  const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
+  const { data: signer } = useSigner({
+    chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
+  });
   const { address: walletAddress } = useAccount();
 
   const [providerState, setProviderState] = useState<IProviderProps>({
@@ -53,9 +57,11 @@ export const XmtpContextProvider = ({ children }: { children: ReactNode }) => {
     console.log('initClient w signer: ', wallet);
     if (wallet && !providerState.client && signer) {
       try {
-        const keys = await Client.getKeys(signer, { env: import.meta.env.VITE_MESSENGING_ENV });
+        const keys = await Client.getKeys(signer, {
+          env: process.env.NEXT_PUBLIC_MESSENGING_ENV as clientEnv,
+        });
         const client = await Client.create(null, {
-          env: import.meta.env.VITE_MESSENGING_ENV,
+          env: process.env.NEXT_PUBLIC_MESSENGING_ENV as clientEnv,
           privateKeyOverride: keys,
         });
         setProviderState({
@@ -75,7 +81,7 @@ export const XmtpContextProvider = ({ children }: { children: ReactNode }) => {
     const checkUserExistence = async (): Promise<void> => {
       if (signer) {
         const userExists = await Client.canMessage(walletAddress as string, {
-          env: import.meta.env.VITE_MESSENGING_ENV,
+          env: process.env.NEXT_PUBLIC_MESSENGING_ENV as clientEnv,
         });
         setProviderState({ ...providerState, userExists, initClient });
       }

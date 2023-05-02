@@ -1,6 +1,6 @@
 import { truncate } from '../utils/messaging';
 import useUserByAddress from '../../../hooks/useUserByAddress';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/router';
 import { formatDateConversationCard } from '../../../utils/dates';
 import { XmtpChatMessage } from '../../../types';
 
@@ -16,7 +16,7 @@ const ConversationCard = ({
   selectedConversationPeerAddress,
 }: IConversationCardProps) => {
   const user = useUserByAddress(peerAddress);
-  const navigate = useNavigate();
+  const router = useRouter();
   const isConvSelected = peerAddress === selectedConversationPeerAddress;
 
   const handleSelectConversation = () => {

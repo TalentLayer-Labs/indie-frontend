@@ -5,7 +5,7 @@ import {
   PresentationChartBarIcon,
   SparklesIcon,
 } from '@heroicons/react/24/outline';
-import { NavLink } from 'react-router-dom';
+import { useRouter } from 'next/router';
 import { ChatBubbleLeftIcon } from '@heroicons/react/20/solid';
 
 const navigation = [
@@ -23,7 +23,7 @@ function SideMenu() {
       {navigation.map(item => (
         <NavLink
           key={item.name}
-          to={item.href}
+          href={item.href}
           end
           className={({ isActive }) =>
             (isActive ? 'bg-indigo-800 text-white' : 'text-indigo-100 hover:bg-indigo-700') +

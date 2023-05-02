@@ -17,11 +17,13 @@ import Steps from '../components/Steps';
 
 function XmtpMessaging() {
   const { user } = useContext(TalentLayerContext);
-  const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
+  const { data: signer } = useSigner({
+    chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
+  });
   const { providerState, setProviderState } = useContext(XmtpContext);
   const [messageContent, setMessageContent] = useState<string>('');
   const { address: selectedConversationPeerAddress = '' } = useParams();
-  const navigate = useNavigate();
+  const router = useRouter();
   const [sendingPending, setSendingPending] = useState(false);
   const [messageSendingErrorMsg, setMessageSendingErrorMsg] = useState('');
 

@@ -34,7 +34,7 @@ function PushMessaging() {
     address: selectedConversationPeerAddress = '',
     conversationType = ConversationDisplayType.CONVERSATION,
   } = useParams();
-  const navigate = useNavigate();
+  const router = useRouter();
   const [messageContent, setMessageContent] = useState('');
   const [sendingPending, setSendingPending] = useState(false);
   const [messageSendingErrorMsg, setMessageSendingErrorMsg] = useState('');
@@ -117,7 +117,7 @@ function PushMessaging() {
           messageContent,
           receiverAddress: receiverAddressCAIP10,
           pgpPrivateKey: privateKey,
-          apiKey: import.meta.env.VITE_PUSH_API_KEY,
+          apiKey: process.env.NEXT_PUBLIC_PUSH_API_KEY,
         });
         console.log('sentMessage', sentMessage);
         //Replace encrypted content by decrypted content

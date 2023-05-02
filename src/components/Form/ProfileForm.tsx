@@ -30,9 +30,11 @@ const validationSchema = Yup.object({
 function ProfileForm({ callback }: { callback?: () => void }) {
   const { open: openConnectModal } = useWeb3Modal();
   const { user } = useContext(TalentLayerContext);
-  const provider = useProvider({ chainId: import.meta.env.VITE_NETWORK_ID });
+  const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
   const userDescription = user?.id ? useUserById(user?.id)?.description : null;
-  const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
+  const { data: signer } = useSigner({
+    chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
+  });
 
   if (!user?.id) {
     return <Loading />;
