@@ -8,17 +8,27 @@ const useServices = (
   sellerId?: string,
   searchQuery?: string,
   numberPerPage?: number,
-): { hasMoreData: boolean; loading: boolean; services: IService[]; loadMore: () => void } => {
+): {
+  hasMoreData: boolean;
+  loading: boolean;
+  services: IService[];
+  loadMore: () => void;
+} => {
   const [services, setServices] = useState<IService[]>([]);
   const [hasMoreData, setHasMoreData] = useState(true);
   const [loading, setLoading] = useState(false);
   const [offset, setOffset] = useState(0);
 
   useEffect(() => {
+    setServices([]);
+    setOffset(0);
+  }, [searchQuery]);
+
+  useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        let response;
+        let response, newServices;
         if (searchQuery) {
           response = await searchServices({
             serviceStatus,
@@ -29,7 +39,7 @@ const useServices = (
             searchQuery,
           });
           if (response?.data?.data?.serviceDescriptionSearchRank.length > 0) {
-            const newServices = response.data.data.serviceDescriptionSearchRank.map(
+            newServices = response.data.data.serviceDescriptionSearchRank.map(
               (serviceDescription: { service: any }) => {
                 return {
                   ...serviceDescription.service,
@@ -39,10 +49,6 @@ const useServices = (
                 };
               },
             );
-            setServices([...services, ...newServices]);
-            if (numberPerPage && newServices.length < numberPerPage) {
-              setHasMoreData(false);
-            }
           }
         } else {
           response = await getServices({
@@ -52,13 +58,18 @@ const useServices = (
             numberPerPage,
             offset,
           });
-          const newServices = response?.data?.data?.services;
-          if (newServices && newServices.length > 0) {
-            setServices([...services, ...newServices]);
-          }
-          if (numberPerPage && newServices.length < numberPerPage) {
-            setHasMoreData(false);
-          }
+          newServices = response?.data?.data?.services;
+        }
+
+        if (offset === 0) {
+          setServices(newServices);
+        } else {
+          setServices([...services, ...newServices]);
+        }
+        if (numberPerPage && newServices.length < numberPerPage) {
+          setHasMoreData(false);
+        } else {
+          setHasMoreData(true);
         }
       } catch (err: any) {
         // eslint-disable-next-line no-console
@@ -68,7 +79,7 @@ const useServices = (
       }
     };
     fetchData();
-  }, [serviceStatus, numberPerPage, offset, searchQuery]);
+  }, [numberPerPage, offset, searchQuery]);
 
   const loadMore = () => {
     numberPerPage ? setOffset(offset + numberPerPage) : '';
