@@ -1,7 +1,7 @@
 import { useWeb3Modal } from '@web3modal/react';
 import { ethers } from 'ethers';
-import { Field, Form, Formik } from 'formik';
-import { useContext } from 'react';
+import { Field, Form, Formik, useFormikContext } from 'formik';
+import { useContext, useState } from 'react';
 import { useProvider, useSigner } from 'wagmi';
 import * as Yup from 'yup';
 import { config } from '../../config';
@@ -12,7 +12,8 @@ import { createMultiStepsTransactionToast, showErrorTransactionToast } from '../
 import Loading from '../Loading';
 import SubmitButton from './SubmitButton';
 import useUserById from '../../hooks/useUserById';
-import RichText from './RichText/RichText';
+import { createEditor } from 'slate';
+import { Editable, Slate, withReact } from 'slate-react';
 
 interface IFormValues {
   title?: string;
@@ -33,6 +34,16 @@ function ProfileForm({ callback }: { callback?: () => void }) {
   const { user } = useContext(TalentLayerContext);
   const provider = useProvider({ chainId: import.meta.env.VITE_NETWORK_ID });
   const userDescription = user?.id ? useUserById(user?.id)?.description : null;
+  const [editor] = useState(() => withReact(createEditor()));
+  const { setFieldValue } = useFormikContext();
+
+  const initialSlateValue = [
+    {
+      type: 'paragraph',
+      children: [{ text: 'A line of text in a paragraph.' }],
+    },
+  ];
+
   const { data: signer } = useSigner({
     chainId: import.meta.env.VITE_NETWORK_ID,
   });
@@ -154,10 +165,22 @@ function ProfileForm({ callback }: { callback?: () => void }) {
                 rows='4'
                 className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
                 placeholder=''
-                value='bonjoru'
               />
             </label>
-            <RichText />
+
+            <Slate
+              editor={editor}
+              value={initialSlateValue}
+              onChange={value => {
+                const isAstChange = editor.operations.some(op => 'set_selection' !== op.type);
+                if (isAstChange) {
+                  // Save the value to Local Storage.
+                  const content = JSON.stringify(value);
+                  setFieldValue('about', content); // Set the custom value for the 'about' field
+                }
+              }}>
+              <Editable />
+            </Slate>
             <label className='block'>
               <span className='text-gray-700'>Skills</span>
               <Field

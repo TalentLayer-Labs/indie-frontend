@@ -6,7 +6,7 @@ import { withHistory } from 'slate-history';
 
 import { Button, Icon, Toolbar } from './components';
 
-const HOTKEYS = {
+const HOTKEYS: { [key: string]: 'bold' | 'italic' | 'underline' | 'code' } = {
   'mod+b': 'bold',
   'mod+i': 'italic',
   'mod+u': 'underline',
@@ -16,7 +16,7 @@ const HOTKEYS = {
 const LIST_TYPES = ['numbered-list', 'bulleted-list'];
 const TEXT_ALIGN_TYPES = ['left', 'center', 'right', 'justify'];
 
-const RichTextExample = () => {
+const RichText = () => {
   const renderElement = useCallback(props => <Element {...props} />, []);
   const renderLeaf = useCallback(props => <Leaf {...props} />, []);
   const editor = useMemo(() => withHistory(withReact(createEditor())), []);
@@ -58,7 +58,7 @@ const RichTextExample = () => {
   );
 };
 
-const toggleBlock = (editor, format) => {
+const toggleBlock = (editor: Editor, format) => {
   const isActive = isBlockActive(
     editor,
     format,
@@ -265,4 +265,4 @@ const initialValue: Descendant[] = [
   },
 ];
 
-export default RichTextExample;
+export default RichText;
