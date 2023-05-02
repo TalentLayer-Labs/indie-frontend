@@ -27,6 +27,8 @@ function UserLensFeed({ lensUser }: IProps) {
               {item.metadata.media[0] && (
                 <div className='w-36'>
                   <Image
+                    width={200}
+                    height={200}
                     className='mx-auto rounded-xl'
                     src={buildMediaUrl(item.metadata.media[0].original.url)}
                     alt=''

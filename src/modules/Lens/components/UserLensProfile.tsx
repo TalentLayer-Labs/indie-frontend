@@ -12,6 +12,8 @@ function UserLensProfile({ lensUser }: IProps) {
         <div className='card bg-white border border-gray-200 rounded-xl'>
           {lensUser?.picture.original.url && (
             <Image
+              width={200}
+              height={200}
               className='w-32 pt-2  mx-auto rounded-full border-8 border-white'
               src={buildMediaUrl(lensUser?.picture.original.url)}
               alt=''

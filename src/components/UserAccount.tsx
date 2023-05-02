@@ -23,7 +23,13 @@ function UserAccount() {
                 <Menu.Button className='flex max-w-xs items-center rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2'>
                   <span className='sr-only'>Open user menu</span>
                   {avatarImage ? (
-                    <Image className='h-8 w-8 rounded-full' alt='' src={avatarImage} />
+                    <Image
+                      className='h-8 w-8 rounded-full'
+                      alt=''
+                      src={avatarImage}
+                      width={50}
+                      height={50}
+                    />
                   ) : (
                     <Image
                       className='h-8 w-8 rounded-full'
