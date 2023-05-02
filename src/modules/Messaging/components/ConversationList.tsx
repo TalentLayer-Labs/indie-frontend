@@ -1,7 +1,7 @@
 import { getLatestMessage } from '../utils/messaging';
 import ConversationCard from './ConversationCard';
-import { XmtpChatMessage } from '../../../types';
 import Loading from '../../../components/Loading';
+import { XmtpChatMessage } from '../utils/types';
 
 interface IConversationListProps {
   conversationMessages: Map<string, XmtpChatMessage[]>;

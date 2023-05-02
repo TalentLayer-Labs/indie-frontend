@@ -1,10 +1,10 @@
 import useStreamMessages from '../hooks/useStreamMessages';
 import MessageCard from './MessageCard';
 import { isDateOnSameDay } from '../utils/messaging';
-import { XmtpChatMessage } from '../../../types';
 import Loading from '../../../components/Loading';
 import { useContext, useEffect, useRef } from 'react';
 import { XmtpContext } from '../context/XmtpContext';
+import { XmtpChatMessage } from '../utils/types';
 
 interface IMessageListProps {
   conversationMessages: XmtpChatMessage[];

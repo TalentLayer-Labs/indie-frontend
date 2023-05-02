@@ -1,5 +1,5 @@
 import { DecodedMessage } from '@xmtp/xmtp-js';
-import { ChatMessageStatus, XmtpChatMessage } from '../../../types';
+import { ChatMessageStatus, XmtpChatMessage } from './types';
 
 export const shortAddress = (addr: string) =>
   addr.length > 10 && addr.startsWith('0x')

@@ -1,11 +1,11 @@
-import TalentLayerContext from '../../../context/talentLayer';
+import Image from 'next/image';
 import { useContext } from 'react';
+import Loading from '../../../components/Loading';
+import TalentLayerContext from '../../../context/talentLayer';
 import useUserByAddress from '../../../hooks/useUserByAddress';
 import { formatDateDivider } from '../../../utils/dates';
 import { formatDateTime } from '../utils/messaging';
-import { ChatMessageStatus, XmtpChatMessage } from '../../../types';
-import Loading from '../../../components/Loading';
-import Image from 'next/image';
+import { ChatMessageStatus, XmtpChatMessage } from '../utils/types';
 
 interface IMessageCardProps {
   message: XmtpChatMessage;

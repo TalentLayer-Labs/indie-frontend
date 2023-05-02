@@ -4,7 +4,7 @@ import TalentLayerContext from '../../../context/talentLayer';
 import { useSigner } from 'wagmi';
 import { watchAccount } from '@wagmi/core';
 import ConversationList from './ConversationList';
-import CardHeader from '../components/CardHeader';
+import CardHeader from './CardHeader';
 import MessageList from './MessageList';
 import useStreamConversations from '../hooks/useStreamConversations';
 import useSendMessage from '../hooks/useSendMessage';
@@ -15,7 +15,7 @@ import Steps from '../../../components/Steps';
 import { useRouter } from 'next/router';
 import { ChatMessageStatus, XmtpChatMessage } from '../utils/types';
 
-function Conversations() {
+function Dashboard() {
   const { user } = useContext(TalentLayerContext);
   const { data: signer } = useSigner({
     chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
@@ -23,12 +23,13 @@ function Conversations() {
   const { providerState, setProviderState } = useContext(XmtpContext);
   const [messageContent, setMessageContent] = useState<string>('');
   const router = useRouter();
-  const { address: selectedConversationPeerAddress = '' } = router.query;
+  const { address } = router.query;
+  const selectedConversationPeerAddress = address as string;
   const [sendingPending, setSendingPending] = useState(false);
   const [messageSendingErrorMsg, setMessageSendingErrorMsg] = useState('');
 
   const { sendMessage } = useSendMessage(
-    selectedConversationPeerAddress ? selectedConversationPeerAddress : '',
+    (selectedConversationPeerAddress as string) ? selectedConversationPeerAddress : '',
     user?.id,
   );
   const peerUser = useUserByAddress(selectedConversationPeerAddress);
@@ -186,4 +187,4 @@ function Conversations() {
   );
 }
 
-export default Conversations;
+export default Dashboard;

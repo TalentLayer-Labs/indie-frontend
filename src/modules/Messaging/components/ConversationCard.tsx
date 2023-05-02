@@ -2,8 +2,8 @@ import { truncate } from '../utils/messaging';
 import useUserByAddress from '../../../hooks/useUserByAddress';
 import { useRouter } from 'next/router';
 import { formatDateConversationCard } from '../../../utils/dates';
-import { XmtpChatMessage } from '../../../types';
 import Image from 'next/image';
+import { XmtpChatMessage } from '../utils/types';
 
 interface IConversationCardProps {
   peerAddress: string;

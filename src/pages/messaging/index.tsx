@@ -1,7 +1,7 @@
-import Conversations from '../../modules/Messaging/components/Conversations';
+import Dashboard from '../../modules/Messaging/components/Dashboard';
 
 function MessagingIndex() {
-  return <Conversations />;
+  return <Dashboard />;
 }
 
 export default MessagingIndex;
