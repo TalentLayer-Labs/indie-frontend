@@ -6,6 +6,7 @@ import PohModule from '../modules/Poh/PohModule';
 import { IUser } from '../types';
 import Loading from './Loading';
 import Stars from './Stars';
+import Link from 'next/link';
 
 function UserDetail({ user }: { user: IUser }) {
   const { user: currentUser } = useContext(TalentLayerContext);
@@ -57,21 +58,21 @@ function UserDetail({ user }: { user: IUser }) {
       {currentUser?.id === user.id && (
         <div className=' border-t border-gray-100 pt-4 w-full mt-4'>
           <div className='flex flex-row gap-4 justify-end items-center'>
-            <NavLink
+            <Link
               className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg'
               href={`/profile/${user.id}`}>
               View profile
-            </NavLink>
-            <NavLink
+            </Link>
+            <Link
               className='text-green-600 bg-green-50 hover:bg-green-500 hover:text-white px-5 py-2 rounded-lg'
               href={`/profile/edit`}>
               Edit profile
-            </NavLink>
-            <NavLink
+            </Link>
+            <Link
               className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg'
               href={`/incomes/${user.id}`}>
               Your incomes
-            </NavLink>
+            </Link>
           </div>
         </div>
       )}

@@ -3,6 +3,7 @@ import usePaymentsForUser from '../hooks/usePaymentsForUser';
 import { IUser } from '../types';
 import { renderTokenAmount } from '../utils/conversion';
 import { formatStringCompleteDate } from '../utils/dates';
+import Link from 'next/link';
 
 function UserPayments({ user }: { user: IUser }) {
   const { payments } = usePaymentsForUser(user.id, 10);
@@ -18,7 +19,7 @@ function UserPayments({ user }: { user: IUser }) {
       <div className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4'>
         {payments.map((payment, i) => {
           return (
-            <NavLink
+            <Link
               href={`/services/${payment.service.id}`}
               className='flex items-center p-4 bg-white rounded-xl border border-gray-200'
               key={i}>
@@ -45,7 +46,7 @@ function UserPayments({ user }: { user: IUser }) {
                   </span>
                 </div>
               </div>
-            </NavLink>
+            </Link>
           );
         })}
       </div>

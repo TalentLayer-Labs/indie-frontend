@@ -6,6 +6,7 @@ import { formatDate } from '../utils/dates';
 import ValidateProposalModal from './Modal/ValidateProposalModal';
 import useServiceById from '../hooks/useServiceById';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 
 function ProposalItem({ proposal }: { proposal: IProposal }) {
   const { user, account } = useContext(TalentLayerContext);
@@ -69,11 +70,11 @@ function ProposalItem({ proposal }: { proposal: IProposal }) {
           proposal.status === ProposalStatusEnum.Pending &&
           service.status === ServiceStatusEnum.Opened && (
             <div className='flex flex-row gap-4 items-center border-t border-gray-100 pt-4'>
-              <NavLink
+              <Link
                 className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg'
                 href={`/services/${service.id}/proposal`}>
                 Edit proposal
-              </NavLink>
+              </Link>
             </div>
           )}
       </div>

@@ -3,7 +3,6 @@ import { DefaultSeo } from 'next-seo';
 import { ThemeProvider } from 'next-themes';
 import { GoogleAnalytics } from 'nextjs-google-analytics';
 import type { AppProps } from 'next/app';
-import { DefaultLayout } from '../layouts/default-layout';
 import { Chain, WagmiConfig, configureChains, createClient } from 'wagmi';
 import { customChains } from '../chains';
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
@@ -14,6 +13,7 @@ import { TalentLayerProvider } from '../context/talentLayer';
 import { XmtpContextProvider } from '../messaging/xmtp/context/XmtpContext';
 import { PushProvider } from '../messaging/push/context/pushUser';
 import { MessagingProvider } from '../messaging/context/messging';
+import Layout from './Layout';
 
 const chains: Chain[] = [customChains.polygonMumbai];
 
@@ -55,9 +55,9 @@ function MyApp({ Component, pageProps }: AppProps) {
           <WrapInMessagingContext>
             <MessagingProvider>
               <ThemeProvider enableSystem={false}>
-                <DefaultLayout>
+                <Layout>
                   <Component {...pageProps} />
-                </DefaultLayout>
+                </Layout>
               </ThemeProvider>
             </MessagingProvider>
           </WrapInMessagingContext>

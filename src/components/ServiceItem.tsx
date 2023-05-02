@@ -2,6 +2,7 @@ import { useRouter } from 'next/router';
 import { renderTokenAmountFromConfig } from '../utils/conversion';
 import { IService } from '../types';
 import { formatDate } from '../utils/dates';
+import Link from 'next/link';
 
 function ServiceItem({ service }: { service: IService }) {
   return (
@@ -46,11 +47,11 @@ function ServiceItem({ service }: { service: IService }) {
               )}
             </p>
           )}
-          <NavLink
+          <Link
             className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg'
             href={`/services/${service.id}`}>
             Show details
-          </NavLink>
+          </Link>
         </div>
       </div>
     </div>

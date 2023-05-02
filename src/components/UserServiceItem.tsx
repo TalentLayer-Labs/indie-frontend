@@ -3,6 +3,7 @@ import { renderTokenAmount, renderTokenAmountFromConfig } from '../utils/convers
 import { IService, IUser, ServiceStatusEnum } from '../types';
 import { formatDate } from '../utils/dates';
 import ServiceStatus from './ServiceStatus';
+import Link from 'next/link';
 
 function UserServiceItem({ user, service }: { user: IUser; service: IService }) {
   const isBuyer = user?.id === service.buyer.id;
@@ -52,7 +53,7 @@ function UserServiceItem({ user, service }: { user: IUser; service: IService }) 
               )}
             </p>
           )}
-          <NavLink
+          <Link
             className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg relative'
             href={`/services/${service.id}`}>
             Show details
@@ -61,7 +62,7 @@ function UserServiceItem({ user, service }: { user: IUser; service: IService }) 
                 {service.proposals.length}
               </div>
             )}
-          </NavLink>
+          </Link>
         </div>
       </div>
     </div>

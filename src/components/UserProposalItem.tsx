@@ -5,6 +5,7 @@ import { renderTokenAmount } from '../utils/conversion';
 import { IProposal, ProposalStatusEnum } from '../types';
 import { formatDate } from '../utils/dates';
 import useServiceById from '../hooks/useServiceById';
+import Link from 'next/link';
 
 function UserProposalItem({ proposal }: { proposal: IProposal }) {
   const { user } = useContext(TalentLayerContext);
@@ -55,11 +56,11 @@ function UserProposalItem({ proposal }: { proposal: IProposal }) {
           <p className='text-gray-900 font-bold line-clamp-1 flex-1'>
             {renderTokenAmount(proposal.rateToken, proposal.rateAmount)}
           </p>
-          <NavLink
+          <Link
             className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg'
             href={`/services/${proposal.service.id}`}>
             Show Job
-          </NavLink>
+          </Link>
           {isBuyer && proposal.status === ProposalStatusEnum.Pending && (
             <button className='text-green-600 bg-green-50 hover:bg-green-500 hover:text-white px-5 py-2 rounded-lg'>
               Validate proposal
