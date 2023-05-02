@@ -14,6 +14,7 @@ import { XmtpContextProvider } from '../modules/Messaging/context/XmtpContext';
 import '../styles/globals.css';
 import 'react-toastify/dist/ReactToastify.css';
 import Layout from './Layout';
+import { useEffect } from 'react';
 
 const chains: Chain[] = [customChains.polygonMumbai];
 
@@ -26,7 +27,7 @@ const { provider } = configureChains(chains, [
   }),
 ]);
 const wagmiClient = createClient({
-  autoConnect: true,
+  autoConnect: false,
   connectors: modalConnectors({ appName: 'web3Modal', chains }),
   provider,
 });
@@ -35,6 +36,10 @@ const wagmiClient = createClient({
 const ethereumClient = new EthereumClient(wagmiClient, chains);
 
 function MyApp({ Component, pageProps }: AppProps) {
+  useEffect(() => {
+    wagmiClient.autoConnect();
+  }, []);
+
   return (
     <>
       <GoogleAnalytics trackPageViews />
