@@ -2,6 +2,7 @@ import { ISismoGroup } from '../utils/types';
 import { useContext } from 'react';
 import TalentLayerContext from '../../../context/talentLayer';
 import SismoHelpPopover from './SismoHelpPopover';
+import Image from 'next/image';
 
 function SismoGroupCard({
   sismoGroupData,
@@ -20,7 +21,13 @@ function SismoGroupCard({
       <div className='flex flex-col items-top justify-between gap-4 w-full'>
         <div className='flex flex-col justify-start items-start gap-4 relative'>
           <div className='flex items-center justify-start'>
-            <img src={sismoGroupData.image} className='w-10 mr-4' />
+            <Image
+              src={sismoGroupData.image}
+              className='w-10 mr-4'
+              alt=''
+              width={200}
+              height={200}
+            />
             <div className='flex flex-col'>
               <p className='text-gray-900 font-medium'>{sismoGroupData.name}</p>
             </div>
@@ -51,7 +58,13 @@ function SismoGroupCard({
               Mint Badge
             </a>
             {sismoGroupData.userInGroup && (
-              <img src={`/purple_checkmark.svg`} className='w-4 mr-4 rounded-full' />
+              <Image
+                src={`/purple_checkmark.svg`}
+                className='w-4 mr-4 rounded-full'
+                alt=''
+                width={200}
+                height={200}
+              />
             )}
           </div>
         )}

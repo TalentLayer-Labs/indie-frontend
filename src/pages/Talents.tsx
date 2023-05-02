@@ -1,22 +1,18 @@
-import UserItem from '../components/UserItem';
-import useUsers from '../hooks/useUsers';
+import { useRouter } from 'next/router';
 import SearchTalentButton from '../components/Form/SearchTalentButton';
 import Loading from '../components/Loading';
-import { useEffect, useRef } from 'react';
+import UserItem from '../components/UserItem';
+import useUsers from '../hooks/useUsers';
 
 function Talents() {
   const PAGE_SIZE = 36;
-  const queryString = window.location.search;
-  const searchQuery = new URLSearchParams(queryString).get('s') || undefined;
-  const bottomRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+  const query = router.query;
+  const searchQuery = query.search as string;
   const { users, hasMoreData, loading, loadMore } = useUsers(
     searchQuery?.toLocaleLowerCase(),
     PAGE_SIZE,
   );
-
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [users]);
 
   return (
     <div className='max-w-7xl mx-auto text-gray-900 sm:px-4 lg:px-0'>
@@ -68,7 +64,6 @@ function Talents() {
           <p>No more Users...</p>
         </div>
       )}
-      <div ref={bottomRef} id='scroller'></div>
     </div>
   );
 }

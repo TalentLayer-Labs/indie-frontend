@@ -1,10 +1,11 @@
+import Image from 'next/image';
+import Link from 'next/link';
 import { useContext } from 'react';
-import { NavLink } from 'react-router-dom';
 import TalentLayerContext from '../context/talentLayer';
 import usePaymentsByService from '../hooks/usePaymentsByService';
 import useProposalsByService from '../hooks/useProposalsByService';
 import useReviewsByService from '../hooks/useReviewsByService';
-import ContactButton from '../messaging/components/ContactButton';
+import ContactButton from '../modules/Messaging/components/ContactButton';
 import { IService, ProposalStatusEnum, ServiceStatusEnum } from '../types';
 import { renderTokenAmountFromConfig } from '../utils/conversion';
 import { formatDate } from '../utils/dates';
@@ -40,9 +41,12 @@ function ServiceDetail({ service }: { service: IService }) {
         <div className='flex flex-col items-top justify-between gap-4 w-full'>
           <div className='flex flex-col justify-start items-start gap-4'>
             <div className='flex items-center justify-start w-full relative'>
-              <img
-                src={`/default-avatar-${Number(service.buyer.id) % 11}.jpeg`}
+              <Image
+                src={`/images/default-avatar-${Number(service.buyer.id) % 11}.jpeg`}
                 className='w-10 mr-4 rounded-full'
+                width={50}
+                height={50}
+                alt='default avatar'
               />
               <div className='flex flex-col'>
                 <p className='text-gray-900 font-medium'>{service.description?.title}</p>
@@ -58,11 +62,9 @@ function ServiceDetail({ service }: { service: IService }) {
 
             <div className=' border-t border-gray-100 pt-4 w-full'>
               {service.seller && (
-                <NavLink
-                  className='text-sm text-gray-500 mt-4'
-                  to={`/profile/${service.seller.id}`}>
+                <Link className='text-sm text-gray-500 mt-4' href={`/profile/${service.seller.id}`}>
                   Job handle by <span className='text-indigo-600'>{service.seller.handle}</span>
-                </NavLink>
+                </Link>
               )}
               <div className='text-sm text-gray-500 mt-4'>
                 <strong>Employer rating:</strong>
@@ -100,11 +102,11 @@ function ServiceDetail({ service }: { service: IService }) {
             {!isBuyer && service.status == ServiceStatusEnum.Opened && (
               <>
                 {!userProposal && (
-                  <NavLink
+                  <Link
                     className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg'
-                    to={`/services/${service.id}/proposal`}>
+                    href={`/services/${service.id}/proposal`}>
                     Create proposal
-                  </NavLink>
+                  </Link>
                 )}
                 <ContactButton
                   userAddress={service.buyer?.address}

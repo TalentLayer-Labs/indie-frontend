@@ -18,7 +18,7 @@ export const TALENTLAYER_GROUPS: ISismoGroup[] = [
     name: 'One PHP Job on TalentLayer',
     description:
       'Congratulations ! You did one PHP job on the TalentLayer protocol. Keep up the good work',
-    image: '/sismo-badges/sismo_1jobs_php.svg',
+    image: '/images/sismo-badges/sismo_1jobs_php.svg',
     link: 'https://testnets.sismo.io/?badge=one-php-job-on-talentlayer',
   },
   {
@@ -37,7 +37,7 @@ export const TALENTLAYER_GROUPS: ISismoGroup[] = [
       'Collect all users that already work at least 1 time on a solidity project on TalentLayer protocol',
     name: 'Solidity dev',
     description: 'Be skilled in solidity',
-    image: '/sismo-badges/sismo_1jobs_sol.svg',
+    image: '/images/sismo-badges/sismo_1jobs_sol.svg',
     link: 'https://testnets.sismo.io/?badge=one-solidity-job-on-talentlayer',
   },
   {
@@ -47,7 +47,7 @@ export const TALENTLAYER_GROUPS: ISismoGroup[] = [
       'Collect all users that completed work at least once for AAVE with a 5 rating on TalentLayer protocol',
     name: 'Complete work with minimum 5 as rating for AAVE',
     description: 'Completed work for AAVE with minimum 5 as rating',
-    image: '/sismo-badges/sismo_workedforaave.svg',
+    image: '/images/sismo-badges/sismo_workedforaave.svg',
     link: 'https://testnets.sismo.io/?badge=one-5-stars-job-completed-for-aave-on-talentlayer-protocol',
   },
   {
@@ -68,7 +68,7 @@ export const TALENTLAYER_GROUPS: ISismoGroup[] = [
       'Collect all users that completed work at least once for Dogecoin with a 5 rating on TalentLayer protocol',
     name: 'Complete work with minimum 5 as rating for DogeCoin',
     description: 'Completed work for DogeCoin with minimum 5 as rating',
-    image: '/sismo-badges/sismo_workedfordoge.svg',
+    image: '/images/sismo-badges/sismo_workedfordoge.svg',
     link: 'https://testnets.sismo.io/?badge=one-5-stars-job-completed-for-dogecoin-on-talentlayer-protocol',
   },
   {
@@ -77,7 +77,7 @@ export const TALENTLAYER_GROUPS: ISismoGroup[] = [
     specs: 'Check if the user has earned more than one MATIC on TalentLayer protocol',
     name: 'Earned more than one MATIC on TalentLayer',
     description: 'The user need to have earned at least one MATIC on TalentLayer protocol',
-    image: '/sismo-badges/sismo_workedfordoge.svg',
+    image: '/images/sismo-badges/sismo_workedfordoge.svg',
     link: 'https://testnets.sismo.io/?badge=talentlayer-earned-more-than',
   },
 ];

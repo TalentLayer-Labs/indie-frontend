@@ -1,6 +1,7 @@
-import { NavLink } from 'react-router-dom';
-import { renderTokenAmount, renderTokenAmountFromConfig } from '../utils/conversion';
+import Image from 'next/image';
+import Link from 'next/link';
 import { IService, IUser, ServiceStatusEnum } from '../types';
+import { renderTokenAmountFromConfig } from '../utils/conversion';
 import { formatDate } from '../utils/dates';
 import ServiceStatus from './ServiceStatus';
 
@@ -12,9 +13,12 @@ function UserServiceItem({ user, service }: { user: IUser; service: IService }) 
       <div className='flex flex-col items-top justify-between gap-4 w-full'>
         <div className='flex flex-col justify-start items-start gap-4 relative'>
           <div className='flex items-center justify-start'>
-            <img
-              src={`/default-avatar-${Number(service.buyer.id) % 11}.jpeg`}
+            <Image
+              src={`/images/default-avatar-${Number(service.buyer.id) % 11}.jpeg`}
               className='w-10 mr-4 rounded-full'
+              width={50}
+              height={50}
+              alt='default avatar'
             />
             <div className='flex flex-col'>
               <p className='text-gray-900 font-medium'>{service.description?.title}</p>
@@ -52,16 +56,16 @@ function UserServiceItem({ user, service }: { user: IUser; service: IService }) 
               )}
             </p>
           )}
-          <NavLink
+          <Link
             className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg relative'
-            to={`/services/${service.id}`}>
+            href={`/services/${service.id}`}>
             Show details
             {isBuyer && service.status == ServiceStatusEnum.Opened && (
               <div className='inline-flex absolute -top-2 -right-2 justify-center items-center w-6 h-6 text-xs font-bold text-white bg-indigo-700 rounded-full border-2 border-white'>
                 {service.proposals.length}
               </div>
             )}
-          </NavLink>
+          </Link>
         </div>
       </div>
     </div>

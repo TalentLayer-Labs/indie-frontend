@@ -1,11 +1,12 @@
-import { NavLink } from 'react-router-dom';
+import { useRouter } from 'next/router';
 import usePaymentsForUser from '../hooks/usePaymentsForUser';
 import { IUser } from '../types';
 import { renderTokenAmount } from '../utils/conversion';
 import { formatStringCompleteDate } from '../utils/dates';
+import Link from 'next/link';
 
 function UserPayments({ user }: { user: IUser }) {
-  const { payments } = usePaymentsForUser(user.id);
+  const { payments } = usePaymentsForUser(user.id, 10);
 
   if (payments.length === 0) {
     return null;
@@ -18,8 +19,8 @@ function UserPayments({ user }: { user: IUser }) {
       <div className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4'>
         {payments.map((payment, i) => {
           return (
-            <NavLink
-              to={`/services/${payment.service.id}`}
+            <Link
+              href={`/services/${payment.service.id}`}
               className='flex items-center p-4 bg-white rounded-xl border border-gray-200'
               key={i}>
               <div className='flex flex-shrink-0 items-center justify-center bg-green-200 h-16 w-16 rounded'>
@@ -45,7 +46,7 @@ function UserPayments({ user }: { user: IUser }) {
                   </span>
                 </div>
               </div>
-            </NavLink>
+            </Link>
           );
         })}
       </div>

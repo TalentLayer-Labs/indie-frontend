@@ -5,14 +5,16 @@ import { useBalance, useProvider, useSigner } from 'wagmi';
 import { FEE_RATE_DIVIDER } from '../../config';
 import { validateProposal } from '../../contracts/acceptProposal';
 import useFees from '../../hooks/useFees';
-import ContactButton from '../../messaging/components/ContactButton';
+import ContactButton from '../../modules/Messaging/components/ContactButton';
 import { IAccount, IProposal } from '../../types';
 import { renderTokenAmount } from '../../utils/conversion';
 import Step from '../Step';
 
 function ValidateProposalModal({ proposal, account }: { proposal: IProposal; account: IAccount }) {
-  const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
-  const provider = useProvider({ chainId: import.meta.env.VITE_NETWORK_ID });
+  const { data: signer } = useSigner({
+    chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
+  });
+  const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
   const [show, setShow] = useState(false);
   const { data: ethBalance } = useBalance({ address: account.address });
   const isProposalUseEth: boolean = proposal.rateToken.address === ethers.constants.AddressZero;

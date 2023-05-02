@@ -154,4 +154,4 @@ const chains: { [networkId in NetworkEnum]: Config } = {
   [NetworkEnum.MUMBAI]: mumbai,
 };
 
-export const config = chains[+import.meta.env.VITE_NETWORK_ID as NetworkEnum];
+export const config = chains[process.env.NEXT_PUBLIC_NETWORK_ID as unknown as NetworkEnum];

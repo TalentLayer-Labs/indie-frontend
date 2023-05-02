@@ -24,3 +24,8 @@ dist-ssr
 *.sw?
 
 .env
+.next
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts

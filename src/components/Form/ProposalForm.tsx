@@ -1,6 +1,6 @@
 import { ethers, FixedNumber } from 'ethers';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/router';
 import { useProvider, useSigner } from 'wagmi';
 import * as Yup from 'yup';
 import { config } from '../../config';
@@ -27,10 +27,6 @@ const validationSchema = Yup.object({
   rateToken: Yup.string().required('Please select a payment token'),
   rateAmount: Yup.string().required('Please provide an amount for your service'),
   expirationDate: Yup.number().integer().required('Please provide an expiration date'),
-  videoUrl: Yup.string().matches(
-    /^https:\/\/www\.loom\.com\/share\/([a-zA-Z0-9]+)$/,
-    'Please enter a valid Loom video URL',
-  ),
 });
 
 function ProposalForm({
@@ -42,10 +38,18 @@ function ProposalForm({
   service: IService;
   existingProposal?: IProposal;
 }) {
-  const provider = useProvider({ chainId: import.meta.env.VITE_NETWORK_ID });
-  const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
-  const navigate = useNavigate();
+  const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
+  const { data: signer } = useSigner({
+    chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
+  });
+  const router = useRouter();
   const allowedTokenList = useAllowedTokens();
+
+  console.log({ allowedTokenList });
+
+  if (allowedTokenList.length === 0) {
+    return <div>Loading...</div>;
+  }
 
   let existingExpirationDate, existingRateTokenAmount;
   if (existingProposal) {
@@ -60,6 +64,8 @@ function ProposalForm({
     existingRateTokenAmount = FixedNumber.from(
       ethers.utils.formatUnits(existingProposal.rateAmount, token?.decimals),
     ).toUnsafeFloat();
+
+    console.log({ existingRateTokenAmount });
   }
 
   const initialValues: IFormValues = {
@@ -125,7 +131,7 @@ function ProposalForm({
               service.id,
               values.rateToken,
               parsedRateAmountString,
-              import.meta.env.VITE_PLATFORM_ID,
+              process.env.NEXT_PUBLIC_PLATFORM_ID,
               cid,
               convertExpirationDateString,
               signature,
@@ -143,7 +149,7 @@ function ProposalForm({
         );
         setSubmitting(false);
         resetForm();
-        navigate(-1);
+        router.back();
       } catch (error) {
         showErrorTransactionToast(error);
       }
@@ -222,13 +228,13 @@ function ProposalForm({
               </span>
             </label>
             <label className='block flex-1'>
-              <span className='text-gray-700'>Loom Video URL (optionnal)</span>
+              <span className='text-gray-700'>Video URL (optionnal)</span>
               <Field
                 type='text'
                 id='videoUrl'
                 name='videoUrl'
                 className='mt-1 mb-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
-                placeholder='Enter Loom video URL'
+                placeholder='Enter  video URL'
               />
               <span className='text-red-500'>
                 <ErrorMessage name='videoUrl' />

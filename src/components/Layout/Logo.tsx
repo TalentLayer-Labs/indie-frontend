@@ -1,11 +1,11 @@
-import { NavLink } from 'react-router-dom';
+import Link from 'next/link';
 
 function Logo() {
   return (
     <h1 className='text-2xl text-white'>
-      <NavLink to='/'>
+      <Link href='/'>
         TL<span className='text-indigo-300'>indie</span>
-      </NavLink>
+      </Link>
     </h1>
   );
 }
