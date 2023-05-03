@@ -23,7 +23,7 @@ const useUsers = (
         const response = await getUsers(numberPerPage, offset, searchQuery);
 
         if (offset === 0) {
-          setUsers(response.data.data.users);
+          setUsers(response.data.data.users || []);
         } else {
           setUsers([...users, ...response.data.data.users]);
         }

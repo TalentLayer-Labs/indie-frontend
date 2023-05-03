@@ -20,7 +20,7 @@ function ReviewItem({ review }: { review: IReview }) {
               alt='default avatar'
             />
             <div className='flex flex-col'>
-              <p className='text-gray-900 font-medium'>{review.to.handle}</p>
+              <p className='text-gray-900 font-medium break-all'>{review.to.handle}</p>
               <p className='text-xs text-gray-500'>
                 Review created the {formatDate(Number(review.createdAt) * 1000)}
               </p>

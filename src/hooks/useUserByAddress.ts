@@ -8,6 +8,9 @@ const useUserByAddress = (address: string): IUser | null => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        if (!address) {
+          return;
+        }
         const response = await getUserByAddress(address);
         if (response?.data?.data?.users) {
           setUser(response.data.data.users[0]);
