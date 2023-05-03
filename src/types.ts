@@ -20,10 +20,6 @@ export type IUserDetails = {
   skills_raw: string;
 };
 
-export type Skill = {
-  name: string;
-};
-
 export type IUserStats = {
   numReceivedReviews: number;
   numGivenReviews: number;
