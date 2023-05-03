@@ -28,7 +28,7 @@ function UserBadges({ user }: IProps) {
     <>
       {sismoBadges && sismoBadges.length > 0 && (
         <>
-          <h2 className='mb-6 pb-4 border-b border-gray-gray-200 text-gray-900 font-medium'>
+          <h2 className='mb-6 pb-4 border-b border-gray-gray-200 text-gray-900 font-medium break-all'>
             {user.address === currentUser?.address ? 'Your badges' : 'Badges'}:
           </h2>
           <div className='flex mb-8'>
@@ -41,7 +41,7 @@ function UserBadges({ user }: IProps) {
 
       {user.address === currentUser?.address && groupsData.length > 0 && (
         <>
-          <h2 className='mb-6 pb-4 border-b border-gray-gray-200 text-gray-900 font-medium mt-4'>
+          <h2 className='mb-6 pb-4 border-b border-gray-gray-200 text-gray-900 font-medium break-all mt-4'>
             All zkPOW badges:
           </h2>
           <div className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4'>
