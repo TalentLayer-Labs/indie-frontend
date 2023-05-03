@@ -1,7 +1,7 @@
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/router';
 
 function Back() {
-  const navigate = useNavigate();
+  const router = useRouter();
 
   return (
     <nav className='flex' aria-label='Back'>
@@ -9,7 +9,7 @@ function Back() {
         <li className=''>
           <a
             href='#'
-            onClick={() => navigate(-1)}
+            onClick={() => router.back()}
             className='text-sm font-medium text-gray-700 hover:text-gray-900 inline-flex items-center'>
             <svg
               className='w-2 h-2 text-gray-400 mr-1'

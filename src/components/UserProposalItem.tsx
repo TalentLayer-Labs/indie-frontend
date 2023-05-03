@@ -1,10 +1,12 @@
 import { useContext } from 'react';
-import { NavLink } from 'react-router-dom';
+import { useRouter } from 'next/router';
 import TalentLayerContext from '../context/talentLayer';
 import { renderTokenAmount } from '../utils/conversion';
 import { IProposal, ProposalStatusEnum } from '../types';
 import { formatDate } from '../utils/dates';
 import useServiceById from '../hooks/useServiceById';
+import Link from 'next/link';
+import Image from 'next/image';
 
 function UserProposalItem({ proposal }: { proposal: IProposal }) {
   const { user } = useContext(TalentLayerContext);
@@ -21,9 +23,12 @@ function UserProposalItem({ proposal }: { proposal: IProposal }) {
       <div className='flex flex-col items-top justify-between gap-4 w-full'>
         <div className='flex flex-col justify-start items-start gap-4'>
           <div className='flex items-center justify-start w-full  relative'>
-            <img
-              src={`/default-avatar-${Number(proposal.service.buyer.id) % 11}.jpeg`}
+            <Image
+              src={`/images/default-avatar-${Number(proposal.service.buyer.id) % 11}.jpeg`}
               className='w-10 mr-4 rounded-full'
+              width={50}
+              height={50}
+              alt='default avatar'
             />
             <div className='flex flex-col'>
               <p className='text-gray-900 font-medium'>{service.description?.title}</p>
@@ -55,11 +60,11 @@ function UserProposalItem({ proposal }: { proposal: IProposal }) {
           <p className='text-gray-900 font-bold line-clamp-1 flex-1'>
             {renderTokenAmount(proposal.rateToken, proposal.rateAmount)}
           </p>
-          <NavLink
+          <Link
             className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg'
-            to={`/services/${proposal.service.id}`}>
+            href={`/services/${proposal.service.id}`}>
             Show Job
-          </NavLink>
+          </Link>
           {isBuyer && proposal.status === ProposalStatusEnum.Pending && (
             <button className='text-green-600 bg-green-50 hover:bg-green-500 hover:text-white px-5 py-2 rounded-lg'>
               Validate proposal

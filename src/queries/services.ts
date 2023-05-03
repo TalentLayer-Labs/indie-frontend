@@ -5,8 +5,10 @@ interface IProps {
   serviceStatus?: ServiceStatusEnum;
   buyerId?: string;
   sellerId?: string;
-  platformId?: string;
+  numberPerPage?: number;
+  offset?: number;
   searchQuery?: string;
+  platformId?: string;
 }
 
 const serviceQueryFields = `
@@ -22,7 +24,9 @@ const serviceQueryFields = `
     handle
     address
     rating
-    numReviews
+    userStats {
+      numReceivedReviews
+    }
   }
   seller {
     id
@@ -58,7 +62,7 @@ const serviceDescriptionQueryFields = `
   }
 `;
 
-const getFilterCondition = (params: IProps) => {
+const getFilteredServiceCondition = (params: IProps) => {
   let condition = ', where: {';
   condition += params.serviceStatus ? `status: "${params.serviceStatus}"` : '';
   condition += params.buyerId ? `, buyer: "${params.buyerId}"` : '';
@@ -68,10 +72,25 @@ const getFilterCondition = (params: IProps) => {
   return condition === ', where: {}' ? '' : condition;
 };
 
+const getFilteredServiceDescriptionCondition = (params: IProps) => {
+  let condition = ', where: {';
+  condition += params.serviceStatus ? `service_: {status:"${params.serviceStatus}"}` : '';
+  condition += params.buyerId ? `, buyer: "${params.buyerId}"` : '';
+  condition += params.sellerId ? `, seller: "${params.sellerId}"` : '';
+  condition += params.platformId ? `, platform: "${params.platformId}"` : '';
+  condition += '}';
+  return condition === ', where: {}' ? '' : condition;
+};
+
 export const getServices = (params: IProps): Promise<any> => {
+  const pagination = params.numberPerPage
+    ? 'first: ' + params.numberPerPage + ', skip: ' + params.offset
+    : '';
   const query = `
     {
-      services(orderBy: id, orderDirection: desc ${getFilterCondition(params)}) {
+      services(orderBy: id, orderDirection: desc ${pagination} ${getFilteredServiceCondition(
+    params,
+  )}) {
         ${serviceQueryFields}
         description {
           ${serviceDescriptionQueryFields}
@@ -83,11 +102,16 @@ export const getServices = (params: IProps): Promise<any> => {
 };
 
 export const searchServices = (params: IProps): Promise<any> => {
+  const pagination = params.numberPerPage
+    ? 'first: ' + params.numberPerPage + ' skip: ' + params.offset
+    : '';
   const query = `
     {
       serviceDescriptionSearchRank(
         text: "${params.searchQuery}",
-        orderBy: id, orderDirection: desc ${getFilterCondition(params)}
+        orderBy: id orderDirection: desc ${pagination} ${getFilteredServiceDescriptionCondition(
+    params,
+  )}
       ){
         ${serviceDescriptionQueryFields}
         service {

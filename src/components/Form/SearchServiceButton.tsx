@@ -1,17 +1,24 @@
-import { FormEvent, useCallback, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { FormEvent, useCallback, useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 
 function SearchServiceButton(props?: { value?: string }) {
-  const navigate = useNavigate();
-  const [searchQuery, setSearchQuery] = useState(props!.value || '');
+  const router = useRouter();
+  const [searchQuery, setSearchQuery] = useState('');
+
+  useEffect(() => {
+    setSearchQuery(props!.value || '');
+  }, [props!.value]);
 
   const handleSubmit = useCallback((e: FormEvent) => {
     e.preventDefault();
     const formElm = e.target as HTMLFormElement;
     const searchQueryRef = formElm.querySelector('input')!.value;
-    const serviceUrl = searchQueryRef.length > 0 ? `/services?s=${searchQueryRef}` : '/services';
-    navigate(serviceUrl);
-    window.location.reload();
+    if (searchQueryRef.length > 0) {
+      router.push({
+        pathname: '/services',
+        query: { search: searchQueryRef },
+      });
+    } else router.push('/services');
   }, []);
 
   return (

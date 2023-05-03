@@ -10,7 +10,7 @@ View a video demo of the Indie Frontend [here](https://youtu.be/8Y6E282Nwtc).
 
 ## Stacks
 
-- [Vite](https://vitejs.dev)
+- [NextJS](https://nextjs.org)
 - [ReactJS](https://reactjs.org)
 - [TypeScript](https://www.typescriptlang.org)
 - [TailwindCSS](https://tailwindcss.com)
@@ -25,20 +25,6 @@ View a video demo of the Indie Frontend [here](https://youtu.be/8Y6E282Nwtc).
 
 - [ESLint](https://eslint.org)
 - [Prettier](https://prettier.io)
-
-## Steps for setup
-
-- Init the react app with typescript using Vite: `npm create vite@latest dapp -- --template react-ts`
-- Install ESLint: `npm install --save-dev @typescript-eslint/parser @typescript-eslint/eslint-plugin eslint typescript`
-- Install Tailwind:
-  - `npm install -D tailwindcss postcss autoprefixer`
-  - `npx tailwindcss init -p`
-- Install React Router: `npm install react-router-dom@6`
-- Install Wagmi: `npm i wagmi ethers`
-- Install web3modal: `npm install @web3modal/react @web3modal/ethereum ethers`
-  - Create env file: `touch .env`
-  - Define the wallect connect project Id: `VITE_WALLECT_CONNECT_PROJECT_ID`
-- Install Heroicons: `npm i `
 
 ## VSCode useful plugins
 

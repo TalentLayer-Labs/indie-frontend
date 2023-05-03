@@ -28,12 +28,14 @@ const validationSchema = Yup.object({
   title: Yup.string().required('title is required'),
 });
 
-function ProfileForm() {
+function ProfileForm({ callback }: { callback?: () => void }) {
   const { open: openConnectModal } = useWeb3Modal();
   const { user } = useContext(TalentLayerContext);
-  const provider = useProvider({ chainId: import.meta.env.VITE_NETWORK_ID });
+  const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
   const userDescription = user?.id ? useUserById(user?.id)?.description : null;
-  const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
+  const { data: signer } = useSigner({
+    chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
+  });
 
   if (!user?.id) {
     return <Loading />;
@@ -86,6 +88,10 @@ function ProfileForm() {
           cid,
         );
 
+        if (callback) {
+          callback();
+        }
+
         setSubmitting(false);
       } catch (error) {
         showErrorTransactionToast(error);
@@ -114,7 +120,7 @@ function ProfileForm() {
                 placeholder=''
               />
             </label>
-            <label className='block'>
+            <label className='block hidden'>
               <span className='text-gray-700'>Name</span>
               <Field
                 type='text'
@@ -124,7 +130,7 @@ function ProfileForm() {
                 placeholder=''
               />
             </label>
-            <label className='block'>
+            <label className='block hidden'>
               <span className='text-gray-700'>Role</span>
               <Field
                 as='select'
@@ -145,7 +151,7 @@ function ProfileForm() {
                 as='textarea'
                 id='about'
                 name='about'
-                rows='8'
+                rows='4'
                 className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
                 placeholder=''
               />

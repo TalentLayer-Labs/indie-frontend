@@ -1,18 +1,24 @@
 import { processRequest } from '../utils/graphql';
 
-export const getUsers = (platformId?: string, searchQuery?: string): Promise<any> => {
+export const getUsers = (
+  numberPerPage?: number,
+  offset?: number,
+  searchQuery?: string,
+): Promise<any> => {
+  const pagination = numberPerPage ? 'first: ' + numberPerPage + ', skip: ' + offset : '';
   let condition = ', where: {';
-  condition += platformId ? `, platform: "${platformId}"` : '';
   condition += searchQuery ? `, handle_contains_nocase: "${searchQuery}"` : '';
   condition += '}';
 
   const query = `
     {
-      users(orderBy: rating, orderDirection: desc ${condition}) {
+      users(orderBy: rating, orderDirection: desc ${pagination} ${condition}) {
         id
         address
         handle
-        numReviews
+        userStats {
+          numReceivedReviews
+        }
         rating
       }
     }
@@ -28,7 +34,9 @@ export const getUserById = (id: string): Promise<any> => {
         address
         handle
         rating
-        numReviews
+        userStats {
+          numReceivedReviews
+        }
         updatedAt
         createdAt
         description {
@@ -58,7 +66,9 @@ export const getUserByAddress = (address: string): Promise<any> => {
         address
         handle
         rating
-        numReviews
+        userStats {
+          numReceivedReviews
+        }
         updatedAt
         createdAt
         description {

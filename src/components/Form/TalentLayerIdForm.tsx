@@ -2,7 +2,7 @@ import { useWeb3Modal } from '@web3modal/react';
 import { ethers } from 'ethers';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import { useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/router';
 import { useProvider, useSigner } from 'wagmi';
 import * as Yup from 'yup';
 import { config } from '../../config';
@@ -24,9 +24,11 @@ const initialValues: IFormValues = {
 function TalentLayerIdForm() {
   const { open: openConnectModal } = useWeb3Modal();
   const { account } = useContext(TalentLayerContext);
-  const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
-  const provider = useProvider({ chainId: import.meta.env.VITE_NETWORK_ID });
-  const navigate = useNavigate();
+  const { data: signer } = useSigner({
+    chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
+  });
+  const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
+  const router = useRouter();
 
   const validationSchema = Yup.object().shape({
     handle: Yup.string()
@@ -53,9 +55,13 @@ function TalentLayerIdForm() {
 
         const handlePrice = await contract.getHandlePrice(submittedValues.handle);
 
-        const tx = await contract.mint(import.meta.env.VITE_PLATFORM_ID, submittedValues.handle, {
-          value: handlePrice,
-        });
+        const tx = await contract.mint(
+          process.env.NEXT_PUBLIC_PLATFORM_ID,
+          submittedValues.handle,
+          {
+            value: handlePrice,
+          },
+        );
         await createTalentLayerIdTransactionToast(
           {
             pending: 'Minting your Talent Layer Id...',
@@ -69,7 +75,7 @@ function TalentLayerIdForm() {
 
         setSubmitting(false);
         // TODO: add a refresh function on TL context and call it here rather than hard refresh
-        navigate(0);
+        router.reload();
       } catch (error: any) {
         showErrorTransactionToast(error);
       }

@@ -5,6 +5,7 @@ import { useEnsAvatar } from 'wagmi';
 import TalentLayerContext from '../context/talentLayer';
 import { truncateAddress } from '../utils';
 import UserSubMenu from './UserSubMenu';
+import Image from 'next/image';
 
 function UserAccount() {
   const { account, user } = useContext(TalentLayerContext);
@@ -22,12 +23,20 @@ function UserAccount() {
                 <Menu.Button className='flex max-w-xs items-center rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2'>
                   <span className='sr-only'>Open user menu</span>
                   {avatarImage ? (
-                    <img className='h-8 w-8 rounded-full' alt='' src={avatarImage} />
-                  ) : (
-                    <img
+                    <Image
                       className='h-8 w-8 rounded-full'
                       alt=''
-                      src={`/default-avatar-${Number(user?.id ? user.id : '1') % 11}.jpeg`}
+                      src={avatarImage}
+                      width={50}
+                      height={50}
+                    />
+                  ) : (
+                    <Image
+                      className='h-8 w-8 rounded-full'
+                      alt=''
+                      src={`/images/default-avatar-${Number(user?.id ? user.id : '1') % 11}.jpeg`}
+                      width={50}
+                      height={50}
                     />
                   )}
                 </Menu.Button>

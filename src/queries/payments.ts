@@ -17,16 +17,33 @@ export const getPaymentsByService = (serviceId: string, paymentType?: string): P
         }
         paymentType
         transactionHash
+        createdAt
       }
     }
     `;
   return processRequest(query);
 };
 
-export const getPaymentsForUser = (userId: string): Promise<any> => {
+export const getPaymentsForUser = (
+  userId: string,
+  numberPerPage?: number,
+  offset?: number,
+  startDate?: string,
+  endDate?: string,
+): Promise<any> => {
+  const pagination = numberPerPage ? 'first: ' + numberPerPage + ', skip: ' + offset : '';
+
+  const startDataCondition = startDate ? `, createdAt_gte: "${startDate}"` : '';
+  const endDateCondition = endDate ? `, createdAt_lte: "${endDate}"` : '';
+
   const query = `
     {
-      payments(where: {service_: {seller: "${userId}"} }){
+      payments(where: {
+        service_: {seller: "${userId}"}
+        ${startDataCondition}
+        ${endDateCondition}
+      }, 
+      orderDirection: desc ${pagination}){
         id, 
         rateToken {
           address
@@ -37,13 +54,13 @@ export const getPaymentsForUser = (userId: string): Promise<any> => {
         amount
         transactionHash
         paymentType
+        createdAt
         service {
           id, 
           cid
         }
       }
     }
-    
     `;
   return processRequest(query);
 };

@@ -32,7 +32,9 @@ export const getAllProposalsByServiceId = (id: string): Promise<any> => {
           address
           cid
           rating
-          numReviews
+          userStats {
+            numReceivedReviews
+          }
         }
         description {
           id
@@ -86,6 +88,26 @@ export const getAllProposalsByUser = (id: string): Promise<any> => {
             startDate
             video_url
           }
+          expirationDate
+        }
+      }
+    `;
+  return processRequest(query);
+};
+
+export const getProposalById = (id: string): Promise<any> => {
+  const query = `
+      {
+        proposals(where: {id: "${id}"}) {
+          rateToken {
+            address
+          }
+          rateAmount
+          description {
+            about
+            video_url
+          }
+          status
           expirationDate
         }
       }

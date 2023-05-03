@@ -6,7 +6,8 @@ export const postToIPFS = async (data: any): Promise<string> => {
   let cid = '';
   try {
     const authorization =
-      'Basic ' + btoa(import.meta.env.VITE_INFURA_ID + ':' + import.meta.env.VITE_INFURA_SECRET);
+      'Basic ' +
+      btoa(process.env.NEXT_PUBLIC_INFURA_ID + ':' + process.env.NEXT_PUBLIC_INFURA_SECRET);
     ipfs = create({
       url: 'https://infura-ipfs.io:5001/api/v0',
       headers: {
@@ -22,7 +23,7 @@ export const postToIPFS = async (data: any): Promise<string> => {
 };
 
 export const IpfsIsSynced = async (cid: string): Promise<boolean> => {
-  return new Promise<boolean>(async (resolve, reject) => {
+  return new Promise<boolean>((resolve, reject) => {
     const interval = setInterval(async () => {
       const response = await fetch(cid);
       if (response.status === 200) {

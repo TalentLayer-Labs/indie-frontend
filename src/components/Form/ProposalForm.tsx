@@ -1,11 +1,11 @@
-import { ethers } from 'ethers';
+import { ethers, FixedNumber } from 'ethers';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/router';
 import { useProvider, useSigner } from 'wagmi';
 import * as Yup from 'yup';
 import { config } from '../../config';
 import ServiceRegistry from '../../contracts/ABI/TalentLayerService.json';
-import { IService, IUser } from '../../types';
+import { IProposal, IService, IUser } from '../../types';
 import { postToIPFS } from '../../utils/ipfs';
 import { createMultiStepsTransactionToast, showErrorTransactionToast } from '../../utils/toast';
 import { parseRateAmount } from '../../utils/web3';
@@ -22,30 +22,59 @@ interface IFormValues {
   videoUrl: string;
 }
 
-const initialValues: IFormValues = {
-  about: '',
-  rateToken: '',
-  rateAmount: 0,
-  expirationDate: 15,
-  videoUrl: '',
-};
-
 const validationSchema = Yup.object({
   about: Yup.string().required('Please provide a description of your service'),
   rateToken: Yup.string().required('Please select a payment token'),
   rateAmount: Yup.string().required('Please provide an amount for your service'),
   expirationDate: Yup.number().integer().required('Please provide an expiration date'),
-  videoUrl: Yup.string().matches(
-    /^https:\/\/www\.loom\.com\/share\/([a-zA-Z0-9]+)$/,
-    'Please enter a valid Loom video URL',
-  ),
 });
 
-function ProposalForm({ user, service }: { user: IUser; service: IService }) {
-  const provider = useProvider({ chainId: import.meta.env.VITE_NETWORK_ID });
-  const { data: signer } = useSigner({ chainId: import.meta.env.VITE_NETWORK_ID });
-  const navigate = useNavigate();
+function ProposalForm({
+  user,
+  service,
+  existingProposal,
+}: {
+  user: IUser;
+  service: IService;
+  existingProposal?: IProposal;
+}) {
+  const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
+  const { data: signer } = useSigner({
+    chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
+  });
+  const router = useRouter();
   const allowedTokenList = useAllowedTokens();
+
+  console.log({ allowedTokenList });
+
+  if (allowedTokenList.length === 0) {
+    return <div>Loading...</div>;
+  }
+
+  let existingExpirationDate, existingRateTokenAmount;
+  if (existingProposal) {
+    existingExpirationDate = Math.floor(
+      (Number(existingProposal?.expirationDate) - Date.now() / 1000) / (60 * 60 * 24),
+    );
+
+    const token = allowedTokenList.find(
+      token => token.address === existingProposal?.rateToken.address,
+    );
+
+    existingRateTokenAmount = FixedNumber.from(
+      ethers.utils.formatUnits(existingProposal.rateAmount, token?.decimals),
+    ).toUnsafeFloat();
+
+    console.log({ existingRateTokenAmount });
+  }
+
+  const initialValues: IFormValues = {
+    about: existingProposal?.description?.about || '',
+    rateToken: existingProposal?.rateToken.address || '',
+    rateAmount: existingRateTokenAmount || 0,
+    expirationDate: existingExpirationDate || 15,
+    videoUrl: existingProposal?.description?.video_url || '',
+  };
 
   const onSubmit = async (
     values: IFormValues,
@@ -88,16 +117,25 @@ function ProposalForm({ user, service }: { user: IUser; service: IService }) {
           signer,
         );
 
-        const tx = await contract.createProposal(
-          user.id,
-          service.id,
-          values.rateToken,
-          parsedRateAmountString,
-          import.meta.env.VITE_PLATFORM_ID,
-          cid,
-          convertExpirationDateString,
-          signature,
-        );
+        const tx = existingProposal
+          ? await contract.updateProposal(
+              user.id,
+              service.id,
+              values.rateToken,
+              parsedRateAmountString,
+              cid,
+              convertExpirationDateString,
+            )
+          : await contract.createProposal(
+              user.id,
+              service.id,
+              values.rateToken,
+              parsedRateAmountString,
+              process.env.NEXT_PUBLIC_PLATFORM_ID,
+              cid,
+              convertExpirationDateString,
+              signature,
+            );
         await createMultiStepsTransactionToast(
           {
             pending: 'Creating your proposal...',
@@ -111,7 +149,7 @@ function ProposalForm({ user, service }: { user: IUser; service: IService }) {
         );
         setSubmitting(false);
         resetForm();
-        navigate(-1);
+        router.back();
       } catch (error) {
         showErrorTransactionToast(error);
       }
@@ -125,7 +163,7 @@ function ProposalForm({ user, service }: { user: IUser; service: IService }) {
           <h2 className='mb-2 text-gray-900 font-bold'>For the job:</h2>
           <ServiceItem service={service} />
 
-          <h2 className=' mt-8 mb-2 text-gray-900 font-bold'>Detailed your proposal:</h2>
+          <h2 className=' mt-8 mb-2 text-gray-900 font-bold'>Describe your proposal in details:</h2>
           <div className='grid grid-cols-1 gap-6 border border-gray-200 rounded-md p-8'>
             <label className='block'>
               <span className='text-gray-700'>about</span>
@@ -190,13 +228,13 @@ function ProposalForm({ user, service }: { user: IUser; service: IService }) {
               </span>
             </label>
             <label className='block flex-1'>
-              <span className='text-gray-700'>Loom Video URL (optionnal)</span>
+              <span className='text-gray-700'>Video URL (optionnal)</span>
               <Field
                 type='text'
                 id='videoUrl'
                 name='videoUrl'
                 className='mt-1 mb-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
-                placeholder='Enter Loom video URL'
+                placeholder='Enter  video URL'
               />
               <span className='text-red-500'>
                 <ErrorMessage name='videoUrl' />

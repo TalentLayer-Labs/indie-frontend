@@ -1,19 +1,23 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { Bars3BottomLeftIcon, XMarkIcon } from '@heroicons/react/24/outline';
-import { Fragment, useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Fragment, ReactNode, useState } from 'react';
 import Logo from '../components/Layout/Logo';
-import NetworkSwitch from '../components/NetworkSwitch';
-import SideMenu from '../components/Layout/SideMenu';
-import UserAccount from '../components/UserAccount';
 import SideBottom from '../components/Layout/SideBottom';
+import SideMenu from '../components/Layout/SideMenu';
+import NetworkSwitch from '../components/NetworkSwitch';
+import UserAccount from '../components/UserAccount';
 
-function Layout() {
+interface ContainerProps {
+  children: ReactNode;
+  className?: string;
+}
+
+function Layout({ children, className }: ContainerProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
     <>
-      <div>
+      <div className={className}>
         <Transition.Root show={sidebarOpen} as={Fragment}>
           <Dialog as='div' className='relative z-40 md:hidden' onClose={setSidebarOpen}>
             <Transition.Child
@@ -97,9 +101,7 @@ function Layout() {
           </div>
 
           <main>
-            <div className={`p-6`}>
-              <Outlet />
-            </div>
+            <div className={`p-6`}>{children}</div>
           </main>
         </div>
       </div>

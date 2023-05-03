@@ -15,9 +15,7 @@ function Steps({ targetTitle }: { targetTitle: string }) {
   return (
     <>
       <nav className='mb-8'>
-        <ol
-          role='list'
-          className='divide-y divide-gray-200 rounded-md border border-gray-200 md:flex md:divide-y-0'>
+        <ol className='divide-y divide-gray-200 rounded-md border border-gray-200 md:flex md:divide-y-0'>
           <Step
             title='Connect your wallet'
             status={!account?.isConnected ? 'inprogress' : 'done'}

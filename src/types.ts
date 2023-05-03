@@ -1,3 +1,4 @@
+import { BigNumber } from 'ethers';
 import { Connector } from 'wagmi';
 
 export type IUser = {
@@ -5,8 +6,8 @@ export type IUser = {
   handle: string;
   address: string;
   rating: string;
-  numReviews: string;
   description?: IUserDetails;
+  userStats: IUserStats;
 };
 
 export type IUserDetails = {
@@ -21,6 +22,15 @@ export type IUserDetails = {
 
 export type Skill = {
   name: string;
+};
+
+export type IUserStats = {
+  numReceivedReviews: number;
+  numGivenReviews: number;
+  numCreatedServices: number;
+  numFinishedServicesAsBuyer: number;
+  numCreatedProposals: number;
+  numFinishedServicesAsSeller: number;
 };
 
 export type IAccount = {
@@ -69,15 +79,15 @@ export type IKeyword = {
 };
 
 export type IServiceDetails = {
-  title: string;
-  about: string;
-  keywords: IKeyword[];
-  rateAmount: string;
-  rateToken: string;
   id: string;
-  keywords_raw: string;
-  startDate: string;
-  expectedEndDate: string;
+  title?: string;
+  about?: string;
+  keywords: IKeyword[];
+  rateAmount?: string;
+  rateToken?: string;
+  keywords_raw?: string;
+  startDate?: string;
+  expectedEndDate?: string;
 };
 
 export type IServiceDetailsBuyer = {
@@ -110,11 +120,11 @@ export type IReviewDetails = {
 };
 
 export enum ServiceStatusEnum {
-  Filled = 'Filled',
+  Opened = 'Opened',
   Confirmed = 'Confirmed',
   Finished = 'Finished',
-  Rejected = 'Rejected',
-  Opened = 'Opened',
+  Cancelled = 'Cancelled',
+  Uncompleted = 'Uncompleted',
 }
 
 export enum ProposalStatusEnum {
@@ -184,7 +194,7 @@ export type IToken = {
   address: `0x${string}`;
   symbol: string;
   decimals: number;
-  minimumTransactionAmount: number;
+  minimumTransactionAmount?: BigNumber;
 };
 
 export type ITokenFormattedValues = {
@@ -193,6 +203,7 @@ export type ITokenFormattedValues = {
 };
 
 export type IPayment = {
+  createdAt: number;
   id: string;
   amount: string;
   rateToken: IToken;
@@ -206,47 +217,4 @@ export type IUserGain = {
   user: IUser;
   token: IToken;
   totalGain: string;
-};
-
-export enum ConversationDisplayType {
-  CONVERSATION = 'conversations',
-  REQUEST = 'requests',
-}
-
-export type PushChatMessage = {
-  from: string;
-  to: string;
-  messageContent: string;
-  timestamp: number;
-  status: ChatMessageStatus;
-};
-
-export type XmtpChatMessage = {
-  from: string;
-  to: string;
-  messageContent: string;
-  timestamp: Date;
-  status: ChatMessageStatus;
-};
-
-export enum ChatMessageStatus {
-  PENDING = 'pending',
-  SENT = 'sent',
-  ERROR = 'error',
-}
-
-export type PushMessage = {
-  cid: string;
-  encType: string;
-  encryptedSecret: string;
-  fromCAIP10: string;
-  fromDID: string;
-  link: string | null;
-  messageContent: string;
-  messageType: string;
-  sigType: string;
-  signature: string;
-  timestamp?: number;
-  toCAIP10: string;
-  toDID: string;
 };

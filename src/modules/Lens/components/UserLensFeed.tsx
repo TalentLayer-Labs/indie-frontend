@@ -1,4 +1,4 @@
-import { formatStringDate } from '../../../utils/dates';
+import Image from 'next/image';
 import useLensFeed from '../hooks/useLensFeed';
 import { timeSince } from '../utils/date';
 import { buildMediaUrl } from '../utils/ipfs';
@@ -26,10 +26,13 @@ function UserLensFeed({ lensUser }: IProps) {
             <div className='flex'>
               {item.metadata.media[0] && (
                 <div className='w-36'>
-                  <img
+                  <Image
+                    width={200}
+                    height={200}
                     className='mx-auto rounded-xl'
                     src={buildMediaUrl(item.metadata.media[0].original.url)}
-                    alt=''></img>
+                    alt=''
+                  />
                 </div>
               )}
 
