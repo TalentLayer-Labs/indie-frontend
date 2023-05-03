@@ -20,10 +20,6 @@ function CreateOrEditProposal() {
   const service = useServiceById(id as string);
   const existingProposal = useProposalById(`${id}-${user?.id}`);
 
-  console.log({
-    existingProposal,
-  });
-
   if (!service) {
     return <Loading />;
   }
