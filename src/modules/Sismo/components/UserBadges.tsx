@@ -18,12 +18,12 @@ function UserBadges({ user }: IProps) {
 
   const groupsData: ISismoGroup[] = [...TALENTLAYER_GROUPS];
 
-  if (user.address === currentUser?.address) {
-    // TODO: clean that
-    groupsData.map(group => {
-      group.userInGroup = useIsUserInSismoGroup(group.id, user.address);
-    });
-  }
+  // TODO: clean that - NOT clean to have conditional use
+  // if (user.address === currentUser?.address) {
+  //   groupsData.map(group => {
+  //     group.userInGroup = useIsUserInSismoGroup(group.id, user.address);
+  //   });
+  // }
 
   return (
     <>
