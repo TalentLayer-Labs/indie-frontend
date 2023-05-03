@@ -1,16 +1,15 @@
+import { useRouter } from 'next/router';
 import { useContext } from 'react';
-import { useParams } from 'react-router-dom';
 import Back from '../../../components/Back';
 import ProposalForm from '../../../components/Form/ProposalForm';
 import Loading from '../../../components/Loading';
 import Steps from '../../../components/Steps';
 import TalentLayerContext from '../../../context/talentLayer';
+import useProposalById from '../../../hooks/useProposalById';
 import useServiceById from '../../../hooks/useServiceById';
 import ConnectButton from '../../../modules/Messaging/components/ConnectButton';
 import MessagingContext from '../../../modules/Messaging/context/messging';
-import useProposalById from '../../../hooks/useProposalById';
 import { ProposalStatusEnum, ServiceStatusEnum } from '../../../types';
-import { useRouter } from 'next/router';
 
 function CreateOrEditProposal() {
   const { account, user } = useContext(TalentLayerContext);
