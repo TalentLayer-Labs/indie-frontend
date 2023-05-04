@@ -13,6 +13,8 @@ import ServiceItem from '../ServiceItem';
 import SubmitButton from './SubmitButton';
 import useAllowedTokens from '../../hooks/useAllowedTokens';
 import { getProposalSignature } from '../../utils/signature';
+import { useState } from 'react';
+import MetaEvidenceModal from '../../modules/Kleros/components/MetaEvidenceModal';
 
 interface IFormValues {
   about: string;
@@ -44,6 +46,7 @@ function ProposalForm({
   });
   const router = useRouter();
   const allowedTokenList = useAllowedTokens();
+  const [conditionsValidated, setConditionsValidated] = useState(false);
 
   console.log({ allowedTokenList });
 
@@ -158,7 +161,7 @@ function ProposalForm({
 
   return (
     <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
-      {({ isSubmitting }) => (
+      {({ isSubmitting, values }) => (
         <Form>
           <h2 className='mb-2 text-gray-900 font-bold'>For the job:</h2>
           <ServiceItem service={service} />
@@ -228,7 +231,7 @@ function ProposalForm({
               </span>
             </label>
             <label className='block flex-1'>
-              <span className='text-gray-700'>Video URL (optionnal)</span>
+              <span className='text-gray-700'>Video URL (optional)</span>
               <Field
                 type='text'
                 id='videoUrl'
@@ -241,7 +244,19 @@ function ProposalForm({
               </span>
             </label>
 
-            <SubmitButton isSubmitting={isSubmitting} label='Post' />
+            <div className='flex items-center mb-4'>
+              <SubmitButton
+                isSubmitting={isSubmitting}
+                disabled={!conditionsValidated}
+                label='Post'
+              />
+              <MetaEvidenceModal
+                conditionsValidated={conditionsValidated}
+                setConditionsValidated={setConditionsValidated}
+                serviceData={service}
+                proposalData={values}
+              />
+            </div>
           </div>
         </Form>
       )}
