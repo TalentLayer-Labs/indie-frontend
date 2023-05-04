@@ -35,6 +35,12 @@ const serviceQueryFields = `
   proposals {
     id
   }
+  platform {
+    name
+    arbitrator
+    arbitratorExtraData
+    arbitrationFeeTimeout
+  },
   validatedProposal: proposals(where: {status: "Validated"}){
     id,
     rateToken {

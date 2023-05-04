@@ -68,6 +68,9 @@ export type IPlatform = {
   originValidatedProposalFeeRate: number;
   proposalPostingFee: string;
   servicePostingFee: string;
+  arbitrator: `0x${string}`;
+  arbitratorExtraData: string;
+  arbitrationFeeTimeout: number;
 };
 
 export type IKeyword = {
