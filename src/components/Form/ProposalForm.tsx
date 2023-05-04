@@ -251,6 +251,7 @@ function ProposalForm({
                 setConditionsValidated={setConditionsValidated}
                 serviceData={service}
                 proposalData={values}
+                seller={user}
               />
             </div>
           </div>

@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useState } from 'react';
-import { IService } from '../../../types';
+import { IService, IUser } from '../../../types';
 
 interface ProposalData {
   about: string;
@@ -13,6 +13,7 @@ interface IMetaEvidenceModalProps {
   setConditionsValidated: Dispatch<SetStateAction<boolean>>;
   serviceData: IService;
   proposalData?: ProposalData;
+  seller: IUser;
 }
 
 function MetaEvidenceModal({
@@ -20,6 +21,7 @@ function MetaEvidenceModal({
   setConditionsValidated,
   serviceData,
   proposalData,
+  seller: seller,
 }: IMetaEvidenceModalProps) {
   const [show, setShow] = useState(false);
 
@@ -52,9 +54,9 @@ function MetaEvidenceModal({
         className={`${
           !show ? 'hidden' : ''
         } overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 w-full md:inset-0 h-modal h-full bg-black/75 flex flex-col items-center justify-center`}>
-        <div className='relative p-4 w-full max-w-7xl h-auto'>
-          <div className='relative bg-white rounded-lg shadow '>
-            <div className='flex justify-between items-start p-4 rounded-t border-b '>
+        <div className='relative p-4 w-full max-w-7xl h-auto overflow-scroll'>
+          <div className='relative bg-white rounded-lg shadow'>
+            <div className='flex justify-between text-center items-start p-4 rounded-t border-b '>
               <h3 className='text-xl font-semibold text-gray-900'>Dispute Conditions</h3>
               <button
                 onClick={() => setShow(false)}
@@ -74,22 +76,49 @@ function MetaEvidenceModal({
                 <span className='sr-only'>Close modal</span>
               </button>
             </div>
+            <div className='p-4 rounded-t border-b '>
+              <p className='italic text-center text-gray-900'>
+                The platform {serviceData.platform.name} has chosen as arbitrator for potential
+                dispute resolutions: ${serviceData.platform.arbitrator} Please review carefully the
+                service & proposal conditions & details, as they will set a context to potential
+                future disputes, should any arise.
+              </p>
+            </div>
             <div className='p-6 space-y-6'>
-              <div className='flex flex-col px-4 py-6 md:p-6 xl:p-8 w-full bg-gray-50 space-y-6'>
+              <div className='flex flex-col px-4 py-6 md:p-6 xl:p-8 w-full space-y-6'>
                 <h3 className='text-xl font-semibold leading-5 text-gray-800'>Title</h3>
                 <div className='flex justify-center items-center w-full space-y-4 flex-col border-gray-200 border-b pb-4'>
                   <div className='flex justify-between w-full'>
                     <p className='text-base leading-4 text-gray-800'>
-                      {serviceData?.description?.title}
+                      The TalentLayer user {serviceData.buyer.handle} posted the following service:{' '}
+                      <strong>{serviceData?.description?.title}</strong> to which the TalentLayer
+                      user {seller.handle} submitted the following proposal
                     </p>
                   </div>
                 </div>
                 <h3 className='text-xl font-semibold leading-5 text-gray-800'>Description</h3>
-                <div className='flex justify-center items-center w-full space-y-4 flex-col border-gray-200 border-b pb-4'>
+                <p>
+                  The TalentLayer user {serviceData.buyer.handle} agreed to complete the service
+                  provided by {seller.handle} in the way described in the proposal below. The
+                  completion of this agreement shall result in the payment using the following token{' '}
+                  {proposalData?.rateToken} for an amount of: {proposalData?.rateAmount}
+                </p>
+                <div className='flex justify-center w-full space-y-4 flex-col border-gray-200 border-b pb-4'>
+                  {/*<div className='flex justify-between w-full'>*/}
+                  <h2 className='text-m font-semibold italic leading-5 text-gray-800'>
+                    Service description:
+                  </h2>
                   <div className='flex justify-between w-full'>
                     <p className='text-base leading-4 text-gray-800'>
                       {serviceData?.description?.about}
                     </p>
+                  </div>
+                  <h2 className='text-m font-semibold italic leading-5 text-gray-800'>
+                    Proposal description:
+                  </h2>
+                  <div className='flex justify-between w-full'>
+                    <p className='text-base leading-4 text-gray-800'>{proposalData?.about}</p>
+                    {/*</div>*/}
                   </div>
                 </div>
                 <h3 className='text-xl font-semibold leading-5 text-gray-800'>Parties</h3>
@@ -101,18 +130,35 @@ function MetaEvidenceModal({
                     </p>
                     <p className='text-base leading-4 text-gray-800'>
                       <strong>Seller: </strong>
-                      {serviceData?.buyer.handle} : {serviceData?.buyer.address}
+                      {seller.handle} : {seller.address}
                     </p>
                   </div>
                 </div>
+                <h3 className='text-xl font-semibold leading-5 text-gray-800'>Ruling</h3>
+                <div className='flex w-full flex-col border-gray-200 border-b pb-4'>
+                  <p className='text-base leading-4 text-gray-800'>
+                    The abritrator can rule in favor of either party, resulting in the following
+                    outcomes:
+                  </p>
+                  <p>
+                    <br />
+                    <strong>- Buyer wins:</strong> {serviceData?.buyer.handle} will be refunded the
+                    remaining amount in escrow for the service with id: {serviceData.id}, payable
+                    with the token {proposalData?.rateToken}
+                    <br />
+                    <strong>- Seller wins:</strong> {seller.handle} will be paid the remaining
+                    amount in escrow for the service with id: {serviceData.id}, payable with the
+                    token {proposalData?.rateToken}
+                  </p>
+                </div>
+                <button
+                  onClick={() => agreeToConditions()}
+                  type='button'
+                  className='px-5 py-2 w-3/12 border border-indigo-600 rounded-md hover:text-indigo-600 hover:bg-white text-white bg-indigo-700'>
+                  Agree to conditions
+                </button>
               </div>
             </div>
-            <button
-              onClick={() => agreeToConditions()}
-              type='submit'
-              className='px-5 py-2 border border-indigo-600 rounded-md hover:text-indigo-600 hover:bg-white text-white bg-indigo-700'>
-              Agree to conditions
-            </button>
           </div>
         </div>
       </div>
