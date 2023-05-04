@@ -49,7 +49,7 @@ function ServiceDetail({ service }: { service: IService }) {
                 alt='default avatar'
               />
               <div className='flex flex-col'>
-                <p className='text-gray-900 font-medium'>{service.description?.title}</p>
+                <p className='text-gray-900 font-medium break-all'>{service.description?.title}</p>
                 <p className='text-xs text-gray-500'>
                   created by {isBuyer ? 'You' : service.buyer.handle} the{' '}
                   {formatDate(Number(service.createdAt) * 1000)}

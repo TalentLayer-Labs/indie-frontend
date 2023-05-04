@@ -28,7 +28,7 @@ function UserItem({ user }: { user: IUser }) {
               alt='default avatar'
             />
             <div className='flex flex-col'>
-              <p className='text-gray-900 font-medium'>{user.handle}</p>
+              <p className='text-gray-900 font-medium break-all'>{user.handle}</p>
               <p className='text-xs text-gray-500'>{userDescription?.title || '-'}</p>
             </div>
           </div>

@@ -31,7 +31,7 @@ function ProposalItem({ proposal }: { proposal: IProposal }) {
               alt='default avatar'
             />
             <div className='flex flex-col'>
-              <p className='text-gray-900 font-medium'>
+              <p className='text-gray-900 font-medium break-all'>
                 {proposal.seller.handle} - {service.description?.title}
               </p>
               <p className='text-xs text-gray-500'>

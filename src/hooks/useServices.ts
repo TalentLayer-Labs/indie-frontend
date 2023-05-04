@@ -28,7 +28,8 @@ const useServices = (
     const fetchData = async () => {
       try {
         setLoading(true);
-        let response, newServices;
+        let response;
+        let newServices: IService[] = [];
         if (searchQuery) {
           response = await searchServices({
             serviceStatus,
@@ -62,7 +63,7 @@ const useServices = (
         }
 
         if (offset === 0) {
-          setServices(newServices);
+          setServices(newServices || []);
         } else {
           setServices([...services, ...newServices]);
         }

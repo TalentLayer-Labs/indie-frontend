@@ -48,8 +48,6 @@ function ProposalForm({
   const allowedTokenList = useAllowedTokens();
   const [conditionsValidated, setConditionsValidated] = useState(false);
 
-  console.log({ allowedTokenList });
-
   if (allowedTokenList.length === 0) {
     return <div>Loading...</div>;
   }
@@ -67,8 +65,6 @@ function ProposalForm({
     existingRateTokenAmount = FixedNumber.from(
       ethers.utils.formatUnits(existingProposal.rateAmount, token?.decimals),
     ).toUnsafeFloat();
-
-    console.log({ existingRateTokenAmount });
   }
 
   const initialValues: IFormValues = {
@@ -103,7 +99,7 @@ function ProposalForm({
         const cid = await postToIPFS(
           JSON.stringify({
             about: values.about,
-            videoUrl: values.videoUrl,
+            video_url: values.videoUrl,
           }),
         );
 
