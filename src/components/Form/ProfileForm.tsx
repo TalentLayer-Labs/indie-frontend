@@ -12,6 +12,7 @@ import { createMultiStepsTransactionToast, showErrorTransactionToast } from '../
 import Loading from '../Loading';
 import SubmitButton from './SubmitButton';
 import useUserById from '../../hooks/useUserById';
+import { SkillsInput } from './skills-input';
 
 interface IFormValues {
   title?: string;
@@ -158,13 +159,10 @@ function ProfileForm({ callback }: { callback?: () => void }) {
 
             <label className='block'>
               <span className='text-gray-700'>Skills</span>
-              <Field
-                type='text'
-                id='skills'
-                name='skills'
-                className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
-                placeholder='skill1, skill2...'
-              />
+
+              <SkillsInput initialValues={userDescription?.skills_raw} />
+
+              <Field type='hidden' id='skills' name='skills' />
             </label>
 
             <SubmitButton isSubmitting={isSubmitting} label='Update' />
