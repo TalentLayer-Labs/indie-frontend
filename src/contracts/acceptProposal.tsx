@@ -7,9 +7,6 @@ import ERC20 from './ABI/ERC20.json';
 import TalentLayerEscrow from './ABI/TalentLayerEscrow.json';
 import { showErrorTransactionToast } from '../utils/toast';
 
-// TODO: need to generate this json duynamically and post it to IPFS to be use for dispute resolution
-export const metaEvidenceCid = 'QmQ2hcACF6r2Gf8PDxG4NcBdurzRUopwcaYQHNhSah6a8v';
-
 export const validateProposal = async (
   signer: Signer,
   provider: Provider,
@@ -17,6 +14,7 @@ export const validateProposal = async (
   proposalId: string,
   rateToken: string,
   cid: string,
+  metaEvidenceCid: string,
   value: ethers.BigNumber,
 ): Promise<void> => {
   const talentLayerEscrow = new Contract(
@@ -24,6 +22,7 @@ export const validateProposal = async (
     TalentLayerEscrow.abi,
     signer,
   );
+  console.log('metaEvidenceCid', metaEvidenceCid);
 
   try {
     if (rateToken === ethers.constants.AddressZero) {

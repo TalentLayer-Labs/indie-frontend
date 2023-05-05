@@ -6,11 +6,21 @@ import { FEE_RATE_DIVIDER } from '../../config';
 import { validateProposal } from '../../contracts/acceptProposal';
 import useFees from '../../hooks/useFees';
 import ContactButton from '../../modules/Messaging/components/ContactButton';
-import { IAccount, IProposal } from '../../types';
+import { IAccount, IProposal, IService } from '../../types';
 import { renderTokenAmount } from '../../utils/conversion';
 import Step from '../Step';
+import { generateMetaEvidence } from '../../modules/Kleros/utils/generateMetaEvidence';
+import { postToIPFS } from '../../utils/ipfs';
 
-function ValidateProposalModal({ proposal, account }: { proposal: IProposal; account: IAccount }) {
+function ValidateProposalModal({
+  proposal,
+  service,
+  account,
+}: {
+  proposal: IProposal;
+  service: IService;
+  account: IAccount;
+}) {
   const { data: signer } = useSigner({
     chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
   });
@@ -47,6 +57,21 @@ function ValidateProposalModal({ proposal, account }: { proposal: IProposal; acc
     if (!signer || !provider) {
       return;
     }
+
+    const metaEvidence = generateMetaEvidence(
+      service.description?.about || '',
+      proposal.description?.about || '',
+      service.buyer.handle,
+      proposal.seller.handle,
+      proposal.rateToken.address,
+      proposal.rateToken.symbol,
+      proposal.rateAmount,
+      service.description?.title || '',
+      service.description?.startDate,
+      service.description?.expectedEndDate,
+    );
+    const metaEvidenceCid = await postToIPFS(JSON.stringify(metaEvidence));
+
     await validateProposal(
       signer,
       provider,
@@ -54,6 +79,7 @@ function ValidateProposalModal({ proposal, account }: { proposal: IProposal; acc
       proposal.seller.id,
       proposal.rateToken.address,
       proposal.cid,
+      metaEvidenceCid,
       totalAmount,
     );
     setShow(false);
@@ -234,6 +260,7 @@ function ValidateProposalModal({ proposal, account }: { proposal: IProposal; acc
               ) : (
                 <button
                   disabled
+                  // onClick={() => onSubmit()}
                   type='button'
                   className='hover:text-red-600 hover:bg-red-50 bg-red-500 text-white rounded-lg px-5 py-2.5 text-center'>
                   Validate proposal
