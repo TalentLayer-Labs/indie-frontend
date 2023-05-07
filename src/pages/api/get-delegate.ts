@@ -24,7 +24,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       TalentLayerID.abi,
       signer,
     );
-    const isDelegate = await talentLayerContract.isDelegate(59);
+    const isDelegate = await talentLayerContract.isDelegate(userId);
 
     if (isDelegate) {
       signer = Wallet.fromMnemonic(delegateSeedPhrase).connect(provider);
