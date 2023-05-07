@@ -40,8 +40,6 @@ function DelegateModal() {
     setShow(false);
   };
 
-  console.log(delegateState);
-
   return (
     <>
       {process.env.NEXT_PUBLIC_ACTIVE_DELEGATE === 'true' && (

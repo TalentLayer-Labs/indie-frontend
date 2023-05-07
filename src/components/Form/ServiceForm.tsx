@@ -1,5 +1,5 @@
 import { useWeb3Modal } from '@web3modal/react';
-import { BigNumberish, ethers, FixedNumber } from 'ethers';
+import { BigNumberish, ethers, FixedNumber, Signer, Wallet } from 'ethers';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import { useContext, useState } from 'react';
 import { useRouter } from 'next/router';
@@ -15,6 +15,7 @@ import SubmitButton from './SubmitButton';
 import useAllowedTokens from '../../hooks/useAllowedTokens';
 import { getServiceSignature } from '../../utils/signature';
 import { IToken } from '../../types';
+import { useDelegate } from '../../hooks/useDelegate';
 
 interface IFormValues {
   title: string;
@@ -39,6 +40,8 @@ function ServiceForm() {
   const { data: signer } = useSigner({
     chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
   });
+
+  const { delegateSigner } = useDelegate(user?.id);
 
   const router = useRouter();
   const allowedTokenList = useAllowedTokens();
@@ -107,10 +110,18 @@ function ServiceForm() {
         // Get platform signature
         const signature = await getServiceSignature({ profileId: Number(user?.id), cid });
 
+        let delegationIsActivate = true;
+        let test;
+        if (delegationIsActivate === true) {
+          test = delegateSigner;
+        } else {
+          test = signer;
+        }
+
         const contract = new ethers.Contract(
           config.contracts.serviceRegistry,
           ServiceRegistry.abi,
-          signer,
+          test as ethers.providers.Provider | Signer,
         );
         const tx = await contract.createService(
           user?.id,
