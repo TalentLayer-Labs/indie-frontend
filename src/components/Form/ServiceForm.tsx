@@ -122,17 +122,17 @@ function ServiceForm() {
         );
 
         console.log(getDelegationStatus);
-        let test;
+        let txSigner;
         if (getDelegationStatus === true) {
-          test = delegateSigner;
+          txSigner = delegateSigner;
         } else {
-          test = signer;
+          txSigner = signer;
         }
 
         const contract = new ethers.Contract(
           config.contracts.serviceRegistry,
           ServiceRegistry.abi,
-          test as ethers.providers.Provider | Signer,
+          txSigner as ethers.providers.Provider | Signer,
         );
         const tx = await contract.createService(
           user?.id,
