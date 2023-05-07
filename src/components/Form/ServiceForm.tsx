@@ -110,7 +110,7 @@ function ServiceForm() {
         // Get platform signature
         const signature = await getServiceSignature({ profileId: Number(user?.id), cid });
 
-        const tx = await delegate(user?.id, process.env.NEXT_PUBLIC_PLATFORM_ID, cid, signature);
+        await delegate(user?.id, process.env.NEXT_PUBLIC_PLATFORM_ID, cid, signature);
 
         const newId = await createMultiStepsTransactionToast(
           {
@@ -119,7 +119,7 @@ function ServiceForm() {
             error: 'An error occurred while creating your job',
           },
           provider,
-          tx,
+          transaction,
           'service',
           cid,
         );
