@@ -121,9 +121,8 @@ function ServiceForm() {
           config.delegation.platform,
         );
 
-        console.log(getDelegationStatus);
         let txSigner;
-        if (getDelegationStatus === true) {
+        if (getDelegationStatus) {
           txSigner = delegateSigner;
         } else {
           txSigner = signer;
