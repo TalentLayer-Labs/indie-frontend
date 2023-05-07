@@ -7,6 +7,7 @@ export type Config = {
   escrowConfig: { [key: string]: any };
   contracts: { [key: string]: `0x${string}` };
   tokens: { [key: string]: IToken };
+  delegation: { [key: string]: any };
 };
 
 export const maxDecimals = {
@@ -54,6 +55,9 @@ const goerli: Config = {
       decimals: 18,
     },
   },
+  delegation: {
+    platform: '0xe6b8a5CF854791412c1f6EFC7CAf629f5Df1c747',
+  },
 };
 
 const fuji: Config = {
@@ -84,6 +88,9 @@ const fuji: Config = {
       name: 'USDC Stablecoin',
       decimals: 6,
     },
+  },
+  delegation: {
+    platform: '0xe6b8a5CF854791412c1f6EFC7CAf629f5Df1c747',
   },
 };
 
@@ -116,6 +123,9 @@ const mumbai: Config = {
       decimals: 6,
     },
   },
+  delegation: {
+    platform: '0xe6b8a5CF854791412c1f6EFC7CAf629f5Df1c747',
+  },
 };
 
 const local: Config = {
@@ -144,6 +154,9 @@ const local: Config = {
       name: 'Simple ERC20',
       decimals: 18,
     },
+  },
+  delegation: {
+    platform: '0xe6b8a5CF854791412c1f6EFC7CAf629f5Df1c747',
   },
 };
 
