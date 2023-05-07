@@ -42,11 +42,10 @@ function ServiceForm() {
     chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
   });
 
-  const { delegateSigner } = useDelegate(user?.id);
-
   const router = useRouter();
   const allowedTokenList = useAllowedTokens();
   const [selectedToken, setSelectedToken] = useState<IToken>();
+  const { transaction, delegate } = useDelegate();
 
   const validationSchema = Yup.object({
     title: Yup.string().required('Please provide a title for your service'),
@@ -111,34 +110,13 @@ function ServiceForm() {
         // Get platform signature
         const signature = await getServiceSignature({ profileId: Number(user?.id), cid });
 
-        const talentLayerIdContract = new ethers.Contract(
-          config.contracts.talentLayerId,
-          TalentLayerID.abi,
-          signer,
-        );
-        const getDelegationStatus = await talentLayerIdContract.isDelegate(
-          user?.id,
-          config.delegation.platform,
-        );
+        const tx = await delegate(user?.id, process.env.NEXT_PUBLIC_PLATFORM_ID, cid, signature);
 
-        let txSigner;
-        if (getDelegationStatus) {
-          txSigner = delegateSigner;
-        } else {
-          txSigner = signer;
-        }
+        console.log('tx', tx);
+        // Use the delegate function returned by the useDelegate hook
 
-        const contract = new ethers.Contract(
-          config.contracts.serviceRegistry,
-          ServiceRegistry.abi,
-          txSigner as ethers.providers.Provider | Signer,
-        );
-        const tx = await contract.createService(
-          user?.id,
-          process.env.NEXT_PUBLIC_PLATFORM_ID,
-          cid,
-          signature,
-        );
+        console.log('Delegate transaction', transaction);
+
         const newId = await createMultiStepsTransactionToast(
           {
             pending: 'Creating your job...',
@@ -146,7 +124,7 @@ function ServiceForm() {
             error: 'An error occurred while creating your job',
           },
           provider,
-          tx,
+          transaction,
           'service',
           cid,
         );

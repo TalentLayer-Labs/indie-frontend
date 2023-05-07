@@ -1,28 +1,31 @@
 import { useState, useEffect } from 'react';
 import { getDelegate } from '../components/request';
-import { Contract, ethers } from 'ethers';
+import { Transaction } from 'ethers';
 
-export const useDelegate = (id: string | undefined) => {
-  const [delegateSigner, setdelegateSigner] = useState<string>('');
+export const useDelegate = () => {
+  const [transaction, setTransaction] = useState<Transaction>();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        if (!id) return;
+  const delegate = async (
+    id: string | undefined,
+    platform: string | undefined,
+    cid: string,
+    signature: string,
+  ) => {
+    try {
+      if (!id) return;
 
-        const response = await getDelegate(id);
+      const response = await getDelegate(id, platform, cid, signature);
+      console.log('response', response);
 
-        if (response?.data) {
-          setdelegateSigner(response?.data?.delegateSigner);
-          return;
-        }
-      } catch (err: any) {
-        // eslint-disable-next-line no-console
-        console.error(err);
+      if (response?.data) {
+        setTransaction(response?.data?.transaction);
+        return;
       }
-    };
-    fetchData();
-  }, [id]);
+    } catch (err: any) {
+      // eslint-disable-next-line no-console
+      console.error(err);
+    }
+  };
 
-  return { delegateSigner };
+  return { transaction, delegate };
 };
