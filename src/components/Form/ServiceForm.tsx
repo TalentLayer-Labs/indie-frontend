@@ -112,11 +112,6 @@ function ServiceForm() {
 
         const tx = await delegate(user?.id, process.env.NEXT_PUBLIC_PLATFORM_ID, cid, signature);
 
-        console.log('tx', tx);
-        // Use the delegate function returned by the useDelegate hook
-
-        console.log('Delegate transaction', transaction);
-
         const newId = await createMultiStepsTransactionToast(
           {
             pending: 'Creating your job...',
@@ -124,7 +119,7 @@ function ServiceForm() {
             error: 'An error occurred while creating your job',
           },
           provider,
-          transaction,
+          tx,
           'service',
           cid,
         );

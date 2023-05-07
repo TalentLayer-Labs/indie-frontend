@@ -45,7 +45,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       signature,
     );
 
-    res.status(200).json({ transaction: transaction.hash });
+    res.status(200).json({ transaction: transaction });
   } catch (error) {
     res.status(500).json('tx failed');
   }
