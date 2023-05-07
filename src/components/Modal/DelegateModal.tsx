@@ -1,31 +1,46 @@
-import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
 import { ethers } from 'ethers';
-import { useContext, useState } from 'react';
-import { renderTokenAmount } from '../../utils/conversion';
-import { IPayment, IService, PaymentTypeEnum, ServiceStatusEnum } from '../../types';
-import ReleaseForm from '../Form/ReleaseForm';
-import { useNetwork, useProvider, useSigner } from 'wagmi';
+import { useContext, useEffect, useState } from 'react';
+import { useProvider, useSigner } from 'wagmi';
 import { validateDelegation } from '../../contracts/validateDelegation';
 import TalentLayerContext from '../../context/talentLayer';
 import { config } from '../../config';
+import TalentLayerID from '../../contracts/ABI/TalentLayerID.json';
 
 function DelegateModal() {
   const [show, setShow] = useState(false);
+  const [delegateState, setDelegateState] = useState(false);
   const { data: signer } = useSigner({
     chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
   });
   const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
   const { user } = useContext(TalentLayerContext);
-
   const delegateAddress = config.delegation.platform;
+  const contract = new ethers.Contract(config.contracts.talentLayerId, TalentLayerID.abi, signer!);
 
-  const onSubmit = async () => {
+  useEffect(() => {
+    fetchDelegationState();
+  }, []);
+
+  const fetchDelegationState = async () => {
+    if (!user || !contract) {
+      return;
+    }
+    const delegationState = await contract.isDelegate(user.id, delegateAddress);
+    setDelegateState(delegationState);
+  };
+
+  const onSubmit = async (validateState: boolean) => {
     if (!signer || !provider || !user) {
       return;
     }
-    await validateDelegation(user.id, delegateAddress, signer, provider);
+    await validateDelegation(user.id, delegateAddress, provider, validateState, contract);
+
+    fetchDelegationState();
+
     setShow(false);
   };
+
+  console.log(delegateState);
 
   return (
     <>
@@ -46,7 +61,9 @@ function DelegateModal() {
         <div className='relative p-4 w-full max-w-2xl h-auto'>
           <div className='relative bg-white rounded-lg shadow '>
             <div className='flex justify-between items-start p-4 rounded-t border-b '>
-              <h3 className='text-xl font-semibold text-gray-900 '>Delegate activation</h3>
+              <h3 className='text-xl font-semibold text-gray-900 '>
+                Delegate activation information
+              </h3>
               {/* close button */}
               <button
                 onClick={() => setShow(false)}
@@ -68,21 +85,34 @@ function DelegateModal() {
             </div>
             <div className='p-6 space-y-6'>
               <div className='flex flex-col px-4 py-6 md:p-6 xl:p-8 w-full bg-gray-50 space-y-6'>
-                <h3 className='text-xl font-semibold leading-5 text-gray-800'>Information</h3>
+                <div className='flex flex-row'>
+                  <h3 className='font-semibold text-gray-900'>Delegation state: </h3>
+                  {delegateState == true ? (
+                    <p className='text-green-500 pl-2'> is active</p>
+                  ) : (
+                    <p className='text-red-500 pl-2'> is inactive</p>
+                  )}
+                </div>
+                <p>After activating the delegation, all fees will be delegated to the platform.</p>
+                <p>
+                  By confirming it with the Validate delegation button, you agree to delegate the
+                  fees payment for interactions such as service creation and proposal creation.
+                </p>
+                <p>You can cancel it at any time</p>
               </div>
             </div>
             <div className='flex items-center p-6 space-x-2 rounded-b border-t border-gray-200 '>
               <button
-                onClick={() => onSubmit()}
+                onClick={() => onSubmit(true)}
                 type='button'
                 className='hover:text-green-600 hover:bg-green-50 bg-green-500 text-white rounded-lg px-5 py-2.5 text-center'>
-                Validate proposal
+                Validate Delegation
               </button>
               <button
-                onClick={() => setShow(false)}
+                onClick={() => onSubmit(false)}
                 type='button'
-                className='text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 '>
-                Decline
+                className='hover:text-blue-600 hover:bg-red-50 bg-red-500 text-white rounded-lg px-5 py-2.5 text-center'>
+                Cancel Delegation
               </button>
             </div>
           </div>
