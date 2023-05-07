@@ -8,6 +8,7 @@ import * as Yup from 'yup';
 import { config } from '../../config';
 import TalentLayerContext from '../../context/talentLayer';
 import ServiceRegistry from '../../contracts/ABI/TalentLayerService.json';
+import TalentLayerID from '../../contracts/ABI/TalentLayerID.json';
 import { postToIPFS } from '../../utils/ipfs';
 import { createMultiStepsTransactionToast, showErrorTransactionToast } from '../../utils/toast';
 import { parseRateAmount } from '../../utils/web3';
@@ -110,9 +111,19 @@ function ServiceForm() {
         // Get platform signature
         const signature = await getServiceSignature({ profileId: Number(user?.id), cid });
 
-        let delegationIsActivate = true;
+        const talentLayerIdContract = new ethers.Contract(
+          config.contracts.talentLayerId,
+          TalentLayerID.abi,
+          signer,
+        );
+        const getDelegationStatus = await talentLayerIdContract.isDelegate(
+          user?.id,
+          config.delegation.platform,
+        );
+
+        console.log(getDelegationStatus);
         let test;
-        if (delegationIsActivate === true) {
+        if (getDelegationStatus === true) {
           test = delegateSigner;
         } else {
           test = signer;
