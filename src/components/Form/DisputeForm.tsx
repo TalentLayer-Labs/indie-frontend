@@ -10,12 +10,11 @@ import TalentLayerContext from '../../context/talentLayer';
 import ServiceRegistry from '../../contracts/ABI/TalentLayerService.json';
 import { postToIPFS } from '../../utils/ipfs';
 import { createMultiStepsTransactionToast, showErrorTransactionToast } from '../../utils/toast';
-import { parseRateAmount } from '../../utils/web3';
 import SubmitButton from './SubmitButton';
 import useAllowedTokens from '../../hooks/useAllowedTokens';
-import { getServiceSignature } from '../../utils/signature';
 import { IToken } from '../../types';
 import FileDropper from '../../modules/Kleros/components/FileDropper';
+import { generateEvidence } from '../../modules/Kleros/utils/generateMetaEvidence';
 
 interface IFormValues {
   title: string;
@@ -27,7 +26,7 @@ const initialValues: IFormValues = {
   about: '',
 };
 
-function DisputeForm() {
+function DisputeForm({ transactionId }: { transactionId: string }) {
   const { open: openConnectModal } = useWeb3Modal();
   const { user, account } = useContext(TalentLayerContext);
   const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
@@ -36,12 +35,10 @@ function DisputeForm() {
   });
 
   const router = useRouter();
-  const allowedTokenList = useAllowedTokens();
-  const [selectedToken, setSelectedToken] = useState<IToken>();
 
   const validationSchema = Yup.object({
-    title: Yup.string().required('Please provide a title for your service'),
-    about: Yup.string().required('Please provide a description of your service'),
+    title: Yup.string().required('Please provide a title for your evidence'),
+    about: Yup.string().required('Please provide a description of your evidence'),
   });
 
   const onSubmit = async (
@@ -51,45 +48,33 @@ function DisputeForm() {
       resetForm,
     }: { setSubmitting: (isSubmitting: boolean) => void; resetForm: () => void },
   ) => {
-    if (account?.isConnected === true && provider && signer && token) {
+    if (account?.isConnected === true && provider && signer) {
       try {
-        const cid = await postToIPFS(
-          JSON.stringify({
-            title: values.title,
-            about: values.about,
-            keywords: values.keywords,
-            role: 'buyer',
-            rateToken: values.rateToken,
-            rateAmount: parsedRateAmountString,
-          }),
-        );
+        const evidenceCid = 'QmQ2hcACF6r2Gf8PDxG4NcBdurzRUopwcaYQHNhSah6a8v';
+        const metaEvidence = generateEvidence(evidenceCid, values.title, values.about);
+        const metaEvidenceCid = await postToIPFS(JSON.stringify(metaEvidence));
 
         const contract = new ethers.Contract(
-          config.contracts.serviceRegistry,
+          config.contracts.talentLayerEscrow,
           ServiceRegistry.abi,
           signer,
         );
-        const tx = await contract.createService(
-          user?.id,
-          process.env.NEXT_PUBLIC_PLATFORM_ID,
-          cid,
-          signature,
-        );
+        const tx = await contract.submitEvidence(user?.id, transactionId, metaEvidenceCid);
         const newId = await createMultiStepsTransactionToast(
           {
-            pending: 'Creating your job...',
-            success: 'Congrats! Your job has been added',
-            error: 'An error occurred while creating your job',
+            pending: 'Submitting evidence...',
+            success: 'Congrats! Your evidence has been submitted',
+            error: 'An error occurred while submitting your evidence ',
           },
           provider,
           tx,
-          'service',
-          cid,
+          'evidence',
+          metaEvidenceCid,
         );
         setSubmitting(false);
         resetForm();
         if (newId) {
-          router.push(`/services/${newId}`);
+          router.reload();
         }
       } catch (error) {
         showErrorTransactionToast(error);
