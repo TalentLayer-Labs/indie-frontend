@@ -24,7 +24,7 @@ const initialValues: IFormValues = {
   about: '',
 };
 
-function DisputeForm({ transactionId }: { transactionId: string }) {
+function EvidenceForm({ transactionId }: { transactionId: string }) {
   const { open: openConnectModal } = useWeb3Modal();
   const { user, account } = useContext(TalentLayerContext);
   const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
@@ -135,4 +135,4 @@ function DisputeForm({ transactionId }: { transactionId: string }) {
   );
 }
 
-export default DisputeForm;
+export default EvidenceForm;

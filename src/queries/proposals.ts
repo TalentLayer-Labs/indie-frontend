@@ -119,6 +119,7 @@ export const getProposalById = (id: string): Promise<any> => {
             }
             transaction {
               id
+              status
             }
             buyer {
               id

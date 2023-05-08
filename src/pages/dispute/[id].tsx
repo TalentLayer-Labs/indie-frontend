@@ -3,7 +3,8 @@ import TalentLayerContext from '../../context/talentLayer';
 import { useRouter } from 'next/router';
 import Loading from '../../components/Loading';
 import useProposalById from '../../hooks/useProposalById';
-import DisputeForm from '../../components/Form/DisputeForm';
+import EvidenceForm from '../../components/Form/EvidenceForm';
+import { TransactionStatusEnum } from '../../types';
 
 function Dispute() {
   const router = useRouter();
@@ -26,19 +27,24 @@ function Dispute() {
   }
 
   return (
-    <div className='max-w-7xl mx-auto text-gray-900 sm:px-4 lg:px-0'>
-      <p className='text-5xl font-medium tracking-wider mb-8'>
-        Raise <span className='text-indigo-600'>a dispute</span>
-      </p>
-      <div className={'border border-gray-200 rounded-md p-8'}>
-        <div className={'mb-4 pb-4 border-b border-b-gray-200'}>
-          You are about to raise a dispute for the service {proposal?.service.description?.title}
+    <>
+      {proposal?.service.transaction.status === TransactionStatusEnum.NoDispute && (
+        <div className='max-w-7xl mx-auto text-gray-900 sm:px-4 lg:px-0'>
+          <p className='text-5xl font-medium tracking-wider mb-8'>
+            Raise <span className='text-indigo-600'>a dispute</span>
+          </p>
+          <div className={'border border-gray-200 rounded-md p-8'}>
+            <div className={'mb-4 pb-4 border-b border-b-gray-200'}>
+              You are about to raise a dispute for the service{' '}
+              {proposal?.service.description?.title}
+            </div>
+            {account?.isConnected && user && (
+              <EvidenceForm transactionId={proposal?.service?.transaction?.id} />
+            )}
+          </div>
         </div>
-        {account?.isConnected && user && (
-          <DisputeForm transactionId={proposal?.service?.transaction?.id} />
-        )}
-      </div>
-    </div>
+      )}
+    </>
   );
 }
 

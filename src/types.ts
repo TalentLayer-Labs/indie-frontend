@@ -42,7 +42,16 @@ export type IAccount = {
 // TODO: add the rest of the fields
 export type ITransaction = {
   id: string;
+  status: TransactionStatusEnum;
 };
+
+export enum TransactionStatusEnum {
+  NoDispute = 'NoDispute',
+  WaitingSender = 'WaitingSender',
+  WaitingReceiver = 'WaitingReceiver',
+  DisputeCreated = 'DisputeCreated',
+  Resolved = 'Resolved',
+}
 
 export type IService = {
   id: string;

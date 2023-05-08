@@ -25,6 +25,7 @@ function MetaEvidenceModal({
 }: IMetaEvidenceModalProps) {
   const [show, setShow] = useState(false);
 
+  //TODO on Touch sur le form, enlever la tick. Ou carrément ne pas mettre de tick et faire pop la modale on click sur le bouton submit
   function agreeToConditions() {
     setConditionsValidated(true);
     setShow(false);
