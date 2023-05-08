@@ -20,3 +20,11 @@ export type MetaEvidence = {
   dynamicScriptURI: string;
   dynamicScriptHash: string;
 };
+
+export type Evidence = {
+  fileURI: string;
+  fileHash: string;
+  fileTypeExtension: string;
+  name: string;
+  description: string;
+};
