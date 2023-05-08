@@ -1,14 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 
-const FileUploader = () => {
+const FileUploader = ({
+  setFileSelected,
+}: {
+  setFileSelected: React.Dispatch<React.SetStateAction<File | undefined>>;
+}) => {
   const fileInputRef = useRef<any>();
-  const [fileSelected, setFileSelected] = useState<File>();
 
-  useEffect(() => {
-    if (fileSelected) {
-      console.log(fileSelected);
-    }
-  }, [fileSelected]);
   const handleDragEnter = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     event.stopPropagation();

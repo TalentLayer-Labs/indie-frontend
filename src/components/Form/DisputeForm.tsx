@@ -1,7 +1,7 @@
 import { useWeb3Modal } from '@web3modal/react';
-import { BigNumberish, ethers, FixedNumber } from 'ethers';
+import { ethers } from 'ethers';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useProvider, useSigner } from 'wagmi';
 import * as Yup from 'yup';
@@ -11,8 +11,6 @@ import ServiceRegistry from '../../contracts/ABI/TalentLayerService.json';
 import { postToIPFS } from '../../utils/ipfs';
 import { createMultiStepsTransactionToast, showErrorTransactionToast } from '../../utils/toast';
 import SubmitButton from './SubmitButton';
-import useAllowedTokens from '../../hooks/useAllowedTokens';
-import { IToken } from '../../types';
 import FileDropper from '../../modules/Kleros/components/FileDropper';
 import { generateEvidence } from '../../modules/Kleros/utils/generateMetaEvidence';
 
@@ -33,6 +31,7 @@ function DisputeForm({ transactionId }: { transactionId: string }) {
   const { data: signer } = useSigner({
     chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
   });
+  const [fileSelected, setFileSelected] = useState<File>();
 
   const router = useRouter();
 
@@ -40,6 +39,12 @@ function DisputeForm({ transactionId }: { transactionId: string }) {
     title: Yup.string().required('Please provide a title for your evidence'),
     about: Yup.string().required('Please provide a description of your evidence'),
   });
+
+  useEffect(() => {
+    if (fileSelected) {
+      console.log(fileSelected);
+    }
+  }, [fileSelected]);
 
   const onSubmit = async (
     values: IFormValues,
@@ -119,7 +124,7 @@ function DisputeForm({ transactionId }: { transactionId: string }) {
 
             <label className='block'>
               <span className='text-gray-700'>Drop Files Here</span>
-              <FileDropper />
+              <FileDropper setFileSelected={setFileSelected} />
             </label>
 
             <SubmitButton isSubmitting={isSubmitting} label='Post' />
