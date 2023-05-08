@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 
-const FileUploader = ({
+const FileDropper = ({
   setFileSelected,
 }: {
   setFileSelected: React.Dispatch<React.SetStateAction<File | undefined>>;
@@ -22,8 +22,11 @@ const FileUploader = ({
   const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     event.stopPropagation();
-    fileInputRef.current.files = event.dataTransfer?.files;
-    setFileSelected(event.dataTransfer?.files[0]);
+    const file = [...event.dataTransfer.files][0];
+
+    setFileSelected(file);
+    // setFileSelected(event.dataTransfer?.files[0]);
+    // fileInputRef.current.files = event.dataTransfer?.files;
     // callback(event.dataTransfer?.files[0]);
   };
 
@@ -53,4 +56,4 @@ const FileUploader = ({
   );
 };
 
-export default FileUploader;
+export default FileDropper;
