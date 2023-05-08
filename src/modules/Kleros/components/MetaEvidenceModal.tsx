@@ -25,31 +25,24 @@ function MetaEvidenceModal({
 }: IMetaEvidenceModalProps) {
   const [show, setShow] = useState(false);
 
-  //TODO on Touch sur le form, enlever la tick. Ou carrément ne pas mettre de tick et faire pop la modale on click sur le bouton submit
-  function agreeToConditions() {
-    setConditionsValidated(true);
-    setShow(false);
-  }
-
-  function displayModal() {
-    conditionsValidated ? setConditionsValidated(false) : setShow(true);
-  }
-
   return (
     <>
-      <input
-        id='dispute-conditions'
-        type='checkbox'
-        value=''
-        checked={conditionsValidated}
-        onClick={() => displayModal()}
-        className='ml-2 mb-1 w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600'
-      />
-      <label
-        htmlFor='default-checkbox'
-        className='ml-2 text-sm font-medium text-gray-900 dark:text-gray-300'>
-        Agree to dispute conditions
-      </label>
+      <div className={'mb-3'}>
+        <input
+          id='dispute-conditions'
+          type='checkbox'
+          value=''
+          checked={conditionsValidated}
+          onClick={() => setConditionsValidated(!conditionsValidated)}
+          className='ml-2 w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600'
+        />
+        <label
+          htmlFor='default-checkbox'
+          onClick={() => setShow(true)}
+          className='ml-2 text-sm font-medium dark:text-gray-300 underline text-indigo-600 hover:cursor-pointer'>
+          Agree to dispute conditions
+        </label>
+      </div>
 
       <div
         className={`${
@@ -136,7 +129,7 @@ function MetaEvidenceModal({
                   </div>
                 </div>
                 <h3 className='text-xl font-semibold leading-5 text-gray-800'>Ruling</h3>
-                <div className='flex w-full flex-col border-gray-200 border-b pb-4'>
+                <div className='flex w-full flex-col border-gray-200 pb-4'>
                   <p className='text-base leading-4 text-gray-800'>
                     The abritrator can rule in favor of either party, resulting in the following
                     outcomes:
@@ -152,12 +145,6 @@ function MetaEvidenceModal({
                     token {proposalData?.rateToken}
                   </p>
                 </div>
-                <button
-                  onClick={() => agreeToConditions()}
-                  type='button'
-                  className='px-5 py-2 w-3/12 border border-indigo-600 rounded-md hover:text-indigo-600 hover:bg-white text-white bg-indigo-700'>
-                  Agree to conditions
-                </button>
               </div>
             </div>
           </div>
