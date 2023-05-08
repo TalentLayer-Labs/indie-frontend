@@ -56,7 +56,7 @@ const goerli: Config = {
     },
   },
   delegation: {
-    platform: '0xe6b8a5CF854791412c1f6EFC7CAf629f5Df1c747',
+    platform: '0x822e7287e61aDC163d0DB665c4b4c662518A053f',
   },
 };
 
@@ -90,7 +90,7 @@ const fuji: Config = {
     },
   },
   delegation: {
-    platform: '0xe6b8a5CF854791412c1f6EFC7CAf629f5Df1c747',
+    platform: '0x822e7287e61aDC163d0DB665c4b4c662518A053f',
   },
 };
 
@@ -124,7 +124,7 @@ const mumbai: Config = {
     },
   },
   delegation: {
-    platform: '0xe6b8a5CF854791412c1f6EFC7CAf629f5Df1c747',
+    platform: '0x822e7287e61aDC163d0DB665c4b4c662518A053f',
   },
 };
 
@@ -156,7 +156,7 @@ const local: Config = {
     },
   },
   delegation: {
-    platform: '0xe6b8a5CF854791412c1f6EFC7CAf629f5Df1c747',
+    platform: '0x822e7287e61aDC163d0DB665c4b4c662518A053f',
   },
 };
 

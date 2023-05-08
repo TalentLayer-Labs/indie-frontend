@@ -16,7 +16,7 @@ import SubmitButton from './SubmitButton';
 import useAllowedTokens from '../../hooks/useAllowedTokens';
 import { getServiceSignature } from '../../utils/signature';
 import { IToken } from '../../types';
-import { useDelegate } from '../../hooks/useDelegate';
+import { getDelegate } from '../request';
 
 interface IFormValues {
   title: string;
@@ -45,7 +45,6 @@ function ServiceForm() {
   const router = useRouter();
   const allowedTokenList = useAllowedTokens();
   const [selectedToken, setSelectedToken] = useState<IToken>();
-  const { transaction, delegate } = useDelegate();
 
   const validationSchema = Yup.object({
     title: Yup.string().required('Please provide a title for your service'),
@@ -88,7 +87,7 @@ function ServiceForm() {
     }: { setSubmitting: (isSubmitting: boolean) => void; resetForm: () => void },
   ) => {
     const token = allowedTokenList.find(token => token.address === values.rateToken);
-    if (account?.isConnected === true && provider && signer && token) {
+    if (account?.isConnected === true && provider && signer && token && user) {
       try {
         const parsedRateAmount = await parseRateAmount(
           values.rateAmount.toString(),
@@ -110,7 +109,13 @@ function ServiceForm() {
         // Get platform signature
         const signature = await getServiceSignature({ profileId: Number(user?.id), cid });
 
-        await delegate(user?.id, process.env.NEXT_PUBLIC_PLATFORM_ID, cid, signature);
+        const response = await getDelegate(
+          user.id,
+          process.env.NEXT_PUBLIC_PLATFORM_ID,
+          cid,
+          signature,
+        );
+        console.log(response);
 
         const newId = await createMultiStepsTransactionToast(
           {
@@ -119,7 +124,7 @@ function ServiceForm() {
             error: 'An error occurred while creating your job',
           },
           provider,
-          transaction,
+          response.data.transaction,
           'service',
           cid,
         );
