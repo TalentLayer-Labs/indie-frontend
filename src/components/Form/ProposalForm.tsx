@@ -240,18 +240,18 @@ function ProposalForm({
               </span>
             </label>
 
-            <div className='flex items-center mb-4'>
-              <SubmitButton
-                isSubmitting={isSubmitting}
-                disabled={!conditionsValidated}
-                label='Post'
-              />
+            <div className='flex-col items-center mb-4'>
               <MetaEvidenceModal
                 conditionsValidated={conditionsValidated}
                 setConditionsValidated={setConditionsValidated}
                 serviceData={service}
                 proposalData={values}
                 seller={user}
+              />
+              <SubmitButton
+                isSubmitting={isSubmitting}
+                disabled={!conditionsValidated}
+                label='Post'
               />
             </div>
           </div>
