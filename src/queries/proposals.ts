@@ -117,6 +117,9 @@ export const getProposalById = (id: string): Promise<any> => {
               about
               title
             }
+            transaction {
+              id
+            }
             buyer {
               id
             }
