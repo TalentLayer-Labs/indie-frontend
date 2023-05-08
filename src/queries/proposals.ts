@@ -109,6 +109,18 @@ export const getProposalById = (id: string): Promise<any> => {
           }
           status
           expirationDate
+          seller {
+            id
+          }
+          service {
+            description {
+              about
+              title
+            }
+            buyer {
+              id
+            }
+          }
         }
       }
     `;

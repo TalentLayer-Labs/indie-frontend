@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { useContext } from 'react';
+import React, { useContext } from 'react';
 import TalentLayerContext from '../context/talentLayer';
 import usePaymentsByService from '../hooks/usePaymentsByService';
 import useProposalsByService from '../hooks/useProposalsByService';
@@ -15,12 +15,14 @@ import ProposalItem from './ProposalItem';
 import ReviewItem from './ReviewItem';
 import ServiceStatus from './ServiceStatus';
 import Stars from './Stars';
+import { useRouter } from 'next/router';
 
 function ServiceDetail({ service }: { service: IService }) {
   const { account, user } = useContext(TalentLayerContext);
   const { reviews } = useReviewsByService(service.id);
   const proposals = useProposalsByService(service.id);
   const payments = usePaymentsByService(service.id);
+  const { push } = useRouter();
 
   const isBuyer = user?.id === service.buyer.id;
   const isSeller = user?.id === service.seller?.id;
@@ -124,6 +126,15 @@ function ServiceDetail({ service }: { service: IService }) {
               )}
             {account && service.status !== ServiceStatusEnum.Opened && (
               <PaymentModal service={service} payments={payments} isBuyer={isBuyer} />
+            )}
+            {account && service.status !== ServiceStatusEnum.Opened && validatedProposal && (
+              <button
+                onClick={() => push(`/dispute/${validatedProposal.id}`)}
+                className='block hover:text-white rounded-lg px-5 py-2.5 text-center text-red-600 bg-red-50 hover:bg-red-500'
+                type='button'
+                data-modal-toggle='defaultModal'>
+                Raise dispute
+              </button>
             )}
           </div>
         </div>
