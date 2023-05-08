@@ -1,4 +1,4 @@
-import { MetaEvidence } from './types';
+import { Evidence, MetaEvidence } from './types';
 
 export const generateMetaEvidence = (
   serviceDescription: string,
@@ -21,7 +21,7 @@ export const generateMetaEvidence = (
     fileTypeExtension: 'pdf',
     category: 'Escrow',
     title: title,
-    description: generateDescription(
+    description: generateMetaEvidenceDescription(
       serviceDescription,
       proposalDescription,
       buyerHandle,
@@ -51,7 +51,7 @@ export const generateMetaEvidence = (
   };
 };
 
-const generateDescription = (
+const generateMetaEvidenceDescription = (
   buyerVersion: string,
   sellerVersion: string,
   buyerHandle: string,
@@ -62,7 +62,7 @@ const generateDescription = (
   startDate?: string,
   expectedEndDate?: string,
 ): string => {
-  let description = `The TalentLayer user ${buyerHandle} has posted a service add, to which the user ${sellerHandle} has submitted a proposal for ${tokenAmount} ${tokenSymbol} tokens. 
+  let description = `The TalentLayer user ${buyerHandle} has posted a service request, to which the user ${sellerHandle} has submitted a proposal for ${tokenAmount} ${tokenSymbol} tokens. 
   The service description is: ${buyerVersion}.
   The proposal description is: ${sellerVersion}.
   The buyer has put in escrow ${tokenAmount} ${tokenSymbol} tokens to the contract address ${tokenAddress}.
@@ -74,4 +74,18 @@ const generateDescription = (
         ` The service is expected to start on ${startDate} and end on ${expectedEndDate}.`)
     : '';
   return description;
+};
+
+export const generateEvidence = (
+  title: string,
+  description: string,
+  evidenceCid: string,
+): Evidence => {
+  return {
+    fileURI: `/ipfs/${evidenceCid}`,
+    fileHash: evidenceCid,
+    fileTypeExtension: 'pdf',
+    name: title,
+    description: description,
+  };
 };
