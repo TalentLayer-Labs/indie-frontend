@@ -21,7 +21,7 @@ function Dispute() {
     router.push(`/services/${proposalId}`);
   }
 
-  if (!proposal) {
+  if (!proposal?.service?.transaction?.id) {
     return <Loading />;
   }
 
@@ -34,7 +34,9 @@ function Dispute() {
         <div className={'mb-4 pb-4 border-b border-b-gray-200'}>
           You are about to raise a dispute for the service {proposal?.service.description?.title}
         </div>
-        {account?.isConnected && user && <DisputeForm />}
+        {account?.isConnected && user && (
+          <DisputeForm transactionId={proposal?.service?.transaction?.id} />
+        )}
       </div>
     </div>
   );
