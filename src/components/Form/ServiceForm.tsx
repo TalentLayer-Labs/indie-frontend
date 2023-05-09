@@ -17,6 +17,7 @@ import useAllowedTokens from '../../hooks/useAllowedTokens';
 import { getServiceSignature } from '../../utils/signature';
 import { IToken } from '../../types';
 import { delegatePostService } from '../request';
+import { getUserByAddress } from '../../queries/users';
 
 interface IFormValues {
   title: string;
@@ -109,12 +110,37 @@ function ServiceForm() {
         // Get platform signature
         const signature = await getServiceSignature({ profileId: Number(user?.id), cid });
 
-        const response = await delegatePostService(
-          user,
-          process.env.NEXT_PUBLIC_PLATFORM_ID,
-          cid,
-          signature,
-        );
+        const getUser = await getUserByAddress(user.address);
+        const delegateAddresses = getUser.data?.data?.users[0].delegates;
+        console.log('delagate address in config', config.delegation.address);
+        console.log('address in the user object', delegateAddresses);
+        let tx;
+        // check if signer is in the delegate array
+        if (delegateAddresses && delegateAddresses.indexOf(config.delegation.address)) {
+          console.log('Signer is in the delegate array');
+          const response = await delegatePostService(
+            user,
+            process.env.NEXT_PUBLIC_PLATFORM_ID,
+            cid,
+            signature,
+          );
+          tx = response.data.transaction;
+        } else {
+          console.log('Signer is not in the delegate array');
+          const contract = new ethers.Contract(
+            config.contracts.serviceRegistry,
+            ServiceRegistry.abi,
+            signer,
+          );
+
+          tx = await contract.createService(
+            user?.id,
+            process.env.NEXT_PUBLIC_PLATFORM_ID,
+            cid,
+            signature,
+          );
+        }
+        console.log('tx', tx);
 
         const newId = await createMultiStepsTransactionToast(
           {
@@ -123,7 +149,7 @@ function ServiceForm() {
             error: 'An error occurred while creating your job',
           },
           provider,
-          response.data.transaction,
+          tx,
           'service',
           cid,
         );

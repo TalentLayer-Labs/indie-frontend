@@ -21,7 +21,11 @@ export const createMultiStepsTransactionToast = async (
 ): Promise<number | undefined> => {
   let currentStep = 1;
   const toastId = toast(
-    <MultiStepsTransactionToast transactionHash={tx.hash as string} currentStep={currentStep} />,
+    <MultiStepsTransactionToast
+      transactionHash={tx.hash as string}
+      currentStep={currentStep}
+      hasOffchainData={!!newUri}
+    />,
     { autoClose: false, closeOnClick: false },
   );
 
@@ -31,7 +35,11 @@ export const createMultiStepsTransactionToast = async (
     currentStep = 2;
     toast.update(toastId, {
       render: (
-        <MultiStepsTransactionToast transactionHash={tx.hash as string} currentStep={currentStep} />
+        <MultiStepsTransactionToast
+          transactionHash={tx.hash as string}
+          currentStep={currentStep}
+          hasOffchainData={!!newUri}
+        />
       ),
     });
 
@@ -57,6 +65,15 @@ export const createMultiStepsTransactionToast = async (
 
       return entityId;
     }
+
+    toast.update(toastId, {
+      type: toast.TYPE.SUCCESS,
+      render: messages.success,
+      autoClose: 5000,
+      closeOnClick: true,
+    });
+
+    return;
   } catch (error) {
     const errorMessage = getParsedErrorMessage(error);
     console.error(error);
@@ -71,6 +88,7 @@ export const createMultiStepsTransactionToast = async (
 export const showErrorTransactionToast = (error: any) => {
   console.error(error);
   const errorMessage = getParsedErrorMessage(error);
+  // TODO: if error status 500, get the errorMessage from response.data
   toast.error(errorMessage);
 };
 

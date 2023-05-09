@@ -30,21 +30,6 @@ export const validateDelegation = async (
       tx,
       'Delegation',
     );
-
-    const receipt = await toast.promise(provider.waitForTransaction(tx.hash), {
-      pending: {
-        render() {
-          return (
-            <TransactionToast message='The delegation is in progress' transactionHash={tx.hash} />
-          );
-        },
-      },
-      success: 'Delegation change validated',
-      error: 'An error occurred while validating your transaction',
-    });
-    if (receipt.status !== 1) {
-      throw new Error('Delegation failed');
-    }
   } catch (error) {
     showErrorTransactionToast(error);
   }
