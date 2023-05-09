@@ -21,7 +21,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     signer = Wallet.fromMnemonic(delegateSeedPhrase).connect(provider);
-    console.log('signer', signer);
 
     const talentLayerContract = new Contract(
       config.contracts.talentLayerId,

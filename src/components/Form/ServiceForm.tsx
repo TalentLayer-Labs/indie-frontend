@@ -115,7 +115,6 @@ function ServiceForm() {
           cid,
           signature,
         );
-        console.log(response);
 
         const newId = await createMultiStepsTransactionToast(
           {
