@@ -1,37 +1,32 @@
-import { useWeb3Modal } from '@web3modal/react';
-import { ethers } from 'ethers';
-import { ErrorMessage, Field, Form, Formik } from 'formik';
-import { useContext, useEffect, useState } from 'react';
+import { ErrorMessage, Field, Form, Formik, useFormikContext } from 'formik';
+import { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { useProvider, useSigner } from 'wagmi';
 import * as Yup from 'yup';
-import { config } from '../../config';
-import TalentLayerContext from '../../context/talentLayer';
-import ServiceRegistry from '../../contracts/ABI/TalentLayerService.json';
-import { postToIPFS } from '../../utils/ipfs';
-import { createMultiStepsTransactionToast, showErrorTransactionToast } from '../../utils/toast';
 import SubmitButton from './SubmitButton';
 import FileDropper from '../../modules/Kleros/components/FileDropper';
-import { generateEvidence } from '../../modules/Kleros/utils/generateMetaEvidence';
+import { Evidence } from '../../modules/Kleros/utils/types';
 
 interface IFormValues {
   title: string;
   about: string;
+  file: File | null;
 }
 
 const initialValues: IFormValues = {
   title: '',
   about: '',
+  file: null,
 };
 
-function EvidenceForm({ transactionId }: { transactionId: string }) {
-  const { open: openConnectModal } = useWeb3Modal();
-  const { user, account } = useContext(TalentLayerContext);
-  const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
-  const { data: signer } = useSigner({
-    chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
-  });
+function EvidenceForm({
+  evidences,
+  setEvidences,
+}: {
+  evidences: Evidence[];
+  setEvidences: Dispatch<SetStateAction<Evidence[]>>;
+}) {
   const [fileSelected, setFileSelected] = useState<File>();
+  // const [evidences, setEvidences] = useState<Evidence[]>([]);
 
   const router = useRouter();
 
@@ -40,58 +35,29 @@ function EvidenceForm({ transactionId }: { transactionId: string }) {
     about: Yup.string().required('Please provide a description of your evidence'),
   });
 
-  useEffect(() => {
-    if (fileSelected) {
-      console.log(fileSelected);
-    }
-  }, [fileSelected]);
-
-  const onSubmit = async (
-    values: IFormValues,
-    {
-      setSubmitting,
-      resetForm,
-    }: { setSubmitting: (isSubmitting: boolean) => void; resetForm: () => void },
-  ) => {
-    if (account?.isConnected === true && provider && signer) {
-      try {
-        const evidenceCid = 'QmQ2hcACF6r2Gf8PDxG4NcBdurzRUopwcaYQHNhSah6a8v';
-        const metaEvidence = generateEvidence(evidenceCid, values.title, values.about);
-        const metaEvidenceCid = await postToIPFS(JSON.stringify(metaEvidence));
-
-        const contract = new ethers.Contract(
-          config.contracts.talentLayerEscrow,
-          ServiceRegistry.abi,
-          signer,
-        );
-        const tx = await contract.submitEvidence(user?.id, transactionId, metaEvidenceCid);
-        const newId = await createMultiStepsTransactionToast(
-          {
-            pending: 'Submitting evidence...',
-            success: 'Congrats! Your evidence has been submitted',
-            error: 'An error occurred while submitting your evidence ',
-          },
-          provider,
-          tx,
-          'evidence',
-          metaEvidenceCid,
-        );
-        setSubmitting(false);
-        resetForm();
-        if (newId) {
-          router.reload();
-        }
-      } catch (error) {
-        showErrorTransactionToast(error);
-      }
-    } else {
-      openConnectModal();
-    }
+  const onSubmit = async (values: IFormValues, { resetForm }: { resetForm: () => void }) => {
+    //TODO Upload file to ipfs
+    //TODO Get file extention
+    //TODO Build evidence
+    setEvidences([
+      ...evidences,
+      {
+        fileURI: '',
+        //TODO remove this
+        fileHash: values.file?.name || '',
+        fileTypeExtension: '',
+        name: values.title,
+        description: values.about,
+      },
+    ]);
+    // formikProps.setFieldValue('evidences', evidences);
+    resetForm();
+    setFileSelected(undefined);
   };
 
   return (
     <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
-      {({ isSubmitting, setFieldValue }) => (
+      {({ isSubmitting }) => (
         <Form>
           <div className='grid grid-cols-1 gap-6'>
             <label className='block'>
@@ -123,11 +89,13 @@ function EvidenceForm({ transactionId }: { transactionId: string }) {
             </label>
 
             <label className='block'>
-              <span className='text-gray-700'>Drop Files Here</span>
-              <FileDropper setFileSelected={setFileSelected} />
-            </label>
+              <FileDropper setFileSelected={setFileSelected} fileSelected={fileSelected} />
 
-            <SubmitButton isSubmitting={isSubmitting} label='Post' />
+              <Field type='hidden' id='file' name='file' />
+            </label>
+            <div className='flex flex-row justify-between items-center ml-4 sm:ml-2'>
+              <SubmitButton isSubmitting={isSubmitting} label='Add evidence' />
+            </div>
           </div>
         </Form>
       )}
