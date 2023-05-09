@@ -4,9 +4,10 @@ import { Contract, ethers, Wallet } from 'ethers';
 import { config } from '../../config';
 import TalentLayerID from '../../contracts/ABI/TalentLayerID.json';
 import TalentLayerService from '../../contracts/ABI/TalentLayerService.json';
+import { getUserByAddress } from '../../queries/users';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { userId, platformId, cid, signature } = req.body;
+  const { user, platformId, cid, signature } = req.body;
   let signer;
 
   // TODO : you can add here all the check you need to confirm the delagation for a user
@@ -28,10 +29,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       signer,
     );
 
-    const isDelegate = await talentLayerContract.isDelegate(userId, signer.address);
+    console.log('user.address', user.address);
 
-    if (!isDelegate) {
-      res.status(500).json('User is not a delegate');
+    const response = await getUserByAddress(user.address);
+    console.log('response', response.data?.data?.users[0].delegates);
+
+    const delegateArray = response.data?.data?.users[0].delegates;
+    console.log('signer.address', signer.address);
+
+    // check if signer is in the delegate array
+    if (delegateArray && delegateArray.includes(signer.address.toString())) {
+      console.log('Signer is in the delegate array');
+    } else {
+      console.log('Signer is not in the delegate array');
+      res.status(401).json('Unauthorized');
       return;
     }
 
@@ -41,14 +52,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       signer,
     );
 
-    const transaction = await serviceRegistryContract.createService(
-      userId,
-      platformId,
-      cid,
-      signature,
-    );
+    // const transaction = await serviceRegistryContract.createService(
+    //   user.id,
+    //   platformId,
+    //   cid,
+    //   signature,
+    // );
 
-    res.status(200).json({ transaction: transaction });
+    // res.status(200).json({ transaction: transaction });
   } catch (error) {
     console.log('errorDebug', error);
     res.status(500).json('tx failed');

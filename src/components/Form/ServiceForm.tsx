@@ -110,7 +110,7 @@ function ServiceForm() {
         const signature = await getServiceSignature({ profileId: Number(user?.id), cid });
 
         const response = await delegatePostService(
-          user.id,
+          user,
           process.env.NEXT_PUBLIC_PLATFORM_ID,
           cid,
           signature,
