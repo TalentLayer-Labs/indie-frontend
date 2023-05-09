@@ -1,14 +1,14 @@
 /* eslint-disable no-console */
 import axios from 'axios';
 
-export const getDelegate = async (
+export const delegatePostService = async (
   userId: string,
   platformId: string | undefined,
   cid: string,
   signature: string,
 ): Promise<any> => {
   try {
-    return await axios.post('/api/get-delegate', {
+    return await axios.post('/api/post-service', {
       userId,
       platformId,
       cid,

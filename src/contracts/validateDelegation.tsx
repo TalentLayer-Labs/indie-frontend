@@ -3,7 +3,7 @@ import { Provider } from '@wagmi/core';
 import { ethers } from 'ethers';
 import { toast } from 'react-toastify';
 import TransactionToast from '../components/TransactionToast';
-import { showErrorTransactionToast } from '../utils/toast';
+import { createMultiStepsTransactionToast, showErrorTransactionToast } from '../utils/toast';
 
 export const validateDelegation = async (
   user: string,
@@ -19,6 +19,17 @@ export const validateDelegation = async (
     } else {
       tx = await contract.removeDelegate(user, DelegateAddress);
     }
+
+    await createMultiStepsTransactionToast(
+      {
+        pending: 'Submitting the delegation...',
+        success: 'Congrats! the delegation is active',
+        error: 'An error occurred while delegation process',
+      },
+      provider,
+      tx,
+      'Delegation',
+    );
 
     const receipt = await toast.promise(provider.waitForTransaction(tx.hash), {
       pending: {

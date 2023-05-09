@@ -16,7 +16,7 @@ import SubmitButton from './SubmitButton';
 import useAllowedTokens from '../../hooks/useAllowedTokens';
 import { getServiceSignature } from '../../utils/signature';
 import { IToken } from '../../types';
-import { getDelegate } from '../request';
+import { delegatePostService } from '../request';
 
 interface IFormValues {
   title: string;
@@ -109,7 +109,7 @@ function ServiceForm() {
         // Get platform signature
         const signature = await getServiceSignature({ profileId: Number(user?.id), cid });
 
-        const response = await getDelegate(
+        const response = await delegatePostService(
           user.id,
           process.env.NEXT_PUBLIC_PLATFORM_ID,
           cid,

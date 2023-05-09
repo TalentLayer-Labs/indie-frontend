@@ -14,28 +14,14 @@ function DelegateModal() {
   });
   const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
   const { user } = useContext(TalentLayerContext);
-  const delegateAddress = config.delegation.platform;
+  const delegateAddress = config.delegation.address;
   const contract = new ethers.Contract(config.contracts.talentLayerId, TalentLayerID.abi, signer!);
-
-  useEffect(() => {
-    fetchDelegationState();
-  }, []);
-
-  const fetchDelegationState = async () => {
-    if (!user || !contract) {
-      return;
-    }
-    const delegationState = await contract.isDelegate(user.id, delegateAddress);
-    setDelegateState(delegationState);
-  };
 
   const onSubmit = async (validateState: boolean) => {
     if (!signer || !provider || !user) {
       return;
     }
     await validateDelegation(user.id, delegateAddress, provider, validateState, contract);
-
-    fetchDelegationState();
 
     setShow(false);
   };
