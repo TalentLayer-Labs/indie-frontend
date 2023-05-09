@@ -35,22 +35,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     console.log('response', response.data?.data?.users[0].delegates);
 
     const delegateArray = response.data?.data?.users[0].delegates;
-    console.log('signer.address', signer.address);
+    console.log('signer.address', signer.address.toLowerCase());
 
     // check if signer is in the delegate array
-    if (delegateArray && delegateArray.includes(signer.address.toString())) {
-      console.log('Signer is in the delegate array');
+    if (delegateArray && delegateArray.includes(signer.address.toLowerCase())) {
+      const serviceRegistryContract = new Contract(
+        config.contracts.serviceRegistry,
+        TalentLayerService.abi,
+        signer,
+      );
     } else {
       console.log('Signer is not in the delegate array');
       res.status(401).json('Unauthorized');
       return;
     }
-
-    const serviceRegistryContract = new Contract(
-      config.contracts.serviceRegistry,
-      TalentLayerService.abi,
-      signer,
-    );
 
     // const transaction = await serviceRegistryContract.createService(
     //   user.id,
