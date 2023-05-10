@@ -87,16 +87,10 @@ function UserIncomes({ id }: { id: string }) {
                         </a>
                       </td>
                       <td className='border border-gray-200 p-2 text-blue-500'>
-                        {network.chain?.id === 137 ? (
+                        {network.chain?.id === 137 || network.chain?.id === 80001 ? (
                           <a
                             target='_blank'
-                            href={`https://polygonscan.com/tx/${payment.transactionHash}`}>
-                            Tx
-                          </a>
-                        ) : network.chain?.id === 80001 ? (
-                          <a
-                            target='_blank'
-                            href={`https://mumbai.polygonscan.com/tx/${payment.transactionHash}`}>
+                            href={`${network.chain?.blockExplorers?.default.url}/tx/${payment.transactionHash}`}>
                             Tx
                           </a>
                         ) : null}
