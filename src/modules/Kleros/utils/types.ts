@@ -21,7 +21,7 @@ export type IMetaEvidence = {
   dynamicScriptHash: string;
 };
 
-export type IEvidence = {
+export type IERC1497Evidence = {
   fileUri: string;
   fileHash: string;
   fileTypeExtension: string;

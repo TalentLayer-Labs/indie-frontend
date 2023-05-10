@@ -1,17 +1,15 @@
 import { useEffect, useState } from 'react';
-import { getPaymentsByService } from '../queries/payments';
-import { IPayment, PaymentTypeEnum } from '../types';
-import { IEvidence } from '../modules/Kleros/utils/types';
+import { IEvidence } from '../types';
 import { getEvidencesByPartyAndTransaction } from '../queries/evidences';
 
-const useEvidences = (userId?: string, transactionID?: string): IEvidence[] => {
+const useEvidences = (transactionID?: string): IEvidence[] => {
   const [evidences, setEvidences] = useState<IEvidence[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        if (!userId || !transactionID) return;
-        const response = await getEvidencesByPartyAndTransaction(transactionID, userId);
+        if (!transactionID) return;
+        const response = await getEvidencesByPartyAndTransaction(transactionID);
 
         if (response?.data?.data?.evidences) {
           setEvidences(response.data.data.evidences);
@@ -22,7 +20,7 @@ const useEvidences = (userId?: string, transactionID?: string): IEvidence[] => {
       }
     };
     fetchData();
-  }, [userId]);
+  }, [transactionID]);
 
   return evidences;
 };

@@ -43,6 +43,12 @@ export type IAccount = {
 export type ITransaction = {
   id: string;
   status: TransactionStatusEnum;
+  senderFee: number;
+  receiverFee: number;
+  arbitrationFeeTimeout: number;
+  amount: number;
+  disputeId: number;
+  evidences: IEvidence[];
 };
 
 export enum TransactionStatusEnum {
@@ -225,4 +231,12 @@ export type IUserGain = {
   user: IUser;
   token: IToken;
   totalGain: string;
+};
+
+export type IEvidence = {
+  id: string;
+  transaction: ITransaction;
+  createdAt: string;
+  party: IUser;
+  uri: string;
 };
