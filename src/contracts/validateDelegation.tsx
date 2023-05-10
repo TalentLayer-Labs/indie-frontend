@@ -1,8 +1,5 @@
-import React from 'react';
 import { Provider } from '@wagmi/core';
 import { ethers } from 'ethers';
-import { toast } from 'react-toastify';
-import TransactionToast from '../components/TransactionToast';
 import { createMultiStepsTransactionToast, showErrorTransactionToast } from '../utils/toast';
 
 export const validateDelegation = async (
