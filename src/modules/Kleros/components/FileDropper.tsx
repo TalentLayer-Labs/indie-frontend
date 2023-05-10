@@ -37,7 +37,7 @@ const FileDropper = ({
 
   const removeFile = () => {
     setFileSelected(undefined);
-    formikProps.setFieldValue('file', undefined);
+    formikProps.setFieldValue('file', null);
   };
 
   return !fileSelected ? (
