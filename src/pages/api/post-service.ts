@@ -26,7 +26,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const getUser = await getUserByAddress(userAddress);
     const delegateAddresses = getUser.data?.data?.users[0].delegates;
     if (delegateAddresses.indexOf(config.delegation.address.toLowerCase()) === -1) {
-      res.status(500).json('Delagation is not activated');
+      res.status(500).json('Delegation is not activated');
       return;
     }
 
