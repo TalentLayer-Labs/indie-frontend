@@ -12,6 +12,7 @@ import TalentLayerEscrow from '../../contracts/ABI/TalentLayerEscrow.json';
 import TalentLayerContext from '../../context/talentLayer';
 import { useWeb3Modal } from '@web3modal/react';
 import { useProvider, useSigner } from 'wagmi';
+import ServiceItem from '../ServiceItem';
 
 interface IFormValues {
   title: string;
@@ -99,9 +100,9 @@ function EvidenceForm({ transactionId }: { transactionId: string }) {
       {({ isSubmitting, dirty, isValid }) => (
         <>
           <Form>
-            {/*<h5 className='text-indigo-600 '>Add an evidence</h5>*/}
-            <div className='grid grid-cols-1 gap-6'>
-              <label className='block'>
+            <h2 className=' mt-8 mb-2 text-gray-900 font-bold'>Add evidence:</h2>
+            <div className='grid grid-rows-2 grid-cols-3 gap-6 border border-gray-200 rounded-md p-8'>
+              <label className='block row-span-1 col-span-2'>
                 <span className='text-gray-700'>Title</span>
                 <Field
                   type='text'
@@ -115,7 +116,16 @@ function EvidenceForm({ transactionId }: { transactionId: string }) {
                 </span>
               </label>
 
-              <label className='block'>
+              <label className='block row-span-2 col-span-1'>
+                <FileDropper setFileSelected={setFileSelected} fileSelected={fileSelected} />
+
+                <Field type='hidden' id='file' name='file' />
+                <span className='text-red-500'>
+                  <ErrorMessage name='file' />
+                </span>
+              </label>
+
+              <label className='block row-span-2 col-span-2'>
                 <span className='text-gray-700'>About</span>
                 <Field
                   as='textarea'
@@ -128,22 +138,13 @@ function EvidenceForm({ transactionId }: { transactionId: string }) {
                   <ErrorMessage name='about' />
                 </span>
               </label>
-
-              <label className='block'>
-                <FileDropper setFileSelected={setFileSelected} fileSelected={fileSelected} />
-
-                <Field type='hidden' id='file' name='file' />
-                <span className='text-red-500'>
-                  <ErrorMessage name='file' />
-                </span>
-              </label>
-              <div className='flex flex-row justify-between items-center ml-4 sm:ml-2'>
-                <SubmitButton
-                  isSubmitting={isSubmitting}
-                  disabled={!isValid || !dirty}
-                  label='Submit evidence'
-                />
-              </div>
+            </div>
+            <div className='flex flex-row justify-between items-center mt-4'>
+              <SubmitButton
+                isSubmitting={isSubmitting}
+                disabled={!isValid || !dirty}
+                label='Submit evidence'
+              />
             </div>
           </Form>
         </>
