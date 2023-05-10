@@ -80,11 +80,12 @@ export const generateEvidence = (
   title: string,
   description: string,
   evidenceCid: string,
+  fileExtension: string,
 ): Evidence => {
   return {
     fileURI: `/ipfs/${evidenceCid}`,
     fileHash: evidenceCid,
-    fileTypeExtension: 'pdf',
+    fileTypeExtension: fileExtension,
     name: title,
     description: description,
   };
