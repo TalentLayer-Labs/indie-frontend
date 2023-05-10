@@ -112,21 +112,21 @@ function ServiceForm() {
 
         const getUser = await getUserByAddress(user.address);
         const delegateAddresses = getUser.data?.data?.users[0].delegates;
-        console.log('delagate address in config', config.delegation.address);
-        console.log('address in the user object', delegateAddresses);
+
         let tx;
-        // check if signer is in the delegate array
-        if (delegateAddresses && delegateAddresses.indexOf(config.delegation.address)) {
-          console.log('Signer is in the delegate array');
+        if (
+          delegateAddresses &&
+          delegateAddresses.indexOf(config.delegation.address.toLowerCase()) != -1
+        ) {
           const response = await delegatePostService(
-            user,
+            user.id,
+            user.address,
             process.env.NEXT_PUBLIC_PLATFORM_ID,
             cid,
             signature,
           );
           tx = response.data.transaction;
         } else {
-          console.log('Signer is not in the delegate array');
           const contract = new ethers.Contract(
             config.contracts.serviceRegistry,
             ServiceRegistry.abi,
@@ -140,7 +140,6 @@ function ServiceForm() {
             signature,
           );
         }
-        console.log('tx', tx);
 
         const newId = await createMultiStepsTransactionToast(
           {

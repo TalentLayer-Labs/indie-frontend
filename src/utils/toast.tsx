@@ -87,8 +87,10 @@ export const createMultiStepsTransactionToast = async (
 
 export const showErrorTransactionToast = (error: any) => {
   console.error(error);
-  const errorMessage = getParsedErrorMessage(error);
-  // TODO: if error status 500, get the errorMessage from response.data
+  let errorMessage = getParsedErrorMessage(error);
+  if (error.response && error.response.status === 500) {
+    errorMessage = error.response.data;
+  }
   toast.error(errorMessage);
 };
 

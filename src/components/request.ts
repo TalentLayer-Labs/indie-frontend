@@ -1,16 +1,19 @@
 /* eslint-disable no-console */
 import axios from 'axios';
 import { IUser } from '../types';
+import { string } from 'yup/lib/locale';
 
 export const delegatePostService = async (
-  user: IUser,
+  userId: string,
+  userAddress: string,
   platformId: string | undefined,
   cid: string,
   signature: string,
 ): Promise<any> => {
   try {
     return await axios.post('/api/post-service', {
-      user,
+      userId,
+      userAddress,
       platformId,
       cid,
       signature,

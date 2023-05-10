@@ -2,13 +2,12 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { Contract, ethers, Wallet } from 'ethers';
 import { config } from '../../config';
-import TalentLayerID from '../../contracts/ABI/TalentLayerID.json';
 import TalentLayerService from '../../contracts/ABI/TalentLayerService.json';
 import { getUserByAddress } from '../../queries/users';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { user, platformId, cid, signature } = req.body;
-  // TODO just pass user.id and user.address
+  const { userId, userAddress, platformId, cid, signature } = req.body;
+
   let signer;
 
   // TODO : you can add here all the check you need to confirm the delagation for a user
@@ -24,7 +23,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     signer = Wallet.fromMnemonic(delegateSeedPhrase).connect(provider);
 
-    // TODO: check in the graph if the user has the delegate address. If not return an error with a custom message
+    const getUser = await getUserByAddress(userAddress);
+    const delegateAddresses = getUser.data?.data?.users[0].delegates;
+    if (delegateAddresses.indexOf(config.delegation.address.toLowerCase()) === -1) {
+      res.status(500).json('Delagation is not activated');
+      return;
+    }
 
     const serviceRegistryContract = new Contract(
       config.contracts.serviceRegistry,
@@ -33,7 +37,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     );
 
     const transaction = await serviceRegistryContract.createService(
-      user.id,
+      userId,
       platformId,
       cid,
       signature,
