@@ -1,4 +1,4 @@
-export type MetaEvidence = {
+export type IMetaEvidence = {
   fileURI: string;
   fileHash: string;
   fileTypeExtension: string;
@@ -21,8 +21,8 @@ export type MetaEvidence = {
   dynamicScriptHash: string;
 };
 
-export type Evidence = {
-  fileURI: string;
+export type IEvidence = {
+  fileUri: string;
   fileHash: string;
   fileTypeExtension: string;
   name: string;
