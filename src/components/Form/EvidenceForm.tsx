@@ -52,7 +52,8 @@ function EvidenceForm({ transactionId }: { transactionId: string }) {
         const fileExtension = values.file?.name.split('.').pop();
         console.log('fileExtension', fileExtension);
         console.log('values.file', values.file);
-        const fileCid = await postToIPFS(JSON.stringify(values.file));
+        const fileCid = 'QmQ2hcACF6r2Gf8PDxG4NcBdurzRUopwcaYQHNhSah6a8v';
+        // const fileCid = await postToIPFS(JSON.stringify(values.file));
         console.log('fileCid', fileCid);
         const evidence = generateEvidence(
           values.title,
@@ -61,7 +62,8 @@ function EvidenceForm({ transactionId }: { transactionId: string }) {
           fileExtension as string,
         );
         console.log('evidence', evidence);
-        const evidenceCid = await postToIPFS(JSON.stringify(evidence));
+        const evidenceCid = 'QmQ2hcACF6r2Gf8PDxG4NcBdurzRUopwcaYQHNhSah6a8v';
+        // const evidenceCid = await postToIPFS(JSON.stringify(evidence));
         console.log('evidenceCid', evidenceCid);
 
         const contract = new ethers.Contract(
@@ -94,50 +96,57 @@ function EvidenceForm({ transactionId }: { transactionId: string }) {
 
   return (
     <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
-      {({ isSubmitting }) => (
-        <Form>
-          <div className='grid grid-cols-1 gap-6'>
-            <label className='block'>
-              <span className='text-gray-700'>Title</span>
-              <Field
-                type='text'
-                id='title'
-                name='title'
-                className='mt-1 mb-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
-                placeholder=''
-              />
-              <span className='text-red-500'>
-                <ErrorMessage name='title' />
-              </span>
-            </label>
+      {({ isSubmitting, dirty, isValid }) => (
+        <>
+          <Form>
+            {/*<h5 className='text-indigo-600 '>Add an evidence</h5>*/}
+            <div className='grid grid-cols-1 gap-6'>
+              <label className='block'>
+                <span className='text-gray-700'>Title</span>
+                <Field
+                  type='text'
+                  id='title'
+                  name='title'
+                  className='mt-1 mb-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
+                  placeholder=''
+                />
+                <span className='text-red-500'>
+                  <ErrorMessage name='title' />
+                </span>
+              </label>
 
-            <label className='block'>
-              <span className='text-gray-700'>About</span>
-              <Field
-                as='textarea'
-                id='about'
-                name='about'
-                className='mt-1 mb-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
-                placeholder=''
-              />
-              <span className='text-red-500'>
-                <ErrorMessage name='about' />
-              </span>
-            </label>
+              <label className='block'>
+                <span className='text-gray-700'>About</span>
+                <Field
+                  as='textarea'
+                  id='about'
+                  name='about'
+                  className='mt-1 mb-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
+                  placeholder=''
+                />
+                <span className='text-red-500'>
+                  <ErrorMessage name='about' />
+                </span>
+              </label>
 
-            <label className='block'>
-              <FileDropper setFileSelected={setFileSelected} fileSelected={fileSelected} />
+              <label className='block'>
+                <FileDropper setFileSelected={setFileSelected} fileSelected={fileSelected} />
 
-              <Field type='hidden' id='file' name='file' />
-              <span className='text-red-500'>
-                <ErrorMessage name='file' />
-              </span>
-            </label>
-            <div className='flex flex-row justify-between items-center ml-4 sm:ml-2'>
-              <SubmitButton isSubmitting={isSubmitting} label='Submit evidence' />
+                <Field type='hidden' id='file' name='file' />
+                <span className='text-red-500'>
+                  <ErrorMessage name='file' />
+                </span>
+              </label>
+              <div className='flex flex-row justify-between items-center ml-4 sm:ml-2'>
+                <SubmitButton
+                  isSubmitting={isSubmitting}
+                  disabled={!isValid || !dirty}
+                  label='Submit evidence'
+                />
+              </div>
             </div>
-          </div>
-        </Form>
+          </Form>
+        </>
       )}
     </Formik>
   );
