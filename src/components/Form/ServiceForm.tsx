@@ -16,7 +16,7 @@ import SubmitButton from './SubmitButton';
 import useAllowedTokens from '../../hooks/useAllowedTokens';
 import { getServiceSignature } from '../../utils/signature';
 import { IToken } from '../../types';
-import { delegatePostService } from '../request';
+import { delegateCreateService } from '../request';
 import { getUserByAddress } from '../../queries/users';
 
 interface IFormValues {
@@ -112,19 +112,16 @@ function ServiceForm() {
 
         const getUser = await getUserByAddress(user.address);
         const delegateAddresses = getUser.data?.data?.users[0].delegates;
+        console.log(delegateAddresses);
+        console.log(getUser);
 
         let tx;
         if (
           delegateAddresses &&
-          delegateAddresses.indexOf(config.delegation.address.toLowerCase()) != -1
+          delegateAddresses.indexOf(config.delegation.address.toLowerCase()) != -1 &&
+          process.env.NEXT_PUBLIC_ACTIVE_DELEGATE
         ) {
-          const response = await delegatePostService(
-            user.id,
-            user.address,
-            process.env.NEXT_PUBLIC_PLATFORM_ID,
-            cid,
-            signature,
-          );
+          const response = await delegateCreateService(user.id, user.address, cid);
           tx = response.data.transaction;
         } else {
           const contract = new ethers.Contract(

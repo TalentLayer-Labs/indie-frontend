@@ -4,27 +4,33 @@ import { Contract, ethers, Wallet } from 'ethers';
 import { config } from '../../config';
 import TalentLayerService from '../../contracts/ABI/TalentLayerService.json';
 import { getUserByAddress } from '../../queries/users';
+import { getServiceSignature } from '../../utils/signature';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { userId, userAddress, platformId, cid, signature } = req.body;
+  const { userId, userAddress, cid } = req.body;
 
   let signer;
 
-  // TODO : you can add here all the check you need to confirm the delagation for a user
+  // @dev : you can add here all the check you need to confirm the delagation for a user
 
   try {
+    if (process.env.NEXT_PUBLIC_ACTIVE_DELEGATE !== 'true') {
+      res.status(500).json('Delegation is not activated');
+      return;
+    }
+
     const provider = new ethers.providers.JsonRpcProvider(process.env.NEXT_PUBLIC_RPC_URL);
     const delegateSeedPhrase = process.env.NEXT_PRIVATE_SEED_PHRASE;
+    const signature = await getServiceSignature({ profileId: Number(userId), cid });
+    const getUser = await getUserByAddress(userAddress);
+    const delegateAddresses = getUser.data?.data?.users[0].delegates;
 
     if (!delegateSeedPhrase) {
       res.status(500).json('Delegate seed phrase is not set');
       return;
     }
-
     signer = Wallet.fromMnemonic(delegateSeedPhrase).connect(provider);
 
-    const getUser = await getUserByAddress(userAddress);
-    const delegateAddresses = getUser.data?.data?.users[0].delegates;
     if (delegateAddresses.indexOf(config.delegation.address.toLowerCase()) === -1) {
       res.status(500).json('Delegation is not activated');
       return;
@@ -38,7 +44,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const transaction = await serviceRegistryContract.createService(
       userId,
-      platformId,
+      process.env.NEXT_PUBLIC_PLATFORM_ID,
       cid,
       signature,
     );

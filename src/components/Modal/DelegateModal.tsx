@@ -5,6 +5,7 @@ import { validateDelegation } from '../../contracts/validateDelegation';
 import TalentLayerContext from '../../context/talentLayer';
 import { config } from '../../config';
 import TalentLayerID from '../../contracts/ABI/TalentLayerID.json';
+import { getUserByAddress } from '../../queries/users';
 
 function DelegateModal() {
   const [show, setShow] = useState(false);
@@ -15,9 +16,37 @@ function DelegateModal() {
   const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
   const { user } = useContext(TalentLayerContext);
   const delegateAddress = config.delegation.address;
-  const contract = new ethers.Contract(config.contracts.talentLayerId, TalentLayerID.abi, signer!);
+
+  if (!user) {
+    return;
+  }
+
+  const checkDelegateState = async () => {
+    const getUser = await getUserByAddress(user.address);
+    const delegateAddresses = getUser.data?.data?.users[0].delegates;
+
+    if (
+      delegateAddresses &&
+      delegateAddresses.indexOf(config.delegation.address.toLowerCase()) != -1
+    ) {
+      setDelegateState(true);
+    } else {
+      setDelegateState(false);
+    }
+  };
+
+  useEffect(() => {
+    if (user) {
+      checkDelegateState();
+    }
+  }, [user, show]);
 
   const onSubmit = async (validateState: boolean) => {
+    const contract = new ethers.Contract(
+      config.contracts.talentLayerId,
+      TalentLayerID.abi,
+      signer!,
+    );
     if (!signer || !provider || !user) {
       return;
     }
@@ -86,18 +115,21 @@ function DelegateModal() {
               </div>
             </div>
             <div className='flex items-center p-6 space-x-2 rounded-b border-t border-gray-200 '>
-              <button
-                onClick={() => onSubmit(true)}
-                type='button'
-                className='hover:text-green-600 hover:bg-green-50 bg-green-500 text-white rounded-lg px-5 py-2.5 text-center'>
-                Validate Delegation
-              </button>
-              <button
-                onClick={() => onSubmit(false)}
-                type='button'
-                className='hover:text-blue-600 hover:bg-red-50 bg-red-500 text-white rounded-lg px-5 py-2.5 text-center'>
-                Cancel Delegation
-              </button>
+              {delegateState ? (
+                <button
+                  onClick={() => onSubmit(false)}
+                  type='button'
+                  className='hover:text-blue-600 hover:bg-red-50 bg-red-500 text-white rounded-lg px-5 py-2.5 text-center'>
+                  Cancel Delegation
+                </button>
+              ) : (
+                <button
+                  onClick={() => onSubmit(true)}
+                  type='button'
+                  className='hover:text-green-600 hover:bg-green-50 bg-green-500 text-white rounded-lg px-5 py-2.5 text-center'>
+                  Validate Delegation
+                </button>
+              )}
             </div>
           </div>
         </div>
