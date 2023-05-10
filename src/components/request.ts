@@ -1,7 +1,5 @@
 /* eslint-disable no-console */
 import axios from 'axios';
-import { IUser } from '../types';
-import { string } from 'yup/lib/locale';
 
 export const delegateCreateService = async (
   userId: string,
