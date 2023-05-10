@@ -1,4 +1,4 @@
-import { Evidence, MetaEvidence } from './types';
+import { IEvidence, IMetaEvidence } from './types';
 
 export const generateMetaEvidence = (
   serviceDescription: string,
@@ -11,7 +11,7 @@ export const generateMetaEvidence = (
   title: string,
   startDate?: string,
   expectedEndDate?: string,
-): MetaEvidence => {
+): IMetaEvidence => {
   //TODO generate fileUriHash
   //TODO mention users addresses somewhere ?
 
@@ -81,9 +81,9 @@ export const generateEvidence = (
   description: string,
   evidenceCid: string,
   fileExtension: string,
-): Evidence => {
+): IEvidence => {
   return {
-    fileURI: `/ipfs/${evidenceCid}`,
+    fileUri: `/ipfs/${evidenceCid}`,
     fileHash: evidenceCid,
     fileTypeExtension: fileExtension,
     name: title,
