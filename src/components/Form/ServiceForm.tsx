@@ -112,8 +112,6 @@ function ServiceForm() {
 
         const getUser = await getUserByAddress(user.address);
         const delegateAddresses = getUser.data?.data?.users[0].delegates;
-        console.log(delegateAddresses);
-        console.log(getUser);
 
         let tx;
         if (
