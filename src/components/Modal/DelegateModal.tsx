@@ -36,9 +36,7 @@ function DelegateModal() {
   };
 
   useEffect(() => {
-    if (user) {
-      checkDelegateState();
-    }
+    checkDelegateState();
   }, [user, show]);
 
   const onSubmit = async (validateState: boolean) => {
