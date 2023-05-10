@@ -1,4 +1,4 @@
-import { IEvidence, IMetaEvidence } from './types';
+import { IERC1497Evidence, IMetaEvidence } from './types';
 
 export const generateMetaEvidence = (
   serviceDescription: string,
@@ -81,7 +81,7 @@ export const generateEvidence = (
   description: string,
   evidenceCid: string,
   fileExtension: string,
-): IEvidence => {
+): IERC1497Evidence => {
   return {
     fileUri: `/ipfs/${evidenceCid}`,
     fileHash: evidenceCid,
