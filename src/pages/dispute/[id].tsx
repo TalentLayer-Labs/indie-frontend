@@ -9,13 +9,13 @@ import { IERC1497Evidence } from '../../modules/Kleros/utils/types';
 import DisputeItem from '../../modules/Kleros/components/DisputeDetail';
 import useTransactionsById from '../../hooks/useTransactionsById';
 import TimeOutCountDown from '../../components/TimeoutCountDown';
+import DisputeButton from '../../components/DisputeButton';
 
 function Dispute() {
   const router = useRouter();
   const { id: proposalId } = router.query;
   const { account, user } = useContext(TalentLayerContext);
   const proposal = useProposalById(proposalId as string);
-  console.log('proposal', proposal);
   const transactionId = proposal?.service?.transaction?.id;
   const transaction = useTransactionsById(transactionId as string);
   //TODO: RPC call to get fee, or handle with the graph when update ?
@@ -36,16 +36,15 @@ function Dispute() {
       createdAt: '',
     },
   ];
-  console.log('Date.now()', Date.now());
-  console.log('transaction?.lastInteraction', transaction?.lastInteraction);
-  console.log('transaction.arbitrationFeeTimeout', transaction?.arbitrationFeeTimeout);
+  const targetDate = 1683795557869 + Number(transaction?.arbitrationFeeTimeout) * 1000;
+  // const targetDate = (transaction?.lastInteraction + transaction.arbitrationFeeTimeout) * 1000;
 
   const buyerEvidences = evidences.filter(
     evidence => evidence.party.id === proposal?.service.buyer.id,
   );
   const sellerEvidences = evidences.filter(evidence => evidence.party.id === proposal?.seller.id);
 
-  transaction ? (transaction.status = TransactionStatusEnum.WaitingSender) : '';
+  transaction ? (transaction.status = TransactionStatusEnum.DisputeCreated) : '';
 
   if (
     user &&
@@ -63,7 +62,7 @@ function Dispute() {
 
   return (
     <>
-      {proposal?.service.transaction.status === TransactionStatusEnum.NoDispute && (
+      {user && proposal?.service.transaction.status === TransactionStatusEnum.NoDispute && (
         <>
           <div className='max-w-7xl mx-auto text-gray-900 sm:px-4 lg:px-0'>
             <p className='text-5xl font-medium tracking-wider mb-8'>
@@ -119,29 +118,32 @@ function Dispute() {
                       <strong>Seller fee:</strong> {transaction?.receiverFee}
                     </p>
                   </div>
-                  {transaction &&
-                    (transaction.status === TransactionStatusEnum.WaitingReceiver ||
-                      transaction.status === TransactionStatusEnum.WaitingSender) && (
-                      <>
-                        <div className={'flex flex-col'}>
-                          <div className={'flex flex-row'}>
-                            <TimeOutCountDown
-                              targetDate={
-                                1683795557869 + Number(transaction.arbitrationFeeTimeout) * 1000
-                                // (transaction?.lastInteraction + transaction.arbitrationFeeTimeout) * 1000
-                              }
-                            />
-                          </div>
-                          {userIsBuyerAndHasPaid() && (
-                            <button
-                              className={`ml-2 mt-4 px-5 py-2 border rounded-md hover:text-indigo-600 hover:bg-white border-indigo-600 bg-indigo-600 text-white bg-indigo-700'
-                }`}>
-                              Timeout by ...
-                            </button>
-                          )}
+                  {transaction && (
+                    // (transaction.status === TransactionStatusEnum.WaitingReceiver ||
+                    //   transaction.status === TransactionStatusEnum.WaitingSender) &&
+                    <>
+                      <div className={'flex flex-col'}>
+                        <div className={'flex flex-row'}>
+                          <TimeOutCountDown
+                            targetDate={
+                              targetDate
+                              // (transaction?.lastInteraction + transaction.arbitrationFeeTimeout) * 1000
+                            }
+                          />
                         </div>
-                      </>
-                    )}
+                        <DisputeButton
+                          userId={user.id}
+                          buyerId={proposal?.service.buyer.id}
+                          sellerId={proposal.seller.id}
+                          transactionStatus={transaction.status}
+                          disabled={
+                            targetDate > Date.now()
+                            // (transaction?.lastInteraction + transaction.arbitrationFeeTimeout) * 1000
+                          }
+                        />
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
               {account?.isConnected && user && transactionId && (
