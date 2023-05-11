@@ -1,5 +1,5 @@
 import { useWeb3Modal } from '@web3modal/react';
-import { BigNumberish, ethers, FixedNumber } from 'ethers';
+import { BigNumberish, ethers, FixedNumber, Signer, Wallet } from 'ethers';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import { useContext, useState } from 'react';
 import { useRouter } from 'next/router';
@@ -8,6 +8,7 @@ import * as Yup from 'yup';
 import { config } from '../../config';
 import TalentLayerContext from '../../context/talentLayer';
 import ServiceRegistry from '../../contracts/ABI/TalentLayerService.json';
+import TalentLayerID from '../../contracts/ABI/TalentLayerID.json';
 import { postToIPFS } from '../../utils/ipfs';
 import { createMultiStepsTransactionToast, showErrorTransactionToast } from '../../utils/toast';
 import { parseRateAmount } from '../../utils/web3';
@@ -15,6 +16,8 @@ import SubmitButton from './SubmitButton';
 import useAllowedTokens from '../../hooks/useAllowedTokens';
 import { getServiceSignature } from '../../utils/signature';
 import { IToken } from '../../types';
+import { delegateCreateService } from '../request';
+import { getUserByAddress } from '../../queries/users';
 
 interface IFormValues {
   title: string;
@@ -85,7 +88,7 @@ function ServiceForm() {
     }: { setSubmitting: (isSubmitting: boolean) => void; resetForm: () => void },
   ) => {
     const token = allowedTokenList.find(token => token.address === values.rateToken);
-    if (account?.isConnected === true && provider && signer && token) {
+    if (account?.isConnected === true && provider && signer && token && user) {
       try {
         const parsedRateAmount = await parseRateAmount(
           values.rateAmount.toString(),
@@ -107,17 +110,32 @@ function ServiceForm() {
         // Get platform signature
         const signature = await getServiceSignature({ profileId: Number(user?.id), cid });
 
-        const contract = new ethers.Contract(
-          config.contracts.serviceRegistry,
-          ServiceRegistry.abi,
-          signer,
-        );
-        const tx = await contract.createService(
-          user?.id,
-          process.env.NEXT_PUBLIC_PLATFORM_ID,
-          cid,
-          signature,
-        );
+        const getUser = await getUserByAddress(user.address);
+        const delegateAddresses = getUser.data?.data?.users[0].delegates;
+
+        let tx;
+        if (
+          delegateAddresses &&
+          delegateAddresses.indexOf(config.delegation.address.toLowerCase()) != -1 &&
+          process.env.NEXT_PUBLIC_ACTIVE_DELEGATE
+        ) {
+          const response = await delegateCreateService(user.id, user.address, cid);
+          tx = response.data.transaction;
+        } else {
+          const contract = new ethers.Contract(
+            config.contracts.serviceRegistry,
+            ServiceRegistry.abi,
+            signer,
+          );
+
+          tx = await contract.createService(
+            user?.id,
+            process.env.NEXT_PUBLIC_PLATFORM_ID,
+            cid,
+            signature,
+          );
+        }
+
         const newId = await createMultiStepsTransactionToast(
           {
             pending: 'Creating your job...',
