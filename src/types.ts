@@ -45,6 +45,7 @@ export type ITransaction = {
   status: TransactionStatusEnum;
   senderFee: number;
   receiverFee: number;
+  lastInteraction: number;
   arbitrationFeeTimeout: number;
   amount: number;
   disputeId: number;

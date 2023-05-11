@@ -9,6 +9,7 @@ export const getTransactionById = (id: string): Promise<any> => {
           disputeId
           senderFee
           receiverFee
+          lastInteraction
           evidences {
             uri
             party {
