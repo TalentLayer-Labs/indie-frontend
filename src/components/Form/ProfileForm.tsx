@@ -13,6 +13,8 @@ import Loading from '../Loading';
 import SubmitButton from './SubmitButton';
 import useUserById from '../../hooks/useUserById';
 import { SkillsInput } from './skills-input';
+import { getUserByAddress } from '../../queries/users';
+import { delegateUpdateProfileData } from '../request';
 
 interface IFormValues {
   title?: string;
@@ -69,13 +71,25 @@ function ProfileForm({ callback }: { callback?: () => void }) {
           }),
         );
 
-        const contract = new ethers.Contract(
-          config.contracts.talentLayerId,
-          TalentLayerID.abi,
-          signer,
-        );
+        const getUser = await getUserByAddress(user.address);
+        const delegateAddresses = getUser.data?.data?.users[0].delegates;
+        let tx;
+        if (
+          process.env.NEXT_PUBLIC_ACTIVE_DELEGATE &&
+          delegateAddresses &&
+          delegateAddresses.indexOf(config.delegation.address.toLowerCase()) != -1
+        ) {
+          const response = await delegateUpdateProfileData(user.id, user.address, cid);
+          tx = response.data.transaction;
+        } else {
+          const contract = new ethers.Contract(
+            config.contracts.talentLayerId,
+            TalentLayerID.abi,
+            signer,
+          );
+          tx = await contract.updateProfileData(user.id, cid);
+        }
 
-        const tx = await contract.updateProfileData(user.id, cid);
         await createMultiStepsTransactionToast(
           {
             pending: 'Updating profile...',
