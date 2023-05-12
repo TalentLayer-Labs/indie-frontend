@@ -40,6 +40,7 @@ function ReleaseForm({
     const percentToToken = totalInEscrow.mul(percent).div(100);
 
     await executePayment(
+      user.address,
       signer,
       provider,
       user.id,

@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 import axios from 'axios';
+import { BigNumber } from 'ethers';
 
 export const delegateCreateService = async (
   userId: string,
@@ -55,6 +56,27 @@ export const delegateCreateOrUpdateProposal = async (
       cid,
       convertExpirationDateString,
       existingProposalStatus,
+    });
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+};
+
+export const delegateReleaseOrReimburse = async (
+  userAddress: string,
+  profileId: string,
+  transactionId: number,
+  amount: string,
+  isBuyer: boolean,
+): Promise<any> => {
+  try {
+    return await axios.post('/api/post-release-reimburse', {
+      userAddress,
+      profileId,
+      transactionId,
+      amount,
+      isBuyer,
     });
   } catch (err) {
     console.error(err);
