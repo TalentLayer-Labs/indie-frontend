@@ -2,7 +2,7 @@ import { Provider } from '@wagmi/core';
 import { ethers } from 'ethers';
 import { createMultiStepsTransactionToast, showErrorTransactionToast } from '../utils/toast';
 
-export const validateDelegation = async (
+export const toggleDelegation = async (
   user: string,
   DelegateAddress: string,
   provider: Provider,

@@ -115,9 +115,9 @@ function ServiceForm() {
 
         let tx;
         if (
+          process.env.NEXT_PUBLIC_ACTIVE_DELEGATE &&
           delegateAddresses &&
-          delegateAddresses.indexOf(config.delegation.address.toLowerCase()) != -1 &&
-          process.env.NEXT_PUBLIC_ACTIVE_DELEGATE
+          delegateAddresses.indexOf(config.delegation.address.toLowerCase()) != -1
         ) {
           const response = await delegateCreateService(user.id, user.address, cid);
           tx = response.data.transaction;

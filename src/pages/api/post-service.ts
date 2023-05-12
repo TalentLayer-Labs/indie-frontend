@@ -19,8 +19,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return;
     }
 
-    const provider = new ethers.providers.JsonRpcProvider(process.env.NEXT_PUBLIC_RPC_URL);
-    const delegateSeedPhrase = process.env.NEXT_PRIVATE_SEED_PHRASE;
+    const provider = new ethers.providers.JsonRpcProvider(process.env.NEXT_PUBLIC_BACKEND_RPC_URL);
+    const delegateSeedPhrase = process.env.NEXT_PRIVATE_DELEGATE_SEED_PHRASE;
     const signature = await getServiceSignature({ profileId: Number(userId), cid });
     const getUser = await getUserByAddress(userAddress);
     const delegateAddresses = getUser.data?.data?.users[0].delegates;
