@@ -13,6 +13,8 @@ import ServiceItem from '../ServiceItem';
 import SubmitButton from './SubmitButton';
 import useAllowedTokens from '../../hooks/useAllowedTokens';
 import { getProposalSignature } from '../../utils/signature';
+import { getUserByAddress } from '../../queries/users';
+import { delegateCreateOrUpdateProposal } from '../request';
 
 interface IFormValues {
   about: string;
@@ -50,6 +52,7 @@ function ProposalForm({
   }
 
   let existingExpirationDate, existingRateTokenAmount;
+
   if (existingProposal) {
     existingExpirationDate = Math.floor(
       (Number(existingProposal?.expirationDate) - Date.now() / 1000) / (60 * 60 * 24),
@@ -106,32 +109,53 @@ function ProposalForm({
           cid,
           serviceId: Number(service.id),
         });
+        const getUser = await getUserByAddress(user.address);
+        const delegateAddresses = getUser.data?.data?.users[0].delegates;
+        let tx;
 
-        const contract = new ethers.Contract(
-          config.contracts.serviceRegistry,
-          ServiceRegistry.abi,
-          signer,
-        );
+        if (
+          process.env.NEXT_PUBLIC_ACTIVE_DELEGATE &&
+          delegateAddresses &&
+          delegateAddresses.indexOf(config.delegation.address.toLowerCase()) != -1
+        ) {
+          const response = await delegateCreateOrUpdateProposal(
+            user.id,
+            user.address,
+            service.id,
+            values.rateToken,
+            parsedRateAmountString,
+            cid,
+            convertExpirationDateString,
+            existingProposal?.status,
+          );
+          tx = response.data.transaction;
+        } else {
+          const contract = new ethers.Contract(
+            config.contracts.serviceRegistry,
+            ServiceRegistry.abi,
+            signer,
+          );
+          tx = existingProposal
+            ? await contract.updateProposal(
+                user.id,
+                service.id,
+                values.rateToken,
+                parsedRateAmountString,
+                cid,
+                convertExpirationDateString,
+              )
+            : await contract.createProposal(
+                user.id,
+                service.id,
+                values.rateToken,
+                parsedRateAmountString,
+                process.env.NEXT_PUBLIC_PLATFORM_ID,
+                cid,
+                convertExpirationDateString,
+                signature,
+              );
+        }
 
-        const tx = existingProposal
-          ? await contract.updateProposal(
-              user.id,
-              service.id,
-              values.rateToken,
-              parsedRateAmountString,
-              cid,
-              convertExpirationDateString,
-            )
-          : await contract.createProposal(
-              user.id,
-              service.id,
-              values.rateToken,
-              parsedRateAmountString,
-              process.env.NEXT_PUBLIC_PLATFORM_ID,
-              cid,
-              convertExpirationDateString,
-              signature,
-            );
         await createMultiStepsTransactionToast(
           {
             pending: 'Creating your proposal...',
