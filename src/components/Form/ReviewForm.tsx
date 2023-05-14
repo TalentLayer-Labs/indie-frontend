@@ -10,6 +10,8 @@ import TalentLayerReview from '../../contracts/ABI/TalentLayerReview.json';
 import { postToIPFS } from '../../utils/ipfs';
 import { createMultiStepsTransactionToast, showErrorTransactionToast } from '../../utils/toast';
 import SubmitButton from './SubmitButton';
+import { getUserByAddress } from '../../queries/users';
+import { delegateReviews } from '../request';
 
 interface IFormValues {
   content: string;
@@ -50,12 +52,32 @@ function ReviewForm({ serviceId }: { serviceId: string }) {
           }),
         );
 
-        const contract = new ethers.Contract(
-          config.contracts.talentLayerReview,
-          TalentLayerReview.abi,
-          signer,
-        );
-        const tx = await contract.mint(user.id, serviceId, uri, values.rating);
+        const getUser = await getUserByAddress(user.address);
+        const delegateAddresses = getUser.data?.data?.users[0].delegates;
+        let tx;
+
+        if (
+          process.env.NEXT_PUBLIC_ACTIVE_DELEGATE &&
+          delegateAddresses &&
+          delegateAddresses.indexOf(config.delegation.address.toLowerCase()) != -1
+        ) {
+          const response = await delegateReviews(
+            user.id,
+            user.address,
+            serviceId,
+            uri,
+            values.rating,
+          );
+          tx = response.data.transaction;
+        } else {
+          const contract = new ethers.Contract(
+            config.contracts.talentLayerReview,
+            TalentLayerReview.abi,
+            signer,
+          );
+          tx = await contract.mint(user.id, serviceId, uri, values.rating);
+        }
+
         await createMultiStepsTransactionToast(
           {
             pending: 'Creating your review...',

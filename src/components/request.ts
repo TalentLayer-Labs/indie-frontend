@@ -83,3 +83,24 @@ export const delegateReleaseOrReimburse = async (
     throw err;
   }
 };
+
+export const delegateReviews = async (
+  userId: string,
+  userAddress: string,
+  serviceId: string,
+  uri: string,
+  valuesRating: number,
+): Promise<any> => {
+  try {
+    return await axios.post('/api/post-review', {
+      userId,
+      userAddress,
+      serviceId,
+      uri,
+      valuesRating,
+    });
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+};
