@@ -7,7 +7,7 @@ export const delegateCreateService = async (
   cid: string,
 ): Promise<any> => {
   try {
-    return await axios.post('/api/delegate/post-service', {
+    return await axios.post('/api/delegate/create-service', {
       userId,
       userAddress,
       cid,
@@ -24,7 +24,7 @@ export const delegateUpdateProfileData = async (
   cid: string,
 ): Promise<any> => {
   try {
-    return await axios.post('/api/delegate/post-update-profil', {
+    return await axios.post('/api/delegate/update-profil-data', {
       userId,
       userAddress,
       cid,
@@ -46,7 +46,7 @@ export const delegateCreateOrUpdateProposal = async (
   existingProposalStatus?: string,
 ): Promise<any> => {
   try {
-    return await axios.post('/api/delegate/post-create-update-proposal', {
+    return await axios.post('/api/delegate/create-update-proposal', {
       userId,
       userAddress,
       serviceId,
@@ -70,7 +70,7 @@ export const delegateReleaseOrReimburse = async (
   isBuyer: boolean,
 ): Promise<any> => {
   try {
-    return await axios.post('/api/delegate/post-release-reimburse', {
+    return await axios.post('/api/delegate/release-reimburse', {
       userAddress,
       profileId,
       transactionId,
@@ -91,7 +91,7 @@ export const delegateMintReview = async (
   valuesRating: number,
 ): Promise<any> => {
   try {
-    return await axios.post('/api/delegate/post-review', {
+    return await axios.post('/api/delegate/mint-review', {
       userId,
       userAddress,
       serviceId,

@@ -1,15 +1,12 @@
 // pages/api/createService.ts
 import { NextApiRequest, NextApiResponse } from 'next';
-import { Contract, ethers, Wallet } from 'ethers';
+import { Contract } from 'ethers';
 import { config } from '../../../config';
 import TalentLayerEscrow from '../../../contracts/ABI/TalentLayerEscrow.json';
-import { getUserByAddress } from '../../../queries/users';
-import { handleDelegateActivation } from './getDelegationSigner';
+import { handleDelegateActivation } from '../utils/getDelegationSigner';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { userAddress, profileId, transactionId, amount, isBuyer } = req.body;
-
-  let signer;
 
   // @dev : you can add here all the check you need to confirm the delagation for a user
 
