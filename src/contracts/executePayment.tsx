@@ -6,8 +6,6 @@ import { config } from '../config';
 import TalentLayerEscrow from './ABI/TalentLayerEscrow.json';
 import { showErrorTransactionToast } from '../utils/toast';
 import { delegateReleaseOrReimburse } from '../components/request';
-import { useContext } from 'react';
-import TalentLayerContext from '../context/talentLayer';
 
 export const executePayment = async (
   userAddress: string,
@@ -17,8 +15,8 @@ export const executePayment = async (
   transactionId: string,
   amount: BigNumber,
   isBuyer: boolean,
+  isActiveDelegate: boolean,
 ): Promise<void> => {
-  const { isActiveDelegate } = useContext(TalentLayerContext);
   try {
     let tx: ethers.providers.TransactionResponse;
 
