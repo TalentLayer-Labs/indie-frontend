@@ -71,8 +71,7 @@ function ProfileForm({ callback }: { callback?: () => void }) {
           }),
         );
 
-        const getUser = await getUserByAddress(user.address);
-        const delegateAddresses = getUser.data?.data?.users[0].delegates;
+        const delegateAddresses = user.delegates;
         let tx;
         if (
           process.env.NEXT_PUBLIC_ACTIVE_DELEGATE &&
