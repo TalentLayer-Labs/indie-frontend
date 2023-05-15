@@ -1,6 +1,5 @@
 /* eslint-disable no-console */
 import axios from 'axios';
-import { BigNumber } from 'ethers';
 
 export const delegateCreateService = async (
   userId: string,
@@ -8,7 +7,7 @@ export const delegateCreateService = async (
   cid: string,
 ): Promise<any> => {
   try {
-    return await axios.post('/api/post-service', {
+    return await axios.post('/api/delegate/post-service', {
       userId,
       userAddress,
       cid,
@@ -25,7 +24,7 @@ export const delegateUpdateProfileData = async (
   cid: string,
 ): Promise<any> => {
   try {
-    return await axios.post('/api/post-update-profil', {
+    return await axios.post('/api/delegate/post-update-profil', {
       userId,
       userAddress,
       cid,
@@ -47,7 +46,7 @@ export const delegateCreateOrUpdateProposal = async (
   existingProposalStatus?: string,
 ): Promise<any> => {
   try {
-    return await axios.post('/api/post-create-update-proposal', {
+    return await axios.post('/api/delegate/post-create-update-proposal', {
       userId,
       userAddress,
       serviceId,
@@ -71,7 +70,7 @@ export const delegateReleaseOrReimburse = async (
   isBuyer: boolean,
 ): Promise<any> => {
   try {
-    return await axios.post('/api/post-release-reimburse', {
+    return await axios.post('/api/delegate/post-release-reimburse', {
       userAddress,
       profileId,
       transactionId,
@@ -84,7 +83,7 @@ export const delegateReleaseOrReimburse = async (
   }
 };
 
-export const delegateReviews = async (
+export const delegateMintReview = async (
   userId: string,
   userAddress: string,
   serviceId: string,
@@ -92,7 +91,7 @@ export const delegateReviews = async (
   valuesRating: number,
 ): Promise<any> => {
   try {
-    return await axios.post('/api/post-review', {
+    return await axios.post('/api/delegate/post-review', {
       userId,
       userAddress,
       serviceId,

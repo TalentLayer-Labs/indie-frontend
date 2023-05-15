@@ -11,7 +11,7 @@ import { postToIPFS } from '../../utils/ipfs';
 import { createMultiStepsTransactionToast, showErrorTransactionToast } from '../../utils/toast';
 import SubmitButton from './SubmitButton';
 import { getUserByAddress } from '../../queries/users';
-import { delegateReviews } from '../request';
+import { delegateMintReview } from '../request';
 
 interface IFormValues {
   content: string;
@@ -61,7 +61,7 @@ function ReviewForm({ serviceId }: { serviceId: string }) {
           delegateAddresses &&
           delegateAddresses.indexOf(config.delegation.address.toLowerCase()) != -1
         ) {
-          const response = await delegateReviews(
+          const response = await delegateMintReview(
             user.id,
             user.address,
             serviceId,

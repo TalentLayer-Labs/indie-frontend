@@ -13,7 +13,6 @@ import Loading from '../Loading';
 import SubmitButton from './SubmitButton';
 import useUserById from '../../hooks/useUserById';
 import { SkillsInput } from './skills-input';
-import { getUserByAddress } from '../../queries/users';
 import { delegateUpdateProfileData } from '../request';
 
 interface IFormValues {

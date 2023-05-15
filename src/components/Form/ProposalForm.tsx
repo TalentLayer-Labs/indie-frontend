@@ -15,6 +15,8 @@ import useAllowedTokens from '../../hooks/useAllowedTokens';
 import { getProposalSignature } from '../../utils/signature';
 import { getUserByAddress } from '../../queries/users';
 import { delegateCreateOrUpdateProposal } from '../request';
+import { use, useContext } from 'react';
+import TalentLayerContext from '../../context/talentLayer';
 
 interface IFormValues {
   about: string;
@@ -46,6 +48,7 @@ function ProposalForm({
   });
   const router = useRouter();
   const allowedTokenList = useAllowedTokens();
+  const { isActiveDelegate } = useContext(TalentLayerContext);
 
   if (allowedTokenList.length === 0) {
     return <div>Loading...</div>;
@@ -109,15 +112,9 @@ function ProposalForm({
           cid,
           serviceId: Number(service.id),
         });
-        const getUser = await getUserByAddress(user.address);
-        const delegateAddresses = getUser.data?.data?.users[0].delegates;
-        let tx;
 
-        if (
-          process.env.NEXT_PUBLIC_ACTIVE_DELEGATE &&
-          delegateAddresses &&
-          delegateAddresses.indexOf(config.delegation.address.toLowerCase()) != -1
-        ) {
+        let tx;
+        if (isActiveDelegate) {
           const response = await delegateCreateOrUpdateProposal(
             user.id,
             user.address,
