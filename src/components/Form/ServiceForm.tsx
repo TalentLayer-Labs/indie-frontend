@@ -45,6 +45,7 @@ function ServiceForm() {
   const router = useRouter();
   const allowedTokenList = useAllowedTokens();
   const [selectedToken, setSelectedToken] = useState<IToken>();
+  const { isActiveDelegate } = useContext(TalentLayerContext);
 
   const validationSchema = Yup.object({
     title: Yup.string().required('Please provide a title for your service'),
@@ -113,11 +114,7 @@ function ServiceForm() {
         const delegateAddresses = getUser.data?.data?.users[0].delegates;
 
         let tx;
-        if (
-          process.env.NEXT_PUBLIC_ACTIVE_DELEGATE &&
-          delegateAddresses &&
-          delegateAddresses.indexOf(config.delegation.address.toLowerCase()) != -1
-        ) {
+        if (isActiveDelegate) {
           const response = await delegateCreateService(user.id, user.address, cid);
           tx = response.data.transaction;
         } else {

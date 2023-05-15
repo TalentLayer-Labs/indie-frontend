@@ -5,7 +5,6 @@ import TransactionToast from '../components/TransactionToast';
 import { config } from '../config';
 import TalentLayerEscrow from './ABI/TalentLayerEscrow.json';
 import { showErrorTransactionToast } from '../utils/toast';
-import { getUserByAddress } from '../queries/users';
 import { delegateReleaseOrReimburse } from '../components/request';
 import { useContext } from 'react';
 import TalentLayerContext from '../context/talentLayer';

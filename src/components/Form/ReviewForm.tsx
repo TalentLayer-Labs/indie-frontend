@@ -31,6 +31,7 @@ const initialValues: IFormValues = {
 function ReviewForm({ serviceId }: { serviceId: string }) {
   const { open: openConnectModal } = useWeb3Modal();
   const { user } = useContext(TalentLayerContext);
+  const { isActiveDelegate } = useContext(TalentLayerContext);
   const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
   const { data: signer } = useSigner({
     chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
@@ -56,11 +57,7 @@ function ReviewForm({ serviceId }: { serviceId: string }) {
         const delegateAddresses = getUser.data?.data?.users[0].delegates;
         let tx;
 
-        if (
-          process.env.NEXT_PUBLIC_ACTIVE_DELEGATE &&
-          delegateAddresses &&
-          delegateAddresses.indexOf(config.delegation.address.toLowerCase()) != -1
-        ) {
+        if (isActiveDelegate) {
           const response = await delegateMintReview(
             user.id,
             user.address,
