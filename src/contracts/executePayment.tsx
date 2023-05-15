@@ -19,9 +19,8 @@ export const executePayment = async (
   amount: BigNumber,
   isBuyer: boolean,
 ): Promise<void> => {
+  const { isActiveDelegate } = useContext(TalentLayerContext);
   try {
-    const getUser = await getUserByAddress(userAddress);
-    const { isActiveDelegate } = useContext(TalentLayerContext);
     let tx: ethers.providers.TransactionResponse;
 
     if (isActiveDelegate) {
