@@ -7,6 +7,8 @@ import TalentLayerEscrow from './ABI/TalentLayerEscrow.json';
 import { showErrorTransactionToast } from '../utils/toast';
 import { getUserByAddress } from '../queries/users';
 import { delegateReleaseOrReimburse } from '../components/request';
+import { useContext } from 'react';
+import TalentLayerContext from '../context/talentLayer';
 
 export const executePayment = async (
   userAddress: string,
@@ -19,14 +21,10 @@ export const executePayment = async (
 ): Promise<void> => {
   try {
     const getUser = await getUserByAddress(userAddress);
-    const delegateAddresses = getUser.data?.data?.users[0].delegates;
+    const { isActiveDelegate } = useContext(TalentLayerContext);
     let tx: ethers.providers.TransactionResponse;
 
-    if (
-      process.env.NEXT_PUBLIC_ACTIVE_DELEGATE &&
-      delegateAddresses &&
-      delegateAddresses.indexOf(config.delegation.address.toLowerCase()) != -1
-    ) {
+    if (isActiveDelegate) {
       const response = await delegateReleaseOrReimburse(
         userAddress,
         profileId,
