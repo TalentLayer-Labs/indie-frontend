@@ -3,7 +3,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { Contract } from 'ethers';
 import { config } from '../../../config';
 import TalentLayerService from '../../../contracts/ABI/TalentLayerService.json';
-import { getServiceSignature } from '../../../utils/signature';
+import { getProposalSignature } from '../../../utils/signature';
 import { getDelegationSigner, isPlatformAllowedToDelegate } from '../utils/delegate';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -27,7 +27,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (!signer) {
       return;
     }
-    const signature = await getServiceSignature({ profileId: Number(userId), cid });
 
     const serviceRegistryContract = new Contract(
       config.contracts.serviceRegistry,
@@ -47,6 +46,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         convertExpirationDateString,
       );
     } else {
+      const signature = await getProposalSignature({
+        profileId: Number(userId),
+        cid,
+        serviceId: Number(serviceId),
+      });
+
       transaction = await serviceRegistryContract.createProposal(
         userId,
         serviceId,
