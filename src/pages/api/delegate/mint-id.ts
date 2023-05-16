@@ -10,10 +10,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   // @dev : you can add here all the check you need to confirm the delagation for a user
 
-  console.log('userAddress', userAddress);
-
   try {
-    const signer = await handleDelegateForMint(userAddress, res);
+    const signer = await handleDelegateForMint(res);
 
     if (!signer) {
       return;
@@ -22,8 +20,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (!process.env.NEXT_PUBLIC_ACTIVE_DELEGATE_MINT) {
       return res.status(500).json('delegate minting is not active');
     }
-
-    console.log('handle', handle);
 
     const talentLayerID = new Contract(config.contracts.talentLayerId, TalentLayerID.abi, signer);
     const transaction = await talentLayerID.mintForAddress(

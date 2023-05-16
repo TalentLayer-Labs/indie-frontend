@@ -15,7 +15,7 @@ function DelegateModal() {
   });
   const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
   const { user } = useContext(TalentLayerContext);
-  const delegateAddress = config.delegation.address;
+  const delegateAddress = process.env.NEXT_PUBLIC_DELEGATE_ADDRESS;
 
   if (!user) {
     return;
@@ -27,7 +27,7 @@ function DelegateModal() {
 
     if (
       delegateAddresses &&
-      delegateAddresses.indexOf(config.delegation.address.toLowerCase()) != -1
+      delegateAddresses.indexOf(process.env.NEXT_PUBLIC_DELEGATE_ADDRESS.toLowerCase()) != -1
     ) {
       setHasPlatformAsDelegate(true);
     } else {

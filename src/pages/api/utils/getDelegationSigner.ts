@@ -22,7 +22,7 @@ export async function handleDelegateActivation(
     return null;
   }
 
-  if (delegateAddresses.indexOf(config.delegation.address.toLowerCase()) === -1) {
+  if (delegateAddresses.indexOf(process.env.NEXT_PUBLIC_DELEGATE_ADDRESS.toLowerCase()) === -1) {
     res.status(500).json('Delegation is not activated');
     return null;
   }
