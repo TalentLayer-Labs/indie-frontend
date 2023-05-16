@@ -111,3 +111,14 @@ export const getUserTotalGains = (id: string): Promise<any> => {
     `;
   return processRequest(query);
 };
+
+export const getUserIdsByAddresses = (addresses: string[]): Promise<any> => {
+  const query = `
+    {
+      users(where: {address_in: ["${addresses.map(a => a.toLowerCase()).join('","')}"]}) {
+        id
+      }
+    }
+    `;
+  return processRequest(query);
+};
