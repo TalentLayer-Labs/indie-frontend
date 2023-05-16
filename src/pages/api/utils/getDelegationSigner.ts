@@ -31,3 +31,24 @@ export async function handleDelegateActivation(
 
   return signer;
 }
+
+export async function handleDelegateForMint(res: NextApiResponse): Promise<Wallet | null> {
+  const provider = new ethers.providers.JsonRpcProvider(process.env.NEXT_PUBLIC_BACKEND_RPC_URL);
+  const delegateSeedPhrase = process.env.NEXT_PRIVATE_DELEGATE_SEED_PHRASE;
+
+  console.log(process.env.NEXT_PUBLIC_ACTIVE_DELEGATE_MINT);
+
+  if (process.env.NEXT_PUBLIC_ACTIVE_DELEGATE_MINT !== 'true') {
+    res.status(500).json('Delegation is not activated');
+    return null;
+  }
+
+  if (!delegateSeedPhrase) {
+    res.status(500).json('Delegate seed phrase is not set');
+    return null;
+  }
+
+  const signer = Wallet.fromMnemonic(delegateSeedPhrase).connect(provider);
+
+  return signer;
+}

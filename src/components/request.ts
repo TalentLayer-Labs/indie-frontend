@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+import { strict } from 'assert';
 import axios from 'axios';
 
 export const delegateCreateService = async (
@@ -97,6 +98,23 @@ export const delegateMintReview = async (
       serviceId,
       uri,
       valuesRating,
+    });
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+};
+
+export const delegateMintID = async (
+  handle: string,
+  handlePrice: any,
+  userAddress: string,
+): Promise<any> => {
+  try {
+    return await axios.post('/api/delegate/mint-id', {
+      handle,
+      handlePrice,
+      userAddress,
     });
   } catch (err) {
     console.error(err);
