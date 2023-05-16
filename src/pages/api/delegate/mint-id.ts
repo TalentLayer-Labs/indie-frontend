@@ -11,19 +11,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   // @dev : you can add here all the check you need to confirm the delagation for a user
 
   try {
-    const signer = await getDelegationSigner(res);
-
     if (process.env.NEXT_PUBLIC_ACTIVE_DELEGATE_MINT !== 'true') {
       res.status(500).json('Delegation is not activated');
       return null;
     }
 
+    const signer = await getDelegationSigner(res);
+
     if (!signer) {
       return;
-    }
-
-    if (!process.env.NEXT_PUBLIC_ACTIVE_DELEGATE_MINT) {
-      return res.status(500).json('delegate minting is not active');
     }
 
     const talentLayerID = new Contract(config.contracts.talentLayerId, TalentLayerID.abi, signer);
