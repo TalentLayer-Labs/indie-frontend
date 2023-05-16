@@ -3,6 +3,7 @@ import { ExternalProvider, JsonRpcFetchFunc, Web3Provider } from '@ethersproject
 import { BigNumber, ethers, FixedNumber, Signer } from 'ethers';
 import ERC20 from '../contracts/ABI/ERC20.json';
 import { ITokenFormattedValues } from '../types';
+import { Fragment, JsonFragment } from '@ethersproject/abi';
 
 export default function getLibrary(provider: ExternalProvider | JsonRpcFetchFunc): Web3Provider {
   const library = new Web3Provider(provider);
@@ -54,4 +55,22 @@ export const formatRateAmount = async (
     roundedValue,
     exactValue,
   };
+};
+
+export const generateSelector = (
+  methodSignature: string,
+  abi: string | ReadonlyArray<Fragment | JsonFragment | string>,
+  bytecode: string,
+  args: any[] = [],
+): string => {
+  const iface = new ethers.utils.Interface(abi);
+  const methodSelector = iface.getSighash(methodSignature).substring(2);
+  const functionHash = iface.encodeFunctionData(methodSignature, args);
+
+  if (bytecode.includes(methodSelector)) {
+    // return methodSelector;
+    return functionHash;
+  } else {
+    return '';
+  }
 };
