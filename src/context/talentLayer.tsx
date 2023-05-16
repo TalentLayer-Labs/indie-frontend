@@ -33,7 +33,7 @@ const TalentLayerProvider = ({ children }: { children: ReactNode }) => {
             process.env.NEXT_PUBLIC_ACTIVE_DELEGATE &&
               response.data.data.users[0].delegates &&
               response.data.data.users[0].delegates.indexOf(
-                process.env.NEXT_PUBLIC_DELEGATE_ADDRESS.toLowerCase(),
+                (process.env.NEXT_PUBLIC_DELEGATE_ADDRESS as string).toLowerCase(),
               ) !== -1,
           );
         }
