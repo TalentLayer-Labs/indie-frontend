@@ -3,15 +3,16 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { Contract } from 'ethers';
 import { config } from '../../../config';
 import TalentLayerReview from '../../../contracts/ABI/TalentLayerReview.json';
-import { handleDelegateActivation } from '../utils/getDelegationSigner';
+import { getDelegationSigner, isPlatformAllowedToDelegate } from '../utils/delegate';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { userId, userAddress, serviceId, uri, valuesRating } = req.body;
 
   // @dev : you can add here all the check you need to confirm the delagation for a user
+  await isPlatformAllowedToDelegate(userAddress, res);
 
   try {
-    const signer = await handleDelegateActivation(userAddress, res);
+    const signer = await getDelegationSigner(res);
 
     if (!signer) {
       return;

@@ -3,7 +3,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { Contract } from 'ethers';
 import { config } from '../../../config';
 import TalentLayerID from '../../../contracts/ABI/TalentLayerID.json';
-import { handleDelegateForMint } from '../utils/getDelegationSigner';
+import { getDelegationSigner } from '../utils/delegate';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { handle, handlePrice, userAddress } = req.body;
@@ -11,7 +11,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   // @dev : you can add here all the check you need to confirm the delagation for a user
 
   try {
-    const signer = await handleDelegateForMint(res);
+    const signer = await getDelegationSigner(res);
+
+    if (process.env.NEXT_PUBLIC_ACTIVE_DELEGATE_MINT !== 'true') {
+      res.status(500).json('Delegation is not activated');
+      return null;
+    }
 
     if (!signer) {
       return;
