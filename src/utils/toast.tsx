@@ -2,9 +2,10 @@ import { getParsedEthersError, RETURN_VALUE_ERROR_CODES } from '@enzoferey/ether
 import { EthersError } from '@enzoferey/ethers-error-parser/dist/types';
 import { Provider } from '@wagmi/core';
 import { Transaction } from 'ethers';
-import { toast } from 'react-toastify';
+import { Id, toast } from 'react-toastify';
 import MultiStepsTransactionToast from '../components/MultiStepsTransactionToast';
 import { graphIsSynced, graphUserIsSynced } from '../queries/global';
+import TransactionToast from '../components/TransactionToast';
 
 interface IMessages {
   pending: string;
@@ -153,3 +154,10 @@ function getParsedErrorMessage(error: any) {
     return `${parsedEthersError.errorCode} - ${parsedEthersError.context}`;
   }
 }
+
+export const createTransactionToast = async (message: string, txHash: string): Promise<Id> => {
+  return toast(<TransactionToast message={message} transactionHash={txHash} />, {
+    autoClose: false,
+    closeOnClick: false,
+  });
+};
