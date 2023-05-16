@@ -18,6 +18,7 @@ export type IUserDetails = {
   video_url?: string;
   about: string;
   skills_raw: string;
+  organizations: string[];
 };
 
 export type IUserStats = {
