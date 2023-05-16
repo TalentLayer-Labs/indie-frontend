@@ -57,8 +57,9 @@ function TalentLayerIdForm() {
         );
 
         const handlePrice = await contract.getHandlePrice(submittedValues.handle);
+        console.log(process.env.NEXT_PUBLIC_ACTIVE_DELEGATE_MINT);
 
-        if (process.env.NEXT_PUBLIC_ACTIVE_DELEGATE_MINT) {
+        if (process.env.NEXT_PUBLIC_ACTIVE_DELEGATE_MINT === 'true') {
           const response = await delegateMintID(
             submittedValues.handle,
             handlePrice,
