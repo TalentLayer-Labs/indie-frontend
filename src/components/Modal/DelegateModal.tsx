@@ -61,7 +61,7 @@ function DelegateModal() {
           className='block text-blue-600 bg-red-50 hover:bg-green-500 hover:text-white rounded-lg px-5 py-2.5 text-center'
           type='button'
           data-modal-toggle='defaultModal'>
-          Active Delegation
+          Activate Delegation
         </button>
       )}
 
