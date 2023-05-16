@@ -43,7 +43,7 @@ export const getPaymentsForUser = (
         ${startDataCondition}
         ${endDateCondition}
       }, 
-      orderBy: createdAt orderDirection: desc ${pagination} ) {
+      orderDirection: desc ${pagination}){
         id, 
         rateToken {
           address

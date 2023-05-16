@@ -7,7 +7,6 @@ import { IUser } from '../types';
 import Loading from './Loading';
 import Stars from './Stars';
 import Image from 'next/image';
-import DelegateModal from './Modal/DelegateModal';
 
 function UserDetail({ user }: { user: IUser }) {
   const { user: currentUser } = useContext(TalentLayerContext);
@@ -77,7 +76,6 @@ function UserDetail({ user }: { user: IUser }) {
               href={`/dashboard/incomes`}>
               Your incomes
             </Link>
-            <DelegateModal />
           </div>
         </div>
       )}
