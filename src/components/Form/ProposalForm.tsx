@@ -13,9 +13,8 @@ import ServiceItem from '../ServiceItem';
 import SubmitButton from './SubmitButton';
 import useAllowedTokens from '../../hooks/useAllowedTokens';
 import { getProposalSignature } from '../../utils/signature';
-import { getUserByAddress } from '../../queries/users';
 import { delegateCreateOrUpdateProposal } from '../request';
-import { use, useContext } from 'react';
+import { useContext } from 'react';
 import TalentLayerContext from '../../context/talentLayer';
 
 interface IFormValues {
@@ -114,6 +113,7 @@ function ProposalForm({
         });
 
         let tx;
+        console.log('isActiveDelegate', isActiveDelegate);
         if (isActiveDelegate) {
           const response = await delegateCreateOrUpdateProposal(
             user.id,

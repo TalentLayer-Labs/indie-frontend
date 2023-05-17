@@ -9,12 +9,15 @@ export async function isPlatformAllowedToDelegate(
 ): Promise<boolean> {
   const getUser = await getUserByAddress(userAddress);
   const delegateAddresses = getUser.data?.data?.users[0].delegates;
+  console.log('delegateAddresses', delegateAddresses);
+  console.log('process.env.NEXT_PUBLIC_DELEGATE_ADDRESS', process.env.NEXT_PUBLIC_DELEGATE_ADDRESS);
 
   if (
     delegateAddresses.indexOf(
       (process.env.NEXT_PUBLIC_DELEGATE_ADDRESS as string).toLowerCase(),
     ) === -1
   ) {
+    console.log('toto');
     res.status(500).json('Delegation is not activated');
     return false;
   }

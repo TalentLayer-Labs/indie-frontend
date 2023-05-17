@@ -16,7 +16,6 @@ import useAllowedTokens from '../../hooks/useAllowedTokens';
 import { getServiceSignature } from '../../utils/signature';
 import { IToken } from '../../types';
 import { delegateCreateService } from '../request';
-import { getUserByAddress } from '../../queries/users';
 
 interface IFormValues {
   title: string;
@@ -110,10 +109,8 @@ function ServiceForm() {
         // Get platform signature
         const signature = await getServiceSignature({ profileId: Number(user?.id), cid });
 
-        const getUser = await getUserByAddress(user.address);
-        const delegateAddresses = getUser.data?.data?.users[0].delegates;
-
         let tx;
+
         if (isActiveDelegate) {
           const response = await delegateCreateService(user.id, user.address, cid);
           tx = response.data.transaction;
