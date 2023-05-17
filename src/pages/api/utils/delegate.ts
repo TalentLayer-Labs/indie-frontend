@@ -15,7 +15,6 @@ export async function isPlatformAllowedToDelegate(
       (process.env.NEXT_PUBLIC_DELEGATE_ADDRESS as string).toLowerCase(),
     ) === -1
   ) {
-    console.log('toto');
     res.status(500).json('Delegation is not activated');
     return false;
   }
