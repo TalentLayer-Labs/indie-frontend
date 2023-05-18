@@ -20,7 +20,7 @@ import { KeywordInput } from './keyword-input';
 interface IFormValues {
   title: string;
   about: string;
-  Keywords: string;
+  keywords: string;
   rateToken: string;
   rateAmount: number;
 }
@@ -28,7 +28,7 @@ interface IFormValues {
 const initialValues: IFormValues = {
   title: '',
   about: '',
-  Keywords: '',
+  keywords: '',
   rateToken: '',
   rateAmount: 0,
 };
@@ -48,7 +48,7 @@ function ServiceForm() {
   const validationSchema = Yup.object({
     title: Yup.string().required('Please provide a title for your service'),
     about: Yup.string().required('Please provide a description of your service'),
-    Keywords: Yup.string().required('Please provide keywords for your service'),
+    keywords: Yup.string().required('Please provide keywords for your service'),
     rateToken: Yup.string().required('Please select a payment token'),
     rateAmount: Yup.number()
       .required('Please provide an amount for your service')
@@ -98,7 +98,7 @@ function ServiceForm() {
           JSON.stringify({
             title: values.title,
             about: values.about,
-            Keywords: values.Keywords,
+            keywords: values.keywords,
             role: 'buyer',
             rateToken: values.rateToken,
             rateAmount: parsedRateAmountString,
@@ -179,9 +179,9 @@ function ServiceForm() {
             <label className='block'>
               <span className='text-gray-700'>Keywords</span>
 
-              <KeywordInput entityId={'Keywords'} />
+              <KeywordInput entityId={'keywords'} />
 
-              <Field type='hidden' id='Keywords' name='Keywords' />
+              <Field type='hidden' id='keywords' name='keywords' />
             </label>
 
             <div className='flex'>
