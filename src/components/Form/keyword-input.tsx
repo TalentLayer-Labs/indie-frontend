@@ -4,7 +4,13 @@ import { useEffect, useState } from 'react';
 import { MINIMUM_QUERY_LENGTH, useWorkxSkills } from '../../hooks/workx/useWorkxSkills';
 import { debounce } from 'lodash';
 
-export function SkillsInput({ initialValues }: { initialValues?: string }) {
+export function KeywordInput({
+  initialValues,
+  entityId,
+}: {
+  initialValues?: string;
+  entityId: string;
+}) {
   const formikProps = useFormikContext();
   const { skills: filteredSkills, fetchData: refreshSkills, query, setQuery } = useWorkxSkills();
   const [selectedSkill, setSelectedSkill] = useState('');
@@ -15,7 +21,7 @@ export function SkillsInput({ initialValues }: { initialValues?: string }) {
     setAllSkills(newSkills);
     setSelectedSkill('');
     setQuery('');
-    formikProps.setFieldValue('skills', newSkills.toString());
+    formikProps.setFieldValue(entityId, newSkills.toString());
   };
 
   useEffect(() => {

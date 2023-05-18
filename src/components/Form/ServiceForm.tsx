@@ -15,12 +15,12 @@ import SubmitButton from './SubmitButton';
 import useAllowedTokens from '../../hooks/useAllowedTokens';
 import { getServiceSignature } from '../../utils/signature';
 import { IToken } from '../../types';
-import { SkillsInput } from './skills-input';
+import { KeywordInput } from './keyword-input';
 
 interface IFormValues {
   title: string;
   about: string;
-  skills: string;
+  Keywords: string;
   rateToken: string;
   rateAmount: number;
 }
@@ -28,7 +28,7 @@ interface IFormValues {
 const initialValues: IFormValues = {
   title: '',
   about: '',
-  skills: '',
+  Keywords: '',
   rateToken: '',
   rateAmount: 0,
 };
@@ -48,7 +48,7 @@ function ServiceForm() {
   const validationSchema = Yup.object({
     title: Yup.string().required('Please provide a title for your service'),
     about: Yup.string().required('Please provide a description of your service'),
-    skills: Yup.string().required('Please provide keywords for your service'),
+    Keywords: Yup.string().required('Please provide keywords for your service'),
     rateToken: Yup.string().required('Please select a payment token'),
     rateAmount: Yup.number()
       .required('Please provide an amount for your service')
@@ -98,7 +98,7 @@ function ServiceForm() {
           JSON.stringify({
             title: values.title,
             about: values.about,
-            skills: values.skills,
+            Keywords: values.Keywords,
             role: 'buyer',
             rateToken: values.rateToken,
             rateAmount: parsedRateAmountString,
@@ -179,9 +179,9 @@ function ServiceForm() {
             <label className='block'>
               <span className='text-gray-700'>Keywords</span>
 
-              <SkillsInput initialValues={''} />
+              <KeywordInput entityId={'Keywords'} />
 
-              <Field type='hidden' id='skills' name='skills' />
+              <Field type='hidden' id='Keywords' name='Keywords' />
             </label>
 
             <div className='flex'>
