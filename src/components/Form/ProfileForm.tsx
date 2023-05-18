@@ -168,7 +168,7 @@ function ProfileForm({ callback }: { callback?: () => void }) {
             <label className='block'>
               <span className='text-gray-700'>Skills</span>
 
-              <SkillsInput initialValues={userDescription?.skills_raw} />
+              <SkillsInput initialValues={userDescription?.skills_raw} entityId={'skills'} />
 
               <Field type='hidden' id='skills' name='skills' />
             </label>

@@ -15,6 +15,7 @@ import SubmitButton from './SubmitButton';
 import useAllowedTokens from '../../hooks/useAllowedTokens';
 import { getServiceSignature } from '../../utils/signature';
 import { IToken } from '../../types';
+import { SkillsInput } from './skills-input';
 import { delegateCreateService } from '../request';
 
 interface IFormValues {
@@ -188,16 +189,10 @@ function ServiceForm() {
 
             <label className='block'>
               <span className='text-gray-700'>Keywords</span>
-              <Field
-                type='text'
-                id='keywords'
-                name='keywords'
-                className='mt-1 mb-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
-                placeholder='keyword1, keyword2...'
-              />
-              <span className='text-red-500'>
-                <ErrorMessage name='keywords' />
-              </span>
+
+              <SkillsInput entityId={'keywords'} />
+
+              <Field type='hidden' id='keywords' name='keywords' />
             </label>
 
             <div className='flex'>
