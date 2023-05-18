@@ -1,5 +1,5 @@
 import { useWeb3Modal } from '@web3modal/react';
-import { BigNumberish, ethers, FixedNumber } from 'ethers';
+import { BigNumber, BigNumberish, ethers, FixedNumber } from 'ethers';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import { useContext, useState } from 'react';
 import { useRouter } from 'next/router';
@@ -15,6 +15,7 @@ import SubmitButton from './SubmitButton';
 import useAllowedTokens from '../../hooks/useAllowedTokens';
 import { getServiceSignature } from '../../utils/signature';
 import { IToken } from '../../types';
+import useServiceById from '../../hooks/useServiceById';
 
 interface IFormValues {
   title: string;
@@ -121,25 +122,28 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
           }),
         );
 
-        // Get platform signature
-        const signature = await getServiceSignature({ profileId: Number(user?.id), cid });
-
         const contract = new ethers.Contract(
           config.contracts.serviceRegistry,
           ServiceRegistry.abi,
           signer,
         );
-        const tx = await contract.createService(
-          user?.id,
-          process.env.NEXT_PUBLIC_PLATFORM_ID,
-          cid,
-          signature,
-        );
+
+        // Get platform signature
+        const signature = await getServiceSignature({ profileId: Number(user?.id), cid });
+
+        const tx = existingService
+          ? await contract.updateServiceData(user?.id, existingService.id, cid)
+          : await contract.createService(
+              user?.id,
+              process.env.NEXT_PUBLIC_PLATFORM_ID,
+              cid,
+              signature,
+            );
         const newId = await createMultiStepsTransactionToast(
           {
-            pending: 'Creating your job...',
-            success: 'Congrats! Your job has been added',
-            error: 'An error occurred while creating your job',
+            pending: `${existingService ? 'Updating' : 'Creating'} your job...`,
+            success: `Congrats! Your job has been ${existingService ? 'updated' : 'created'} !`,
+            error: `An error occurred while ${existingService ? 'Updating' : 'Creating'} your job`,
           },
           provider,
           tx,
