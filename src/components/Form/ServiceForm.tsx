@@ -42,6 +42,10 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
   });
   const [selectedToken, setSelectedToken] = useState<IToken>();
 
+  //TODO - Test if works
+  //TODO - Remove logs
+  //TODO - Integrate skills
+
   const initialValues: IFormValues = {
     title: existingService?.description?.title || '',
     about: existingService?.description?.about || '',
