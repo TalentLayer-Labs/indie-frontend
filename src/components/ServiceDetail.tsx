@@ -15,12 +15,14 @@ import ProposalItem from './ProposalItem';
 import ReviewItem from './ReviewItem';
 import ServiceStatus from './ServiceStatus';
 import Stars from './Stars';
+import { useRouter } from 'next/router';
 
 function ServiceDetail({ service }: { service: IService }) {
   const { account, user } = useContext(TalentLayerContext);
   const { reviews } = useReviewsByService(service.id);
   const proposals = useProposalsByService(service.id);
   const payments = usePaymentsByService(service.id);
+  const router = useRouter();
 
   const isBuyer = user?.id === service.buyer.id;
   const isSeller = user?.id === service.seller?.id;
@@ -113,6 +115,15 @@ function ServiceDetail({ service }: { service: IService }) {
                   userHandle={service.buyer.handle}
                 />
               </>
+            )}
+            {isBuyer && service.status === ServiceStatusEnum.Opened && (
+              <button
+                className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg'
+                onClick={() => {
+                  router.push(`/services/edit/${service.id}`);
+                }}>
+                Edit Service
+              </button>
             )}
             {(isBuyer || isSeller) &&
               service.status === ServiceStatusEnum.Finished &&
