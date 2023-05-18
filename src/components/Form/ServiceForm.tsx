@@ -24,25 +24,42 @@ interface IFormValues {
   rateAmount: number;
 }
 
-const initialValues: IFormValues = {
-  title: '',
-  about: '',
-  keywords: '',
-  rateToken: '',
-  rateAmount: 0,
-};
-
-function ServiceForm() {
+function ServiceForm({ serviceId }: { serviceId?: string }) {
   const { open: openConnectModal } = useWeb3Modal();
   const { user, account } = useContext(TalentLayerContext);
   const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
   const { data: signer } = useSigner({
     chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
   });
+  const existingService = useServiceById(serviceId as string);
+  // const existingToken = useAllowedToken(existingService?.description?.rateToken as string);
 
   const router = useRouter();
   const allowedTokenList = useAllowedTokens();
+  const existingToken = allowedTokenList.find(value => {
+    return value.address === existingService?.description?.rateToken;
+  });
   const [selectedToken, setSelectedToken] = useState<IToken>();
+
+  const initialValues: IFormValues = {
+    title: existingService?.description?.title || '',
+    about: existingService?.description?.about || '',
+    keywords: '',
+    rateToken: existingService?.description?.rateToken || '',
+    rateAmount:
+      existingService?.description?.rateAmount &&
+      allowedTokenList &&
+      existingToken &&
+      existingToken.decimals
+        ? Number(
+            ethers.utils.formatUnits(
+              BigNumber.from(existingService?.description?.rateAmount),
+              existingToken.decimals,
+            ),
+          )
+        : 0,
+  };
+  console.log('initialValues', initialValues);
 
   const validationSchema = Yup.object({
     title: Yup.string().required('Please provide a title for your service'),
