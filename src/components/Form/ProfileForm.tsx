@@ -12,7 +12,7 @@ import { createMultiStepsTransactionToast, showErrorTransactionToast } from '../
 import Loading from '../Loading';
 import SubmitButton from './SubmitButton';
 import useUserById from '../../hooks/useUserById';
-import { KeywordInput } from './keyword-input';
+import { SkillsInput } from './skills-input';
 
 interface IFormValues {
   title?: string;
@@ -160,7 +160,7 @@ function ProfileForm({ callback }: { callback?: () => void }) {
             <label className='block'>
               <span className='text-gray-700'>Skills</span>
 
-              <KeywordInput initialValues={userDescription?.skills_raw} entityId={'skills'} />
+              <SkillsInput initialValues={userDescription?.skills_raw} entityId={'skills'} />
 
               <Field type='hidden' id='skills' name='skills' />
             </label>

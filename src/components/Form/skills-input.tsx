@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { MINIMUM_QUERY_LENGTH, useWorkxSkills } from '../../hooks/workx/useWorkxSkills';
 import { debounce } from 'lodash';
 
-export function KeywordInput({
+export function SkillsInput({
   initialValues,
   entityId,
 }: {
