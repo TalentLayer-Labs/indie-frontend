@@ -1,5 +1,5 @@
 import { useWeb3Modal } from '@web3modal/react';
-import { BigNumber, BigNumberish, ethers, FixedNumber } from 'ethers';
+import { BigNumber, BigNumberish, ethers, FixedNumber, Signer, Wallet } from 'ethers';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import { useContext, useState } from 'react';
 import { useRouter } from 'next/router';
@@ -16,6 +16,8 @@ import useAllowedTokens from '../../hooks/useAllowedTokens';
 import { getServiceSignature } from '../../utils/signature';
 import { IToken } from '../../types';
 import useServiceById from '../../hooks/useServiceById';
+import { SkillsInput } from './skills-input';
+import { delegateCreateService } from '../request';
 
 interface IFormValues {
   title: string;
@@ -41,6 +43,7 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
     return value.address === existingService?.description?.rateToken;
   });
   const [selectedToken, setSelectedToken] = useState<IToken>();
+  const { isActiveDelegate } = useContext(TalentLayerContext);
 
   //TODO - Test if works
   //TODO - Remove logs
@@ -107,7 +110,7 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
     }: { setSubmitting: (isSubmitting: boolean) => void; resetForm: () => void },
   ) => {
     const token = allowedTokenList.find(token => token.address === values.rateToken);
-    if (account?.isConnected === true && provider && signer && token) {
+    if (account?.isConnected === true && provider && signer && token && user) {
       try {
         const parsedRateAmount = await parseRateAmount(
           values.rateAmount.toString(),
@@ -135,14 +138,22 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
         // Get platform signature
         const signature = await getServiceSignature({ profileId: Number(user?.id), cid });
 
-        const tx = existingService
-          ? await contract.updateServiceData(user?.id, existingService.id, cid)
-          : await contract.createService(
-              user?.id,
-              process.env.NEXT_PUBLIC_PLATFORM_ID,
-              cid,
-              signature,
-            );
+        let tx;
+
+        if (isActiveDelegate) {
+          const response = await delegateCreateService(user.id, user.address, cid);
+          tx = response.data.transaction;
+        } else {
+          tx = existingService
+            ? await contract.updateServiceData(user?.id, existingService.id, cid)
+            : await contract.createService(
+                user?.id,
+                process.env.NEXT_PUBLIC_PLATFORM_ID,
+                cid,
+                signature,
+              );
+        }
+
         const newId = await createMultiStepsTransactionToast(
           {
             pending: `${existingService ? 'Updating' : 'Creating'} your job...`,
@@ -206,16 +217,10 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
 
             <label className='block'>
               <span className='text-gray-700'>Keywords</span>
-              <Field
-                type='text'
-                id='keywords'
-                name='keywords'
-                className='mt-1 mb-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
-                placeholder='keyword1, keyword2...'
-              />
-              <span className='text-red-500'>
-                <ErrorMessage name='keywords' />
-              </span>
+
+              <SkillsInput entityId={'keywords'} />
+
+              <Field type='hidden' id='keywords' name='keywords' />
             </label>
 
             <div className='flex'>
@@ -265,5 +270,4 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
     </Formik>
   );
 }
-
 export default ServiceForm;

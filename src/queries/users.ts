@@ -34,6 +34,7 @@ export const getUserById = (id: string): Promise<any> => {
         address
         handle
         rating
+        delegates
         userStats {
           numReceivedReviews
         }
@@ -66,6 +67,7 @@ export const getUserByAddress = (address: string): Promise<any> => {
         address
         handle
         rating
+        delegates
         userStats {
           numReceivedReviews
         }

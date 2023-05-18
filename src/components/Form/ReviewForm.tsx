@@ -10,6 +10,8 @@ import TalentLayerReview from '../../contracts/ABI/TalentLayerReview.json';
 import { postToIPFS } from '../../utils/ipfs';
 import { createMultiStepsTransactionToast, showErrorTransactionToast } from '../../utils/toast';
 import SubmitButton from './SubmitButton';
+import { getUserByAddress } from '../../queries/users';
+import { delegateMintReview } from '../request';
 
 interface IFormValues {
   content: string;
@@ -29,6 +31,7 @@ const initialValues: IFormValues = {
 function ReviewForm({ serviceId }: { serviceId: string }) {
   const { open: openConnectModal } = useWeb3Modal();
   const { user } = useContext(TalentLayerContext);
+  const { isActiveDelegate } = useContext(TalentLayerContext);
   const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
   const { data: signer } = useSigner({
     chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
@@ -50,12 +53,28 @@ function ReviewForm({ serviceId }: { serviceId: string }) {
           }),
         );
 
-        const contract = new ethers.Contract(
-          config.contracts.talentLayerReview,
-          TalentLayerReview.abi,
-          signer,
-        );
-        const tx = await contract.mint(user.id, serviceId, uri, values.rating);
+        const getUser = await getUserByAddress(user.address);
+        const delegateAddresses = getUser.data?.data?.users[0].delegates;
+        let tx;
+
+        if (isActiveDelegate) {
+          const response = await delegateMintReview(
+            user.id,
+            user.address,
+            serviceId,
+            uri,
+            values.rating,
+          );
+          tx = response.data.transaction;
+        } else {
+          const contract = new ethers.Contract(
+            config.contracts.talentLayerReview,
+            TalentLayerReview.abi,
+            signer,
+          );
+          tx = await contract.mint(user.id, serviceId, uri, values.rating);
+        }
+
         await createMultiStepsTransactionToast(
           {
             pending: 'Creating your review...',
