@@ -15,11 +15,12 @@ import SubmitButton from './SubmitButton';
 import useAllowedTokens from '../../hooks/useAllowedTokens';
 import { getServiceSignature } from '../../utils/signature';
 import { IToken } from '../../types';
+import { SkillsInput } from './skills-input';
 
 interface IFormValues {
   title: string;
   about: string;
-  keywords: string;
+  skills: string;
   rateToken: string;
   rateAmount: number;
 }
@@ -27,7 +28,7 @@ interface IFormValues {
 const initialValues: IFormValues = {
   title: '',
   about: '',
-  keywords: '',
+  skills: '',
   rateToken: '',
   rateAmount: 0,
 };
@@ -47,7 +48,7 @@ function ServiceForm() {
   const validationSchema = Yup.object({
     title: Yup.string().required('Please provide a title for your service'),
     about: Yup.string().required('Please provide a description of your service'),
-    keywords: Yup.string().required('Please provide keywords for your service'),
+    skills: Yup.string().required('Please provide keywords for your service'),
     rateToken: Yup.string().required('Please select a payment token'),
     rateAmount: Yup.number()
       .required('Please provide an amount for your service')
@@ -97,7 +98,7 @@ function ServiceForm() {
           JSON.stringify({
             title: values.title,
             about: values.about,
-            keywords: values.keywords,
+            skills: values.skills,
             role: 'buyer',
             rateToken: values.rateToken,
             rateAmount: parsedRateAmountString,
@@ -177,16 +178,10 @@ function ServiceForm() {
 
             <label className='block'>
               <span className='text-gray-700'>Keywords</span>
-              <Field
-                type='text'
-                id='keywords'
-                name='keywords'
-                className='mt-1 mb-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
-                placeholder='keyword1, keyword2...'
-              />
-              <span className='text-red-500'>
-                <ErrorMessage name='keywords' />
-              </span>
+
+              <SkillsInput initialValues={''} />
+
+              <Field type='hidden' id='skills' name='skills' />
             </label>
 
             <div className='flex'>
