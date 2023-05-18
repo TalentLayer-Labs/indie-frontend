@@ -1,5 +1,5 @@
 import { useWeb3Modal } from '@web3modal/react';
-import { BigNumberish, ethers, FixedNumber } from 'ethers';
+import { BigNumberish, ethers, FixedNumber, Signer, Wallet } from 'ethers';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import { useContext, useState } from 'react';
 import { useRouter } from 'next/router';
@@ -15,6 +15,7 @@ import SubmitButton from './SubmitButton';
 import useAllowedTokens from '../../hooks/useAllowedTokens';
 import { getServiceSignature } from '../../utils/signature';
 import { IToken } from '../../types';
+import { delegateCreateService } from '../request';
 
 interface IFormValues {
   title: string;
@@ -43,6 +44,7 @@ function ServiceForm() {
   const router = useRouter();
   const allowedTokenList = useAllowedTokens();
   const [selectedToken, setSelectedToken] = useState<IToken>();
+  const { isActiveDelegate } = useContext(TalentLayerContext);
 
   const validationSchema = Yup.object({
     title: Yup.string().required('Please provide a title for your service'),
@@ -85,7 +87,7 @@ function ServiceForm() {
     }: { setSubmitting: (isSubmitting: boolean) => void; resetForm: () => void },
   ) => {
     const token = allowedTokenList.find(token => token.address === values.rateToken);
-    if (account?.isConnected === true && provider && signer && token) {
+    if (account?.isConnected === true && provider && signer && token && user) {
       try {
         const parsedRateAmount = await parseRateAmount(
           values.rateAmount.toString(),
@@ -107,17 +109,26 @@ function ServiceForm() {
         // Get platform signature
         const signature = await getServiceSignature({ profileId: Number(user?.id), cid });
 
-        const contract = new ethers.Contract(
-          config.contracts.serviceRegistry,
-          ServiceRegistry.abi,
-          signer,
-        );
-        const tx = await contract.createService(
-          user?.id,
-          process.env.NEXT_PUBLIC_PLATFORM_ID,
-          cid,
-          signature,
-        );
+        let tx;
+
+        if (isActiveDelegate) {
+          const response = await delegateCreateService(user.id, user.address, cid);
+          tx = response.data.transaction;
+        } else {
+          const contract = new ethers.Contract(
+            config.contracts.serviceRegistry,
+            ServiceRegistry.abi,
+            signer,
+          );
+
+          tx = await contract.createService(
+            user?.id,
+            process.env.NEXT_PUBLIC_PLATFORM_ID,
+            cid,
+            signature,
+          );
+        }
+
         const newId = await createMultiStepsTransactionToast(
           {
             pending: 'Creating your job...',

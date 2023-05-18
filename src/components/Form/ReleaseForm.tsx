@@ -26,7 +26,7 @@ function ReleaseForm({
   closeModal,
   isBuyer,
 }: IReleaseFormProps) {
-  const { user } = useContext(TalentLayerContext);
+  const { user, isActiveDelegate } = useContext(TalentLayerContext);
   const { data: signer } = useSigner({
     chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
   });
@@ -40,12 +40,14 @@ function ReleaseForm({
     const percentToToken = totalInEscrow.mul(percent).div(100);
 
     await executePayment(
+      user.address,
       signer,
       provider,
       user.id,
       service.transaction.id,
       percentToToken,
       isBuyer,
+      isActiveDelegate,
     );
     closeModal();
   };

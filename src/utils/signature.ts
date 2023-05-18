@@ -1,6 +1,9 @@
 import axios from 'axios';
 
 export const getSignature = async (method: string, args: Record<string, any>) => {
+  if (!process.env.NEXT_PUBLIC_SIGNATURE_API_URL) {
+    return '0x';
+  }
   const res = await axios.post(process.env.NEXT_PUBLIC_SIGNATURE_API_URL as string, {
     method,
     args,
