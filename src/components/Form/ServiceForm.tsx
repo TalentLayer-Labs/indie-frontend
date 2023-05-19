@@ -17,7 +17,7 @@ import { getServiceSignature } from '../../utils/signature';
 import { IToken } from '../../types';
 import useServiceById from '../../hooks/useServiceById';
 import { SkillsInput } from './skills-input';
-import { delegateCreateService } from '../request';
+import { delegateCreateService, delegateUpdateService } from '../request';
 
 interface IFormValues {
   title: string;
@@ -141,7 +141,9 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
         let tx;
 
         if (isActiveDelegate) {
-          const response = await delegateCreateService(user.id, user.address, cid);
+          const response = existingService
+            ? await delegateUpdateService(user.id, user.address, existingService.id, cid)
+            : await delegateCreateService(user.id, user.address, cid);
           tx = response.data.transaction;
         } else {
           tx = existingService
