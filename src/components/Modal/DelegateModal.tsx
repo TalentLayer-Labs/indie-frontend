@@ -1,25 +1,20 @@
 import { ethers } from 'ethers';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useProvider, useSigner } from 'wagmi';
 import { toggleDelegation } from '../../contracts/toggleDelegation';
-import TalentLayerContext from '../../context/talentLayer';
 import { config } from '../../config';
 import TalentLayerID from '../../contracts/ABI/TalentLayerID.json';
 import { getUserByAddress } from '../../queries/users';
+import { IUser } from '../../types';
 
-function DelegateModal() {
+function DelegateModal({ user }: { user: IUser }) {
   const [show, setShow] = useState(false);
   const [hasPlatformAsDelegate, setHasPlatformAsDelegate] = useState(false);
   const { data: signer } = useSigner({
     chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
   });
   const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
-  const { user } = useContext(TalentLayerContext);
   const delegateAddress = process.env.NEXT_PUBLIC_DELEGATE_ADDRESS as string;
-
-  if (!user) {
-    return;
-  }
 
   const checkDelegateState = async () => {
     const getUser = await getUserByAddress(user.address);
@@ -37,14 +32,11 @@ function DelegateModal() {
   }, [user, show]);
 
   const onSubmit = async (validateState: boolean) => {
-    const contract = new ethers.Contract(
-      config.contracts.talentLayerId,
-      TalentLayerID.abi,
-      signer!,
-    );
     if (!signer || !provider || !user) {
       return;
     }
+    const contract = new ethers.Contract(config.contracts.talentLayerId, TalentLayerID.abi, signer);
+
     await toggleDelegation(user.id, delegateAddress, provider, validateState, contract);
 
     setShow(false);
@@ -58,7 +50,7 @@ function DelegateModal() {
           className='block text-blue-600 bg-red-50 hover:bg-green-500 hover:text-white rounded-lg px-5 py-2.5 text-center'
           type='button'
           data-modal-toggle='defaultModal'>
-          Active Delegation
+          Activate Delegation
         </button>
       )}
 
@@ -95,7 +87,7 @@ function DelegateModal() {
               <div className='flex flex-col px-4 py-6 md:p-6 xl:p-8 w-full bg-gray-50 space-y-6'>
                 <div className='flex flex-row'>
                   <h3 className='font-semibold text-gray-900'>Delegation state: </h3>
-                  {hasPlatformAsDelegate == true ? (
+                  {hasPlatformAsDelegate ? (
                     <p className='text-green-500 pl-2'> is active</p>
                   ) : (
                     <p className='text-red-500 pl-2'> is inactive</p>
