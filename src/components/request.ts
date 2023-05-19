@@ -18,6 +18,25 @@ export const delegateCreateService = async (
   }
 };
 
+export const delegateUpdateService = async (
+  userId: string,
+  userAddress: string,
+  serviceId: string,
+  cid: string,
+): Promise<any> => {
+  try {
+    return await axios.post('/api/delegate/update-service', {
+      userId,
+      userAddress,
+      serviceId,
+      cid,
+    });
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+};
+
 export const delegateUpdateProfileData = async (
   userId: string,
   userAddress: string,
