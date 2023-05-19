@@ -35,7 +35,6 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
     chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
   });
   const existingService = useServiceById(serviceId as string);
-  // const existingToken = useAllowedToken(existingService?.description?.rateToken as string);
 
   const router = useRouter();
   const allowedTokenList = useAllowedTokens();
@@ -63,7 +62,6 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
           )
         : 0,
   };
-  console.log('initialValues', initialValues);
 
   const validationSchema = Yup.object({
     title: Yup.string().required('Please provide a title for your service'),
