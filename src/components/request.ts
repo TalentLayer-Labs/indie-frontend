@@ -1,5 +1,4 @@
 /* eslint-disable no-console */
-import { strict } from 'assert';
 import axios from 'axios';
 
 export const delegateCreateService = async (
