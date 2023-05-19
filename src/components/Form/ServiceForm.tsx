@@ -1,5 +1,5 @@
 import { useWeb3Modal } from '@web3modal/react';
-import { BigNumber, BigNumberish, ethers, FixedNumber, Signer, Wallet } from 'ethers';
+import { BigNumber, BigNumberish, ethers, FixedNumber } from 'ethers';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import { useContext, useState } from 'react';
 import { useRouter } from 'next/router';
@@ -45,14 +45,10 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
   const [selectedToken, setSelectedToken] = useState<IToken>();
   const { isActiveDelegate } = useContext(TalentLayerContext);
 
-  //TODO - Test if works
-  //TODO - Remove logs
-  //TODO - Integrate skills
-
   const initialValues: IFormValues = {
     title: existingService?.description?.title || '',
     about: existingService?.description?.about || '',
-    keywords: '',
+    keywords: existingService?.description?.keywords_raw || '',
     rateToken: existingService?.description?.rateToken || '',
     rateAmount:
       existingService?.description?.rateAmount &&
@@ -220,7 +216,10 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
             <label className='block'>
               <span className='text-gray-700'>Keywords</span>
 
-              <SkillsInput entityId={'keywords'} />
+              <SkillsInput
+                initialValues={existingService?.description?.keywords_raw}
+                entityId={'keywords'}
+              />
 
               <Field type='hidden' id='keywords' name='keywords' />
             </label>
