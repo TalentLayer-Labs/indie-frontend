@@ -143,7 +143,11 @@ function ServiceForm() {
   };
 
   return (
-    <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
+    <Formik
+      initialValues={initialValues}
+      onSubmit={onSubmit}
+      validationSchema={validationSchema}
+      enableReinitialize={true}>
       {({ isSubmitting, setFieldValue }) => (
         <Form>
           <div className='grid grid-cols-1 gap-6 border border-gray-200 rounded-md p-8'>
