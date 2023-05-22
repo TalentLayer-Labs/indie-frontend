@@ -49,6 +49,8 @@ export type ITransaction = {
   arbitrationFeeTimeout: number;
   amount: number;
   disputeId: number;
+  arbitrator: string;
+  // arbitrator: `0x${string}`;
   evidences: IEvidence[];
 };
 
