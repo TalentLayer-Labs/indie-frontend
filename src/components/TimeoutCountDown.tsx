@@ -39,28 +39,28 @@ function TimeOutCountDown({ targetDate }: { targetDate: number }) {
         id='count-down'
         className='flex flex-row mx-2 drop-shadow-2xl text-sm text-gray-500 mt-2'>
         <div className='flex flex-row'>
-          <div className=''></div>
+          <div></div>
           {timeLeft && <div className='mr-1'>{timeLeft.days}</div>}
-          <div className='days-label'>days</div>
+          <div>days</div>
         </div>
 
         <div className='flex flex-row mx-2'>
-          <div className=''></div>
+          <div></div>
           {timeLeft && <div className='mr-1'>{timeLeft.hours}</div>}
-          <div className='hours-label'>hours</div>
+          <div>hours</div>
         </div>
 
         <div className='flex flex-row'>
-          <div className=''></div>
+          <div></div>
           {timeLeft && <div className='mr-1'>{timeLeft.minutes}</div>}
-          <div className='minutes-label'>min</div>
+          <div>min</div>
         </div>
 
         {timeLeft?.days === 0 && (
-          <div className='seconds-container'>
-            <div className='seconds'></div>
-            {timeLeft && <div className='seconds'>{timeLeft.seconds}</div>}
-            <div className='seconds-label'>seconds</div>
+          <div className='flex flex-row mx-2'>
+            <div></div>
+            {timeLeft && <div className='mr-1'>{timeLeft.seconds}</div>}
+            <div>sec</div>
           </div>
         )}
       </section>

@@ -10,6 +10,8 @@ import DisputeItem from '../../modules/Kleros/components/DisputeDetail';
 import useTransactionsById from '../../hooks/useTransactionsById';
 import TimeOutCountDown from '../../components/TimeoutCountDown';
 import DisputeButton from '../../components/DisputeButton';
+import useArbitrationCost from '../../hooks/useArbitrationCost';
+import { ethers } from 'ethers';
 
 function Dispute() {
   const router = useRouter();
@@ -18,10 +20,19 @@ function Dispute() {
   const proposal = useProposalById(proposalId as string);
   const transactionId = proposal?.service?.transaction?.id;
   const transaction = useTransactionsById(transactionId as string);
-  //TODO: RPC call to get fee, or handle with the graph when update ?
+  // const arbitrationFee = useArbitrationCost(proposal?.service?.transaction?.arbitrator);
+  const arbitrationCost = useArbitrationCost('0x2CA01a0058cfB3cc4755a7773881ea88eCfBba7C');
+  console.log('arbitrationCost', arbitrationCost);
+
+  // if (!transaction?.arbitrator || transaction?.arbitrator === ethers.constants.AddressZero) {
+  // }
+
+  const targetDate = 1683795557869 + Number(transaction?.arbitrationFeeTimeout) * 1000;
+  // const targetDate = (transaction?.lastInteraction + transaction.arbitrationFeeTimeout) * 1000;
+
   //TODO Display both parties evidences
   //TODO Display link to meta evidences
-  //TODO THe Graph, need the time where fee was paid, so far just got "last interaction"
+  //TODO The Graph, need the time where fee was paid, so far just got "last interaction"
 
   // const evidences = useEvidences(transactionId);
   // console.log('evidences', evidences);
@@ -30,21 +41,24 @@ function Dispute() {
       uri: 'QmQ2hcACF6r2Gf8PDxG4NcBdurzRUopwcaYQHNhSah6a8v',
       party: {
         id: '3',
+        address: '0x3f5CE5FBFe3E9af3971dD833D26bA9b5C936f0bE',
+        handle: '0xRacoon',
+        rating: '0',
+        description: '',
+        userStats: '',
       },
       id: '',
       transaction: '',
       createdAt: '',
     },
   ];
-  const targetDate = 1683795557869 + Number(transaction?.arbitrationFeeTimeout) * 1000;
-  // const targetDate = (transaction?.lastInteraction + transaction.arbitrationFeeTimeout) * 1000;
 
   const buyerEvidences = evidences.filter(
     evidence => evidence.party.id === proposal?.service.buyer.id,
   );
   const sellerEvidences = evidences.filter(evidence => evidence.party.id === proposal?.seller.id);
 
-  transaction ? (transaction.status = TransactionStatusEnum.DisputeCreated) : '';
+  transaction ? (transaction.status = TransactionStatusEnum.NoDispute) : '';
 
   if (
     user &&
@@ -75,7 +89,7 @@ function Dispute() {
                 className={
                   'flex flex-row justify-between gap-2 rounded-xl p-4 border border-gray-200'
                 }>
-                <div className={'flex-col flex-1'}>
+                <div className={'flex-col flex'}>
                   <p className={'text-sm text-gray-500 mt-2'}>
                     <strong>Service:</strong> {proposal.service.description?.title}
                   </p>
@@ -104,9 +118,9 @@ function Dispute() {
                       })}
                   </p>
                 </div>
-                <div className={'flex-1'}></div>
+                <div className={'flex'}></div>
 
-                <div className={'flex flex-row flex-1 gap-2 border border-gray-200 rounded-xl p-4'}>
+                <div className={'flex flex-row flex gap-2 border border-gray-200 rounded-xl p-4'}>
                   <div className={''}>
                     <p className={'text-sm text-gray-500 mt-2'}>
                       <strong>Status:</strong> {transaction?.status}
