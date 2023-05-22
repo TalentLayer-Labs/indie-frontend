@@ -33,3 +33,12 @@ export const IpfsIsSynced = async (cid: string): Promise<boolean> => {
     }, 5000);
   });
 };
+
+export const readFromIpfs = async (cid: string): Promise<any> => {
+  try {
+    const response = await fetch(process.env.NEXT_PUBLIC_IPFS_BASE_URL + cid);
+    return await response.json();
+  } catch (error) {
+    console.error('IPFS error ', error);
+  }
+};
