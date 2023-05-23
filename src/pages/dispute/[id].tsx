@@ -161,7 +161,7 @@ function Dispute() {
                     {evidences.length > 0 &&
                       buyerEvidences.map(evidence => {
                         return (
-                          <div className={'mb-4 pb-4'}>
+                          <div className={'mb-4 pb-4'} key={evidence.id}>
                             <a
                               href={`https://cloudflare-ipfs.com/ipfs/${evidence.uri}`}
                               className={'mb-2'}>
@@ -176,7 +176,7 @@ function Dispute() {
                     {evidences.length > 0 &&
                       sellerEvidences.map(evidence => {
                         return (
-                          <div className={'flex flex-row'}>
+                          <div className={'flex flex-row'} key={evidence.id}>
                             <a
                               href={`https://cloudflare-ipfs.com/ipfs/${evidence.uri}`}
                               className={'mb-1 hover:underline'}>

@@ -45,7 +45,7 @@ function TimeOutCountDown({ targetDate }: { targetDate: number }) {
           </div>
         )}
 
-        {timeLeft && timeLeft.hours !== 0 && (
+        {timeLeft && (timeLeft.hours !== 0 || timeLeft.days !== 0) && (
           <div className='flex flex-row mx-2'>
             <div></div>
             <div className='mr-1'>{timeLeft.hours}</div>
@@ -53,7 +53,7 @@ function TimeOutCountDown({ targetDate }: { targetDate: number }) {
           </div>
         )}
 
-        {timeLeft && timeLeft.minutes !== 0 && (
+        {timeLeft && (timeLeft.minutes !== 0 || timeLeft.hours !== 0 || timeLeft.days !== 0) && (
           <div className='flex flex-row'>
             <div className='mr-1'>{timeLeft.minutes}</div>
             <div>min</div>
