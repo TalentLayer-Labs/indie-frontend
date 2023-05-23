@@ -101,6 +101,25 @@ export const getServices = (params: IProps): Promise<any> => {
   return processRequest(query);
 };
 
+export const getFilteredServices = (params: IProps): Promise<any> => {
+  const pagination = params.numberPerPage
+    ? 'first: ' + params.numberPerPage + ', skip: ' + params.offset
+    : '';
+  const query = `
+    {
+      services(orderBy: id, orderDirection: desc ${pagination} ${getFilteredServiceCondition(
+    params,
+  )}) {
+        ${serviceQueryFields}
+        description {
+          ${serviceDescriptionQueryFields}
+        }
+      }
+    }`;
+
+  return processRequest(query);
+};
+
 export const searchServices = (params: IProps): Promise<any> => {
   const pagination = params.numberPerPage
     ? 'first: ' + params.numberPerPage + ' skip: ' + params.offset
