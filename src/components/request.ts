@@ -121,3 +121,24 @@ export const delegateMintID = async (
     throw err;
   }
 };
+
+export const getFilteredServicesByKeywords = async (
+  serviceStatus?: string,
+  buyerId?: string,
+  sellerId?: string,
+  numberPerPage?: number,
+  offset?: number,
+): Promise<any> => {
+  try {
+    return await axios.post('/api/middleware/get-filtered-services', {
+      serviceStatus,
+      buyerId,
+      sellerId,
+      numberPerPage,
+      offset,
+    });
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+};
