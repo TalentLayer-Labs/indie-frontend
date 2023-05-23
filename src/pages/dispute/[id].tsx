@@ -13,11 +13,8 @@ import useArbitrationCost from '../../hooks/useArbitrationCost';
 import { ethers } from 'ethers';
 import useEvidences from '../../hooks/useEvidences';
 import useIpfsJsonData from '../../hooks/useIpfsJsonData';
-import { config } from '../../config';
-import TalentLayerEscrow from '../../contracts/ABI/TalentLayerEscrow.json';
 import { useProvider, useSigner } from 'wagmi';
-import { toast } from 'react-toastify';
-import TransactionToast from '../../components/TransactionToast';
+import { arbitrationFeeTimeout, payArbitrationFee } from '../../contracts/disputes';
 
 function Dispute() {
   const { data: signer } = useSigner({
@@ -31,10 +28,10 @@ function Dispute() {
   const transactionId = proposal?.service?.transaction?.id;
   const transaction = useTransactionsById(transactionId as string);
   const arbitrationFee = useArbitrationCost(transaction?.arbitrator);
-  // const arbitrationCost = useArbitrationCost('0x2CA01a0058cfB3cc4755a7773881ea88eCfBba7C');
   const evidences = useEvidences(transactionId);
   // console.log('arbitrationCost', arbitrationFee);
   // console.log('evidences', evidences);
+  // console.log('transaction', transaction);
 
   const evidenceDetail: IERC1497Evidence = useIpfsJsonData(
     evidences && evidences.length > 0 && evidences[0].uri,
@@ -52,9 +49,9 @@ function Dispute() {
     (transaction && !transaction?.arbitrator) ||
     (transaction && transaction?.arbitrator === ethers.constants.AddressZero)
   ) {
+    //TODO decide what behavior we want here
     return;
   }
-  // const targetDate = 1683795557869 + Number(transaction?.arbitrationFeeTimeout) * 1000;
   const getTargetDate = () => {
     if (
       isSender() &&
@@ -79,7 +76,6 @@ function Dispute() {
     }
     return 0;
   };
-  console.log('targetDate', getTargetDate());
 
   //TODO Multistep tx toast ? Or custom toast if no ipfs mapping on the graph ?
   //TODO Evidence Modal + Download evidence or display if pic ? Custom according to file extention ?
@@ -100,42 +96,32 @@ function Dispute() {
     //TODO return; instead ?
   }
 
+  const payFee = () => {
+    if (signer && user && transaction && arbitrationFee) {
+      return payArbitrationFee({
+        signer,
+        provider,
+        arbitrationFee,
+        user,
+        transaction,
+        router,
+      });
+    }
+  };
+  const timeout = () => {
+    if (signer && user && transactionId) {
+      return arbitrationFeeTimeout({
+        signer,
+        provider,
+        transactionId,
+        router,
+      });
+    }
+  };
+
   if (!transactionId) {
     return <Loading />;
   }
-
-  const raiseDispute = async () => {
-    if (signer) {
-      const contract = new ethers.Contract(
-        config.contracts.talentLayerEscrow,
-        TalentLayerEscrow.abi,
-        signer,
-      );
-      try {
-        const tx =
-          user?.id === transaction?.sender.id
-            ? await contract.payArbitrationFeeBySender(transactionId, { value: arbitrationFee })
-            : user?.id === transaction?.receiver.id
-            ? await contract.payArbitrationFeeByReceiver(transactionId, { value: arbitrationFee })
-            : '';
-        const receipt = await toast.promise(provider.waitForTransaction(tx.hash), {
-          pending: {
-            render() {
-              return <TransactionToast message={'Raising dispute...'} transactionHash={tx.hash} />;
-            },
-          },
-          success: 'A dispute has been raised',
-          error: 'An error occurred while raising the dispute',
-        });
-        if (receipt.status !== 1) {
-          throw new Error('Transaction failed');
-        }
-        router.reload();
-      } catch (error) {
-        console.error(error);
-      }
-    }
-  };
 
   return (
     <>
@@ -230,15 +216,18 @@ function Dispute() {
                           <div className={'flex flex-row'}>
                             {(transaction.status === TransactionStatusEnum.WaitingReceiver ||
                               transaction.status === TransactionStatusEnum.WaitingSender) && (
-                              //TODO Remove substraction
+                              //TODO Remove subtraction
                               <TimeOutCountDown targetDate={getTargetDate() - 777600000} />
                             )}
                           </div>
                           <DisputeButton
                             isSender={isSender()}
                             isReceiver={isReceiver()}
+                            // transactionStatus={TransactionStatusEnum.Resolved}
                             transactionStatus={transaction.status}
                             disabled={getTargetDate() > Date.now()}
+                            payArbitrationFee={payFee}
+                            arbitrationFeeTimeout={timeout}
                           />
                         </div>
                       </>
@@ -248,16 +237,18 @@ function Dispute() {
               {account?.isConnected && user && transactionId && signer && provider && (
                 <EvidenceForm transactionId={transactionId} signer={signer} provider={provider} />
               )}
-              {transaction?.status === TransactionStatusEnum.NoDispute && (
-                <div className={'flex w-full space-y-4 flex-raw pb-4'}>
-                  <button
-                    className={`ml-2 mt-4 px-5 py-2 block hover:text-white rounded-lg text-center text-red-600 bg-red-50 hover:bg-red-500`}
-                    type='button'
-                    onClick={() => raiseDispute()}>
-                    Raise dispute
-                  </button>
-                </div>
-              )}
+              {transaction?.status === TransactionStatusEnum.NoDispute &&
+                signer &&
+                arbitrationFee && (
+                  <div className={'flex w-full space-y-4 flex-raw pb-4'}>
+                    <button
+                      className={`ml-2 mt-4 px-5 py-2 block hover:text-white rounded-lg text-center text-red-600 bg-red-50 hover:bg-red-500`}
+                      type='button'
+                      onClick={() => payFee()}>
+                      Raise dispute
+                    </button>
+                  </div>
+                )}
             </div>
           </div>
         </>
