@@ -42,6 +42,8 @@ export type IAccount = {
 // TODO: add the rest of the fields
 export type ITransaction = {
   id: string;
+  sender: IUser;
+  receiver: IUser;
   status: TransactionStatusEnum;
   senderFee: number;
   receiverFee: number;
