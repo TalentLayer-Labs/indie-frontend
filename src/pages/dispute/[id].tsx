@@ -248,14 +248,16 @@ function Dispute() {
               {account?.isConnected && user && transactionId && signer && provider && (
                 <EvidenceForm transactionId={transactionId} signer={signer} provider={provider} />
               )}
-              <div className={'flex w-full space-y-4 flex-raw pb-4'}>
-                <button
-                  className={`ml-2 mt-4 px-5 py-2 border rounded-md hover:text-indigo-600 hover:bg-white border-indigo-600 bg-indigo-600 text-white bg-indigo-700'
-                }`}
-                  onClick={() => raiseDispute()}>
-                  Raise dispute
-                </button>
-              </div>
+              {transaction?.status === TransactionStatusEnum.NoDispute && (
+                <div className={'flex w-full space-y-4 flex-raw pb-4'}>
+                  <button
+                    className={`ml-2 mt-4 px-5 py-2 block hover:text-white rounded-lg text-center text-red-600 bg-red-50 hover:bg-red-500`}
+                    type='button'
+                    onClick={() => raiseDispute()}>
+                    Raise dispute
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </>
