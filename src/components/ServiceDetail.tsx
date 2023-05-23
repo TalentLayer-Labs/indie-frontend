@@ -6,7 +6,7 @@ import usePaymentsByService from '../hooks/usePaymentsByService';
 import useProposalsByService from '../hooks/useProposalsByService';
 import useReviewsByService from '../hooks/useReviewsByService';
 import ContactButton from '../modules/Messaging/components/ContactButton';
-import { IService, ProposalStatusEnum, ServiceStatusEnum } from '../types';
+import { IService, ProposalStatusEnum, ServiceStatusEnum, TransactionStatusEnum } from '../types';
 import { renderTokenAmountFromConfig } from '../utils/conversion';
 import { formatDate } from '../utils/dates';
 import PaymentModal from './Modal/PaymentModal';
@@ -16,6 +16,7 @@ import ReviewItem from './ReviewItem';
 import ServiceStatus from './ServiceStatus';
 import Stars from './Stars';
 import { useRouter } from 'next/router';
+import { ethers } from 'ethers';
 
 function ServiceDetail({ service }: { service: IService }) {
   const { account, user } = useContext(TalentLayerContext);
@@ -127,15 +128,20 @@ function ServiceDetail({ service }: { service: IService }) {
                 {account && service.status !== ServiceStatusEnum.Opened && (
                   <PaymentModal service={service} payments={payments} isBuyer={isBuyer} />
                 )}
-                {account && service.status !== ServiceStatusEnum.Opened && validatedProposal && (
-                  <button
-                    onClick={() => push(`/dispute/${validatedProposal.id}`)}
-                    className='block hover:text-white rounded-lg px-5 py-2.5 text-center text-red-600 bg-red-50 hover:bg-red-500'
-                    type='button'
-                    data-modal-toggle='defaultModal'>
-                    Raise dispute
-                  </button>
-                )}
+                {account &&
+                  service.status !== ServiceStatusEnum.Opened &&
+                  validatedProposal &&
+                  service.transaction.arbitrator !== ethers.constants.AddressZero && (
+                    <button
+                      onClick={() => push(`/dispute/${validatedProposal.id}`)}
+                      className='block hover:text-white rounded-lg px-5 py-2.5 text-center text-red-600 bg-red-50 hover:bg-red-500'
+                      type='button'
+                      data-modal-toggle='defaultModal'>
+                      {service.transaction.status === TransactionStatusEnum.NoDispute
+                        ? 'Raise dispute'
+                        : 'View dispute'}
+                    </button>
+                  )}
               </>
             )}
           </div>
