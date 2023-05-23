@@ -53,9 +53,13 @@ function EvidenceForm({ transactionId }: { transactionId: string }) {
         const fileExtension = values.file?.name.split('.').pop();
         console.log('fileExtension', fileExtension);
         console.log('values.file', values.file);
-        const fileCid = 'QmQ2hcACF6r2Gf8PDxG4NcBdurzRUopwcaYQHNhSah6a8v';
-        // const fileCid = await postToIPFS(JSON.stringify(values.file));
+        // const fileCid = 'QmQ2hcACF6r2Gf8PDxG4NcBdurzRUopwcaYQHNhSah6a8v';
+        if (!values.file) return;
+        const arr = await values?.file.arrayBuffer();
+        console.log('arr', arr);
+        const fileCid = await postToIPFS(arr);
         console.log('fileCid', fileCid);
+
         const evidence = generateEvidence(
           values.title,
           values.about,
@@ -63,8 +67,8 @@ function EvidenceForm({ transactionId }: { transactionId: string }) {
           fileExtension as string,
         );
         console.log('evidence', evidence);
-        const evidenceCid = 'QmQ2hcACF6r2Gf8PDxG4NcBdurzRUopwcaYQHNhSah6a8v';
-        // const evidenceCid = await postToIPFS(JSON.stringify(evidence));
+        // const evidenceCid = 'QmQ2hcACF6r2Gf8PDxG4NcBdurzRUopwcaYQHNhSah6a8v';
+        const evidenceCid = await postToIPFS(JSON.stringify(evidence));
         console.log('evidenceCid', evidenceCid);
 
         const contract = new ethers.Contract(
