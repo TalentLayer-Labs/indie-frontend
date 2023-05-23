@@ -1,6 +1,14 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getServices } from '../../../queries/services';
-import keywordFilter from './filter.json'; // Import keywords from JSON file
+import keywordFilter from './filter.json';
+
+interface ServiceDescription {
+  keywords_raw: string;
+}
+
+interface Service {
+  description: ServiceDescription;
+}
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const query = req.body;
@@ -15,11 +23,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     offset,
   });
 
-  // Filter response data based on keywords
-  response = response.data.filteredServices.filter(service => {
-    // Check if any of the service's keywords exist in the keywordFilter.keywords array
-    return service.keywords.some(keyword => keywordFilter.keywords.includes(keyword));
-  });
+  const filteredServices = response?.data?.data?.services;
 
-  res.status(200).json({ data: response });
+  let keywordFilteredServices = filteredServices;
+
+  // Apply keyword filter only if keywords array is not empty
+  if (keywordFilter.keywords.length > 0) {
+    keywordFilteredServices = filteredServices.filter((service: Service) =>
+      keywordFilter.keywords.includes(service.description.keywords_raw),
+    );
+  }
+
+  res.status(200).json({ data: keywordFilteredServices });
 }
