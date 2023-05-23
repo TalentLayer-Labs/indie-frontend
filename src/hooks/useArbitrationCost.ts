@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { BigNumber, Contract } from 'ethers';
+import { BigNumber, Contract, ethers } from 'ethers';
 import TalentLayerArbitrator from '../contracts/ABI/TalentLayerArbitrator.json';
 import { useSigner } from 'wagmi';
 
@@ -12,7 +12,7 @@ const useArbitrationCost = (arbitratorAddress: string | undefined): BigNumber | 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        if (signer && arbitratorAddress) {
+        if (signer && arbitratorAddress && arbitratorAddress !== ethers.constants.AddressZero) {
           const talentLayerArbitrator = new Contract(
             arbitratorAddress,
             TalentLayerArbitrator.abi,
