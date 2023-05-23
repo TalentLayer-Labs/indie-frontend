@@ -17,7 +17,8 @@ export const FEE_RATE_DIVIDER = 10_000;
 
 const goerli: Config = {
   networkId: NetworkEnum.GOERLI,
-  subgraphUrl: 'https://api.thegraph.com/subgraphs/name/talentlayer/talent-layer-protocol',
+  subgraphUrl: 'https://api.thegraph.com/subgraphs/name/quent043/badass-graph-yamakasi-mothafuc\n',
+  // subgraphUrl: 'https://api.thegraph.com/subgraphs/name/talentlayer/talent-layer-protocol',
   contracts: {
     talentLayerId: '0x11119eD887aeC1302e2cAF49942F891667A31BBc',
     serviceRegistry: '0xf0EECbBf164D81261C7Ce4D22D16f38DC63fBAbd',

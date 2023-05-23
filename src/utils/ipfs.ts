@@ -42,3 +42,12 @@ export const readFromIpfs = async (cid: string): Promise<any> => {
     console.error('IPFS error ', error);
   }
 };
+
+export const readFileFromIpfs = async (cid: string): Promise<any> => {
+  try {
+    const response = await fetch(process.env.NEXT_PUBLIC_IPFS_BASE_URL + cid);
+    return await response.arrayBuffer();
+  } catch (error) {
+    console.error('IPFS error ', error);
+  }
+};
