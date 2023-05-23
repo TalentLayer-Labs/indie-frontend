@@ -38,32 +38,36 @@ function TimeOutCountDown({ targetDate }: { targetDate: number }) {
       <section
         id='count-down'
         className='flex flex-row mx-2 drop-shadow-2xl text-sm text-gray-500 mt-2'>
-        <div className='flex flex-row'>
-          <div></div>
-          {timeLeft && <div className='mr-1'>{timeLeft.days}</div>}
-          <div>days</div>
-        </div>
+        {timeLeft && timeLeft.days !== 0 && (
+          <div className='flex flex-row'>
+            <div className='mr-1'>{timeLeft.days}</div>
+            <div>days</div>
+          </div>
+        )}
 
-        <div className='flex flex-row mx-2'>
-          <div></div>
-          {timeLeft && <div className='mr-1'>{timeLeft.hours}</div>}
-          <div>hours</div>
-        </div>
+        {timeLeft && timeLeft.hours !== 0 && (
+          <div className='flex flex-row mx-2'>
+            <div></div>
+            <div className='mr-1'>{timeLeft.hours}</div>
+            <div>hours</div>
+          </div>
+        )}
 
-        <div className='flex flex-row'>
-          <div></div>
-          {timeLeft && <div className='mr-1'>{timeLeft.minutes}</div>}
-          <div>min</div>
-        </div>
+        {timeLeft && timeLeft.minutes !== 0 && (
+          <div className='flex flex-row'>
+            <div className='mr-1'>{timeLeft.minutes}</div>
+            <div>min</div>
+          </div>
+        )}
 
         {timeLeft?.days === 0 && (
           <div className='flex flex-row mx-2'>
-            <div></div>
-            {timeLeft && <div className='mr-1'>{timeLeft.seconds}</div>}
+            <div className='mr-1'>{timeLeft.seconds}</div>
             <div>sec</div>
           </div>
         )}
       </section>
+      {!timeLeft && <p className={'text-sm text-gray-500 mt-2'}>Fee timeout passed</p>}
     </>
   );
 }
