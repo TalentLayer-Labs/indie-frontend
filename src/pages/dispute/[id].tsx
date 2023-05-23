@@ -54,9 +54,32 @@ function Dispute() {
   ) {
     return;
   }
-  const targetDate = 1683795557869 + Number(transaction?.arbitrationFeeTimeout) * 1000;
-  // const targetDate = (transaction?.lastInteraction + transaction.arbitrationFeeTimeout) * 1000;
-  // console.log('targetDate', targetDate);
+  // const targetDate = 1683795557869 + Number(transaction?.arbitrationFeeTimeout) * 1000;
+  const getTargetDate = () => {
+    if (
+      isSender() &&
+      transaction &&
+      (transaction.senderFeePaidAt || transaction.receiverFeePaidAt)
+    ) {
+      return (
+        (Number(transaction.senderFeePaidAt) + Number(transaction.arbitrationFeeTimeout)) * 1000
+      );
+    }
+
+    if (
+      isReceiver() &&
+      transaction &&
+      (transaction.senderFeePaidAt || transaction.receiverFeePaidAt)
+    ) {
+      return (
+        (Number(transaction.senderFeePaidAt || transaction.receiverFeePaidAt) +
+          Number(transaction.arbitrationFeeTimeout)) *
+        1000
+      );
+    }
+    return 0;
+  };
+  console.log('targetDate', getTargetDate());
 
   //TODO Multistep tx toast ? Or custom toast if no ipfs mapping on the graph ?
   //TODO Evidence Modal + Download evidence or display if pic ? Custom according to file extention ?
@@ -200,10 +223,7 @@ function Dispute() {
                           isSender={isSender()}
                           isReceiver={isReceiver()}
                           transactionStatus={transaction.status}
-                          disabled={
-                            targetDate > Date.now()
-                            // (transaction?.lastInteraction + transaction.arbitrationFeeTimeout) * 1000
-                          }
+                          disabled={getTargetDate() > Date.now()}
                         />
                       </div>
                     </>
