@@ -3,8 +3,8 @@ import { BigNumber, Contract } from 'ethers';
 import TalentLayerArbitrator from '../contracts/ABI/TalentLayerArbitrator.json';
 import { useSigner } from 'wagmi';
 
-const useArbitrationCost = (arbitratorAddress: string): string | null => {
-  const [arbitrationCost, setArbitrationCost] = useState<string | null>(null);
+const useArbitrationCost = (arbitratorAddress: string | undefined): BigNumber | null => {
+  const [arbitrationCost, setArbitrationCost] = useState<BigNumber | null>(null);
   const { data: signer } = useSigner({
     chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
   });
@@ -22,8 +22,7 @@ const useArbitrationCost = (arbitratorAddress: string): string | null => {
             process.env.NEXT_PUBLIC_PLATFORM_ID,
           );
           if (response) {
-            const parsedResponse = BigNumber.from(response).toString();
-            setArbitrationCost(parsedResponse);
+            setArbitrationCost(response);
           }
         }
       } catch (err: any) {
