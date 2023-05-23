@@ -6,13 +6,14 @@ import FileDropper from '../../modules/Kleros/components/FileDropper';
 import { postToIPFS } from '../../utils/ipfs';
 import { ethers } from 'ethers';
 import { config } from '../../config';
-import { createMultiStepsTransactionToast, showErrorTransactionToast } from '../../utils/toast';
+import { showErrorTransactionToast } from '../../utils/toast';
 import { generateEvidence } from '../../modules/Kleros/utils/generateMetaEvidence';
 import TalentLayerEscrow from '../../contracts/ABI/TalentLayerEscrow.json';
 import TalentLayerContext from '../../context/talentLayer';
 import { useWeb3Modal } from '@web3modal/react';
-import { useProvider, useSigner } from 'wagmi';
-import ServiceItem from '../ServiceItem';
+import { toast } from 'react-toastify';
+import TransactionToast from '../TransactionToast';
+import { Provider } from '@wagmi/core';
 
 interface IFormValues {
   title: string;
@@ -32,13 +33,17 @@ const initialValues: IFormValues = {
   file: null,
 };
 
-function EvidenceForm({ transactionId }: { transactionId: string }) {
+function EvidenceForm({
+  transactionId,
+  signer,
+  provider,
+}: {
+  transactionId: string;
+  signer: ethers.Signer;
+  provider: Provider;
+}) {
   const { account, user } = useContext(TalentLayerContext);
   const { open: openConnectModal } = useWeb3Modal();
-  const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
-  const { data: signer } = useSigner({
-    chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
-  });
   const [fileSelected, setFileSelected] = useState<File>();
 
   const onSubmit = async (
@@ -51,14 +56,10 @@ function EvidenceForm({ transactionId }: { transactionId: string }) {
     if (account?.isConnected === true && provider && signer) {
       try {
         const fileExtension = values.file?.name.split('.').pop();
-        console.log('fileExtension', fileExtension);
-        console.log('values.file', values.file);
         // const fileCid = 'QmQ2hcACF6r2Gf8PDxG4NcBdurzRUopwcaYQHNhSah6a8v';
         if (!values.file) return;
         const arr = await values?.file.arrayBuffer();
-        console.log('arr', arr);
         const fileCid = await postToIPFS(arr);
-        console.log('fileCid', fileCid);
 
         const evidence = generateEvidence(
           values.title,
@@ -77,17 +78,20 @@ function EvidenceForm({ transactionId }: { transactionId: string }) {
           signer,
         );
         const tx = await contract.submitEvidence(user?.id, transactionId, evidenceCid);
-        await createMultiStepsTransactionToast(
-          {
-            pending: 'Submitting evidence...',
-            success: 'Congrats! Your evidence has been submitted',
-            error: 'An error occurred while submitting your evidence ',
+        const receipt = await toast.promise(provider.waitForTransaction(tx.hash), {
+          pending: {
+            render() {
+              return (
+                <TransactionToast message={'Submitting evidence...'} transactionHash={tx.hash} />
+              );
+            },
           },
-          provider,
-          tx,
-          'evidence',
-          evidenceCid,
-        );
+          success: 'Your evidence has been submitted',
+          error: 'An error occurred while submitting your evidence',
+        });
+        if (receipt.status !== 1) {
+          throw new Error('Transaction failed');
+        }
         setSubmitting(false);
         resetForm();
         setFileSelected(undefined);
