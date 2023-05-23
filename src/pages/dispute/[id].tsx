@@ -202,32 +202,47 @@ function Dispute() {
                       <strong>Status:</strong> {transaction?.status}
                     </p>
                     <p className={'text-sm text-gray-500 mt-2'}>
-                      <strong>Buyer fee:</strong> {transaction?.senderFee}
+                      <strong>Arbitration fee:</strong>{' '}
+                      {arbitrationFee && ethers.utils.formatEther(arbitrationFee.toString())} MATIC
                     </p>
+                    <div className={'text-sm text-gray-500 mt-2'}>
+                      <strong>Buyer fee:</strong>{' '}
+                      {transaction?.senderFeePaidAt ? (
+                        <span className='text-green-600 font-bold'>Paid</span>
+                      ) : (
+                        <span className='text-red-600 font-bold'>Not paid</span>
+                      )}
+                    </div>
                     <p className={'text-sm text-gray-500 mt-2'}>
-                      <strong>Seller fee:</strong> {transaction?.receiverFee}
+                      <strong>Seller fee:</strong>{' '}
+                      {transaction?.receiverFeePaidAt ? (
+                        <span className='text-green-600 font-bold'>Paid</span>
+                      ) : (
+                        <span className='text-red-600 font-bold'>Not paid</span>
+                      )}
                     </p>
                   </div>
-                  {transaction && (
-                    // (transaction.status === TransactionStatusEnum.WaitingReceiver ||
-                    //   transaction.status === TransactionStatusEnum.WaitingSender) &&
-                    <>
-                      <div className={'flex flex-col'}>
-                        <div className={'flex flex-row'}>
-                          {(transaction.status === TransactionStatusEnum.WaitingReceiver ||
-                            transaction.status === TransactionStatusEnum.WaitingSender) && (
-                            <TimeOutCountDown targetDate={getTargetDate() - 777600000} />
-                          )}
+                  {transaction &&
+                    (transaction.status === TransactionStatusEnum.WaitingReceiver ||
+                      transaction.status === TransactionStatusEnum.WaitingSender) && (
+                      <>
+                        <div className={'flex flex-col'}>
+                          <div className={'flex flex-row'}>
+                            {(transaction.status === TransactionStatusEnum.WaitingReceiver ||
+                              transaction.status === TransactionStatusEnum.WaitingSender) && (
+                              //TODO Remove substraction
+                              <TimeOutCountDown targetDate={getTargetDate() - 777600000} />
+                            )}
+                          </div>
+                          <DisputeButton
+                            isSender={isSender()}
+                            isReceiver={isReceiver()}
+                            transactionStatus={transaction.status}
+                            disabled={getTargetDate() > Date.now()}
+                          />
                         </div>
-                        <DisputeButton
-                          isSender={isSender()}
-                          isReceiver={isReceiver()}
-                          transactionStatus={transaction.status}
-                          disabled={getTargetDate() > Date.now()}
-                        />
-                      </div>
-                    </>
-                  )}
+                      </>
+                    )}
                 </div>
               </div>
               {account?.isConnected && user && transactionId && signer && provider && (
