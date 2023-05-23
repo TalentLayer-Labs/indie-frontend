@@ -97,25 +97,22 @@ function Dispute() {
   }
 
   const payFee = () => {
-    if (signer && user && transaction && arbitrationFee) {
-      return payArbitrationFee({
+    if (signer && user && transactionId && arbitrationFee) {
+      const isUserSender = isSender();
+
+      return payArbitrationFee(
         signer,
         provider,
         arbitrationFee,
-        user,
-        transaction,
+        isUserSender,
+        transactionId,
         router,
-      });
+      );
     }
   };
   const timeout = () => {
     if (signer && user && transactionId) {
-      return arbitrationFeeTimeout({
-        signer,
-        provider,
-        transactionId,
-        router,
-      });
+      return arbitrationFeeTimeout(signer, provider, transactionId, router);
     }
   };
 

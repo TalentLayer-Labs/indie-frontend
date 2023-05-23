@@ -11,38 +11,30 @@ export const getEscrowContract = (signer: Signer): Contract => {
   return new ethers.Contract(config.contracts.talentLayerEscrow, TalentLayerEscrow.abi, signer);
 };
 
-export const payArbitrationFee = async ({
-  signer,
-  provider,
-  arbitrationFee,
-  user,
-  transaction,
-  router,
-}: {
-  signer: Signer;
-  provider: Provider;
-  arbitrationFee: BigNumber;
-  user: IUser;
-  transaction: ITransaction;
-  router: NextRouter;
-}) => {
+export const payArbitrationFee = async (
+  signer: Signer,
+  provider: Provider,
+  arbitrationFee: BigNumber,
+  isSender: boolean,
+  transactionId: string,
+  router: NextRouter,
+) => {
   if (signer) {
     const contract = getEscrowContract(signer);
     try {
-      const tx =
-        user?.id === transaction?.sender.id
-          ? await contract.payArbitrationFeeBySender(transaction.id, { value: arbitrationFee })
-          : user?.id === transaction?.receiver.id
-          ? await contract.payArbitrationFeeByReceiver(transaction.id, { value: arbitrationFee })
-          : '';
+      const tx = isSender
+        ? await contract.payArbitrationFeeBySender(transactionId, { value: arbitrationFee })
+        : await contract.payArbitrationFeeByReceiver(transactionId, { value: arbitrationFee });
       const receipt = await toast.promise(provider.waitForTransaction(tx.hash), {
         pending: {
           render() {
-            return <TransactionToast message={'Raising dispute...'} transactionHash={tx.hash} />;
+            return (
+              <TransactionToast message={'Paying arbitration fees...'} transactionHash={tx.hash} />
+            );
           },
         },
-        success: 'A dispute has been raised',
-        error: 'An error occurred while raising the dispute',
+        success: 'Arbitration fees have been paid',
+        error: 'An error occurred while paying arbitration fees',
       });
       if (receipt.status !== 1) {
         throw new Error('Transaction failed');
@@ -53,17 +45,12 @@ export const payArbitrationFee = async ({
     }
   }
 };
-export const arbitrationFeeTimeout = async ({
-  signer,
-  provider,
-  transactionId,
-  router,
-}: {
-  signer: Signer;
-  provider: Provider;
-  transactionId: string;
-  router: NextRouter;
-}) => {
+export const arbitrationFeeTimeout = async (
+  signer: Signer,
+  provider: Provider,
+  transactionId: string,
+  router: NextRouter,
+) => {
   if (signer) {
     const contract = getEscrowContract(signer);
     try {
