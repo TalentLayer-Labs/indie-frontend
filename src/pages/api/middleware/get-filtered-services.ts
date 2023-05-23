@@ -2,14 +2,6 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { getServices } from '../../../queries/services';
 import keywordFilter from './filter.json';
 
-interface ServiceDescription {
-  keywords_raw: string;
-}
-
-interface Service {
-  description: ServiceDescription;
-}
-
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const query = req.body;
 
@@ -29,7 +21,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   // Apply keyword filter only if keywords array is not empty
   if (keywordFilter.keywords.length > 0) {
-    keywordFilteredServices = filteredServices.filter((service: Service) =>
+    keywordFilteredServices = filteredServices.filter((service: any) =>
       keywordFilter.keywords.includes(service.description.keywords_raw),
     );
   }
