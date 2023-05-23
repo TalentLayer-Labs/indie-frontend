@@ -19,7 +19,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   let keywordFilteredServices = filteredServices;
 
-  // Apply keyword filter only if keywords array is not empty
   if (keywordFilter.keywords.length > 0) {
     keywordFilteredServices = filteredServices.filter((service: any) =>
       keywordFilter.keywords.includes(service.description.keywords_raw),
