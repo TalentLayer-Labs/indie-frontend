@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { getFilteredServices } from '../../../queries/services';
+import { getServices } from '../../../queries/services';
 import keywords from './filter.json'; // Import keywords from JSON file
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -8,7 +8,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const { serviceStatus, buyerId, sellerId, numberPerPage, offset } = query;
 
   // Access the keywords array directly from the imported object
-  const response = await getFilteredServices({
+  const response = await getServices({
     serviceStatus,
     buyerId,
     sellerId,
