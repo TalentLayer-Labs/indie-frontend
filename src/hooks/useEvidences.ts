@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { IEvidence } from '../types';
-import { getEvidencesByPartyAndTransaction } from '../queries/evidences';
+import { getEvidencesTransactionId } from '../queries/evidences';
 
 const useEvidences = (transactionID?: string): IEvidence[] => {
   const [evidences, setEvidences] = useState<IEvidence[]>([]);
@@ -9,7 +9,7 @@ const useEvidences = (transactionID?: string): IEvidence[] => {
     const fetchData = async () => {
       try {
         if (!transactionID) return;
-        const response = await getEvidencesByPartyAndTransaction(transactionID);
+        const response = await getEvidencesTransactionId(transactionID);
 
         if (response?.data?.data?.evidences) {
           setEvidences(response.data.data.evidences);

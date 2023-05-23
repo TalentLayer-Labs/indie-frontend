@@ -1,6 +1,6 @@
 import { processRequest } from '../utils/graphql';
 
-export const getEvidencesByPartyAndTransaction = (transactionId: string): Promise<any> => {
+export const getEvidencesTransactionId = (transactionId: string): Promise<any> => {
   let condition = `where: {transaction_: {id: "${transactionId}"}`;
   condition += '}, orderBy: id, orderDirection: asc';
   const query = `
