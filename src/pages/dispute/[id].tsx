@@ -46,23 +46,17 @@ function Dispute() {
   ) {
     return;
   }
-  console.log('transaction', transaction);
-
   const targetDate = 1683795557869 + Number(transaction?.arbitrationFeeTimeout) * 1000;
   // const targetDate = (transaction?.lastInteraction + transaction.arbitrationFeeTimeout) * 1000;
   // console.log('targetDate', targetDate);
 
   //TODO Multistep tx toast ? Or custom toast if no ipfs mapping on the graph ?
-  //TODO Display both parties evidences
-  //TODO Display link to meta evidences
   //TODO Evidence Modal + Download evidence or display if pic ? Custom according to file extention ?
 
   const buyerEvidences = evidences.filter(
     evidence => evidence.party.id === proposal?.service.buyer.id,
   );
   const sellerEvidences = evidences.filter(evidence => evidence.party.id === proposal?.seller.id);
-
-  transaction ? (transaction.status = TransactionStatusEnum.NoDispute) : '';
 
   if (
     user &&
