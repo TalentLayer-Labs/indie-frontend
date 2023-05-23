@@ -16,6 +16,8 @@ export const getTransactionById = (id: string): Promise<any> => {
           senderFee
           receiverFee
           lastInteraction
+          senderFeePaidAt
+          receiverFeePaidAt
           arbitrator
           status
           evidences {

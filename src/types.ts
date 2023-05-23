@@ -48,6 +48,8 @@ export type ITransaction = {
   senderFee: number;
   receiverFee: number;
   lastInteraction: number;
+  senderFeePaidAt: number;
+  receiverFeePaidAt: number;
   arbitrationFeeTimeout: number;
   amount: number;
   disputeId: number;
