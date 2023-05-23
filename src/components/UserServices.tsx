@@ -21,7 +21,7 @@ function UserServices({ user, type }: IProps) {
 
   async function fetchServices() {
     try {
-      const response = await getFilteredServicesByKeywords(undefined, user.id, undefined, 10, 0);
+      const response = await getFilteredServicesByKeywords(undefined, user.id, undefined, 10, 10);
       console.log(response);
     } catch (error) {
       console.error(error);
