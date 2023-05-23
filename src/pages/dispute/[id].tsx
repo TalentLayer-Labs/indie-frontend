@@ -234,9 +234,14 @@ function Dispute() {
                     )}
                 </div>
               </div>
-              {account?.isConnected && user && transactionId && signer && provider && (
-                <EvidenceForm transactionId={transactionId} signer={signer} provider={provider} />
-              )}
+              {account?.isConnected &&
+                user &&
+                transactionId &&
+                signer &&
+                provider &&
+                transaction?.status !== TransactionStatusEnum.Resolved && (
+                  <EvidenceForm transactionId={transactionId} signer={signer} provider={provider} />
+                )}
               {transaction?.status === TransactionStatusEnum.NoDispute &&
                 signer &&
                 arbitrationFee && (
