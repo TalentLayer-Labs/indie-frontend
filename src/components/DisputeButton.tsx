@@ -1,31 +1,46 @@
 import { TransactionStatusEnum } from '../types';
 
 function DisputeButton({
-  userId,
-  buyerId,
-  sellerId,
+  isSender,
+  isReceiver,
   transactionStatus,
   disabled,
 }: {
-  userId: string;
-  buyerId: string;
-  sellerId: string;
+  isSender: boolean;
+  isReceiver: boolean;
   transactionStatus: TransactionStatusEnum;
   disabled: boolean;
 }) {
+  console.log('transactionStatus', transactionStatus);
   // const disabled = false;
-  const userIsBuyerAndHasPaid = () => {
-    return userId === buyerId && transactionStatus === TransactionStatusEnum.WaitingReceiver;
+  const userIsSenderAndHasPaid = () => {
+    // console.log(
+    //   'userIsBuyerAndHasPaid',
+    //   userId === buyerId && transactionStatus === TransactionStatusEnum.WaitingReceiver,
+    // );
+    return isSender && transactionStatus === TransactionStatusEnum.WaitingReceiver;
   };
-  const userIsBuyerAndHasNotPaid = () => {
-    return userId === buyerId && transactionStatus === TransactionStatusEnum.WaitingSender;
+  const userIsSenderAndHasNotPaid = () => {
+    // console.log(
+    //   'userIsBuyerAndHasNotPaid',
+    //   userId === buyerId && transactionStatus === TransactionStatusEnum.WaitingSender,
+    // );
+    return isSender && transactionStatus === TransactionStatusEnum.WaitingSender;
   };
 
-  const userIsSellerAndHasPaid = () => {
-    return userId === sellerId && transactionStatus === TransactionStatusEnum.WaitingSender;
+  const userIsReceiverAndHasPaid = () => {
+    // console.log(
+    //   'userIsSellerAndHasPaid',
+    //   userId === sellerId && transactionStatus === TransactionStatusEnum.WaitingSender,
+    // );
+    return isReceiver && transactionStatus === TransactionStatusEnum.WaitingSender;
   };
-  const userIsSellerAndHasNotPaid = () => {
-    return userId === sellerId && transactionStatus === TransactionStatusEnum.WaitingReceiver;
+  const userIsReceiverAndHasNotPaid = () => {
+    // console.log(
+    //   'userIsSellerAndHasNotPaid',
+    //   userId === sellerId && transactionStatus === TransactionStatusEnum.WaitingReceiver,
+    // );
+    return isReceiver && transactionStatus === TransactionStatusEnum.WaitingReceiver;
   };
 
   function noDispute() {
@@ -43,7 +58,7 @@ function DisputeButton({
 
   return (
     <>
-      {userIsBuyerAndHasPaid() && (
+      {userIsSenderAndHasPaid() && (
         <button
           disabled={disabled}
           className={`px-5 py-2 mt-4 border rounded-md ${
@@ -54,7 +69,7 @@ function DisputeButton({
           Timeout
         </button>
       )}
-      {userIsBuyerAndHasNotPaid() && (
+      {userIsSenderAndHasNotPaid() && (
         <button
           className={`ml-2 mt-4 px-5 py-2 border rounded-md hover:text-indigo-600 hover:bg-white border-indigo-600 bg-indigo-600 text-white bg-indigo-700'
                 }`}>
@@ -66,7 +81,7 @@ function DisputeButton({
           No dispute
         </span>
       )}
-      {userIsSellerAndHasPaid() && (
+      {userIsReceiverAndHasPaid() && (
         <button
           disabled={disabled}
           className={`px-5 py-2 mt-4 border rounded-md ${
@@ -77,7 +92,7 @@ function DisputeButton({
           Timeout
         </button>
       )}
-      {userIsSellerAndHasNotPaid() && (
+      {userIsReceiverAndHasNotPaid() && (
         <button
           className={`ml-2 mt-4 px-5 py-2 border rounded-md hover:text-indigo-600 hover:bg-white border-indigo-600 bg-indigo-600 text-white bg-indigo-700'
                 }`}>

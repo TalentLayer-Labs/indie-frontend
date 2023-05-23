@@ -146,9 +146,8 @@ function Dispute() {
                           />
                         </div>
                         <DisputeButton
-                          userId={user.id}
-                          buyerId={proposal?.service.buyer.id}
-                          sellerId={proposal.seller.id}
+                          isSender={user.id === transaction.sender.id}
+                          isReceiver={user.id === transaction.receiver.id}
                           transactionStatus={transaction.status}
                           disabled={
                             targetDate > Date.now()
