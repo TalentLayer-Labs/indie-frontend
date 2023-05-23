@@ -11,35 +11,17 @@ function DisputeButton({
   transactionStatus: TransactionStatusEnum;
   disabled: boolean;
 }) {
-  console.log('transactionStatus', transactionStatus);
-  // const disabled = false;
   const userIsSenderAndHasPaid = () => {
-    // console.log(
-    //   'userIsBuyerAndHasPaid',
-    //   userId === buyerId && transactionStatus === TransactionStatusEnum.WaitingReceiver,
-    // );
     return isSender && transactionStatus === TransactionStatusEnum.WaitingReceiver;
   };
   const userIsSenderAndHasNotPaid = () => {
-    // console.log(
-    //   'userIsBuyerAndHasNotPaid',
-    //   userId === buyerId && transactionStatus === TransactionStatusEnum.WaitingSender,
-    // );
     return isSender && transactionStatus === TransactionStatusEnum.WaitingSender;
   };
 
   const userIsReceiverAndHasPaid = () => {
-    // console.log(
-    //   'userIsSellerAndHasPaid',
-    //   userId === sellerId && transactionStatus === TransactionStatusEnum.WaitingSender,
-    // );
     return isReceiver && transactionStatus === TransactionStatusEnum.WaitingSender;
   };
   const userIsReceiverAndHasNotPaid = () => {
-    // console.log(
-    //   'userIsSellerAndHasNotPaid',
-    //   userId === sellerId && transactionStatus === TransactionStatusEnum.WaitingReceiver,
-    // );
     return isReceiver && transactionStatus === TransactionStatusEnum.WaitingReceiver;
   };
 

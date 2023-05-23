@@ -40,6 +40,14 @@ function Dispute() {
     evidences && evidences.length > 0 && evidences[0].uri,
   );
 
+  const isSender = (): boolean => {
+    return !!user && !!transaction && user.id === transaction.sender.id;
+  };
+
+  const isReceiver = (): boolean => {
+    return !!user && !!transaction && user.id === transaction.receiver.id;
+  };
+
   if (
     (transaction && !transaction?.arbitrator) ||
     (transaction && transaction?.arbitrator === ethers.constants.AddressZero)
@@ -183,18 +191,14 @@ function Dispute() {
                     <>
                       <div className={'flex flex-col'}>
                         <div className={'flex flex-row'}>
-                          {transaction.status !== TransactionStatusEnum.NoDispute && (
-                            <TimeOutCountDown
-                              targetDate={
-                                targetDate
-                                // (transaction?.lastInteraction + transaction.arbitrationFeeTimeout) * 1000
-                              }
-                            />
+                          {(transaction.status === TransactionStatusEnum.WaitingReceiver ||
+                            transaction.status === TransactionStatusEnum.WaitingSender) && (
+                            <TimeOutCountDown targetDate={getTargetDate() - 777600000} />
                           )}
                         </div>
                         <DisputeButton
-                          isSender={user.id === transaction.sender.id}
-                          isReceiver={user.id === transaction.receiver.id}
+                          isSender={isSender()}
+                          isReceiver={isReceiver()}
                           transactionStatus={transaction.status}
                           disabled={
                             targetDate > Date.now()
