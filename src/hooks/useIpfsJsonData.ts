@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { readFromIpfs } from '../utils/ipfs';
 
-const useIpfsData = (cid: string): any | null => {
+const useIpfsJsonData = (cid: false | string): any => {
   const [file, setFile] = useState<any | null>(null);
 
   useEffect(() => {
@@ -26,4 +26,4 @@ const useIpfsData = (cid: string): any | null => {
   return file;
 };
 
-export default useIpfsData;
+export default useIpfsJsonData;
