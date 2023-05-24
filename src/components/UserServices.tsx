@@ -1,6 +1,7 @@
 import useServices from '../hooks/useServices';
 import { IUser } from '../types';
 import UserServiceItem from './UserServiceItem';
+
 interface IProps {
   user: IUser;
   type: 'buyer' | 'seller';
