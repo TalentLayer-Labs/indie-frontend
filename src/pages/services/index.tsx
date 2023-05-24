@@ -5,7 +5,7 @@ import ServiceItem from '../../components/ServiceItem';
 import useServices from '../../hooks/useServices';
 import { useContext } from 'react';
 import { IService, ServiceStatusEnum } from '../../types';
-import { getFilteredServicesByKeywords } from '../../components/request';
+import { getFilteredServicesByKeywords } from '../api/filter/request';
 import { useEffect, useState } from 'react';
 import TalentLayerContext from '../../context/talentLayer';
 
@@ -65,7 +65,7 @@ function Services() {
 
       <div className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4'>
         {/* We can swap services by filteredServices  */}
-        {filteredServices.map((service: IService, i: number) => {
+        {services.map((service: IService, i: number) => {
           return <ServiceItem service={service} key={i} />;
         })}
       </div>
