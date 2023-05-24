@@ -7,7 +7,7 @@ import { postToIPFS } from '../../utils/ipfs';
 import { ethers } from 'ethers';
 import { config } from '../../config';
 import { showErrorTransactionToast } from '../../utils/toast';
-import { generateEvidence } from '../../modules/Kleros/utils/generateMetaEvidence';
+import { generateEvidence } from '../../modules/Kleros/utils/dispute';
 import TalentLayerEscrow from '../../contracts/ABI/TalentLayerEscrow.json';
 import TalentLayerContext from '../../context/talentLayer';
 import { useWeb3Modal } from '@web3modal/react';

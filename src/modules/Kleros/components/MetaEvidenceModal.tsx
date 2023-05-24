@@ -1,17 +1,19 @@
 import { Dispatch, SetStateAction, useState } from 'react';
-import { IService, IUser } from '../../../types';
+import { IService, IToken, IUser } from '../../../types';
+import { formatRateAmount } from '../../../utils/web3';
 
 interface ProposalData {
   about: string;
-  rateToken: string;
-  rateAmount: number;
-  expirationDate: number;
+  rateToken: string | number;
+  rateAmount: string | number;
+  expirationDate: string | number;
   videoUrl: string;
 }
 interface IMetaEvidenceModalProps {
-  conditionsValidated: boolean;
-  setConditionsValidated: Dispatch<SetStateAction<boolean>>;
+  conditionsValidated?: boolean;
+  setConditionsValidated?: Dispatch<SetStateAction<boolean>>;
   serviceData: IService;
+  token: IToken;
   proposalData?: ProposalData;
   seller: IUser;
 }
@@ -20,29 +22,40 @@ function MetaEvidenceModal({
   conditionsValidated,
   setConditionsValidated,
   serviceData,
+  token,
   proposalData,
-  seller: seller,
+  seller,
 }: IMetaEvidenceModalProps) {
   const [show, setShow] = useState(false);
-
   return (
     <>
-      <div className={'mb-3'}>
-        <input
-          id='dispute-conditions'
-          type='checkbox'
-          value=''
-          checked={conditionsValidated}
-          onClick={() => setConditionsValidated(!conditionsValidated)}
-          className='ml-2 w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600'
-        />
-        <label
-          htmlFor='default-checkbox'
-          onClick={() => setShow(true)}
-          className='ml-2 text-sm font-medium dark:text-gray-300 underline text-indigo-600 hover:cursor-pointer'>
-          Agree to dispute conditions
-        </label>
-      </div>
+      {setConditionsValidated ? (
+        <div className={'mb-3'}>
+          <input
+            id='dispute-conditions'
+            type='checkbox'
+            value=''
+            checked={conditionsValidated}
+            onClick={() => setConditionsValidated(!conditionsValidated)}
+            className='ml-2 w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600'
+          />
+          <label
+            htmlFor='default-checkbox'
+            onClick={() => setShow(true)}
+            className='ml-2 text-sm font-medium dark:text-gray-300 underline text-indigo-600 hover:cursor-pointer'>
+            Agree to dispute conditions
+          </label>
+        </div>
+      ) : (
+        <div className={'mb-3'}>
+          <label
+            htmlFor='default-checkbox'
+            onClick={() => setShow(true)}
+            className='text-sm font-medium dark:text-gray-300 underline text-indigo-600 hover:cursor-pointer'>
+            Review dispute conditions
+          </label>
+        </div>
+      )}
 
       <div
         className={`${
@@ -73,7 +86,7 @@ function MetaEvidenceModal({
             <div className='p-4 rounded-t border-b '>
               <p className='italic text-center text-gray-900'>
                 The platform {serviceData.platform.name} has chosen as arbitrator for potential
-                dispute resolutions: ${serviceData.platform.arbitrator} Please review carefully the
+                dispute resolutions: {serviceData.platform.arbitrator} Please review carefully the
                 service & proposal conditions & details, as they will set a context to potential
                 future disputes, should any arise.
               </p>
@@ -94,8 +107,16 @@ function MetaEvidenceModal({
                 <p>
                   The TalentLayer user {serviceData.buyer.handle} agreed to complete the service
                   provided by {seller.handle} in the way described in the proposal below. The
-                  completion of this agreement shall result in the payment using the following token{' '}
-                  {proposalData?.rateToken} for an amount of: {proposalData?.rateAmount}
+                  completion of this agreement shall result in the payment using the token which
+                  ethereum address is the following {proposalData?.rateToken} for an amount of:{' '}
+                  {
+                    formatRateAmount(
+                      proposalData?.rateAmount as string,
+                      token.address,
+                      token.decimals,
+                    ).exactValue
+                  }{' '}
+                  {token?.symbol}.
                 </p>
                 <div className='flex justify-center w-full space-y-4 flex-col border-gray-200 border-b pb-4'>
                   {/*<div className='flex justify-between w-full'>*/}

@@ -30,11 +30,11 @@ export const parseRateAmount = async (
   return ethers.utils.parseUnits(rateAmount, decimals);
 };
 
-export const formatRateAmount = async (
+export const formatRateAmount = (
   rateAmount: string,
   rateToken: string,
-  signer: Signer,
-): Promise<ITokenFormattedValues> => {
+  tokenDecimals: number,
+): ITokenFormattedValues => {
   if (rateToken === ethers.constants.AddressZero) {
     const valueInEther = ethers.utils.formatEther(rateAmount);
     const roundedValue = FixedNumber.from(valueInEther).round(2).toString();
@@ -44,9 +44,6 @@ export const formatRateAmount = async (
       exactValue,
     };
   }
-  const ERC20Token = new Contract(rateToken, ERC20.abi, signer);
-  const tokenDecimals = await getDecimal(ERC20Token);
-
   const valueInToken = ethers.utils.formatUnits(rateAmount, tokenDecimals);
   const roundedValue = FixedNumber.from(valueInToken).round(2).toString();
   const exactValue = FixedNumber.from(valueInToken).toString();

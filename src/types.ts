@@ -44,6 +44,7 @@ export type ITransaction = {
   id: string;
   sender: IUser;
   receiver: IUser;
+  token: IToken;
   status: TransactionStatusEnum;
   senderFee: number;
   receiverFee: number;

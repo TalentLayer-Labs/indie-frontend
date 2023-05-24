@@ -246,6 +246,7 @@ function ProposalForm({
                 setConditionsValidated={setConditionsValidated}
                 serviceData={service}
                 proposalData={values}
+                token={allowedTokenList.filter(token => token.address === values.rateToken)[0]}
                 seller={user}
               />
               <SubmitButton

@@ -113,6 +113,10 @@ export const getProposalById = (id: string): Promise<any> => {
             id
           }
           service {
+            buyer {
+              handle
+              address
+            }
             description {
               about
               title
@@ -123,6 +127,10 @@ export const getProposalById = (id: string): Promise<any> => {
             }
             buyer {
               id
+            }
+            platform {
+              name
+              arbitrator
             }
           }
         }

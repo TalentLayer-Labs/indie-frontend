@@ -9,6 +9,12 @@ export const getTransactionById = (id: string): Promise<any> => {
           }
           receiver {
             id
+            handle
+            address
+          }
+          token {
+            decimals
+            symbol
           }
           arbitrationFeeTimeout
           amount

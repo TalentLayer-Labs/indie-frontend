@@ -15,6 +15,8 @@ import useEvidences from '../../hooks/useEvidences';
 import useIpfsJsonData from '../../hooks/useIpfsJsonData';
 import { useProvider, useSigner } from 'wagmi';
 import { arbitrationFeeTimeout, payArbitrationFee } from '../../contracts/disputes';
+import MetaEvidenceModal from '../../modules/Kleros/components/MetaEvidenceModal';
+import { formatRateAmount } from '../../utils/web3';
 
 function Dispute() {
   const { data: signer } = useSigner({
@@ -79,6 +81,7 @@ function Dispute() {
 
   //TODO Multistep tx toast ? Or custom toast if no ipfs mapping on the graph ?
   //TODO Evidence Modal + Download evidence or display if pic ? Custom according to file extention ?
+  //TODO Add metaEvidence display link
 
   const buyerEvidences = evidences.filter(
     evidence => evidence.party.id === proposal?.service.buyer.id,
@@ -172,6 +175,27 @@ function Dispute() {
                         );
                       })}
                   </p>
+                  {transaction &&
+                    transaction.receiver &&
+                    proposal &&
+                    proposal.service &&
+                    proposal.description && (
+                      <p className={'text-sm text-gray-500 mt-2'}>
+                        <strong>Meta evidence:</strong>
+                        <MetaEvidenceModal
+                          seller={transaction?.receiver}
+                          serviceData={proposal?.service}
+                          token={transaction.token}
+                          proposalData={{
+                            about: proposal?.description.about,
+                            expirationDate: proposal.expirationDate,
+                            rateAmount: proposal.rateAmount,
+                            rateToken: proposal.rateToken.address,
+                            videoUrl: proposal.description.video_url,
+                          }}
+                        />
+                      </p>
+                    )}
                 </div>
                 <div className={'flex'}>
                   {/*{evidenceDetail && (*/}
@@ -186,7 +210,14 @@ function Dispute() {
                     </p>
                     <p className={'text-sm text-gray-500 mt-2'}>
                       <strong>Arbitration fee:</strong>{' '}
-                      {arbitrationFee && ethers.utils.formatEther(arbitrationFee.toString())} MATIC
+                      {arbitrationFee &&
+                        transaction?.token &&
+                        formatRateAmount(
+                          arbitrationFee.toString(),
+                          transaction?.token.address,
+                          transaction?.token.decimals,
+                        ).exactValue}{' '}
+                      MATIC
                     </p>
                     <div className={'text-sm text-gray-500 mt-2'}>
                       <strong>Buyer fee:</strong>{' '}
