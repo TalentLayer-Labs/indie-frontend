@@ -3,11 +3,7 @@ import SearchServiceButton from '../../components/Form/SearchServiceButton';
 import Loading from '../../components/Loading';
 import ServiceItem from '../../components/ServiceItem';
 import useServices from '../../hooks/useServices';
-import { useContext } from 'react';
 import { IService, ServiceStatusEnum } from '../../types';
-import { getFilteredServicesByKeywords } from '../api/filter/request';
-import { useEffect, useState } from 'react';
-import TalentLayerContext from '../../context/talentLayer';
 
 function Services() {
   const PAGE_SIZE = 30;
