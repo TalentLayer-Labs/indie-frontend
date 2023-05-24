@@ -4,7 +4,6 @@ import { config } from '../config';
 import TalentLayerEscrow from './ABI/TalentLayerEscrow.json';
 import { toast } from 'react-toastify';
 import TransactionToast from '../components/TransactionToast';
-import { ITransaction, IUser } from '../types';
 import { NextRouter } from 'next/router';
 
 export const getEscrowContract = (signer: Signer): Contract => {
@@ -71,5 +70,28 @@ export const arbitrationFeeTimeout = async (
     } catch (error) {
       console.error(error);
     }
+  }
+};
+
+export const submitEvidence = async (
+  signer: Signer,
+  provider: Provider,
+  userId: string,
+  transactionId: string,
+  evidenceCid: string,
+) => {
+  const contract = getEscrowContract(signer);
+  const tx = await contract.submitEvidence(userId, transactionId, evidenceCid);
+  const receipt = await toast.promise(provider.waitForTransaction(tx.hash), {
+    pending: {
+      render() {
+        return <TransactionToast message={'Submitting evidence...'} transactionHash={tx.hash} />;
+      },
+    },
+    success: 'Your evidence has been submitted',
+    error: 'An error occurred while submitting your evidence',
+  });
+  if (receipt.status !== 1) {
+    throw new Error('Transaction failed');
   }
 };

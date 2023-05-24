@@ -5,15 +5,12 @@ import SubmitButton from './SubmitButton';
 import FileDropper from '../../modules/Kleros/components/FileDropper';
 import { postToIPFS } from '../../utils/ipfs';
 import { ethers } from 'ethers';
-import { config } from '../../config';
 import { showErrorTransactionToast } from '../../utils/toast';
 import { generateEvidence } from '../../modules/Kleros/utils/dispute';
-import TalentLayerEscrow from '../../contracts/ABI/TalentLayerEscrow.json';
 import TalentLayerContext from '../../context/talentLayer';
 import { useWeb3Modal } from '@web3modal/react';
-import { toast } from 'react-toastify';
-import TransactionToast from '../TransactionToast';
 import { Provider } from '@wagmi/core';
+import { submitEvidence } from '../../contracts/disputes';
 
 interface IFormValues {
   title: string;
@@ -53,7 +50,7 @@ function EvidenceForm({
       resetForm,
     }: { setSubmitting: (isSubmitting: boolean) => void; resetForm: () => void },
   ) => {
-    if (account?.isConnected === true && provider && signer) {
+    if (account?.isConnected === true && provider && signer && user?.id) {
       try {
         const fileExtension = values.file?.name.split('.').pop();
         // const fileCid = 'QmQ2hcACF6r2Gf8PDxG4NcBdurzRUopwcaYQHNhSah6a8v';
@@ -72,26 +69,7 @@ function EvidenceForm({
         const evidenceCid = await postToIPFS(JSON.stringify(evidence));
         console.log('evidenceCid', evidenceCid);
 
-        const contract = new ethers.Contract(
-          config.contracts.talentLayerEscrow,
-          TalentLayerEscrow.abi,
-          signer,
-        );
-        const tx = await contract.submitEvidence(user?.id, transactionId, evidenceCid);
-        const receipt = await toast.promise(provider.waitForTransaction(tx.hash), {
-          pending: {
-            render() {
-              return (
-                <TransactionToast message={'Submitting evidence...'} transactionHash={tx.hash} />
-              );
-            },
-          },
-          success: 'Your evidence has been submitted',
-          error: 'An error occurred while submitting your evidence',
-        });
-        if (receipt.status !== 1) {
-          throw new Error('Transaction failed');
-        }
+        await submitEvidence(signer, provider, user?.id, transactionId, evidenceCid);
         setSubmitting(false);
         resetForm();
         setFileSelected(undefined);
