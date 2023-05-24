@@ -34,7 +34,7 @@ function Dispute() {
   // console.log('transaction', transaction);
 
   const evidenceDetail: IERC1497Evidence = useIpfsJsonData(
-    evidences && evidences.length > 0 && evidences[0].uri,
+    evidences && evidences.length > 0 && evidences[1].uri,
   );
 
   const isSender = (): boolean => {
@@ -174,9 +174,9 @@ function Dispute() {
                   </p>
                 </div>
                 <div className={'flex'}>
-                  {evidenceDetail && (
-                    <img src={`https://cloudflare-ipfs.com/ipfs/${evidenceDetail.fileHash}`} />
-                  )}
+                  {/*{evidenceDetail && (*/}
+                  {/*  <img src={`https://cloudflare-ipfs.com/ipfs/${evidenceDetail.fileHash}`} />*/}
+                  {/*)}*/}
                 </div>
 
                 <div className={'flex flex-row h-min gap-2 border border-gray-200 rounded-xl p-4'}>
@@ -205,30 +205,32 @@ function Dispute() {
                       )}
                     </p>
                   </div>
-                  {transaction &&
-                    (transaction.status === TransactionStatusEnum.WaitingReceiver ||
-                      transaction.status === TransactionStatusEnum.WaitingSender) && (
-                      <>
-                        <div className={'flex flex-col'}>
-                          <div className={'flex flex-row'}>
-                            {(transaction.status === TransactionStatusEnum.WaitingReceiver ||
-                              transaction.status === TransactionStatusEnum.WaitingSender) && (
-                              //TODO Remove subtraction
-                              <TimeOutCountDown targetDate={getTargetDate() - 777600000} />
-                            )}
-                          </div>
-                          <DisputeButton
-                            isSender={isSender()}
-                            isReceiver={isReceiver()}
-                            // transactionStatus={TransactionStatusEnum.Resolved}
-                            transactionStatus={transaction.status}
-                            disabled={getTargetDate() > Date.now()}
-                            payArbitrationFee={payFee}
-                            arbitrationFeeTimeout={timeout}
-                          />
+                  {transaction && (
+                    <>
+                      <div className={'flex flex-col'}>
+                        <div className={'flex flex-row'}>
+                          {(transaction.status === TransactionStatusEnum.WaitingReceiver ||
+                            transaction.status === TransactionStatusEnum.WaitingSender) && (
+                            //TODO Remove subtraction
+                            <TimeOutCountDown targetDate={getTargetDate() - 777600000} />
+                          )}
                         </div>
-                      </>
-                    )}
+                        <DisputeButton
+                          isSender={isSender()}
+                          isReceiver={isReceiver()}
+                          transactionStatus={transaction.status}
+                          disabled={getTargetDate() > Date.now()}
+                          payArbitrationFee={payFee}
+                          arbitrationFeeTimeout={timeout}
+                        />
+                        {transaction && transaction.ruling && (
+                          <span className='mt-4 ml-2 text-xl font-bold text-gray-600'>
+                            {transaction.ruling === 1 ? 'Sender Wins' : 'Receiver Wins'}
+                          </span>
+                        )}
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
               {account?.isConnected &&

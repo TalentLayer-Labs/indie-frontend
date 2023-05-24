@@ -20,6 +20,7 @@ export const getTransactionById = (id: string): Promise<any> => {
           receiverFeePaidAt
           arbitrator
           status
+          ruling
           evidences {
             uri
             party {

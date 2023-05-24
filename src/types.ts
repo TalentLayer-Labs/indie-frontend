@@ -55,6 +55,7 @@ export type ITransaction = {
   disputeId: number;
   arbitrator: string;
   // arbitrator: `0x${string}`;
+  ruling: number;
   evidences: IEvidence[];
 };
 
