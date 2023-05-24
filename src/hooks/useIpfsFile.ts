@@ -11,9 +11,7 @@ const useIpfsFile = (cid: false | string): any => {
         if (!cid) {
           return;
         }
-        console.log('before readFromIpfs');
         const response = await readFileFromIpfs(cid);
-        console.log('response', response);
         if (response) {
           setFile(response);
         }
