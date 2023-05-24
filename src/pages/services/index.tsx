@@ -14,8 +14,6 @@ function Services() {
   const router = useRouter();
   const query = router.query;
   const searchQuery = query.search as string;
-  const { user } = useContext(TalentLayerContext);
-  const [filteredServices, setFilteredServices] = useState([]);
   const { hasMoreData, services, loading, loadMore } = useServices(
     ServiceStatusEnum.Opened,
     undefined,
@@ -23,25 +21,6 @@ function Services() {
     searchQuery?.toLocaleLowerCase(),
     PAGE_SIZE,
   );
-
-  useEffect(() => {
-    async function fetchServices() {
-      try {
-        const response = await getFilteredServicesByKeywords(
-          undefined,
-          user?.id,
-          undefined,
-          10,
-          10,
-        );
-        const filteredResult = response.data.data;
-        setFilteredServices(filteredResult);
-      } catch (error) {
-        console.error(error);
-      }
-    }
-    fetchServices();
-  }, []);
 
   return (
     <div className='max-w-7xl mx-auto text-gray-900 sm:px-4 lg:px-0'>
@@ -64,7 +43,6 @@ function Services() {
       </div>
 
       <div className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4'>
-        {/* We can swap services by filteredServices  */}
         {services.map((service: IService, i: number) => {
           return <ServiceItem service={service} key={i} />;
         })}
