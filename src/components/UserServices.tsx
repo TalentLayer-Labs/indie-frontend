@@ -2,6 +2,7 @@ import useServices from '../hooks/useServices';
 import { IUser } from '../types';
 import UserServiceItem from './UserServiceItem';
 import { getFilteredServicesByKeywords } from '../components/request';
+import { useEffect, useState } from 'react';
 
 interface IProps {
   user: IUser;
@@ -18,18 +19,6 @@ function UserServices({ user, type }: IProps) {
   if (services.length === 0) {
     return null;
   }
-
-  async function fetchServices() {
-    try {
-      const response = await getFilteredServicesByKeywords(undefined, user.id, undefined, 10, 10);
-      let filteredResult = response.data.data;
-      console.log(filteredResult);
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  fetchServices();
 
   return (
     <>

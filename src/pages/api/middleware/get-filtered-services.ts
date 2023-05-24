@@ -7,23 +7,27 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const { serviceStatus, buyerId, sellerId, numberPerPage, offset } = query;
 
-  let response = await getServices({
-    serviceStatus,
-    buyerId,
-    sellerId,
-    numberPerPage,
-    offset,
-  });
+  try {
+    let response = await getServices({
+      serviceStatus,
+      buyerId,
+      sellerId,
+      numberPerPage,
+      offset,
+    });
 
-  const filteredServices = response?.data?.data?.services;
+    const filteredServices = response?.data?.data?.services;
 
-  let keywordFilteredServices = filteredServices;
+    let keywordFilteredServices = filteredServices;
 
-  if (keywordFilter.keywords.length > 0) {
-    keywordFilteredServices = filteredServices.filter((service: any) =>
-      keywordFilter.keywords.includes(service.description.keywords_raw),
-    );
+    if (keywordFilter.keywords.length > 0) {
+      keywordFilteredServices = filteredServices.filter((service: any) =>
+        keywordFilter.keywords.includes(service.description.keywords_raw),
+      );
+    }
+
+    res.status(200).json({ data: keywordFilteredServices });
+  } catch (error) {
+    res.status(500).json({ error: error });
   }
-
-  res.status(200).json({ data: keywordFilteredServices });
 }
