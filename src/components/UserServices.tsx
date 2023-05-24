@@ -1,9 +1,6 @@
 import useServices from '../hooks/useServices';
 import { IUser } from '../types';
 import UserServiceItem from './UserServiceItem';
-import { getFilteredServicesByKeywords } from '../components/request';
-import { useEffect, useState } from 'react';
-
 interface IProps {
   user: IUser;
   type: 'buyer' | 'seller';
