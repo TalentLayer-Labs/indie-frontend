@@ -9,13 +9,14 @@ export const getEvidencesTransactionId = (transactionId: string): Promise<any> =
         id
         cid
         party {
+          handle
           id
         }
         description {
           name
           fileTypeExtension
           description
-          fileUri
+          fileHash
         }
       }
     }

@@ -8,6 +8,8 @@ const FileDropper = ({
   fileSelected: File | undefined;
   setFileSelected: React.Dispatch<React.SetStateAction<File | undefined>>;
 }) => {
+  //TODO clean up this component
+  //TODO no reset on error
   const formikProps = useFormikContext();
   const fileInputRef = useRef<any>();
 

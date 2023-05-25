@@ -255,5 +255,5 @@ export type IEvidenceDetails = {
   name: string;
   fileTypeExtension: string;
   description: string;
-  fileUri: string;
+  fileHash: string;
 };

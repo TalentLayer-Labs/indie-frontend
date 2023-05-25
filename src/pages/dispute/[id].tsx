@@ -5,19 +5,18 @@ import Loading from '../../components/Loading';
 import useProposalById from '../../hooks/useProposalById';
 import EvidenceForm from '../../components/Form/EvidenceForm';
 import { TransactionStatusEnum } from '../../types';
-import { IERC1497Evidence } from '../../modules/Kleros/utils/types';
 import useTransactionsById from '../../hooks/useTransactionsById';
 import TimeOutCountDown from '../../components/TimeoutCountDown';
 import DisputeButton from '../../components/DisputeButton';
 import useArbitrationCost from '../../hooks/useArbitrationCost';
 import { ethers } from 'ethers';
 import useEvidences from '../../hooks/useEvidences';
-import useIpfsJsonData from '../../hooks/useIpfsJsonData';
 import { useProvider, useSigner } from 'wagmi';
 import { arbitrationFeeTimeout, payArbitrationFee } from '../../contracts/disputes';
 import MetaEvidenceModal from '../../modules/Kleros/components/MetaEvidenceModal';
 import { formatRateAmount } from '../../utils/web3';
 import Steps from '../../components/Steps';
+import EvidenceModal from '../../modules/Kleros/components/EvidenceModal';
 
 function Dispute() {
   const { data: signer } = useSigner({
@@ -32,13 +31,9 @@ function Dispute() {
   const transaction = useTransactionsById(transactionId as string);
   const arbitrationFee = useArbitrationCost(transaction?.arbitrator);
   const evidences = useEvidences(transactionId);
-  // console.log('arbitrationCost', arbitrationFee);
-  // console.log('evidences', evidences);
-  // console.log('transaction', transaction);
 
-  const evidenceDetail: IERC1497Evidence = useIpfsJsonData(
-    evidences && evidences.length > 0 && evidences[1].cid,
-  );
+  console.log('transaction', transaction);
+
   // transaction ? (transaction.status = TransactionStatusEnum.Resolved) : ';';
   // transaction ? (transaction.ruling = 1) : ';';
 
@@ -81,8 +76,6 @@ function Dispute() {
     }
     return 0;
   };
-
-  //TODO Evidence Modal + Download evidence or display if pic ? Custom according to file extention ?
 
   const buyerEvidences = evidences.filter(
     evidence => evidence.party.id === proposal?.service.buyer.id,
@@ -149,14 +142,16 @@ function Dispute() {
                   {evidences.length > 0 &&
                     buyerEvidences.map(evidence => {
                       return (
-                        <div className={'flex flex-row'} key={evidence.id}>
-                          <a
-                            href={`https://cloudflare-ipfs.com/ipfs/${evidence.cid}`}
-                            className={'hover:underline'}
-                            target='_blank'>
-                            {evidence?.description?.name}
-                          </a>
-                        </div>
+                        evidence.description && (
+                          <EvidenceModal
+                            id={evidence.id}
+                            partyHandle={proposal?.service.buyer.handle}
+                            name={evidence.description?.name}
+                            description={evidence.description?.description}
+                            fileTypeExtension={evidence.description?.fileTypeExtension}
+                            fileHash={evidence.description?.fileHash}
+                          />
+                        )
                       );
                     })}
                 </p>
@@ -165,17 +160,16 @@ function Dispute() {
                   {evidences.length > 0 &&
                     sellerEvidences.map(evidence => {
                       return (
-                        <div className={'flex flex-row'} key={evidence.id}>
-                          <a
-                            href={`https://cloudflare-ipfs.com/ipfs/${evidence.cid}`}
-                            className={'mb-1 hover:underline'}
-                            target='_blank'>
-                            {evidence?.description?.name}
-                          </a>
-                          {/*<ArrowUpOnSquareIcon*/}
-                          {/*  className={'h-4 ml-2 cursor-pointer w-4 text-gray-900'}*/}
-                          {/*/>*/}
-                        </div>
+                        evidence.description && (
+                          <EvidenceModal
+                            id={evidence.id}
+                            partyHandle={evidence.party.handle}
+                            name={evidence.description?.name}
+                            description={evidence.description?.description}
+                            fileTypeExtension={evidence.description?.fileTypeExtension}
+                            fileHash={evidence.description?.fileHash}
+                          />
+                        )
                       );
                     })}
                 </p>
@@ -201,12 +195,6 @@ function Dispute() {
                     </p>
                   )}
               </div>
-              <div className={'flex'}>
-                {/*{evidenceDetail && (*/}
-                {/*  <img src={`https://cloudflare-ipfs.com/ipfs/${evidenceDetail.fileHash}`} />*/}
-                {/*)}*/}
-              </div>
-
               <div className={'flex flex-row h-min gap-2 border border-gray-200 rounded-xl p-4'}>
                 <div className={''}>
                   <p className={'text-sm text-gray-500 mt-2'}>

@@ -53,7 +53,6 @@ function EvidenceForm({
     if (account?.isConnected === true && provider && signer && user?.id) {
       try {
         const fileExtension = values.file?.name.split('.').pop();
-        // const fileCid = 'QmQ2hcACF6r2Gf8PDxG4NcBdurzRUopwcaYQHNhSah6a8v';
         if (!values.file) return;
         const arr = await values?.file.arrayBuffer();
         const fileCid = await postToIPFS(arr);
@@ -64,10 +63,7 @@ function EvidenceForm({
           fileCid,
           fileExtension as string,
         );
-        console.log('evidence', evidence);
-        // const evidenceCid = 'QmQ2hcACF6r2Gf8PDxG4NcBdurzRUopwcaYQHNhSah6a8v';
         const evidenceCid = await postToIPFS(JSON.stringify(evidence));
-        console.log('evidenceCid', evidenceCid);
 
         await submitEvidence(signer, provider, user?.id, transactionId, evidenceCid);
         setSubmitting(false);
