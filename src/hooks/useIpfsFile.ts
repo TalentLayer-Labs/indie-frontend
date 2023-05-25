@@ -6,7 +6,6 @@ const useIpfsFile = (cid: false | string): any => {
 
   useEffect(() => {
     const fetchData = async () => {
-      console.log('cid', cid);
       try {
         if (!cid) {
           return;

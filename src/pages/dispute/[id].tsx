@@ -37,7 +37,7 @@ function Dispute() {
   // console.log('transaction', transaction);
 
   const evidenceDetail: IERC1497Evidence = useIpfsJsonData(
-    evidences && evidences.length > 0 && evidences[1].uri,
+    evidences && evidences.length > 0 && evidences[1].cid,
   );
   // transaction ? (transaction.status = TransactionStatusEnum.Resolved) : ';';
   // transaction ? (transaction.ruling = 1) : ';';
@@ -150,26 +150,26 @@ function Dispute() {
                   {evidences.length > 0 &&
                     buyerEvidences.map(evidence => {
                       return (
-                        <div className={'mb-4 pb-4'} key={evidence.id}>
+                        <div className={'flex flex-row'} key={evidence.id}>
                           <a
-                            href={`https://cloudflare-ipfs.com/ipfs/${evidence.uri}`}
-                            className={'mb-2 hover:underline'}>
-                            {evidence.uri}
+                            href={`https://cloudflare-ipfs.com/ipfs/${evidence.cid}`}
+                            className={'hover:underline'}>
+                            {evidence.cid}
                           </a>
                         </div>
                       );
                     })}
                 </p>
-                <p className={'text-sm text-gray-500 mt-2'}>
+                <p className={'text-sm text-gray-500 mt-4'}>
                   <strong>Seller evidences:</strong>
                   {evidences.length > 0 &&
                     sellerEvidences.map(evidence => {
                       return (
                         <div className={'flex flex-row'} key={evidence.id}>
                           <a
-                            href={`https://cloudflare-ipfs.com/ipfs/${evidence.uri}`}
+                            href={`https://cloudflare-ipfs.com/ipfs/${evidence.cid}`}
                             className={'mb-1 hover:underline'}>
-                            {evidence.uri}
+                            {evidence.cid}
                           </a>
                           {/*<ArrowUpOnSquareIcon*/}
                           {/*  className={'h-4 ml-2 cursor-pointer w-4 text-gray-900'}*/}
@@ -183,7 +183,7 @@ function Dispute() {
                   proposal &&
                   proposal.service &&
                   proposal.description && (
-                    <p className={'text-sm text-gray-500 mt-2'}>
+                    <p className={'text-sm text-gray-500 mt-4'}>
                       <strong>Meta evidence:</strong>
                       <MetaEvidenceModal
                         seller={transaction?.receiver}

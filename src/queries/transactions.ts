@@ -28,7 +28,7 @@ export const getTransactionById = (id: string): Promise<any> => {
           status
           ruling
           evidences {
-            uri
+            cid
             party {
               address
               createdAt

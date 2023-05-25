@@ -247,5 +247,5 @@ export type IEvidence = {
   transaction: ITransaction;
   createdAt: string;
   party: IUser;
-  uri: string;
+  cid: string;
 };

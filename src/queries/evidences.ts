@@ -7,7 +7,7 @@ export const getEvidencesTransactionId = (transactionId: string): Promise<any> =
     {
       evidences(${condition}) {
         id
-        uri
+        cid
         party {
           id
         }
