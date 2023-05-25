@@ -248,4 +248,12 @@ export type IEvidence = {
   createdAt: string;
   party: IUser;
   cid: string;
+  description?: IEvidenceDetails;
+};
+
+export type IEvidenceDetails = {
+  name: string;
+  fileTypeExtension: string;
+  description: string;
+  fileUri: string;
 };

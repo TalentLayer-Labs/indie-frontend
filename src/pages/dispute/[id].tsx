@@ -82,7 +82,6 @@ function Dispute() {
     return 0;
   };
 
-  //TODO Multistep tx toast ? Or custom toast if no ipfs mapping on the graph ?
   //TODO Evidence Modal + Download evidence or display if pic ? Custom according to file extention ?
 
   const buyerEvidences = evidences.filter(
@@ -153,8 +152,9 @@ function Dispute() {
                         <div className={'flex flex-row'} key={evidence.id}>
                           <a
                             href={`https://cloudflare-ipfs.com/ipfs/${evidence.cid}`}
-                            className={'hover:underline'}>
-                            {evidence.cid}
+                            className={'hover:underline'}
+                            target='_blank'>
+                            {evidence?.description?.name}
                           </a>
                         </div>
                       );
@@ -168,8 +168,9 @@ function Dispute() {
                         <div className={'flex flex-row'} key={evidence.id}>
                           <a
                             href={`https://cloudflare-ipfs.com/ipfs/${evidence.cid}`}
-                            className={'mb-1 hover:underline'}>
-                            {evidence.cid}
+                            className={'mb-1 hover:underline'}
+                            target='_blank'>
+                            {evidence?.description?.name}
                           </a>
                           {/*<ArrowUpOnSquareIcon*/}
                           {/*  className={'h-4 ml-2 cursor-pointer w-4 text-gray-900'}*/}

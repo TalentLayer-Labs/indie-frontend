@@ -11,6 +11,12 @@ export const getEvidencesTransactionId = (transactionId: string): Promise<any> =
         party {
           id
         }
+        description {
+          name
+          fileTypeExtension
+          description
+          fileUri
+        }
       }
     }
     `;
