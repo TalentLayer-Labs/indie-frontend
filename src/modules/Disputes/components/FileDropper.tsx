@@ -48,7 +48,7 @@ const FileDropper = ({
 
   return !fileSelected ? (
     <>
-      <span className='text-gray-700 text-center'>Evidence</span>
+      <span className='text-sm text-gray-500 font-bold text-center'>Evidence</span>
       <div
         className={`flex flex-col w-48 h-48 p-50 cursor-pointer mt-1 mb-1 items-center justify-center text-24 text-gray-600 border-2 border-dashed border-gray-300 rounded-lg`}
         onDrop={(e: React.DragEvent<HTMLDivElement>) => handleDrop(e)}
@@ -69,7 +69,7 @@ const FileDropper = ({
     </>
   ) : (
     <>
-      <span className='text-gray-700 text-center'>Your file</span>
+      <p className='text-sm text-gray-500 font-bold text-center'>Your file</p>
       <div className={'w-48 h-48 flex flex-col items-center justify-center'}>
         <div className='flex flex-row items-center justify-center place-content-end'>
           <div className={`mt-1 flex flex-col text-24 text-gray-600 items-center`}>

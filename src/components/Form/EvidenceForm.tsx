@@ -81,7 +81,7 @@ function EvidenceForm({ transactionId }: { transactionId: string }) {
             <div className='flex flex-row justify-between gap-6 border border-gray-200 rounded-md p-8'>
               <div className='flex flex-col grow'>
                 <label className='block'>
-                  <span className='text-gray-700'>Title</span>
+                  <span className='text-sm text-gray-500 font-bold'>Title</span>
                   <Field
                     type='text'
                     id='title'
@@ -95,7 +95,7 @@ function EvidenceForm({ transactionId }: { transactionId: string }) {
                 </label>
 
                 <label className='block h-42'>
-                  <span className='text-gray-700'>About</span>
+                  <span className='text-sm text-gray-500 font-bold'>About</span>
                   <Field
                     as='textarea'
                     id='about'
@@ -108,7 +108,7 @@ function EvidenceForm({ transactionId }: { transactionId: string }) {
                 </label>
               </div>
 
-              <label className='block flex flex-col'>
+              <label className='flex flex-col'>
                 <FileDropper setFileSelected={setFileSelected} fileSelected={fileSelected} />
 
                 <Field type='hidden' id='file' name='file' />
