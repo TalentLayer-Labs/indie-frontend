@@ -15,6 +15,7 @@ import '../styles/globals.css';
 import 'react-toastify/dist/ReactToastify.css';
 import Layout from './Layout';
 import { useEffect } from 'react';
+import '../styles/rich-text.css';
 
 const chains: Chain[] = [customChains.polygonMumbai];
 
