@@ -94,7 +94,7 @@ function EvidenceForm({ transactionId }: { transactionId: string }) {
                   </span>
                 </label>
 
-                <label className='block'>
+                <label className='block h-40'>
                   <span className='text-gray-700'>About</span>
                   <Field
                     as='textarea'

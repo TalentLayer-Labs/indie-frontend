@@ -10,6 +10,7 @@ const FileDropper = ({
 }) => {
   //TODO clean up this component
   //TODO no reset on error
+
   const formikProps = useFormikContext();
   const fileInputRef = useRef<any>();
 
@@ -46,7 +47,7 @@ const FileDropper = ({
     <>
       <span className='text-gray-700 '>Evidence</span>
       <div
-        className={`h-full max-h-fit p-50 mt-1 mb-1 flex items-center justify-center text-24 text-gray-600 border-2 border-dashed border-gray-300 rounded-lg`}
+        className={`w-48 h-48 p-50 mt-1 mb-1 flex items-center justify-center text-24 text-gray-600 border-2 border-dashed border-gray-300 rounded-lg`}
         // onClick={() => fileInputRef?.current.click()}
         onDrop={(e: React.DragEvent<HTMLDivElement>) => handleDrop(e)}
         onDragOver={(e: React.DragEvent<HTMLDivElement>) => handleDragOver(e)}
