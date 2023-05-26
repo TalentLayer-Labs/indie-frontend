@@ -2,15 +2,14 @@ import { ErrorMessage, Field, Form, Formik } from 'formik';
 import { useContext, useState } from 'react';
 import * as Yup from 'yup';
 import SubmitButton from './SubmitButton';
-import FileDropper from '../../modules/Kleros/components/FileDropper';
+import FileDropper from '../../modules/Disputes/components/FileDropper';
 import { postToIPFS } from '../../utils/ipfs';
-import { ethers } from 'ethers';
 import { showErrorTransactionToast } from '../../utils/toast';
-import { generateEvidence } from '../../modules/Kleros/utils/dispute';
+import { generateEvidence } from '../../modules/Disputes/utils/dispute';
 import TalentLayerContext from '../../context/talentLayer';
 import { useWeb3Modal } from '@web3modal/react';
-import { Provider } from '@wagmi/core';
 import { submitEvidence } from '../../contracts/disputes';
+import { useProvider, useSigner } from 'wagmi';
 
 interface IFormValues {
   title: string;
@@ -30,16 +29,12 @@ const initialValues: IFormValues = {
   file: null,
 };
 
-function EvidenceForm({
-  transactionId,
-  signer,
-  provider,
-}: {
-  transactionId: string;
-  signer: ethers.Signer;
-  provider: Provider;
-}) {
+function EvidenceForm({ transactionId }: { transactionId: string }) {
   const { account, user } = useContext(TalentLayerContext);
+  const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
+  const { data: signer } = useSigner({
+    chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
+  });
   const { open: openConnectModal } = useWeb3Modal();
   const [fileSelected, setFileSelected] = useState<File>();
 

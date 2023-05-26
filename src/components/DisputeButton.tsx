@@ -1,43 +1,67 @@
-import { TransactionStatusEnum } from '../types';
+import { ITransaction, IUser, TransactionStatusEnum } from '../types';
+import { arbitrationFeeTimeout, payArbitrationFee } from '../contracts/disputes';
+import { useProvider, useSigner } from 'wagmi';
+import { useRouter } from 'next/router';
 
 function DisputeButton({
-  isSender,
-  isReceiver,
-  transactionStatus,
+  user,
+  transaction,
   disabled,
-  payArbitrationFee,
-  arbitrationFeeTimeout,
+  content,
 }: {
-  isSender: boolean;
-  isReceiver: boolean;
-  transactionStatus: TransactionStatusEnum;
+  user: IUser;
+  transaction: ITransaction;
   disabled: boolean;
-  payArbitrationFee: () => void;
-  arbitrationFeeTimeout: () => void;
+  content?: string;
 }) {
+  const { data: signer } = useSigner({
+    chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
+  });
+  const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
+  const router = useRouter();
+  const transactionId = transaction?.id;
+
+  const isSender = (): boolean => {
+    return !!user && !!transaction && user.id === transaction.sender.id;
+  };
+
+  const isReceiver = (): boolean => {
+    return !!user && !!transaction && user.id === transaction.receiver.id;
+  };
+
+  const payFee = () => {
+    if (signer && arbitrationFee) {
+      return payArbitrationFee(signer, provider, arbitrationFee, isSender(), transactionId, router);
+    }
+  };
+  const timeout = () => {
+    if (signer) {
+      return arbitrationFeeTimeout(signer, provider, transactionId, router);
+    }
+  };
   const userIsSenderAndHasPaid = () => {
-    return isSender && transactionStatus === TransactionStatusEnum.WaitingReceiver;
+    return isSender() && transaction.status === TransactionStatusEnum.WaitingReceiver;
   };
   const userIsSenderAndHasNotPaid = () => {
-    return isSender && transactionStatus === TransactionStatusEnum.WaitingSender;
+    return isSender() && transaction.status === TransactionStatusEnum.WaitingSender;
   };
 
   const userIsReceiverAndHasPaid = () => {
-    return isReceiver && transactionStatus === TransactionStatusEnum.WaitingSender;
+    return isReceiver() && transaction.status === TransactionStatusEnum.WaitingSender;
   };
   const userIsReceiverAndHasNotPaid = () => {
-    return isReceiver && transactionStatus === TransactionStatusEnum.WaitingReceiver;
+    return isReceiver() && transaction.status === TransactionStatusEnum.WaitingReceiver;
   };
 
   const noDispute = () => {
-    return transactionStatus === TransactionStatusEnum.NoDispute;
+    return transaction.status === TransactionStatusEnum.NoDispute;
   };
 
   const disputeCreated = () => {
-    return transactionStatus === TransactionStatusEnum.DisputeCreated;
+    return transaction.status === TransactionStatusEnum.DisputeCreated;
   };
   const disputeResolved = () => {
-    return transactionStatus === TransactionStatusEnum.Resolved;
+    return transaction.status === TransactionStatusEnum.Resolved;
   };
 
   return (
@@ -51,7 +75,7 @@ function DisputeButton({
       )}
       {noDispute() && (
         <span className='ml-2 mt-4 px-5 py-2 border text-center text-gray-500 bg-gray-200 rounded-md border-grey-600'>
-          No dispute
+          {content ? content : 'No dispute'}
         </span>
       )}
       {userIsReceiverAndHasPaid() ||
@@ -63,7 +87,7 @@ function DisputeButton({
                 ? 'text-gray-400 bg-gray-200'
                 : 'hover:text-indigo-600 hover:bg-white border-indigo-600 text-white bg-indigo-700'
             }`}
-            onClick={() => arbitrationFeeTimeout()}>
+            onClick={() => timeout()}>
             Timeout
           </button>
         ))}
@@ -71,7 +95,7 @@ function DisputeButton({
         <button
           className={`ml-2 mt-4 px-5 py-2 border rounded-md hover:text-indigo-600 hover:bg-white border-indigo-600 bg-indigo-600 text-white bg-indigo-700'
                 }`}
-          onClick={() => payArbitrationFee()}>
+          onClick={() => payFee()}>
           Pay fee
         </button>
       )}

@@ -4,6 +4,7 @@ export const getTransactionById = (id: string): Promise<any> => {
   const query = `
       {
         transactions (where: {id: "${id}"}) {
+          id
           sender {
             id
           }
