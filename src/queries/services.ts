@@ -108,11 +108,10 @@ export const getFilteredServices = (params: IProps): Promise<any> => {
     : '';
 
   const keywords = keywordFilter.keywords.join(',');
-  console.log('TOTO', keywords);
 
   const query = `
     {
-      services(orderBy: id, orderDirection: desc ${pagination} where: { keywords_raw_contains: "${keywords}" }) {
+      services(orderBy: id, orderDirection: desc, ${pagination}, filter: { serviceDescription: { keywords_raw_contains: "${keywords}" } }) {
         ${serviceQueryFields}
         description {
           ${serviceDescriptionQueryFields}
@@ -120,7 +119,7 @@ export const getFilteredServices = (params: IProps): Promise<any> => {
       }
     }`;
 
-  return processRequest(query);
+  return processRequest(query);*  
 };
 
 export const searchServices = (params: IProps): Promise<any> => {

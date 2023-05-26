@@ -59,6 +59,8 @@ const useServices = (
             numberPerPage,
             offset,
           });
+          console.log(response);
+
           newServices = response?.data?.data?.services;
         }
 
