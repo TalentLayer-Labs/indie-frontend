@@ -1,5 +1,6 @@
 import { ServiceStatusEnum } from '../types';
 import { processRequest } from '../utils/graphql';
+import keywordFilter from '../pages/api/filter/filter.json';
 
 interface IProps {
   serviceStatus?: ServiceStatusEnum;
@@ -91,6 +92,27 @@ export const getServices = (params: IProps): Promise<any> => {
       services(orderBy: id, orderDirection: desc ${pagination} ${getFilteredServiceCondition(
     params,
   )}) {
+        ${serviceQueryFields}
+        description {
+          ${serviceDescriptionQueryFields}
+        }
+      }
+    }`;
+
+  return processRequest(query);
+};
+
+export const getFilteredServices = (params: IProps): Promise<any> => {
+  const pagination = params.numberPerPage
+    ? 'first: ' + params.numberPerPage + ', skip: ' + params.offset
+    : '';
+
+  const keywords = keywordFilter.keywords.join(',');
+  console.log('TOTO', keywords);
+
+  const query = `
+    {
+      services(orderBy: id, orderDirection: desc ${pagination} where: { keywords_raw_contains: "${keywords}" }) {
         ${serviceQueryFields}
         description {
           ${serviceDescriptionQueryFields}

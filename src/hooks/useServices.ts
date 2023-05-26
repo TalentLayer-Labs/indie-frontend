@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getServices, searchServices } from '../queries/services';
+import { getServices, searchServices, getFilteredServices } from '../queries/services';
 import { IService, ServiceStatusEnum } from '../types';
 
 const useServices = (
@@ -52,7 +52,7 @@ const useServices = (
             );
           }
         } else {
-          response = await getServices({
+          response = await getFilteredServices({
             serviceStatus,
             buyerId,
             sellerId,
