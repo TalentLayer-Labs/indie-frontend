@@ -9,8 +9,8 @@ import ContactButton from '../../modules/Messaging/components/ContactButton';
 import { IAccount, IProposal, IService } from '../../types';
 import { renderTokenAmount } from '../../utils/conversion';
 import Step from '../Step';
-import { generateMetaEvidence } from '../../modules/Kleros/utils/dispute';
 import { postToIPFS } from '../../utils/ipfs';
+import { generateMetaEvidence } from '../../modules/Disputes/utils/dispute';
 
 function ValidateProposalModal({
   proposal,

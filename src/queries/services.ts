@@ -18,6 +18,7 @@ const serviceQueryFields = `
   cid
   transaction {
     id
+    status
   }
   buyer {
     id

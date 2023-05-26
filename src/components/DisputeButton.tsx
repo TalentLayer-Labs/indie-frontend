@@ -71,15 +71,21 @@ function DisputeButton({
     <>
       {userIsSenderAndHasNotPaid() && (
         <button
-          className={`ml-2 mt-4 px-5 py-2 border rounded-md hover:text-indigo-600 hover:bg-white border-indigo-600 bg-indigo-600 text-white bg-indigo-700'
+          className={`ml-2 mt-4 px-5 py-2 border rounded-md hover:text-indigo-600 hover:bg-white border-indigo-600 bg-indigo-600 text-white'
                 }`}>
           Pay fee
         </button>
       )}
       {noDispute() && (
-        <span className='ml-2 mt-4 px-5 py-2 border text-center text-gray-500 bg-gray-200 rounded-md border-grey-600'>
+        <button
+          className={`ml-2 mt-4 px-5 py-2 border text-center ${
+            content
+              ? 'cursor-pointer hover:text-indigo-600 hover:bg-white border-indigo-600 bg-indigo-600 text-white'
+              : 'text-gray-500 bg-gray-200'
+          } rounded-md border-grey-600`}
+          onClick={() => payFee()}>
           {content ? content : 'No dispute'}
-        </span>
+        </button>
       )}
       {userIsReceiverAndHasPaid() ||
         (userIsSenderAndHasPaid() && (
