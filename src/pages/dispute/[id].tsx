@@ -22,6 +22,7 @@ function Dispute() {
   const transaction = useTransactionsById(transactionId as string);
   const arbitrationFee = useArbitrationCost(transaction?.arbitrator);
 
+  transaction ? (transaction.status = TransactionStatusEnum.WaitingSender) : '';
   if (
     user &&
     proposalId &&
@@ -109,6 +110,7 @@ function Dispute() {
                   user={user}
                   transaction={transaction}
                   disabled={false}
+                  arbitrationFee={arbitrationFee}
                   content={'Raise dispute'}
                 />
               </div>

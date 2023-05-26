@@ -78,41 +78,42 @@ function EvidenceForm({ transactionId }: { transactionId: string }) {
         <>
           <Form>
             <h2 className=' mt-8 mb-2 text-gray-900 font-bold'>Add evidence:</h2>
-            <div className='grid grid-rows-2 grid-cols-3 gap-6 border border-gray-200 rounded-md p-8'>
-              <label className='block row-span-1 col-span-2'>
-                <span className='text-gray-700'>Title</span>
-                <Field
-                  type='text'
-                  id='title'
-                  name='title'
-                  className='mt-1 mb-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
-                  placeholder=''
-                />
-                <span className='text-red-500'>
-                  <ErrorMessage name='title' />
-                </span>
-              </label>
+            <div className='flex flex-row justify-between gap-6 border border-gray-200 rounded-md p-8'>
+              <div className='flex flex-col grow'>
+                <label className='block'>
+                  <span className='text-gray-700'>Title</span>
+                  <Field
+                    type='text'
+                    id='title'
+                    name='title'
+                    className='mt-1 mb-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
+                    placeholder=''
+                  />
+                  <span className='text-red-500'>
+                    <ErrorMessage name='title' />
+                  </span>
+                </label>
 
-              <label className='block row-span-2 col-span-1'>
+                <label className='block'>
+                  <span className='text-gray-700'>About</span>
+                  <Field
+                    as='textarea'
+                    id='about'
+                    name='about'
+                    className='mt-1 mb-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
+                  />
+                  <span className='text-red-500'>
+                    <ErrorMessage name='about' />
+                  </span>
+                </label>
+              </div>
+
+              <label className='block flex-none '>
                 <FileDropper setFileSelected={setFileSelected} fileSelected={fileSelected} />
 
                 <Field type='hidden' id='file' name='file' />
                 <span className='text-red-500'>
                   <ErrorMessage name='file' />
-                </span>
-              </label>
-
-              <label className='block row-span-2 col-span-2'>
-                <span className='text-gray-700'>About</span>
-                <Field
-                  as='textarea'
-                  id='about'
-                  name='about'
-                  className='mt-1 mb-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
-                  placeholder=''
-                />
-                <span className='text-red-500'>
-                  <ErrorMessage name='about' />
                 </span>
               </label>
             </div>

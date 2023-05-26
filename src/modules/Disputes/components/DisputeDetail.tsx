@@ -58,6 +58,7 @@ function DisputeStatus({
         <DisputeButton
           user={user}
           transaction={transaction}
+          arbitrationFee={arbitrationFee}
           disabled={getTargetDate() > Date.now()}
         />
         {transaction && transaction.ruling && (

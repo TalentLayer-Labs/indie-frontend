@@ -2,16 +2,19 @@ import { ITransaction, IUser, TransactionStatusEnum } from '../types';
 import { arbitrationFeeTimeout, payArbitrationFee } from '../contracts/disputes';
 import { useProvider, useSigner } from 'wagmi';
 import { useRouter } from 'next/router';
+import { BigNumber } from 'ethers';
 
 function DisputeButton({
   user,
   transaction,
   disabled,
+  arbitrationFee,
   content,
 }: {
   user: IUser;
   transaction: ITransaction;
   disabled: boolean;
+  arbitrationFee: BigNumber;
   content?: string;
 }) {
   const { data: signer } = useSigner({
