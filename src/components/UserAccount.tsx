@@ -6,6 +6,7 @@ import TalentLayerContext from '../context/talentLayer';
 import { truncateAddress } from '../utils';
 import UserSubMenu from './UserSubMenu';
 import Image from 'next/image';
+import Anima from '../modules/Anima/Anima';
 
 function UserAccount() {
   const { account, user } = useContext(TalentLayerContext);
@@ -53,7 +54,10 @@ function UserAccount() {
                 </Menu.Button>
               </div>
             ) : (
-              <ConnectButton />
+              <>
+                <ConnectButton />
+                <Anima />
+              </>
             )}
           </div>
           <Transition
