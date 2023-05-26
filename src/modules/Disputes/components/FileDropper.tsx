@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { ChangeEvent, useRef } from 'react';
 import { useFormikContext } from 'formik';
 
 const FileDropper = ({
@@ -8,9 +8,6 @@ const FileDropper = ({
   fileSelected: File | undefined;
   setFileSelected: React.Dispatch<React.SetStateAction<File | undefined>>;
 }) => {
-  //TODO clean up this component
-  //TODO no reset on error
-
   const formikProps = useFormikContext();
   const fileInputRef = useRef<any>();
 
@@ -33,9 +30,15 @@ const FileDropper = ({
     formikProps.setFieldValue('file', file);
 
     setFileSelected(file);
-    // setFileSelected(event.dataTransfer?.files[0]);
-    // fileInputRef.current.files = event.dataTransfer?.files;
-    // callback(event.dataTransfer?.files[0]);
+  };
+
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const file = e.target.files[0];
+      formikProps.setFieldValue('file', file);
+
+      setFileSelected(file);
+    }
   };
 
   const removeFile = () => {
@@ -45,23 +48,29 @@ const FileDropper = ({
 
   return !fileSelected ? (
     <>
-      <span className='text-gray-700 '>Evidence</span>
+      <span className='text-gray-700 text-center'>Evidence</span>
       <div
-        className={`w-48 h-48 p-50 mt-1 mb-1 flex items-center justify-center text-24 text-gray-600 border-2 border-dashed border-gray-300 rounded-lg`}
-        // onClick={() => fileInputRef?.current.click()}
+        className={`flex flex-col w-48 h-48 p-50 cursor-pointer mt-1 mb-1 items-center justify-center text-24 text-gray-600 border-2 border-dashed border-gray-300 rounded-lg`}
         onDrop={(e: React.DragEvent<HTMLDivElement>) => handleDrop(e)}
         onDragOver={(e: React.DragEvent<HTMLDivElement>) => handleDragOver(e)}
         onDragEnter={(e: React.DragEvent<HTMLDivElement>) => handleDragEnter(e)}
         onDragLeave={(e: React.DragEvent<HTMLDivElement>) => handleDragLeave(e)}
         ref={fileInputRef}>
-        {/*{fileSelected ? fileSelected.name : <StyledUploadIcon />}*/}
-        Drop your file here
+        <input
+          className={'hidden'}
+          type='file'
+          onChange={handleFileChange}
+          value={fileSelected || undefined}
+          id={'file'}
+        />
+        <span>Drop your file here</span>
+        <span>Or click to upload</span>
       </div>
     </>
   ) : (
     <>
-      <span className='text-gray-700'>Your file</span>
-      <div className={'flex-col'}>
+      <span className='text-gray-700 text-center'>Your file</span>
+      <div className={'w-48 h-48 flex flex-col items-center justify-center'}>
         <div className='flex flex-row items-center justify-center place-content-end'>
           <div className={`mt-1 flex flex-col text-24 text-gray-600 items-center`}>
             {fileSelected.name}
@@ -86,17 +95,6 @@ const FileDropper = ({
       </div>
     </>
   );
-  // <FileInput
-  //   ref={fileInputRef}
-  //   type="file"
-  //   onChange={(event) => {
-  //     //eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  //     setFileSelected(event.target.files![0]);
-  //     //eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  //     callback(event.target.files![0]);
-  //   }}
-  //   {...props}
-  // />
 };
 
 export default FileDropper;

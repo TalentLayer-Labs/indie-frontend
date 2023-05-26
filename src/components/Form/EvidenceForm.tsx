@@ -94,7 +94,7 @@ function EvidenceForm({ transactionId }: { transactionId: string }) {
                   </span>
                 </label>
 
-                <label className='block h-40'>
+                <label className='block h-42'>
                   <span className='text-gray-700'>About</span>
                   <Field
                     as='textarea'
@@ -108,7 +108,7 @@ function EvidenceForm({ transactionId }: { transactionId: string }) {
                 </label>
               </div>
 
-              <label className='block flex-none '>
+              <label className='block flex flex-col'>
                 <FileDropper setFileSelected={setFileSelected} fileSelected={fileSelected} />
 
                 <Field type='hidden' id='file' name='file' />
