@@ -22,7 +22,6 @@ function Dispute() {
   const transaction = useTransactionsById(transactionId as string);
   const arbitrationFee = useArbitrationCost(transaction?.arbitrator);
 
-  transaction ? (transaction.status = TransactionStatusEnum.WaitingSender) : '';
   if (
     user &&
     proposalId &&
@@ -89,15 +88,15 @@ function Dispute() {
                 </p>
                 {transaction && <EvidenceDetails proposal={proposal} transaction={transaction} />}
               </div>
-              <div className={'flex flex-row h-min gap-2 border border-gray-200 rounded-xl p-4'}>
-                {transaction && arbitrationFee && (
+              {transaction && arbitrationFee && (
+                <div className={'flex flex-row h-min gap-2 border border-gray-200 rounded-xl p-4'}>
                   <DisputeStatusCard
                     transaction={transaction}
                     user={user}
                     arbitrationFee={arbitrationFee}
                   />
-                )}
-              </div>
+                </div>
+              )}
             </div>
             {account?.isConnected &&
               transactionId &&
