@@ -22,47 +22,6 @@ function Dispute() {
   const transaction = useTransactionsById(transactionId as string);
   const arbitrationFee = useArbitrationCost(transaction?.arbitrator);
 
-  if (
-    user &&
-    proposalId &&
-    proposal &&
-    user.id !== proposal?.service.buyer.id &&
-    user.id !== proposal?.seller.id
-  ) {
-    return (
-      <div className='max-w-7xl mx-auto text-gray-900 sm:px-4 lg:px-0'>
-        <p className='text-5xl font-medium tracking-wider mb-8'>
-          Raise <span className='text-indigo-600'>a dispute</span>
-        </p>
-
-        <Steps targetTitle={'Access the dispute dashboard'} />
-        <div className={'p-8'}>
-          <h2 className='mb-2 text-xl text-gray-900'>Your are not related to this transaction</h2>
-        </div>
-      </div>
-    );
-  }
-
-  if (
-    (transaction && !transaction?.arbitrator) ||
-    (transaction && transaction?.arbitrator === ethers.constants.AddressZero)
-  ) {
-    return (
-      <div className='max-w-7xl mx-auto text-gray-900 sm:px-4 lg:px-0'>
-        <p className='text-5xl font-medium tracking-wider mb-8'>
-          Raise <span className='text-indigo-600'>a dispute</span>
-        </p>
-
-        <Steps targetTitle={'Access the dispute dashboard'} />
-        <div className={'p-8'}>
-          <h2 className='mb-2 text-xl text-gray-900'>
-            Your platform has not implemented an arbitrator, you cannot raise a dispute yet :(
-          </h2>
-        </div>
-      </div>
-    );
-  }
-
   if (!transactionId) {
     return <Loading />;
   }
@@ -74,48 +33,62 @@ function Dispute() {
       </p>
 
       <Steps targetTitle={'Access the dispute dashboard'} />
-      {user && (
-        <>
-          <div className={'flex-col border border-gray-200 rounded-md p-8'}>
-            <h2 className='mb-2 text-gray-900 font-bold'>Dispute details:</h2>
-            <div
-              className={
-                'flex flex-row justify-between gap-2 rounded-xl p-4 border border-gray-200'
-              }>
-              <div className={'flex-col flex'}>
-                <p className={'text-sm text-gray-500 mt-2'}>
-                  <strong>Service:</strong> {proposal.service.description?.title}
-                </p>
-                {transaction && <EvidenceDetails proposal={proposal} transaction={transaction} />}
+      {user?.id !== proposal?.service.buyer.id && user?.id !== proposal?.seller.id ? (
+        <div className={'p-8'}>
+          <h2 className='mb-2 text-xl text-gray-900'>Your are not related to this transaction</h2>
+        </div>
+      ) : (transaction && !transaction?.arbitrator) ||
+        (transaction && transaction?.arbitrator === ethers.constants.AddressZero) ? (
+        <div className={'p-8'}>
+          <h2 className='mb-2 text-xl text-gray-900'>
+            Your platform has not implemented an arbitrator, you cannot raise a dispute yet :(
+          </h2>
+        </div>
+      ) : (
+        user && (
+          <>
+            <div className={'flex-col border border-gray-200 rounded-md p-8'}>
+              <h2 className='mb-2 text-gray-900 font-bold'>Dispute details:</h2>
+              <div
+                className={
+                  'flex flex-row justify-between gap-2 rounded-xl p-4 border border-gray-200'
+                }>
+                <div className={'flex-col flex'}>
+                  <p className={'text-sm text-gray-500 mt-2'}>
+                    <strong>Service:</strong> {proposal.service.description?.title}
+                  </p>
+                  {transaction && <EvidenceDetails proposal={proposal} transaction={transaction} />}
+                </div>
+                {transaction && arbitrationFee && (
+                  <div
+                    className={'flex flex-row h-min gap-2 border border-gray-200 rounded-xl p-4'}>
+                    <DisputeStatusCard
+                      transaction={transaction}
+                      user={user}
+                      arbitrationFee={arbitrationFee}
+                    />
+                  </div>
+                )}
               </div>
-              {transaction && arbitrationFee && (
-                <div className={'flex flex-row h-min gap-2 border border-gray-200 rounded-xl p-4'}>
-                  <DisputeStatusCard
-                    transaction={transaction}
+              {account?.isConnected &&
+                transactionId &&
+                transaction?.status !== TransactionStatusEnum.Resolved && (
+                  <EvidenceForm transactionId={transactionId} />
+                )}
+              {transaction?.status === TransactionStatusEnum.NoDispute && arbitrationFee && (
+                <div className={'flex w-full space-y-4 flex-raw pb-4'}>
+                  <DisputeButton
                     user={user}
+                    transaction={transaction}
+                    disabled={false}
                     arbitrationFee={arbitrationFee}
+                    content={'Raise dispute'}
                   />
                 </div>
               )}
             </div>
-            {account?.isConnected &&
-              transactionId &&
-              transaction?.status !== TransactionStatusEnum.Resolved && (
-                <EvidenceForm transactionId={transactionId} />
-              )}
-            {transaction?.status === TransactionStatusEnum.NoDispute && arbitrationFee && (
-              <div className={'flex w-full space-y-4 flex-raw pb-4'}>
-                <DisputeButton
-                  user={user}
-                  transaction={transaction}
-                  disabled={false}
-                  arbitrationFee={arbitrationFee}
-                  content={'Raise dispute'}
-                />
-              </div>
-            )}
-          </div>
-        </>
+          </>
+        )
       )}
     </div>
   );
