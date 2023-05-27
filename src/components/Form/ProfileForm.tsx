@@ -12,6 +12,8 @@ import { createMultiStepsTransactionToast, showErrorTransactionToast } from '../
 import Loading from '../Loading';
 import SubmitButton from './SubmitButton';
 import useUserById from '../../hooks/useUserById';
+import { SkillsInput } from './skills-input';
+import { delegateUpdateProfileData } from '../request';
 
 interface IFormValues {
   title?: string;
@@ -35,6 +37,7 @@ function ProfileForm({ callback }: { callback?: () => void }) {
   const { data: signer } = useSigner({
     chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
   });
+  const { isActiveDelegate } = useContext(TalentLayerContext);
 
   if (!user?.id) {
     return <Loading />;
@@ -68,13 +71,19 @@ function ProfileForm({ callback }: { callback?: () => void }) {
           }),
         );
 
-        const contract = new ethers.Contract(
-          config.contracts.talentLayerId,
-          TalentLayerID.abi,
-          signer,
-        );
+        let tx;
+        if (isActiveDelegate) {
+          const response = await delegateUpdateProfileData(user.id, user.address, cid);
+          tx = response.data.transaction;
+        } else {
+          const contract = new ethers.Contract(
+            config.contracts.talentLayerId,
+            TalentLayerID.abi,
+            signer,
+          );
+          tx = await contract.updateProfileData(user.id, cid);
+        }
 
-        const tx = await contract.updateProfileData(user.id, cid);
         await createMultiStepsTransactionToast(
           {
             pending: 'Updating profile...',
@@ -158,13 +167,10 @@ function ProfileForm({ callback }: { callback?: () => void }) {
 
             <label className='block'>
               <span className='text-gray-700'>Skills</span>
-              <Field
-                type='text'
-                id='skills'
-                name='skills'
-                className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
-                placeholder='skill1, skill2...'
-              />
+
+              <SkillsInput initialValues={userDescription?.skills_raw} entityId={'skills'} />
+
+              <Field type='hidden' id='skills' name='skills' />
             </label>
 
             <SubmitButton isSubmitting={isSubmitting} label='Update' />

@@ -8,6 +8,7 @@ export type IUser = {
   rating: string;
   description?: IUserDetails;
   userStats: IUserStats;
+  delegates?: string[];
 };
 
 export type IUserDetails = {

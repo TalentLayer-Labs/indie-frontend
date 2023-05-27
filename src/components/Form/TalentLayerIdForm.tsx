@@ -12,6 +12,7 @@ import { createTalentLayerIdTransactionToast, showErrorTransactionToast } from '
 import HelpPopover from '../HelpPopover';
 import SubmitButton from './SubmitButton';
 import { HandlePrice } from './handle-price';
+import { delegateMintID } from '../request';
 
 interface IFormValues {
   handle: string;
@@ -23,12 +24,14 @@ const initialValues: IFormValues = {
 
 function TalentLayerIdForm() {
   const { open: openConnectModal } = useWeb3Modal();
-  const { account } = useContext(TalentLayerContext);
+  const { user, account } = useContext(TalentLayerContext);
   const { data: signer } = useSigner({
     chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
   });
+
   const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
   const router = useRouter();
+  let tx: ethers.providers.TransactionResponse;
 
   const validationSchema = Yup.object().shape({
     handle: Yup.string()
@@ -54,14 +57,20 @@ function TalentLayerIdForm() {
         );
 
         const handlePrice = await contract.getHandlePrice(submittedValues.handle);
+        console.log(process.env.NEXT_PUBLIC_ACTIVE_DELEGATE_MINT);
 
-        const tx = await contract.mint(
-          process.env.NEXT_PUBLIC_PLATFORM_ID,
-          submittedValues.handle,
-          {
+        if (process.env.NEXT_PUBLIC_ACTIVE_DELEGATE_MINT === 'true') {
+          const response = await delegateMintID(
+            submittedValues.handle,
+            handlePrice,
+            account.address,
+          );
+          tx = response.data.transaction;
+        } else {
+          tx = await contract.mint(process.env.NEXT_PUBLIC_PLATFORM_ID, submittedValues.handle, {
             value: handlePrice,
-          },
-        );
+          });
+        }
         await createTalentLayerIdTransactionToast(
           {
             pending: 'Minting your Talent Layer Id...',

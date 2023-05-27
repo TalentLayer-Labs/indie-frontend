@@ -17,11 +17,15 @@ export const createMultiStepsTransactionToast = async (
   provider: Provider,
   tx: Transaction,
   entity: string,
-  newUri: string,
+  newUri?: string,
 ): Promise<number | undefined> => {
   let currentStep = 1;
   const toastId = toast(
-    <MultiStepsTransactionToast transactionHash={tx.hash as string} currentStep={currentStep} />,
+    <MultiStepsTransactionToast
+      transactionHash={tx.hash as string}
+      currentStep={currentStep}
+      hasOffchainData={!!newUri}
+    />,
     { autoClose: false, closeOnClick: false },
   );
 
@@ -31,19 +35,37 @@ export const createMultiStepsTransactionToast = async (
     currentStep = 2;
     toast.update(toastId, {
       render: (
-        <MultiStepsTransactionToast transactionHash={tx.hash as string} currentStep={currentStep} />
+        <MultiStepsTransactionToast
+          transactionHash={tx.hash as string}
+          currentStep={currentStep}
+          hasOffchainData={!!newUri}
+        />
       ),
     });
 
-    const entityId = await graphIsSynced(`${entity}s`, newUri);
-    currentStep = 3;
-    toast.update(toastId, {
-      render: (
-        <MultiStepsTransactionToast transactionHash={tx.hash as string} currentStep={currentStep} />
-      ),
-    });
+    if (newUri) {
+      const entityId = await graphIsSynced(`${entity}s`, newUri);
+      currentStep = 3;
+      toast.update(toastId, {
+        render: (
+          <MultiStepsTransactionToast
+            transactionHash={tx.hash as string}
+            currentStep={currentStep}
+          />
+        ),
+      });
 
-    await graphIsSynced(`${entity}Descriptions`, newUri);
+      await graphIsSynced(`${entity}Descriptions`, newUri);
+      toast.update(toastId, {
+        type: toast.TYPE.SUCCESS,
+        render: messages.success,
+        autoClose: 5000,
+        closeOnClick: true,
+      });
+
+      return entityId;
+    }
+
     toast.update(toastId, {
       type: toast.TYPE.SUCCESS,
       render: messages.success,
@@ -51,7 +73,7 @@ export const createMultiStepsTransactionToast = async (
       closeOnClick: true,
     });
 
-    return entityId;
+    return;
   } catch (error) {
     const errorMessage = getParsedErrorMessage(error);
     console.error(error);
@@ -65,7 +87,10 @@ export const createMultiStepsTransactionToast = async (
 
 export const showErrorTransactionToast = (error: any) => {
   console.error(error);
-  const errorMessage = getParsedErrorMessage(error);
+  let errorMessage = getParsedErrorMessage(error);
+  if (error.response && error.response.status === 500) {
+    errorMessage = error.response.data;
+  }
   toast.error(errorMessage);
 };
 
