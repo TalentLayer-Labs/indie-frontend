@@ -14,8 +14,8 @@ interface IMetaEvidenceModalProps {
   setConditionsValidated?: Dispatch<SetStateAction<boolean>>;
   serviceData: IService;
   token: IToken;
-  proposalData?: ProposalData;
   seller: IUser;
+  proposalData?: ProposalData;
 }
 
 function MetaEvidenceModal({
@@ -83,7 +83,23 @@ function MetaEvidenceModal({
                 <span className='sr-only'>Close modal</span>
               </button>
             </div>
-            <div className='p-4 rounded-t border-b '>
+            <div className='p-4 rounded-t border-b'>
+              <h3 className='text-xl font-semibold leading-5 text-gray-800 mb-2'>Information</h3>
+              <p className='italic text-center text-gray-900 mb-2'>
+                The TalentLayer protocol has implemented a decentralized dispute system should any
+                issue arise during this service. Should any of the parties involved in this service
+                pretend that the contractual agreement has not been respected, they can raise a
+                dispute. The dispute will be reviewed by the jurors of the arbitrator selected by
+                the buyer. A dispute is raised by paying arbitrator fees, and each party can provide
+                as many evidence as they wish. Once a party has paid the arbitrator fees, the other
+                party has a certain amount of time (decided by the arbitrator) to pay the arbitrator
+                fees as well. If the other party does not pay the arbitrator fees, the party that
+                paid the arbitrator fees first can timeout the dispute and be declared as winner.
+                Once a dispute has been reviewed by the jurors, and the jurors have voted in favor
+                of one party, this party will be refunded the arbitrator fees and will be paid (in
+                case of a seller win) or reimbursed (in case of a seller win) the remaining amount
+                of the service in escrow.
+              </p>
               <p className='italic text-center text-gray-900'>
                 The platform {serviceData.platform.name} has chosen as arbitrator for potential
                 dispute resolutions: {serviceData.platform.arbitrator} Please review carefully the
