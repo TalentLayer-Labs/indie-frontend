@@ -77,19 +77,18 @@ function DisputeButton({
           {content ? content : 'No dispute'}
         </button>
       )}
-      {userIsReceiverAndHasPaid ||
-        (userIsSenderAndHasPaid && (
-          <button
-            disabled={disabled}
-            className={`px-5 py-2 mt-4 border rounded-md ${
-              disabled
-                ? 'text-gray-400 bg-gray-200'
-                : 'hover:text-indigo-600 hover:bg-white border-indigo-600 text-white bg-indigo-700'
-            }`}
-            onClick={() => timeout()}>
-            Timeout
-          </button>
-        ))}
+      {(userIsReceiverAndHasPaid || userIsSenderAndHasPaid) && (
+        <button
+          disabled={disabled}
+          className={`px-5 py-2 mt-4 border rounded-md ${
+            disabled
+              ? 'text-gray-400 bg-gray-200'
+              : 'hover:text-indigo-600 hover:bg-white border-indigo-600 text-white bg-indigo-700'
+          }`}
+          onClick={() => timeout()}>
+          Timeout
+        </button>
+      )}
       {userIsReceiverAndHasNotPaid && (
         <button
           className={`ml-2 mt-4 px-5 py-2 border rounded-md hover:text-indigo-600 hover:bg-white border-indigo-600 bg-indigo-600 text-white bg-indigo-700'
