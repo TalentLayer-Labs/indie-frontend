@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import TalentLayerContext from '../context/talentLayer';
 import usePaymentsByService from '../hooks/usePaymentsByService';
 import useProposalsByService from '../hooks/useProposalsByService';
@@ -116,6 +116,15 @@ function ServiceDetail({ service }: { service: IService }) {
                   userHandle={service.buyer.handle}
                 />
               </>
+            )}
+            {isBuyer && service.status === ServiceStatusEnum.Opened && (
+              <button
+                className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg'
+                onClick={() => {
+                  push(`/services/edit/${service.id}`);
+                }}>
+                Edit Service
+              </button>
             )}
             {(isBuyer || isSeller) && (
               <>

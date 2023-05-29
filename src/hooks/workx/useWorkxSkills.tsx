@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, Dispatch, SetStateAction } from 'react';
 import axios from 'axios';
-import { Skill } from '../../types';
+import { Skill } from '../../modules/WorkX/utils/types';
 
 export const MINIMUM_QUERY_LENGTH = 2;
 

@@ -1,4 +1,3 @@
-// pages/api/createService.ts
 import { NextApiRequest, NextApiResponse } from 'next';
 import { Contract } from 'ethers';
 import { config } from '../../../config';
@@ -8,7 +7,7 @@ import { getDelegationSigner } from '../utils/delegate';
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { handle, handlePrice, userAddress } = req.body;
 
-  // @dev : you can add here all the check you need to confirm the delagation for a user
+  // @dev : you can add here all the checks you need to confirm the delegation for a user
 
   try {
     if (process.env.NEXT_PUBLIC_ACTIVE_DELEGATE_MINT !== 'true') {

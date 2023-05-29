@@ -1,5 +1,5 @@
 import { useWeb3Modal } from '@web3modal/react';
-import { BigNumberish, ethers, FixedNumber, Signer, Wallet } from 'ethers';
+import { BigNumber, BigNumberish, ethers, FixedNumber } from 'ethers';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import { useContext, useState } from 'react';
 import { useRouter } from 'next/router';
@@ -15,8 +15,9 @@ import SubmitButton from './SubmitButton';
 import useAllowedTokens from '../../hooks/useAllowedTokens';
 import { getServiceSignature } from '../../utils/signature';
 import { IToken } from '../../types';
+import useServiceById from '../../hooks/useServiceById';
 import { SkillsInput } from './skills-input';
-import { delegateCreateService } from '../request';
+import { delegateCreateService, delegateUpdateService } from '../request';
 
 interface IFormValues {
   title: string;
@@ -26,26 +27,41 @@ interface IFormValues {
   rateAmount: number;
 }
 
-const initialValues: IFormValues = {
-  title: '',
-  about: '',
-  keywords: '',
-  rateToken: '',
-  rateAmount: 0,
-};
-
-function ServiceForm() {
+function ServiceForm({ serviceId }: { serviceId?: string }) {
   const { open: openConnectModal } = useWeb3Modal();
   const { user, account } = useContext(TalentLayerContext);
   const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
   const { data: signer } = useSigner({
     chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
   });
+  const existingService = useServiceById(serviceId as string);
 
   const router = useRouter();
   const allowedTokenList = useAllowedTokens();
+  const existingToken = allowedTokenList.find(value => {
+    return value.address === existingService?.description?.rateToken;
+  });
   const [selectedToken, setSelectedToken] = useState<IToken>();
   const { isActiveDelegate } = useContext(TalentLayerContext);
+
+  const initialValues: IFormValues = {
+    title: existingService?.description?.title || '',
+    about: existingService?.description?.about || '',
+    keywords: existingService?.description?.keywords_raw || '',
+    rateToken: existingService?.description?.rateToken || '',
+    rateAmount:
+      existingService?.description?.rateAmount &&
+      allowedTokenList &&
+      existingToken &&
+      existingToken.decimals
+        ? Number(
+            ethers.utils.formatUnits(
+              BigNumber.from(existingService?.description?.rateAmount),
+              existingToken.decimals,
+            ),
+          )
+        : 0,
+  };
 
   const validationSchema = Yup.object({
     title: Yup.string().required('Please provide a title for your service'),
@@ -107,34 +123,38 @@ function ServiceForm() {
           }),
         );
 
+        const contract = new ethers.Contract(
+          config.contracts.serviceRegistry,
+          ServiceRegistry.abi,
+          signer,
+        );
+
         // Get platform signature
         const signature = await getServiceSignature({ profileId: Number(user?.id), cid });
 
         let tx;
 
         if (isActiveDelegate) {
-          const response = await delegateCreateService(user.id, user.address, cid);
+          const response = existingService
+            ? await delegateUpdateService(user.id, user.address, existingService.id, cid)
+            : await delegateCreateService(user.id, user.address, cid);
           tx = response.data.transaction;
         } else {
-          const contract = new ethers.Contract(
-            config.contracts.serviceRegistry,
-            ServiceRegistry.abi,
-            signer,
-          );
-
-          tx = await contract.createService(
-            user?.id,
-            process.env.NEXT_PUBLIC_PLATFORM_ID,
-            cid,
-            signature,
-          );
+          tx = existingService
+            ? await contract.updateServiceData(user?.id, existingService.id, cid)
+            : await contract.createService(
+                user?.id,
+                process.env.NEXT_PUBLIC_PLATFORM_ID,
+                cid,
+                signature,
+              );
         }
 
         const newId = await createMultiStepsTransactionToast(
           {
-            pending: 'Creating your job...',
-            success: 'Congrats! Your job has been added',
-            error: 'An error occurred while creating your job',
+            pending: `${existingService ? 'Updating' : 'Creating'} your job...`,
+            success: `Congrats! Your job has been ${existingService ? 'updated' : 'created'} !`,
+            error: `An error occurred while ${existingService ? 'Updating' : 'Creating'} your job`,
           },
           provider,
           tx,
@@ -155,7 +175,11 @@ function ServiceForm() {
   };
 
   return (
-    <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
+    <Formik
+      initialValues={initialValues}
+      enableReinitialize={true}
+      onSubmit={onSubmit}
+      validationSchema={validationSchema}>
       {({ isSubmitting, setFieldValue }) => (
         <Form>
           <div className='grid grid-cols-1 gap-6 border border-gray-200 rounded-md p-8'>
@@ -190,7 +214,10 @@ function ServiceForm() {
             <label className='block'>
               <span className='text-gray-700'>Keywords</span>
 
-              <SkillsInput entityId={'keywords'} />
+              <SkillsInput
+                initialValues={existingService?.description?.keywords_raw}
+                entityId={'keywords'}
+              />
 
               <Field type='hidden' id='keywords' name='keywords' />
             </label>
@@ -242,5 +269,4 @@ function ServiceForm() {
     </Formik>
   );
 }
-
 export default ServiceForm;
