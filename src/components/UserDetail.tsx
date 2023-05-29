@@ -77,7 +77,7 @@ function UserDetail({ user }: { user: IUser }) {
               href={`/dashboard/incomes`}>
               Your incomes
             </Link>
-            <DelegateModal />
+            {user && <DelegateModal user={user} />}
           </div>
         </div>
       )}

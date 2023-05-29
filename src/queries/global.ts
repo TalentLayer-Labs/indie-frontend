@@ -59,3 +59,15 @@ export const getAllowedTokenList = (): Promise<any> => {
       `;
   return processRequest(query);
 };
+
+export const getAllowedToken = (address: string): Promise<any> => {
+  const query = `
+      {
+         tokens(where: {allowed: true, address:"${address}"}) {
+            decimals
+            minimumTransactionAmount
+        }
+      }
+      `;
+  return processRequest(query);
+};
