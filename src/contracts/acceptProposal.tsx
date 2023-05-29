@@ -22,7 +22,6 @@ export const validateProposal = async (
     TalentLayerEscrow.abi,
     signer,
   );
-  console.log('metaEvidenceCid', metaEvidenceCid);
 
   try {
     if (rateToken === ethers.constants.AddressZero) {

@@ -11,7 +11,6 @@ const useIpfsJsonData = (cid: false | string): any => {
           return;
         }
         const response = await readFromIpfs(cid);
-        console.log('response', response);
         if (response) {
           setFile(response);
         }
