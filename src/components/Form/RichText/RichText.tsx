@@ -28,6 +28,7 @@ const RichText = () => {
   return (
     <div>
       <DynamicTextEditor
+        // TODO passer turndown de val
         setFieldValue={val => formikProps.setFieldValue('about', val)}
         value={formik.values.about}
       />
