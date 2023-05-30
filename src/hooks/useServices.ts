@@ -59,7 +59,6 @@ const useServices = (
             numberPerPage,
             offset,
           });
-          console.log('toto', response);
 
           newServices = response?.data?.data?.services;
         }
