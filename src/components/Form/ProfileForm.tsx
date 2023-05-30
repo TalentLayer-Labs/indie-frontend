@@ -72,6 +72,9 @@ function ProfileForm({ callback }: { callback?: () => void }) {
           }),
         );
 
+        console.log('cid == ', cid);
+        console.log('user.id == ', user.id);
+
         let tx;
         if (isActiveDelegate) {
           const response = await delegateUpdateProfileData(user.id, user.address, cid);
