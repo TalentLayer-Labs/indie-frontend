@@ -1,5 +1,3 @@
-/* eslint-disable no-console */
-import { strict } from 'assert';
 import axios from 'axios';
 import { ServiceStatusEnum } from '../../../types';
 
@@ -11,12 +9,14 @@ export const getFilteredServicesByKeywords = async (
   offset?: number,
 ): Promise<any> => {
   try {
-    return await axios.post('/api/services/filtered', {
-      serviceStatus,
-      buyerId,
-      sellerId,
-      numberPerPage,
-      offset,
+    return await axios.get('/api/services/filtered', {
+      params: {
+        serviceStatus,
+        buyerId,
+        sellerId,
+        numberPerPage,
+        offset,
+      },
     });
   } catch (err) {
     console.error(err);

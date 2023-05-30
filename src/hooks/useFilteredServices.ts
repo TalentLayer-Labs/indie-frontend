@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { getServices, searchServices } from '../queries/services';
 import { IService, ServiceStatusEnum } from '../types';
+import { getFilteredServicesByKeywords } from '../pages/api/services/request';
 
-const useServices = (
+const useFilteredServices = (
   serviceStatus?: ServiceStatusEnum,
   buyerId?: string,
   sellerId?: string,
@@ -52,16 +53,15 @@ const useServices = (
             );
           }
         } else {
-          response = await getServices({
+          response = await getFilteredServicesByKeywords(
             serviceStatus,
             buyerId,
             sellerId,
             numberPerPage,
             offset,
-          });
-          console.log('toto', response);
+          );
 
-          newServices = response?.data?.data?.services;
+          newServices = response?.data?.services;
         }
 
         if (offset === 0) {
@@ -91,4 +91,4 @@ const useServices = (
   return { hasMoreData: hasMoreData, services, loading, loadMore };
 };
 
-export default useServices;
+export default useFilteredServices;

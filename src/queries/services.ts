@@ -1,6 +1,5 @@
 import { ServiceStatusEnum } from '../types';
 import { processRequest } from '../utils/graphql';
-import keywordFilter from '../pages/api/services/filter.json';
 
 interface IProps {
   serviceStatus?: ServiceStatusEnum;
@@ -10,6 +9,7 @@ interface IProps {
   offset?: number;
   searchQuery?: string;
   platformId?: string;
+  keywordList?: string[];
 }
 
 const serviceQueryFields = `
@@ -71,8 +71,8 @@ const getFilteredServiceCondition = (params: IProps) => {
   if (params.sellerId) condition += `seller: "${params.sellerId}",`;
   if (params.platformId) condition += `platform: "${params.platformId}",`;
 
-  if (keywordFilter.keywords && keywordFilter.keywords.length > 0) {
-    let keywordConditions = keywordFilter.keywords.map(
+  if (params.keywordList && params.keywordList.length > 0) {
+    let keywordConditions = params.keywordList.map(
       keyword => `{keywords_raw_contains: "${keyword}"}`,
     );
     condition += `description_: { or: [${keywordConditions.join(', ')}]},`;
