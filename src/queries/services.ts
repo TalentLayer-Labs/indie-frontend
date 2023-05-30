@@ -65,24 +65,20 @@ const serviceDescriptionQueryFields = `
 
 const getFilteredServiceCondition = (params: IProps) => {
   let condition = 'where: {';
-  let conditions = [];
-  if (params.serviceStatus) conditions.push(`status: "${params.serviceStatus}"`);
-  if (params.buyerId) conditions.push(`buyer: "${params.buyerId}"`);
-  if (params.sellerId) conditions.push(`seller: "${params.sellerId}"`);
-  if (params.platformId) conditions.push(`platform: "${params.platformId}"`);
+
+  if (params.serviceStatus) condition += `status: "${params.serviceStatus}",`;
+  if (params.buyerId) condition += `buyer: "${params.buyerId}",`;
+  if (params.sellerId) condition += `seller: "${params.sellerId}",`;
+  if (params.platformId) condition += `platform: "${params.platformId}",`;
 
   if (keywordFilter.keywords && keywordFilter.keywords.length > 0) {
     let keywordConditions = keywordFilter.keywords.map(
       keyword => `{keywords_raw_contains: "${keyword}"}`,
     );
-    conditions.push(`description_: { or: [${keywordConditions.join(', ')}]}`);
+    condition += `description_: { or: [${keywordConditions.join(', ')}]},`;
   }
 
-  condition += conditions.join(', ');
   condition += '}';
-
-  console.log('condition', condition);
-  console.log('keywordFilter', keywordFilter.keywords);
 
   return condition === 'where: {}' ? '' : `, ${condition}`;
 };
