@@ -64,13 +64,27 @@ const serviceDescriptionQueryFields = `
 `;
 
 const getFilteredServiceCondition = (params: IProps) => {
-  let condition = ', where: {';
-  condition += params.serviceStatus ? `status: "${params.serviceStatus}"` : '';
-  condition += params.buyerId ? `, buyer: "${params.buyerId}"` : '';
-  condition += params.sellerId ? `, seller: "${params.sellerId}"` : '';
-  condition += params.platformId ? `, platform: "${params.platformId}"` : '';
+  let condition = 'where: {';
+  let conditions = [];
+  if (params.serviceStatus) conditions.push(`status: "${params.serviceStatus}"`);
+  if (params.buyerId) conditions.push(`buyer: "${params.buyerId}"`);
+  if (params.sellerId) conditions.push(`seller: "${params.sellerId}"`);
+  if (params.platformId) conditions.push(`platform: "${params.platformId}"`);
+
+  if (keywordFilter.keywords && keywordFilter.keywords.length > 0) {
+    let keywordConditions = keywordFilter.keywords.map(
+      keyword => `{keywords_raw_contains: "${keyword}"}`,
+    );
+    conditions.push(`description_: { or: [${keywordConditions.join(', ')}]}`);
+  }
+
+  condition += conditions.join(', ');
   condition += '}';
-  return condition === ', where: {}' ? '' : condition;
+
+  console.log('condition', condition);
+  console.log('keywordFilter', keywordFilter.keywords);
+
+  return condition === 'where: {}' ? '' : `, ${condition}`;
 };
 
 const getFilteredServiceDescriptionCondition = (params: IProps) => {
@@ -100,26 +114,6 @@ export const getServices = (params: IProps): Promise<any> => {
     }`;
 
   return processRequest(query);
-};
-
-export const getFilteredServices = (params: IProps): Promise<any> => {
-  const pagination = params.numberPerPage
-    ? 'first: ' + params.numberPerPage + ', skip: ' + params.offset
-    : '';
-
-  const keywords = keywordFilter.keywords.join(',');
-
-  const query = `
-    {
-      services(orderBy: id, orderDirection: desc, ${pagination}, filter: { serviceDescription: { keywords_raw_contains: "${keywords}" } }) {
-        ${serviceQueryFields}
-        description {
-          ${serviceDescriptionQueryFields}
-        }
-      }
-    }`;
-
-  return processRequest(query);*  
 };
 
 export const searchServices = (params: IProps): Promise<any> => {

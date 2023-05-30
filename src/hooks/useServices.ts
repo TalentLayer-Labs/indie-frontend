@@ -52,14 +52,14 @@ const useServices = (
             );
           }
         } else {
-          response = await getFilteredServices({
+          response = await getServices({
             serviceStatus,
             buyerId,
             sellerId,
             numberPerPage,
             offset,
           });
-          console.log(response);
+          console.log('toto', response);
 
           newServices = response?.data?.data?.services;
         }
