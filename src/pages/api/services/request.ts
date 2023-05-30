@@ -11,7 +11,7 @@ export const getFilteredServicesByKeywords = async (
   offset?: number,
 ): Promise<any> => {
   try {
-    return await axios.post('/api/filter/filtered-services', {
+    return await axios.post('/api/services/filtered', {
       serviceStatus,
       buyerId,
       sellerId,

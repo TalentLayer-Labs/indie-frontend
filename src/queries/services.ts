@@ -1,6 +1,6 @@
 import { ServiceStatusEnum } from '../types';
 import { processRequest } from '../utils/graphql';
-import keywordFilter from '../pages/api/filter/filter.json';
+import keywordFilter from '../pages/api/services/filter.json';
 
 interface IProps {
   serviceStatus?: ServiceStatusEnum;
