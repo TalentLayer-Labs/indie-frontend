@@ -18,7 +18,7 @@ function DelegateModal() {
   const delegateAddress = process.env.NEXT_PUBLIC_DELEGATE_ADDRESS as string;
 
   if (!user) {
-    return;
+    return null;
   }
 
   const checkDelegateState = async () => {

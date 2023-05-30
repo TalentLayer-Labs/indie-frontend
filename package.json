@@ -27,8 +27,10 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-draft-wysiwyg": "^1.15.0",
+    "react-markdown": "^8.0.7",
     "react-router-dom": "^6.4.2",
     "react-toastify": "^9.1.1",
+    "turndown": "^7.1.2",
     "wagmi": "^0.8.5",
     "yup": "^0.32.11"
   },
@@ -64,6 +66,7 @@
     "@types/draftjs-to-html": "^0.8.1",
     "@types/html-to-draftjs": "^1.4.0",
     "@types/react-draft-wysiwyg": "^1.13.4",
+    "@types/turndown": "^5.0.1",
     "@typescript-eslint/eslint-plugin": "^5.41.0",
     "@typescript-eslint/parser": "^5.41.0",
     "autoprefixer": "^10.4.12",

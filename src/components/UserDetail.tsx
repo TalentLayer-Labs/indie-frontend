@@ -8,6 +8,7 @@ import Loading from './Loading';
 import Stars from './Stars';
 import Image from 'next/image';
 import DelegateModal from './Modal/DelegateModal';
+import ReactMarkdown from 'react-markdown';
 
 function UserDetail({ user }: { user: IUser }) {
   const { user: currentUser } = useContext(TalentLayerContext);
@@ -49,9 +50,9 @@ function UserDetail({ user }: { user: IUser }) {
         <p className='text-sm text-gray-500 mt-4'>
           <strong>Skills:</strong> {userDescription?.skills_raw}
         </p>
-        <p className='text-sm text-gray-500 mt-4'>
-          <strong>About:</strong> {userDescription?.about}
-        </p>
+        <div className='text-sm text-gray-500 mt-4'>
+          <strong>About:</strong> <ReactMarkdown children={userDescription?.about || ''} />
+        </div>
         {userDescription?.role && (
           <p className='text-sm text-gray-500 mt-4'>
             <strong>Role:</strong> {userDescription?.role}
