@@ -33,12 +33,15 @@ function Dispute() {
       </p>
 
       <Steps targetTitle={'Access the dispute dashboard'} />
-      {user?.id !== proposal?.service.buyer.id && user?.id !== proposal?.seller.id ? (
+      {account?.isConnected &&
+      user?.id !== proposal?.service.buyer.id &&
+      user?.id !== proposal?.seller.id ? (
         <div className={'p-8'}>
-          <h2 className='mb-2 text-xl text-gray-900'>Your are not related to this transaction</h2>
+          <h2 className='mb-2 text-xl text-gray-900'>You are not related to this transaction</h2>
         </div>
-      ) : (transaction && !transaction?.arbitrator) ||
-        (transaction && transaction?.arbitrator === ethers.constants.AddressZero) ? (
+      ) : account?.isConnected &&
+        transaction &&
+        (!transaction?.arbitrator || transaction?.arbitrator === ethers.constants.AddressZero) ? (
         <div className={'p-8'}>
           <h2 className='mb-2 text-xl text-gray-900'>
             Your platform has not implemented an arbitrator, you cannot raise a dispute yet :(
