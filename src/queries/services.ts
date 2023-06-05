@@ -78,10 +78,12 @@ const getFilteredServiceCondition = (params: IProps) => {
     condition += `description_: { or: [${keywordConditions.join(', ')}]},`;
   }
 
+  console.log('params.searchQuery', params.searchQuery);
+
   // Add a searchQuery filter
-  // if (params.searchQuery) {
-  //   condition += `description_: { or: [{title_contains: "${params.searchQuery}"}, {about_contains: "${params.searchQuery}"}]},`;
-  // }
+  if (params.searchQuery) {
+    condition += `description_: { or: [{keywords_raw_contains: "${params.searchQuery}"}]},`;
+  }
 
   condition += '}';
 
