@@ -116,6 +116,8 @@ export const getServices = (params: IProps): Promise<any> => {
       }
     }`;
 
+  console.log('query', query);
+
   return processRequest(query);
 };
 
