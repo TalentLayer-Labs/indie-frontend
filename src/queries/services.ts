@@ -71,6 +71,7 @@ const getFilteredServiceCondition = (params: IProps) => {
   if (params.sellerId) condition += `seller: "${params.sellerId}",`;
   if (params.platformId) condition += `platform: "${params.platformId}",`;
 
+  // Filter by keyword
   if (params.keywordList && params.keywordList.length > 0) {
     let keywordConditions = params.keywordList.map(
       keyword => `{keywords_raw_contains: "${keyword}"}`,
@@ -78,26 +79,22 @@ const getFilteredServiceCondition = (params: IProps) => {
     condition += `description_: { or: [${keywordConditions.join(', ')}]},`;
   }
 
-  console.log('params.searchQuery', params.searchQuery);
-
-  // Add a searchQuery filter
-  if (params.searchQuery) {
+  // Add a searchQuery filter only if there are keyword filters
+  if (params.keywordList && params.keywordList.length > 0 && params.searchQuery) {
+    let keywordConditions = params.keywordList.map(
+      keyword => `{keywords_raw_contains: "${keyword}"}`,
+    );
+    condition += `description_: { and: [ { or: [${keywordConditions.join(
+      ', ',
+    )}]}, {keywords_raw_contains: "${params.searchQuery}"} ] },`;
+  } else if (params.searchQuery) {
+    // If there are no keyword filters, add the searchQuery filter as usual
     condition += `description_: { or: [{keywords_raw_contains: "${params.searchQuery}"}]},`;
   }
 
   condition += '}';
 
   return condition === 'where: {}' ? '' : `, ${condition}`;
-};
-
-const getFilteredServiceDescriptionCondition = (params: IProps) => {
-  let condition = ', where: {';
-  condition += params.serviceStatus ? `service_: {status:"${params.serviceStatus}"}` : '';
-  condition += params.buyerId ? `, buyer: "${params.buyerId}"` : '';
-  condition += params.sellerId ? `, seller: "${params.sellerId}"` : '';
-  condition += params.platformId ? `, platform: "${params.platformId}"` : '';
-  condition += '}';
-  return condition === ', where: {}' ? '' : condition;
 };
 
 export const getServices = (params: IProps): Promise<any> => {
@@ -118,40 +115,5 @@ export const getServices = (params: IProps): Promise<any> => {
 
   console.log('query', query);
 
-  return processRequest(query);
-};
-
-export const searchServices = (params: IProps): Promise<any> => {
-  const pagination = params.numberPerPage
-    ? 'first: ' + params.numberPerPage + ' skip: ' + params.offset
-    : '';
-  const query = `
-    {
-      serviceDescriptionSearchRank(
-        text: "${params.searchQuery}",
-        orderBy: id orderDirection: desc ${pagination} ${getFilteredServiceDescriptionCondition(
-    params,
-  )}
-      ){
-        ${serviceDescriptionQueryFields}
-        service {
-          ${serviceQueryFields}
-        }
-      }
-    }`;
-  return processRequest(query);
-};
-
-export const getServiceById = (id: string): Promise<any> => {
-  const query = `
-    {
-      service(id: "${id}") {
-        ${serviceQueryFields}
-        description {
-          ${serviceDescriptionQueryFields}
-        }
-      }
-    }
-    `;
   return processRequest(query);
 };
