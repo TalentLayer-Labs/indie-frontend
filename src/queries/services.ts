@@ -80,7 +80,6 @@ const getFilteredServiceCondition = (params: IProps) => {
       .map(keyword => `{keywords_raw_contains: "${keyword}"}`)
       .join(', ');
   }
-  console.log('keywordConditions', keywordConditions);
 
   // Prepare description_ filter
   let descriptionCondition = '';
