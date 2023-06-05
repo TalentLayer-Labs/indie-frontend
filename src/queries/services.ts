@@ -97,6 +97,9 @@ export const getServices = (params: IProps): Promise<any> => {
   const pagination = params.numberPerPage
     ? 'first: ' + params.numberPerPage + ', skip: ' + params.offset
     : '';
+
+  if (params.searchQuery) return searchServices(params);
+
   const query = `
     {
       services(orderBy: id, orderDirection: desc ${pagination} ${getFilteredServiceCondition(

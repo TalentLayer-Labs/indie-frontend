@@ -14,6 +14,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const sellerId = query.sellerId as string;
   const numberPerPage = Number(query.numberPerPage);
   const offset = Number(query.offset);
+  const searchQuery = query.searchQuery as string;
 
   try {
     let response = await getServices({
@@ -23,6 +24,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       numberPerPage,
       offset,
       keywordList,
+      searchQuery,
     });
 
     const filteredServices = response?.data?.data?.services;

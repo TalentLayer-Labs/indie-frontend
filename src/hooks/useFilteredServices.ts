@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { getServices, searchServices } from '../queries/services';
 import { IService, ServiceStatusEnum } from '../types';
 import { getFilteredServicesByKeywords } from '../pages/api/services/request';
 
@@ -31,38 +30,17 @@ const useFilteredServices = (
         setLoading(true);
         let response;
         let newServices: IService[] = [];
-        if (searchQuery) {
-          response = await searchServices({
-            serviceStatus,
-            buyerId,
-            sellerId,
-            numberPerPage,
-            offset,
-            searchQuery,
-          });
-          if (response?.data?.data?.serviceDescriptionSearchRank.length > 0) {
-            newServices = response.data.data.serviceDescriptionSearchRank.map(
-              (serviceDescription: { service: any }) => {
-                return {
-                  ...serviceDescription.service,
-                  description: {
-                    ...serviceDescription,
-                  },
-                };
-              },
-            );
-          }
-        } else {
-          response = await getFilteredServicesByKeywords(
-            serviceStatus,
-            buyerId,
-            sellerId,
-            numberPerPage,
-            offset,
-          );
 
-          newServices = response?.data?.services;
-        }
+        response = await getFilteredServicesByKeywords(
+          serviceStatus,
+          buyerId,
+          sellerId,
+          numberPerPage,
+          offset,
+          searchQuery,
+        );
+
+        newServices = response?.data?.services;
 
         if (offset === 0) {
           setServices(newServices || []);
