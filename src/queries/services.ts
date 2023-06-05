@@ -78,6 +78,11 @@ const getFilteredServiceCondition = (params: IProps) => {
     condition += `description_: { or: [${keywordConditions.join(', ')}]},`;
   }
 
+  // Add a searchQuery filter
+  // if (params.searchQuery) {
+  //   condition += `description_: { or: [{title_contains: "${params.searchQuery}"}, {about_contains: "${params.searchQuery}"}]},`;
+  // }
+
   condition += '}';
 
   return condition === 'where: {}' ? '' : `, ${condition}`;
@@ -97,9 +102,6 @@ export const getServices = (params: IProps): Promise<any> => {
   const pagination = params.numberPerPage
     ? 'first: ' + params.numberPerPage + ', skip: ' + params.offset
     : '';
-
-  // if (params.searchQuery) return {};
-
   const query = `
     {
       services(orderBy: id, orderDirection: desc ${pagination} ${getFilteredServiceCondition(
