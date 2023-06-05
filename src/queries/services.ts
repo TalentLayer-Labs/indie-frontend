@@ -63,6 +63,35 @@ const serviceDescriptionQueryFields = `
   }
 `;
 
+// **********************  0 - initial query
+// const getFilteredServiceCondition = (params: IProps) => {
+//   let condition = 'where: {';
+
+//   if (params.serviceStatus) condition += `status: "${params.serviceStatus}",`;
+//   if (params.buyerId) condition += `buyer: "${params.buyerId}",`;
+//   if (params.sellerId) condition += `seller: "${params.sellerId}",`;
+//   if (params.platformId) condition += `platform: "${params.platformId}",`;
+
+//   if (params.keywordList && params.keywordList.length > 0) {
+//     let keywordConditions = params.keywordList.map(
+//       keyword => `{keywords_raw_contains: "${keyword}"}`,
+//     );
+//     condition += `description_: { or: [${keywordConditions.join(', ')}]},`;
+//   }
+
+//   console.log('params.searchQuery', params.searchQuery);
+
+//   // Add a searchQuery filter
+//   if (params.searchQuery) {
+//     condition += `description_: { or: [{keywords_raw_contains: "${params.searchQuery}"}]},`;
+//   }
+
+//   condition += '}';
+
+//   return condition === 'where: {}' ? '' : `, ${condition}`;
+// };
+
+// **********************  1 - we apply each case of filtering
 const getFilteredServiceCondition = (params: IProps) => {
   let condition = 'where: {';
 
@@ -97,6 +126,43 @@ const getFilteredServiceCondition = (params: IProps) => {
   return condition === 'where: {}' ? '' : `, ${condition}`;
 };
 
+// **********************  2 - We replace the keyword filter by the searchQuery filter
+// const getFilteredServiceCondition = (params: IProps) => {
+//   let condition = 'where: {';
+
+//   if (params.serviceStatus) condition += `status: "${params.serviceStatus}",`;
+//   if (params.buyerId) condition += `buyer: "${params.buyerId}",`;
+//   if (params.sellerId) condition += `seller: "${params.sellerId}",`;
+//   if (params.platformId) condition += `platform: "${params.platformId}",`;
+
+//   let keywordConditions: string[] = [];
+
+//   // If searchQuery exists, it becomes the only keyword. Else, use keywords from keywordList.
+//   if (params.searchQuery) {
+//     keywordConditions = [`{keywords_raw_contains: "${params.searchQuery}"}`];
+//   } else if (params.keywordList && params.keywordList.length > 0) {
+//     keywordConditions = params.keywordList.map(keyword => `{keywords_raw_contains: "${keyword}"}`);
+//   }
+
+//   // Add keywordConditions to condition
+//   if (keywordConditions.length > 0) {
+//     condition += `description_: { or: [${keywordConditions.join(', ')}]},`;
+//   }
+
+//   condition += '}';
+//   return condition === 'where: {}' ? '' : `, ${condition}`;
+// };
+
+const getFilteredServiceDescriptionCondition = (params: IProps) => {
+  let condition = ', where: {';
+  condition += params.serviceStatus ? `service_: {status:"${params.serviceStatus}"}` : '';
+  condition += params.buyerId ? `, buyer: "${params.buyerId}"` : '';
+  condition += params.sellerId ? `, seller: "${params.sellerId}"` : '';
+  condition += params.platformId ? `, platform: "${params.platformId}"` : '';
+  condition += '}';
+  return condition === ', where: {}' ? '' : condition;
+};
+
 export const getServices = (params: IProps): Promise<any> => {
   const pagination = params.numberPerPage
     ? 'first: ' + params.numberPerPage + ', skip: ' + params.offset
@@ -115,5 +181,40 @@ export const getServices = (params: IProps): Promise<any> => {
 
   console.log('query', query);
 
+  return processRequest(query);
+};
+
+export const searchServices = (params: IProps): Promise<any> => {
+  const pagination = params.numberPerPage
+    ? 'first: ' + params.numberPerPage + ' skip: ' + params.offset
+    : '';
+  const query = `
+    {
+      serviceDescriptionSearchRank(
+        text: "${params.searchQuery}",
+        orderBy: id orderDirection: desc ${pagination} ${getFilteredServiceDescriptionCondition(
+    params,
+  )}
+      ){
+        ${serviceDescriptionQueryFields}
+        service {
+          ${serviceQueryFields}
+        }
+      }
+    }`;
+  return processRequest(query);
+};
+
+export const getServiceById = (id: string): Promise<any> => {
+  const query = `
+    {
+      service(id: "${id}") {
+        ${serviceQueryFields}
+        description {
+          ${serviceDescriptionQueryFields}
+        }
+      }
+    }
+    `;
   return processRequest(query);
 };
