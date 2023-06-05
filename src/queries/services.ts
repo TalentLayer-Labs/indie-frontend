@@ -72,11 +72,13 @@ const getFilteredServiceCondition = (params: IProps) => {
   if (params.sellerId) condition += `seller: "${params.sellerId}",`;
   if (params.platformId) condition += `platform: "${params.platformId}",`;
 
-  let keywordConditions = '';
+  let keywordFilter = '';
 
   // Filter by keyword
+  // This code filters the list of keywords to only those that are included in the keyword list.
+
   if (params.keywordList && params.keywordList.length > 0) {
-    keywordConditions = params.keywordList
+    keywordFilter = params.keywordList
       .map(keyword => `{keywords_raw_contains: "${keyword}"}`)
       .join(', ');
   }
@@ -86,10 +88,10 @@ const getFilteredServiceCondition = (params: IProps) => {
   if (params.searchQuery) {
     descriptionCondition += `{keywords_raw_contains: "${params.searchQuery}"}`;
   }
-  if (keywordConditions) {
+  if (keywordFilter) {
     descriptionCondition = descriptionCondition
-      ? `{ and: [ { or: [${keywordConditions}]}, ${descriptionCondition} ] }`
-      : `{ or: [${keywordConditions}]}`;
+      ? `{ and: [ { or: [${keywordFilter}]}, ${descriptionCondition} ] }`
+      : `{ or: [${keywordFilter}]}`;
   }
 
   if (descriptionCondition) {
