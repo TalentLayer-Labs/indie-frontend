@@ -98,7 +98,7 @@ export const getServices = (params: IProps): Promise<any> => {
     ? 'first: ' + params.numberPerPage + ', skip: ' + params.offset
     : '';
 
-  if (params.searchQuery) return searchServices(params);
+  // if (params.searchQuery) return {};
 
   const query = `
     {
