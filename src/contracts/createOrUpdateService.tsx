@@ -12,6 +12,8 @@ import { NextRouter } from 'next/router';
 import { Provider } from '@wagmi/core';
 
 export const getServiceContract = (signer: Signer): Contract => {
+  // TODO Mumbai upgrade contracts
+  // TODO Then deploy new graph
   return new ethers.Contract(config.contracts.serviceRegistry, ServiceRegistry.abi, signer);
 };
 export const createOrUpdateService = async (
@@ -43,7 +45,6 @@ export const createOrUpdateService = async (
             userId,
             userAddress,
             existingServiceId,
-            //TODO parse in BigNumber
             referralAmount,
             token,
             cid,
