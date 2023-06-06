@@ -8,6 +8,7 @@ import Loading from './Loading';
 import Stars from './Stars';
 import Image from 'next/image';
 import DelegateModal from './Modal/DelegateModal';
+import Anima from '../modules/Anima/Anima';
 
 function UserDetail({ user }: { user: IUser }) {
   const { user: currentUser } = useContext(TalentLayerContext);
@@ -35,6 +36,7 @@ function UserDetail({ user }: { user: IUser }) {
             </div>
             <div className=''>
               <PohModule address={user.address} />
+              <Anima />
             </div>
           </div>
         </div>
