@@ -5,23 +5,15 @@ import { useContext, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useProvider, useSigner } from 'wagmi';
 import * as Yup from 'yup';
-import { config } from '../../config';
 import TalentLayerContext from '../../context/talentLayer';
-import ServiceRegistry from '../../contracts/ABI/TalentLayerService.json';
 import { postToIPFS } from '../../utils/ipfs';
-import { createMultiStepsTransactionToast, showErrorTransactionToast } from '../../utils/toast';
 import { parseRateAmount } from '../../utils/web3';
 import SubmitButton from './SubmitButton';
 import useAllowedTokens from '../../hooks/useAllowedTokens';
-import { getServiceSignature } from '../../utils/signature';
 import { IToken } from '../../types';
 import useServiceById from '../../hooks/useServiceById';
 import { SkillsInput } from './skills-input';
-import {
-  delegateCreateService,
-  delegateCreateServiceWithReferral,
-  delegateUpdateService,
-} from '../request';
+import { createOrUpdateService } from '../../contracts/createOrUpdateService';
 
 interface IFormValues {
   title: string;
@@ -33,15 +25,15 @@ interface IFormValues {
 }
 
 function ServiceForm({ serviceId }: { serviceId?: string }) {
-  const { open: openConnectModal } = useWeb3Modal();
   const { user, account } = useContext(TalentLayerContext);
-  const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
   const { data: signer } = useSigner({
     chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
   });
-  const existingService = useServiceById(serviceId as string);
-
+  const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
+  const { open: openConnectModal } = useWeb3Modal();
   const router = useRouter();
+
+  const existingService = useServiceById(serviceId as string);
   const allowedTokenList = useAllowedTokens();
   const existingToken = allowedTokenList.find(value => {
     return value.address === existingService?.description?.rateToken;
@@ -110,102 +102,37 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
     }: { setSubmitting: (isSubmitting: boolean) => void; resetForm: () => void },
   ) => {
     const token = allowedTokenList.find(token => token.address === values.rateToken);
-    if (account?.isConnected === true && provider && signer && token && user) {
-      try {
-        const parsedRateAmount = await parseRateAmount(
-          values.rateAmount.toString(),
-          values.rateToken,
-          token.decimals,
-        );
-        const parsedRateAmountString = parsedRateAmount.toString();
-        const cid = await postToIPFS(
-          JSON.stringify({
-            title: values.title,
-            about: values.about,
-            keywords: values.keywords,
-            role: 'buyer',
-            rateToken: values.rateToken,
-            rateAmount: parsedRateAmountString,
-          }),
-        );
-
-        const contract = new ethers.Contract(
-          config.contracts.serviceRegistry,
-          ServiceRegistry.abi,
-          signer,
-        );
-
-        // Get platform signature
-        const signature = await getServiceSignature({ profileId: Number(user?.id), cid });
-
-        let tx;
-
-        if (isActiveDelegate) {
-          const response = existingService
-            ? await delegateUpdateService(
-                user.id,
-                user.address,
-                existingService.id,
-                values.referralAmount,
-                values.rateToken,
-                cid,
-              )
-            : values.referralAmount === 0
-            ? await delegateCreateService(user.id, user.address, cid, values.rateToken)
-            : await delegateCreateServiceWithReferral(
-                user.id,
-                user.address,
-                cid,
-                values.rateToken,
-                values.referralAmount,
-              );
-          tx = response.data.transaction;
-        } else {
-          tx = existingService
-            ? await contract.updateService(
-                user?.id,
-                existingService.id,
-                values.referralAmount,
-                values.rateToken,
-                cid,
-              )
-            : values.referralAmount === 0
-            ? await contract.createService(
-                user?.id,
-                process.env.NEXT_PUBLIC_PLATFORM_ID,
-                cid,
-                signature,
-                token,
-              )
-            : await contract.createServiceWithReferral(
-                user?.id,
-                process.env.NEXT_PUBLIC_PLATFORM_ID,
-                cid,
-                signature,
-                values.rateToken,
-                values.referralAmount,
-              );
-        }
-
-        const newId = await createMultiStepsTransactionToast(
-          {
-            pending: `${existingService ? 'Updating' : 'Creating'} your job...`,
-            success: `Congrats! Your job has been ${existingService ? 'updated' : 'created'} !`,
-            error: `An error occurred while ${existingService ? 'Updating' : 'Creating'} your job`,
-          },
-          provider,
-          tx,
-          'service',
-          cid,
-        );
-        setSubmitting(false);
-        resetForm();
-        if (newId) {
-          router.push(`/services/${newId}`);
-        }
-      } catch (error) {
-        showErrorTransactionToast(error);
-      }
+    if (account?.isConnected === true && signer && provider && token && user) {
+      const parsedRateAmount = await parseRateAmount(
+        values.rateAmount.toString(),
+        values.rateToken,
+        token.decimals,
+      );
+      const parsedRateAmountString = parsedRateAmount.toString();
+      const cid = await postToIPFS(
+        JSON.stringify({
+          title: values.title,
+          about: values.about,
+          keywords: values.keywords,
+          role: 'buyer',
+          rateToken: values.rateToken,
+          rateAmount: parsedRateAmountString,
+        }),
+      );
+      await createOrUpdateService(
+        signer,
+        provider,
+        router,
+        user.id,
+        user.address,
+        existingService?.id,
+        BigNumber.from(values.referralAmount),
+        values.rateToken,
+        cid,
+        isActiveDelegate,
+        setSubmitting,
+        resetForm,
+      );
     } else {
       openConnectModal();
     }

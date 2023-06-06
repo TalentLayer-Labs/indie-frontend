@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 import axios from 'axios';
+import { BigNumber } from 'ethers';
 
 export const delegateCreateService = async (
   userId: string,
@@ -24,7 +25,7 @@ export const delegateCreateServiceWithReferral = async (
   userAddress: string,
   cid: string,
   token: string,
-  referralAmount: number,
+  referralAmount: BigNumber,
 ): Promise<any> => {
   try {
     return await axios.post('/api/delegate/create-service-referral', {
@@ -44,7 +45,7 @@ export const delegateUpdateService = async (
   userId: string,
   userAddress: string,
   serviceId: string,
-  referralAmount: number,
+  referralAmount: BigNumber,
   token: string,
   cid: string,
 ): Promise<any> => {
