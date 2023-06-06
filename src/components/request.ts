@@ -44,6 +44,8 @@ export const delegateUpdateService = async (
   userId: string,
   userAddress: string,
   serviceId: string,
+  referralAmount: number,
+  token: string,
   cid: string,
 ): Promise<any> => {
   try {
@@ -51,6 +53,8 @@ export const delegateUpdateService = async (
       userId,
       userAddress,
       serviceId,
+      referralAmount,
+      token,
       cid,
     });
   } catch (err) {

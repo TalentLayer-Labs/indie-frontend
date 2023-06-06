@@ -5,7 +5,7 @@ import TalentLayerService from '../../../contracts/ABI/TalentLayerService.json';
 import { getDelegationSigner, isPlatformAllowedToDelegate } from '../utils/delegate';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { userId, userAddress, serviceId, cid } = req.body;
+  const { userId, userAddress, serviceId, referralAmount, token, cid } = req.body;
 
   // @dev : you can add here all the checks you need to confirm the delegation for a user
   await isPlatformAllowedToDelegate(userAddress, res);
@@ -22,7 +22,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       signer,
     );
 
-    const transaction = await serviceRegistryContract.updateServiceData(userId, serviceId, cid);
+    const transaction = await serviceRegistryContract.updateServiceData(
+      userId,
+      serviceId,
+      referralAmount,
+      token,
+      cid,
+    );
 
     res.status(200).json({ transaction: transaction });
   } catch (error) {

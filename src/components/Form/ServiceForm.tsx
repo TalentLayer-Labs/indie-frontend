@@ -142,8 +142,14 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
 
         if (isActiveDelegate) {
           const response = existingService
-            ? //TODO update with new update fields
-              await delegateUpdateService(user.id, user.address, existingService.id, cid)
+            ? await delegateUpdateService(
+                user.id,
+                user.address,
+                existingService.id,
+                values.referralAmount,
+                values.rateToken,
+                cid,
+              )
             : values.referralAmount === 0
             ? await delegateCreateService(user.id, user.address, cid, values.rateToken)
             : await delegateCreateServiceWithReferral(
@@ -156,8 +162,13 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
           tx = response.data.transaction;
         } else {
           tx = existingService
-            ? //TODO update with new update fields
-              await contract.updateServiceData(user?.id, existingService.id, cid)
+            ? await contract.updateService(
+                user?.id,
+                existingService.id,
+                values.referralAmount,
+                values.rateToken,
+                cid,
+              )
             : values.referralAmount === 0
             ? await contract.createService(
                 user?.id,
