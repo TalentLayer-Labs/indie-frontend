@@ -12,6 +12,7 @@ export const delegateCreateService = async (
       userId,
       userAddress,
       cid,
+      token,
     });
   } catch (err) {
     console.error(err);
