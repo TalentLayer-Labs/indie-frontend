@@ -6,7 +6,7 @@ import { getServiceSignature } from '../../../utils/signature';
 import { getDelegationSigner, isPlatformAllowedToDelegate } from '../utils/delegate';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { userId, userAddress, cid } = req.body;
+  const { userId, userAddress, cid, token } = req.body;
 
   // @dev : you can add here all the checks you need to confirm the delegation for a user
   await isPlatformAllowedToDelegate(userAddress, res);
@@ -29,6 +29,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       process.env.NEXT_PUBLIC_PLATFORM_ID,
       cid,
       signature,
+      token,
     );
 
     res.status(200).json({ transaction: transaction });

@@ -5,12 +5,33 @@ export const delegateCreateService = async (
   userId: string,
   userAddress: string,
   cid: string,
+  token: string,
 ): Promise<any> => {
   try {
     return await axios.post('/api/delegate/create-service', {
       userId,
       userAddress,
       cid,
+    });
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+};
+export const delegateCreateServiceWithReferral = async (
+  userId: string,
+  userAddress: string,
+  cid: string,
+  token: string,
+  referralAmount: number,
+): Promise<any> => {
+  try {
+    return await axios.post('/api/delegate/create-service-referral', {
+      userId,
+      userAddress,
+      cid,
+      token,
+      referralAmount,
     });
   } catch (err) {
     console.error(err);

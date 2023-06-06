@@ -17,7 +17,11 @@ import { getServiceSignature } from '../../utils/signature';
 import { IToken } from '../../types';
 import useServiceById from '../../hooks/useServiceById';
 import { SkillsInput } from './skills-input';
-import { delegateCreateService, delegateUpdateService } from '../request';
+import {
+  delegateCreateService,
+  delegateCreateServiceWithReferral,
+  delegateUpdateService,
+} from '../request';
 
 interface IFormValues {
   title: string;
@@ -25,6 +29,7 @@ interface IFormValues {
   keywords: string;
   rateToken: string;
   rateAmount: number;
+  referralAmount: number;
 }
 
 function ServiceForm({ serviceId }: { serviceId?: string }) {
@@ -48,7 +53,7 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
     title: existingService?.description?.title || '',
     about: existingService?.description?.about || '',
     keywords: existingService?.description?.keywords_raw || '',
-    rateToken: existingService?.description?.rateToken || '',
+    rateToken: existingService?.token.address || '',
     rateAmount:
       existingService?.description?.rateAmount &&
       allowedTokenList &&
@@ -61,6 +66,7 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
             ),
           )
         : 0,
+    referralAmount: existingService?.referralAmount || 0,
   };
 
   const validationSchema = Yup.object({
@@ -136,17 +142,37 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
 
         if (isActiveDelegate) {
           const response = existingService
-            ? await delegateUpdateService(user.id, user.address, existingService.id, cid)
-            : await delegateCreateService(user.id, user.address, cid);
+            ? //TODO update with new update fields
+              await delegateUpdateService(user.id, user.address, existingService.id, cid)
+            : values.referralAmount === 0
+            ? await delegateCreateService(user.id, user.address, cid, values.rateToken)
+            : await delegateCreateServiceWithReferral(
+                user.id,
+                user.address,
+                cid,
+                values.rateToken,
+                values.referralAmount,
+              );
           tx = response.data.transaction;
         } else {
           tx = existingService
-            ? await contract.updateServiceData(user?.id, existingService.id, cid)
-            : await contract.createService(
+            ? //TODO update with new update fields
+              await contract.updateServiceData(user?.id, existingService.id, cid)
+            : values.referralAmount === 0
+            ? await contract.createService(
                 user?.id,
                 process.env.NEXT_PUBLIC_PLATFORM_ID,
                 cid,
                 signature,
+                token,
+              )
+            : await contract.createServiceWithReferral(
+                user?.id,
+                process.env.NEXT_PUBLIC_PLATFORM_ID,
+                cid,
+                signature,
+                values.rateToken,
+                values.referralAmount,
               );
         }
 
@@ -261,6 +287,19 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
                 </span>
               </label>
             </div>
+            <label className='block'>
+              <span className='text-gray-700'>Referral amount (Opt)</span>
+              <Field
+                type='text'
+                id='referral'
+                name='referral'
+                className='mt-1 mb-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
+                placeholder=''
+              />
+              <span className='text-red-500'>
+                <ErrorMessage name='referral' />
+              </span>
+            </label>
 
             <SubmitButton isSubmitting={isSubmitting} label='Post' />
           </div>
