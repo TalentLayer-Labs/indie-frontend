@@ -23,6 +23,7 @@ interface IFormValues {
   rateAmount: number;
   expirationDate: number;
   videoUrl: string;
+  referrerId?: string;
 }
 
 const validationSchema = Yup.object({
@@ -75,6 +76,7 @@ function ProposalForm({
     rateAmount: existingRateTokenAmount || 0,
     expirationDate: existingExpirationDate || 15,
     videoUrl: existingProposal?.description?.video_url || '',
+    referrerId: (service.referralAmount && (router.query.referrerId as string)) || '',
   };
 
   const onSubmit = async (
@@ -245,7 +247,7 @@ function ProposalForm({
               </span>
             </label>
             <label className='block flex-1'>
-              <span className='text-gray-700'>Video URL (optionnal)</span>
+              <span className='text-gray-700'>Video URL (optional)</span>
               <Field
                 type='text'
                 id='videoUrl'
@@ -257,6 +259,23 @@ function ProposalForm({
                 <ErrorMessage name='videoUrl' />
               </span>
             </label>
+            {!!service.referralAmount && (
+              <>
+                <label className='block flex-1'>
+                  <span className='text-gray-700'>Referral id (optional)</span>
+                  <Field
+                    type='text'
+                    id='referrerId'
+                    name='referrerId'
+                    className='mt-1 mb-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
+                    placeholder='TalentLayer id of referrer'
+                  />
+                  <span className='text-red-500'>
+                    <ErrorMessage name='referrerId' />
+                  </span>
+                </label>
+              </>
+            )}
 
             <SubmitButton isSubmitting={isSubmitting} label='Post' />
           </div>
