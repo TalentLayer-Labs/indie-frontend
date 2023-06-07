@@ -57,9 +57,12 @@ function CreateOrEditProposal() {
       {userExists() &&
         account?.isConnected &&
         user &&
-        service.status === ServiceStatusEnum.Opened && (
+        service.status === ServiceStatusEnum.Opened &&
+        (user.id === service.buyer.id ? (
+          <p className='text-gray-500 py-4'>You can't create a proposal for your own service</p>
+        ) : (
           <ProposalForm user={user} service={service} existingProposal={existingProposal} />
-        )}
+        ))}
     </div>
   );
 }
