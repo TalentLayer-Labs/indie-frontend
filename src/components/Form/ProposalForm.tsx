@@ -76,7 +76,11 @@ function ProposalForm({
     rateAmount: existingRateTokenAmount || 0,
     expirationDate: existingExpirationDate || 15,
     videoUrl: existingProposal?.description?.video_url || '',
-    referrerId: (service.referralAmount && (router.query.referrerId as string)) || '',
+    referrerId:
+      (service.referralAmount &&
+        (localStorage.getItem(`${service.id}-${user.id}`) ||
+          (router.query.referrerId as string))) ||
+      '',
   };
 
   const onSubmit = async (
