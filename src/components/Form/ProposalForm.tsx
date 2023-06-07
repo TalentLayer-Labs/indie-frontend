@@ -167,6 +167,8 @@ function ProposalForm({
         router.back();
       } catch (error) {
         showErrorTransactionToast(error);
+      } finally {
+        localStorage.setItem(`${service.id}-${user.id}`, values.referrerId || '0');
       }
     }
   };
