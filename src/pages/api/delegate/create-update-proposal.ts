@@ -10,7 +10,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     userId,
     userAddress,
     serviceId,
-    valuesRateToken,
     parsedRateAmountString,
     cid,
     convertExpirationDateString,
@@ -39,7 +38,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       transaction = await serviceRegistryContract.updateProposal(
         userId,
         serviceId,
-        valuesRateToken,
         parsedRateAmountString,
         cid,
         convertExpirationDateString,
@@ -54,7 +52,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       transaction = await serviceRegistryContract.createProposal(
         userId,
         serviceId,
-        valuesRateToken,
         parsedRateAmountString,
         process.env.NEXT_PUBLIC_PLATFORM_ID,
         cid,

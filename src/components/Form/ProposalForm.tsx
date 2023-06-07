@@ -115,13 +115,11 @@ function ProposalForm({
         });
 
         let tx;
-        console.log('isActiveDelegate', isActiveDelegate);
         if (isActiveDelegate) {
           const response = await delegateCreateOrUpdateProposal(
             user.id,
             user.address,
             service.id,
-            values.rateToken,
             parsedRateAmountString,
             cid,
             convertExpirationDateString,
@@ -138,7 +136,6 @@ function ProposalForm({
             ? await contract.updateProposal(
                 user.id,
                 service.id,
-                values.rateToken,
                 parsedRateAmountString,
                 cid,
                 convertExpirationDateString,
@@ -146,7 +143,6 @@ function ProposalForm({
             : await contract.createProposal(
                 user.id,
                 service.id,
-                values.rateToken,
                 parsedRateAmountString,
                 process.env.NEXT_PUBLIC_PLATFORM_ID,
                 cid,
@@ -215,19 +211,7 @@ function ProposalForm({
               </label>
               <label className='block'>
                 <span className='text-gray-700'>Token</span>
-                <Field
-                  component='select'
-                  id='rateToken'
-                  name='rateToken'
-                  className='mt-1 mb-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
-                  placeholder=''>
-                  <option value=''>Select a token</option>
-                  {allowedTokenList.map((token, index) => (
-                    <option key={index} value={token.address}>
-                      {token.symbol}
-                    </option>
-                  ))}
-                </Field>
+                <p className='my-2 block w-full text-gray-500'>{service.token.symbol}</p>
                 <span className='text-red-500'>
                   <ErrorMessage name='rateToken' />
                 </span>
