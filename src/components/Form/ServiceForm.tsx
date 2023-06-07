@@ -229,13 +229,13 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
               <span className='text-gray-700'>Referral amount (Opt)</span>
               <Field
                 type='text'
-                id='referral'
-                name='referral'
+                id='referralAmount'
+                name='referralAmount'
                 className='mt-1 mb-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
                 placeholder=''
               />
               <span className='text-red-500'>
-                <ErrorMessage name='referral' />
+                <ErrorMessage name='referralAmount' />
               </span>
             </label>
 

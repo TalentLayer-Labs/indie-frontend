@@ -78,11 +78,11 @@ function ServiceDetail({ service }: { service: IService }) {
               <p className='text-sm text-gray-500 mt-4'>
                 <strong>About:</strong> {service.description?.about}
               </p>
-              {service.description?.rateToken && service.description?.rateAmount && (
+              {service.token && service.description?.rateAmount && (
                 <p className='text-sm text-gray-500 mt-4'>
                   <strong>Budget:</strong>{' '}
                   {renderTokenAmountFromConfig(
-                    service.description.rateToken,
+                    service.token.address,
                     service.description.rateAmount,
                   )}
                 </p>
@@ -97,6 +97,12 @@ function ServiceDetail({ service }: { service: IService }) {
                   </span>
                 ))}
               </p>
+              {!!service.referralAmount && (
+                <p className='text-sm text-gray-500 mt-4'>
+                  <strong>Referral amount:</strong>{' '}
+                  <span className='text-sm text-gray-500 mt-4'>{service.referralAmount}</span>
+                </p>
+              )}
             </div>
           </div>
 

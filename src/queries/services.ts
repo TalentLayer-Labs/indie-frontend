@@ -16,6 +16,12 @@ const serviceQueryFields = `
   status
   createdAt
   cid
+  referralAmount
+  token {
+    name
+    symbol
+    address
+  }
   transaction {
     id
   }
