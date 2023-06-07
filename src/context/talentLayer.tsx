@@ -2,7 +2,6 @@ import { createContext, ReactNode, useEffect, useMemo, useState } from 'react';
 import { useAccount } from 'wagmi';
 import { getUserByAddress } from '../queries/users';
 import { IAccount, IUser } from '../types';
-import { config } from '../config';
 
 const TalentLayerContext = createContext<{
   user?: IUser;
@@ -27,7 +26,7 @@ const TalentLayerProvider = ({ children }: { children: ReactNode }) => {
 
       try {
         const response = await getUserByAddress(account.address);
-        if (response?.data?.data?.users[0] !== null) {
+        if (response?.data?.data?.users[0]) {
           setUser(response.data.data.users[0]);
           setIsActiveDelegate(
             process.env.NEXT_PUBLIC_ACTIVE_DELEGATE &&
