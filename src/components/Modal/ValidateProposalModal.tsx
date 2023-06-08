@@ -6,22 +6,30 @@ import { FEE_RATE_DIVIDER } from '../../config';
 import { validateProposal } from '../../contracts/acceptProposal';
 import useFees from '../../hooks/useFees';
 import ContactButton from '../../modules/Messaging/components/ContactButton';
-import { IAccount, IProposal } from '../../types';
+import { IAccount, IProposal, IToken } from '../../types';
 import { renderTokenAmount } from '../../utils/conversion';
 import Step from '../Step';
 
-function ValidateProposalModal({ proposal, account }: { proposal: IProposal; account: IAccount }) {
+function ValidateProposalModal({
+  proposal,
+  account,
+  token,
+}: {
+  proposal: IProposal;
+  account: IAccount;
+  token: IToken;
+}) {
   const { data: signer } = useSigner({
     chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
   });
   const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
   const [show, setShow] = useState(false);
   const { data: ethBalance } = useBalance({ address: account.address });
-  const isProposalUseEth: boolean = proposal.rateToken.address === ethers.constants.AddressZero;
+  const isProposalUseEth: boolean = token.address === ethers.constants.AddressZero;
   const { data: tokenBalance } = useBalance({
     address: account.address,
     enabled: !isProposalUseEth,
-    token: proposal.rateToken.address,
+    token: token.address,
   });
 
   const originValidatedProposalPlatformId = proposal.platform.id;
@@ -52,7 +60,7 @@ function ValidateProposalModal({ proposal, account }: { proposal: IProposal; acc
       provider,
       proposal.service.id,
       proposal.seller.id,
-      proposal.rateToken.address,
+      token.address,
       proposal.cid,
       totalAmount,
     );
@@ -127,7 +135,7 @@ function ValidateProposalModal({ proposal, account }: { proposal: IProposal; acc
                   <div className='flex justify-between w-full'>
                     <p className='text-base leading-4 text-gray-800'>Job rate</p>
                     <p className='text-base  leading-4 text-gray-600'>
-                      {renderTokenAmount(proposal.rateToken, proposal.rateAmount)}
+                      {renderTokenAmount(token, proposal.rateAmount)}
                     </p>
                   </div>
                   <div className='flex justify-between items-center w-full'>
@@ -138,7 +146,7 @@ function ValidateProposalModal({ proposal, account }: { proposal: IProposal; acc
                       </span>
                     </p>
                     <p className='text-base  leading-4 text-gray-600'>
-                      +{renderTokenAmount(proposal.rateToken, originServiceFee.toString())}
+                      +{renderTokenAmount(token, originServiceFee.toString())}
                     </p>
                   </div>
                   <div className='flex justify-between items-center w-full'>
@@ -153,8 +161,7 @@ function ValidateProposalModal({ proposal, account }: { proposal: IProposal; acc
                       </span>
                     </p>
                     <p className='text-base  leading-4 text-gray-600'>
-                      +
-                      {renderTokenAmount(proposal.rateToken, originValidatedProposalFee.toString())}
+                      +{renderTokenAmount(token, originValidatedProposalFee.toString())}
                     </p>
                   </div>
                   <div className='flex justify-between items-center w-full'>
@@ -165,14 +172,14 @@ function ValidateProposalModal({ proposal, account }: { proposal: IProposal; acc
                       </span>
                     </p>
                     <p className='text-base  leading-4 text-gray-600'>
-                      +{renderTokenAmount(proposal.rateToken, protocolFee.toString())}
+                      +{renderTokenAmount(token, protocolFee.toString())}
                     </p>
                   </div>
                 </div>
                 <div className='flex justify-between items-center w-full'>
                   <p className='text-base font-semibold leading-4 text-gray-800'>Total</p>
                   <p className='text-base  font-semibold leading-4 text-gray-600'>
-                    {renderTokenAmount(proposal.rateToken, totalAmount.toString())}
+                    {renderTokenAmount(token, totalAmount.toString())}
                   </p>
                 </div>
               </div>

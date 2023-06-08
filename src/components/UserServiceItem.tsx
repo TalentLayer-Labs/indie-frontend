@@ -48,12 +48,9 @@ function UserServiceItem({ user, service }: { user: IUser; service: IService }) 
         </div>
 
         <div className='flex flex-row gap-4 justify-between items-center border-t border-gray-100 pt-4'>
-          {service.description?.rateToken && service.description?.rateAmount && (
+          {service.token && service.description?.rateAmount && (
             <p className='text-gray-900 font-bold line-clamp-1 max-w-[100px]'>
-              {renderTokenAmountFromConfig(
-                service.description.rateToken,
-                service.description.rateAmount,
-              )}
+              {renderTokenAmountFromConfig(service.token.address, service.description.rateAmount)}
             </p>
           )}
           <Link

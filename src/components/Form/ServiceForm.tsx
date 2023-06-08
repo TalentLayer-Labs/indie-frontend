@@ -36,7 +36,7 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
   const existingService = useServiceById(serviceId as string);
   const allowedTokenList = useAllowedTokens();
   const existingToken = allowedTokenList.find(value => {
-    return value.address === existingService?.description?.rateToken;
+    return value.address === existingService?.token.address;
   });
   const [selectedToken, setSelectedToken] = useState<IToken>();
   const { isActiveDelegate } = useContext(TalentLayerContext);
@@ -241,7 +241,7 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
             <label className='block'>
               <span className='text-gray-700'>Referral amount (Opt)</span>
               <Field
-                type='text'
+                type='number'
                 id='referralAmount'
                 name='referralAmount'
                 className='mt-1 mb-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'

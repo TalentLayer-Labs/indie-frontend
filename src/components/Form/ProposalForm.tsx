@@ -60,9 +60,7 @@ function ProposalForm({
       (Number(existingProposal?.expirationDate) - Date.now() / 1000) / (60 * 60 * 24),
     );
 
-    const token = allowedTokenList.find(
-      token => token.address === existingProposal?.rateToken.address,
-    );
+    const token = allowedTokenList.find(token => token.address === service.token.address);
 
     existingRateTokenAmount = FixedNumber.from(
       ethers.utils.formatUnits(existingProposal.rateAmount, token?.decimals),

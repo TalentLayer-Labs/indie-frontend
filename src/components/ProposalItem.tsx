@@ -62,10 +62,10 @@ function ProposalItem({ proposal }: { proposal: IProposal }) {
         </div>
         <div className='flex flex-row gap-4 justify-between items-center border-t border-gray-100 pt-4'>
           <p className='text-gray-900 font-bold line-clamp-1 flex-1'>
-            {renderTokenAmount(proposal.rateToken, proposal.rateAmount)}
+            {renderTokenAmount(service.token, proposal.rateAmount)}
           </p>
           {account && isBuyer && proposal.status === ProposalStatusEnum.Pending && (
-            <ValidateProposalModal proposal={proposal} account={account} />
+            <ValidateProposalModal proposal={proposal} account={account} token={service.token} />
           )}
         </div>
         {account &&
