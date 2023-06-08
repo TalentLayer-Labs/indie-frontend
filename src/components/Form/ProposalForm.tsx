@@ -3,32 +3,26 @@ import { ErrorMessage, Field, Form, Formik } from 'formik';
 import { useRouter } from 'next/router';
 import { useProvider, useSigner } from 'wagmi';
 import * as Yup from 'yup';
-import { config } from '../../config';
-import ServiceRegistry from '../../contracts/ABI/TalentLayerService.json';
 import { IProposal, IService, IUser } from '../../types';
 import { postToIPFS } from '../../utils/ipfs';
-import { createMultiStepsTransactionToast, showErrorTransactionToast } from '../../utils/toast';
 import { parseRateAmount } from '../../utils/web3';
 import ServiceItem from '../ServiceItem';
 import SubmitButton from './SubmitButton';
 import useAllowedTokens from '../../hooks/useAllowedTokens';
-import { getProposalSignature } from '../../utils/signature';
-import { delegateCreateOrUpdateProposal } from '../request';
 import { useContext } from 'react';
 import TalentLayerContext from '../../context/talentLayer';
+import { createOrUpdateProposal } from '../../contracts/createOrUpdateProposal';
 
 interface IFormValues {
   about: string;
-  rateToken: string;
   rateAmount: number;
   expirationDate: number;
   videoUrl: string;
-  referrerId?: string;
+  referrerId: number;
 }
 
 const validationSchema = Yup.object({
   about: Yup.string().required('Please provide a description of your service'),
-  rateToken: Yup.string().required('Please select a payment token'),
   rateAmount: Yup.string().required('Please provide an amount for your service'),
   expirationDate: Yup.number().integer().required('Please provide an expiration date'),
 });
@@ -54,6 +48,11 @@ function ProposalForm({
     return <div>Loading...</div>;
   }
 
+  //Store referrerId in local storage if any
+  if (router.query.referrerId) {
+    localStorage.setItem(`${service.id}-${user.id}`, router.query.referrerId as string);
+  }
+
   let existingExpirationDate, existingRateTokenAmount;
 
   if (existingProposal) {
@@ -72,15 +71,15 @@ function ProposalForm({
 
   const initialValues: IFormValues = {
     about: existingProposal?.description?.about || '',
-    rateToken: existingProposal?.rateToken.address || '',
     rateAmount: existingRateTokenAmount || 0,
     expirationDate: existingExpirationDate || 15,
     videoUrl: existingProposal?.description?.video_url || '',
     referrerId:
       (service.referralAmount &&
-        (localStorage.getItem(`${service.id}-${user.id}`) ||
-          (router.query.referrerId as string))) ||
-      '',
+        (Number(localStorage.getItem(`${service.id}-${user.id}`)) ||
+          Number(router.query.referrerId as string) ||
+          Number(existingProposal?.referrer?.id))) ||
+      0,
   };
 
   const onSubmit = async (
@@ -90,90 +89,40 @@ function ProposalForm({
       resetForm,
     }: { setSubmitting: (isSubmitting: boolean) => void; resetForm: () => void },
   ) => {
-    const token = allowedTokenList.find(token => token.address === values.rateToken);
+    const token = allowedTokenList.find(token => token.address === service.token.address);
     if (provider && signer && token) {
-      try {
-        const parsedRateAmount = await parseRateAmount(
-          values.rateAmount.toString(),
-          values.rateToken,
-          token.decimals,
-        );
-        const now = Math.floor(Date.now() / 1000);
-        const convertExpirationDate = now + 60 * 60 * 24 * values.expirationDate;
-        const convertExpirationDateString = convertExpirationDate.toString();
+      const parsedRateAmount = await parseRateAmount(
+        values.rateAmount.toString(),
+        service.token.address,
+        token.decimals,
+      );
+      const now = Math.floor(Date.now() / 1000);
+      const convertExpirationDate = now + 60 * 60 * 24 * values.expirationDate;
+      const convertExpirationDateString = convertExpirationDate.toString();
 
-        const parsedRateAmountString = parsedRateAmount.toString();
+      const cid = await postToIPFS(
+        JSON.stringify({
+          about: values.about,
+          video_url: values.videoUrl,
+        }),
+      );
 
-        const cid = await postToIPFS(
-          JSON.stringify({
-            about: values.about,
-            video_url: values.videoUrl,
-          }),
-        );
-
-        // Get platform signature
-        const signature = await getProposalSignature({
-          profileId: Number(user.id),
-          cid,
-          serviceId: Number(service.id),
-        });
-
-        let tx;
-        if (isActiveDelegate) {
-          const response = await delegateCreateOrUpdateProposal(
-            user.id,
-            user.address,
-            service.id,
-            parsedRateAmountString,
-            cid,
-            convertExpirationDateString,
-            existingProposal?.status,
-          );
-          tx = response.data.transaction;
-        } else {
-          const contract = new ethers.Contract(
-            config.contracts.serviceRegistry,
-            ServiceRegistry.abi,
-            signer,
-          );
-          tx = existingProposal
-            ? await contract.updateProposal(
-                user.id,
-                service.id,
-                parsedRateAmountString,
-                cid,
-                convertExpirationDateString,
-              )
-            : await contract.createProposal(
-                user.id,
-                service.id,
-                parsedRateAmountString,
-                process.env.NEXT_PUBLIC_PLATFORM_ID,
-                cid,
-                convertExpirationDateString,
-                signature,
-              );
-        }
-
-        await createMultiStepsTransactionToast(
-          {
-            pending: 'Creating your proposal...',
-            success: 'Congrats! Your proposal has been added',
-            error: 'An error occurred while creating your proposal',
-          },
-          provider,
-          tx,
-          'proposal',
-          cid,
-        );
-        setSubmitting(false);
-        resetForm();
-        router.back();
-      } catch (error) {
-        showErrorTransactionToast(error);
-      } finally {
-        localStorage.setItem(`${service.id}-${user.id}`, values.referrerId || '0');
-      }
+      await createOrUpdateProposal(
+        signer,
+        provider,
+        router,
+        user.id,
+        user.address,
+        values.referrerId.toString(),
+        service.id,
+        convertExpirationDateString,
+        !!existingProposal,
+        parsedRateAmount,
+        cid,
+        isActiveDelegate,
+        setSubmitting,
+        resetForm,
+      );
     }
   };
 
@@ -249,10 +198,10 @@ function ProposalForm({
                 <ErrorMessage name='videoUrl' />
               </span>
             </label>
-            {!!service.referralAmount && (
+            {!!Number(service.referralAmount) && (
               <>
                 <label className='block flex-1'>
-                  <span className='text-gray-700'>Referral id (optional)</span>
+                  <span className='text-gray-700'>Referrer id (optional)</span>
                   <Field
                     type='text'
                     id='referrerId'
