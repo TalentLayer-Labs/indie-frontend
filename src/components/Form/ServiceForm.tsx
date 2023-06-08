@@ -58,7 +58,15 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
             ),
           )
         : 0,
-    referralAmount: existingService?.referralAmount || 0,
+    referralAmount:
+      existingService?.referralAmount && allowedTokenList && existingToken && existingToken.decimals
+        ? Number(
+            ethers.utils.formatUnits(
+              BigNumber.from(existingService?.referralAmount),
+              existingToken.decimals,
+            ),
+          )
+        : 0,
   };
 
   const validationSchema = Yup.object({
@@ -108,6 +116,11 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
         values.rateToken,
         token.decimals,
       );
+      const parsedReferralAmount = await parseRateAmount(
+        values.referralAmount.toString(),
+        values.rateToken,
+        token.decimals,
+      );
       const parsedRateAmountString = parsedRateAmount.toString();
       const cid = await postToIPFS(
         JSON.stringify({
@@ -126,7 +139,7 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
         user.id,
         user.address,
         existingService?.id,
-        BigNumber.from(values.referralAmount),
+        parsedReferralAmount,
         values.rateToken,
         cid,
         isActiveDelegate,
