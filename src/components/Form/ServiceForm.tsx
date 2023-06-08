@@ -128,7 +128,6 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
           about: values.about,
           keywords: values.keywords,
           role: 'buyer',
-          rateToken: values.rateToken,
           rateAmount: parsedRateAmountString,
         }),
       );
