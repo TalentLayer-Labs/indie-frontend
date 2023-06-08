@@ -100,11 +100,14 @@ function ServiceDetail({ service }: { service: IService }) {
                   </span>
                 ))}
               </p>
-              {!!service.referralAmount && (
+              {!!Number(service.referralAmount) && (
                 <div className={'flex flex-row mt-2'}>
                   <p className='text-sm text-gray-500 mt-1'>
                     <strong>Referral amount:</strong>{' '}
-                    <span className='text-sm text-gray-500 '>{service.referralAmount}</span>
+                    <span className='text-sm text-gray-500 '>
+                      {service.referralAmount &&
+                        renderTokenAmountFromConfig(service.token.address, service.referralAmount)}
+                    </span>
                   </p>
                   {!isCopied ? (
                     <span
