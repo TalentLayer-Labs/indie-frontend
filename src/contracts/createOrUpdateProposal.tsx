@@ -39,7 +39,6 @@ export const createOrUpdateProposal = async (
     let tx;
 
     if (isActiveDelegate) {
-      //TODO add referrer logic
       const response = await delegateCreateOrUpdateProposal(
         userId,
         userAddress,
@@ -48,6 +47,7 @@ export const createOrUpdateProposal = async (
         cid,
         expirationDate,
         existingProposal,
+        referrerId,
       );
       tx = response.data.transaction;
     } else {

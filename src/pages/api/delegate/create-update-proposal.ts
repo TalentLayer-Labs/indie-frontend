@@ -14,6 +14,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     cid,
     convertExpirationDateString,
     existingProposal,
+    referrerId,
   } = req.body;
 
   // @dev : you can add here all the checks you need to confirm the delegation for a user
@@ -32,33 +33,43 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       signer,
     );
 
+    const signature = await getProposalSignature({
+      profileId: Number(userId),
+      cid,
+      serviceId: Number(serviceId),
+    });
+
     let transaction;
 
-    if (existingProposal) {
-      transaction = await serviceRegistryContract.updateProposal(
-        userId,
-        serviceId,
-        parsedRateAmountString,
-        cid,
-        convertExpirationDateString,
-      );
-    } else {
-      const signature = await getProposalSignature({
-        profileId: Number(userId),
-        cid,
-        serviceId: Number(serviceId),
-      });
-
-      transaction = await serviceRegistryContract.createProposal(
-        userId,
-        serviceId,
-        parsedRateAmountString,
-        process.env.NEXT_PUBLIC_PLATFORM_ID,
-        cid,
-        convertExpirationDateString,
-        signature,
-      );
-    }
+    existingProposal
+      ? (transaction = await serviceRegistryContract.updateProposal(
+          userId,
+          serviceId,
+          parsedRateAmountString,
+          cid,
+          convertExpirationDateString,
+          referrerId,
+        ))
+      : !referrerId
+      ? (transaction = await serviceRegistryContract.createProposal(
+          userId,
+          serviceId,
+          parsedRateAmountString,
+          process.env.NEXT_PUBLIC_PLATFORM_ID,
+          cid,
+          convertExpirationDateString,
+          signature,
+        ))
+      : (transaction = await serviceRegistryContract.createProposalWithReferrer(
+          userId,
+          serviceId,
+          parsedRateAmountString,
+          process.env.NEXT_PUBLIC_PLATFORM_ID,
+          cid,
+          convertExpirationDateString,
+          signature,
+          referrerId,
+        ));
 
     res.status(200).json({ transaction: transaction });
   } catch (error) {
