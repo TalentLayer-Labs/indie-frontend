@@ -88,7 +88,7 @@ export const delegateCreateOrUpdateProposal = async (
   parsedRateAmountString: string,
   cid: string,
   convertExpirationDateString: string,
-  existingProposalStatus?: string,
+  existingProposal: boolean,
 ): Promise<any> => {
   try {
     return await axios.post('/api/delegate/create-update-proposal', {
@@ -98,7 +98,7 @@ export const delegateCreateOrUpdateProposal = async (
       parsedRateAmountString,
       cid,
       convertExpirationDateString,
-      existingProposalStatus,
+      existingProposal,
     });
   } catch (err) {
     console.error(err);

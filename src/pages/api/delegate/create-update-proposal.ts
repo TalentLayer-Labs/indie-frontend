@@ -13,7 +13,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     parsedRateAmountString,
     cid,
     convertExpirationDateString,
-    existingProposalStatus,
+    existingProposal,
   } = req.body;
 
   // @dev : you can add here all the checks you need to confirm the delegation for a user
@@ -34,7 +34,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     let transaction;
 
-    if (existingProposalStatus) {
+    if (existingProposal) {
       transaction = await serviceRegistryContract.updateProposal(
         userId,
         serviceId,
