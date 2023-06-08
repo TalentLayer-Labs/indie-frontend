@@ -51,8 +51,6 @@ export const createOrUpdateProposal = async (
       );
       tx = response.data.transaction;
     } else {
-      console.log('not delegate');
-      console.log('existingProposal', existingProposal);
       tx = existingProposal
         ? await contract.updateProposal(
             userId,
