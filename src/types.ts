@@ -49,7 +49,7 @@ export type IService = {
   id: string;
   status: ServiceStatusEnum;
   token: IToken;
-  referralAmount?: number;
+  referralAmount?: string;
   buyer: IUser;
   seller: IUser;
   sender: IUser;
@@ -157,6 +157,7 @@ export type IProposal = {
   updatedAt: string;
   description?: IProposalDetails;
   expirationDate: string;
+  referrer: IUser;
 };
 
 export type IFees = {
