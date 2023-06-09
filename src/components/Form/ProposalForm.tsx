@@ -77,6 +77,28 @@ function ProposalForm({
     videoUrl: existingProposal?.description?.video_url || '',
   };
 
+  const callApi = async (input: string, setFieldValue: any) => {
+    const context = 'We are on a freelance platform, help me generated a proposal';
+    const serviceContext = `This is the job title:${service?.description?.title}`
+    const serviceBuyerContext = `This is the client name:${service.buyer.handle}`
+    const userContex = `This the workers name:${user.handle}`
+    const response = await fetch('/api/generate-answers',{
+        method: 'Post',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            prompt: context + ' ' + serviceContext + ' ' +serviceBuyerContext +''+ userContex +''+ input
+        })
+    }) .then ((response) => response.json());
+
+    if (response.text) {
+      setFieldValue('about', response.text)
+    }else{
+        //Show error
+    }
+};
+
   const onSubmit = async (
     values: IFormValues,
     {
@@ -175,7 +197,7 @@ function ProposalForm({
 
   return (
     <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
-      {({ isSubmitting }) => (
+      {({ isSubmitting, values, setFieldValue }) => (
         <Form>
           <h2 className='mb-2 text-gray-900 font-bold'>For the job:</h2>
           <ServiceItem service={service} />
@@ -195,6 +217,10 @@ function ProposalForm({
               <span className='text-red-500'>
                 <ErrorMessage name='about' />
               </span>
+              <div>
+                If you need help, just write few lines above and click on AI Help
+                <a onClick={(e) => {e.preventDefault(); callApi(values.about, setFieldValue)}} className='py-2 px-5 mr-2 text-gray-900 bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 inline-flex items-center'>AI Help</a>
+              </div>
             </label>
 
             <div className='flex'>
