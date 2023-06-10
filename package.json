@@ -6,6 +6,7 @@
     "@enzoferey/ethers-error-parser": "^0.2.2",
     "@headlessui/react": "^1.7.3",
     "@heroicons/react": "^2.0.12",
+    "@leap-ai/sdk": "^0.0.119",
     "@types/node": "^16.18.0",
     "@types/react": "^18.0.23",
     "@types/react-dom": "^18.0.7",
