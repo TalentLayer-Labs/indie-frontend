@@ -216,7 +216,7 @@ function ValidateProposalModal({
                       </p>
                     </div>
                   )}
-                  {ethBalance && (
+                  {ethBalance && token.address === ethers.constants.AddressZero && (
                     <div className='flex justify-between w-full'>
                       <p className='text-base leading-4 text-gray-800'>
                         {ethBalance.formatted} ETH
