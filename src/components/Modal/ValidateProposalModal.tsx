@@ -1,4 +1,4 @@
-import { ethers } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 import { Check, X } from 'heroicons-react';
 import { useState } from 'react';
 import { useBalance, useProvider, useSigner } from 'wagmi';
@@ -46,10 +46,14 @@ function ValidateProposalModal({
   const originValidatedProposalFee = jobRateAmount
     .mul(originValidatedProposalFeeRate)
     .div(FEE_RATE_DIVIDER);
+  const referralAmount = BigNumber.from(proposal.service.referralAmount);
   const totalAmount = jobRateAmount
     .add(originServiceFee)
     .add(originValidatedProposalFee)
-    .add(protocolFee);
+    .add(protocolFee)
+    .add(referralAmount);
+
+  console.log('referralAmount', referralAmount);
 
   const onSubmit = async () => {
     if (!signer || !provider) {
@@ -70,9 +74,13 @@ function ValidateProposalModal({
   const hasEnoughBalance = () => {
     if (isProposalUseEth) {
       if (!ethBalance) return;
+      console.log('ethBalance', ethBalance.value);
+      console.log('(totalAmount', totalAmount);
       return ethBalance.value.gte(totalAmount);
     } else {
       if (!tokenBalance) return;
+      console.log('tokenBalance', tokenBalance.value);
+      console.log('(totalAmount', totalAmount);
       return tokenBalance.value.gte(totalAmount);
     }
   };
@@ -175,6 +183,14 @@ function ValidateProposalModal({
                       +{renderTokenAmount(token, protocolFee.toString())}
                     </p>
                   </div>
+                  {proposal.service.referralAmount && (
+                    <div className='flex justify-between items-center w-full'>
+                      <p className='text-base leading-4 text-gray-800'>Referral amount</p>
+                      <p className='text-base  leading-4 text-gray-600'>
+                        +{renderTokenAmount(token, referralAmount.toString())}
+                      </p>
+                    </div>
+                  )}
                 </div>
                 <div className='flex justify-between items-center w-full'>
                   <p className='text-base font-semibold leading-4 text-gray-800'>Total</p>
