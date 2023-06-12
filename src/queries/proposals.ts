@@ -6,7 +6,8 @@ export const getAllProposalsByServiceId = (id: string): Promise<any> => {
       proposals(where: {service_: {id: "${id}"}}) {
         service {
           id,
-          cid
+          cid,
+          referralAmount
           buyer {
             id
           }
