@@ -8,10 +8,15 @@ import Loading from './Loading';
 import Stars from './Stars';
 import Image from 'next/image';
 import DelegateModal from './Modal/DelegateModal';
+import getReferralGainsPerUser from '../hooks/getReferralGainsPerUser';
 
 function UserDetail({ user }: { user: IUser }) {
   const { user: currentUser } = useContext(TalentLayerContext);
   const userDescription = user?.id ? useUserById(user?.id)?.description : null;
+  const referralData = getReferralGainsPerUser(user?.id);
+  console.log('referralData', referralData);
+  const totalReferredServices = referralData?.reduce((acc, curr) => acc + curr.services.length, 0);
+  console.log('totalReferredServices', totalReferredServices);
 
   if (!user?.id) {
     return <Loading />;
@@ -57,6 +62,18 @@ function UserDetail({ user }: { user: IUser }) {
             <strong>Role:</strong> {userDescription?.role}
           </p>
         )}
+        {referralData &&
+          referralData.length > 0 &&
+          referralData.map(gain => (
+            <>
+              <p className='text-sm text-gray-500 mt-4'>
+                <strong>Token:</strong> {gain.token.symbol}
+              </p>
+              <p className='text-sm text-gray-500 mt-4'>
+                <strong>Total gains:</strong> {gain.totalGain}
+              </p>
+            </>
+          ))}
       </div>
 
       {currentUser?.id === user.id && (
