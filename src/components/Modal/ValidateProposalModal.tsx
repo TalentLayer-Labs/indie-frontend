@@ -53,8 +53,6 @@ function ValidateProposalModal({
     .add(protocolFee)
     .add(referralAmount);
 
-  console.log('referralAmount', referralAmount);
-
   const onSubmit = async () => {
     if (!signer || !provider) {
       return;
@@ -74,13 +72,9 @@ function ValidateProposalModal({
   const hasEnoughBalance = () => {
     if (isProposalUseEth) {
       if (!ethBalance) return;
-      console.log('ethBalance', ethBalance.value);
-      console.log('(totalAmount', totalAmount);
       return ethBalance.value.gte(totalAmount);
     } else {
       if (!tokenBalance) return;
-      console.log('tokenBalance', tokenBalance.value);
-      console.log('(totalAmount', totalAmount);
       return tokenBalance.value.gte(totalAmount);
     }
   };
@@ -183,7 +177,7 @@ function ValidateProposalModal({
                       +{renderTokenAmount(token, protocolFee.toString())}
                     </p>
                   </div>
-                  {proposal.service.referralAmount && (
+                  {!!Number(referralAmount) && (
                     <div className='flex justify-between items-center w-full'>
                       <p className='text-base leading-4 text-gray-800'>Referral amount</p>
                       <p className='text-base  leading-4 text-gray-600'>
@@ -230,11 +224,9 @@ function ValidateProposalModal({
                       <p className=''>
                         <span
                           className={`block ${
-                            (isProposalUseEth && hasEnoughBalance()) || ethBalance.value.gt(0)
-                              ? 'bg-green-500'
-                              : 'bg-red-500'
+                            isProposalUseEth && hasEnoughBalance() ? 'bg-green-500' : 'bg-red-500'
                           } p-1 text-xs font-medium text-white rounded-full`}>
-                          {(isProposalUseEth && hasEnoughBalance()) || ethBalance.value.gt(0) ? (
+                          {isProposalUseEth && hasEnoughBalance() ? (
                             <Check className='w-4 h-4' />
                           ) : (
                             <X className='w-4 h-4' />
