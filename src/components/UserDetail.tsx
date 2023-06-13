@@ -77,14 +77,18 @@ function UserDetail({ user }: { user: IUser }) {
                 {currentUser?.userStat.averageReferredRating}
               </p>
             )}
-            {currentUser?.referralGains &&
-              currentUser?.referralGains.length > 0 &&
-              currentUser?.referralGains.map(gain => (
-                <p className='text-sm text-gray-500'>
-                  <strong>Total gains:</strong>{' '}
-                  {renderTokenAmountFromConfig(gain.token.address, gain.totalGain)}{' '}
+            {currentUser?.referralGains && currentUser?.referralGains.length > 0 && (
+              <>
+                <p className='text-m text-gray-600 mt-4'>
+                  <strong>Referral gains</strong>
                 </p>
-              ))}
+                {currentUser?.referralGains.map(gain => (
+                  <p className='text-sm text-gray-500'>
+                    - {renderTokenAmountFromConfig(gain.token.address, gain.totalGain)}{' '}
+                  </p>
+                ))}
+              </>
+            )}
           </div>
         )}
       </div>
