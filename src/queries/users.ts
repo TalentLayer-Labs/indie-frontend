@@ -37,6 +37,8 @@ export const getUserById = (id: string): Promise<any> => {
         delegates
         userStat {
           numReceivedReviews
+          numReferredUsers
+          averageReferredRating
         }
         updatedAt
         createdAt
