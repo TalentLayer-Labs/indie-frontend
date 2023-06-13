@@ -9,6 +9,7 @@ export type IUser = {
   description?: IUserDetails;
   userStat: IUserStat;
   delegates?: string[];
+  referralGains?: IReferralGain[];
 };
 
 export type IUserDetails = {
@@ -28,6 +29,9 @@ export type IUserStat = {
   numFinishedServicesAsBuyer: number;
   numCreatedProposals: number;
   numFinishedServicesAsSeller: number;
+  numReferredUsers: number;
+  numReferredUsersReviewsReceived: number;
+  averageReferredRating: number;
 };
 
 export type IAccount = {
@@ -216,5 +220,13 @@ export type IUserGain = {
   id: string;
   user: IUser;
   token: IToken;
+  totalGain: string;
+};
+
+export type IReferralGain = {
+  id: string;
+  user: IUser;
+  token: IToken;
+  service: IService;
   totalGain: string;
 };
