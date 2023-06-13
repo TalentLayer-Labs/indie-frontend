@@ -31,7 +31,7 @@ const serviceQueryFields = `
     handle
     address
     rating
-    userStats {
+    userStat {
       numReceivedReviews
     }
   }

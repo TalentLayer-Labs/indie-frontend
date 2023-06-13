@@ -7,7 +7,7 @@ export type IUser = {
   address: string;
   rating: string;
   description?: IUserDetails;
-  userStats: IUserStats;
+  userStat: IUserStat;
   delegates?: string[];
 };
 
@@ -21,7 +21,7 @@ export type IUserDetails = {
   skills_raw: string;
 };
 
-export type IUserStats = {
+export type IUserStat = {
   numReceivedReviews: number;
   numGivenReviews: number;
   numCreatedServices: number;

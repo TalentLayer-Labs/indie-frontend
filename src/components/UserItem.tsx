@@ -33,7 +33,7 @@ function UserItem({ user }: { user: IUser }) {
             </div>
           </div>
         </div>
-        <Stars rating={Number(user.rating)} numReviews={user.userStats.numReceivedReviews} />
+        <Stars rating={Number(user.rating)} numReviews={user.userStat.numReceivedReviews} />
 
         <div className='flex flex-row gap-4 justify-end items-center'>
           <Link

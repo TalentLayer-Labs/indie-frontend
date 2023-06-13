@@ -75,7 +75,7 @@ function ServiceDetail({ service }: { service: IService }) {
                 <strong>Employer rating:</strong>
                 <Stars
                   rating={Number(service.buyer.rating)}
-                  numReviews={service.buyer.userStats.numReceivedReviews}
+                  numReviews={service.buyer.userStat.numReceivedReviews}
                 />
               </div>
               <p className='text-sm text-gray-500 mt-4'>

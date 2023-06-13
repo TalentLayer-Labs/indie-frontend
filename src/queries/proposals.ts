@@ -33,7 +33,7 @@ export const getAllProposalsByServiceId = (id: string): Promise<any> => {
           address
           cid
           rating
-          userStats {
+          userStat {
             numReceivedReviews
           }
         }
