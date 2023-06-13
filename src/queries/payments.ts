@@ -64,21 +64,3 @@ export const getPaymentsForUser = (
     `;
   return processRequest(query);
 };
-
-export const getReferralGainsByUserId = (id: string): Promise<any> => {
-  const query = `
-    {
-      referralGains(id: "${id}") {
-        totalGain
-        services(where: {status: Finished}) {
-          id
-        }
-        token {
-          name
-          symbol
-        }
-      }
-    }
-    `;
-  return processRequest(query);
-};
