@@ -8,15 +8,11 @@ import Loading from './Loading';
 import Stars from './Stars';
 import Image from 'next/image';
 import DelegateModal from './Modal/DelegateModal';
-import getReferralGainsPerUser from '../hooks/getReferralGainsPerUser';
+import { renderTokenAmountFromConfig } from '../utils/conversion';
 
 function UserDetail({ user }: { user: IUser }) {
   const { user: currentUser } = useContext(TalentLayerContext);
   const userDescription = user?.id ? useUserById(user?.id)?.description : null;
-  const referralData = getReferralGainsPerUser(user?.id);
-  console.log('referralData', referralData);
-  const totalReferredServices = referralData?.reduce((acc, curr) => acc + curr.services.length, 0);
-  console.log('totalReferredServices', totalReferredServices);
 
   if (!user?.id) {
     return <Loading />;
@@ -43,37 +39,54 @@ function UserDetail({ user }: { user: IUser }) {
             </div>
           </div>
         </div>
-        <Stars rating={Number(user.rating)} numReviews={user.userStats.numReceivedReviews} />
+        <Stars rating={Number(user.rating)} numReviews={user.userStat.numReceivedReviews} />
       </div>
-      <div className=' border-t border-gray-100 pt-4 w-full'>
-        {userDescription?.name && (
-          <p className='text-sm text-gray-500 mt-4'>
-            <strong>Name:</strong> {userDescription?.name}
+      <div className='flex flex-row'>
+        <div className='border-t border-gray-100 pt-4 w-full'>
+          <p className='text-m text-gray-600 mt-4'>
+            <strong>User Data</strong>
           </p>
-        )}
-        <p className='text-sm text-gray-500 mt-4'>
-          <strong>Skills:</strong> {userDescription?.skills_raw}
-        </p>
-        <p className='text-sm text-gray-500 mt-4'>
-          <strong>About:</strong> {userDescription?.about}
-        </p>
-        {userDescription?.role && (
+          {userDescription?.name && (
+            <p className='text-sm text-gray-500 mt-4'>
+              <strong>Name:</strong> {userDescription?.name}
+            </p>
+          )}
           <p className='text-sm text-gray-500 mt-4'>
-            <strong>Role:</strong> {userDescription?.role}
+            <strong>Skills:</strong> {userDescription?.skills_raw}
           </p>
+          <p className='text-sm text-gray-500 mt-4'>
+            <strong>About:</strong> {userDescription?.about}
+          </p>
+          {userDescription?.role && (
+            <p className='text-sm text-gray-500 mt-4'>
+              <strong>Role:</strong> {userDescription?.role}
+            </p>
+          )}
+        </div>
+        {!!Number(currentUser?.userStat.numReferredUsers) && (
+          <div className='border-t border-gray-100 pt-4 w-full'>
+            <p className='text-m text-gray-600 mt-4'>
+              <strong>Referral data</strong>
+            </p>
+            <p className='text-sm text-gray-500 mt-4'>
+              <strong>Referred users:</strong> {currentUser?.userStat.numReferredUsers}
+            </p>
+            {!!Number(currentUser?.userStat.averageReferredRating) && (
+              <p className='text-sm text-gray-500 mt-4'>
+                <strong>Average rating for referred services:</strong>{' '}
+                {currentUser?.userStat.averageReferredRating}
+              </p>
+            )}
+            {currentUser?.referralGains &&
+              currentUser?.referralGains.length > 0 &&
+              currentUser?.referralGains.map(gain => (
+                <p className='text-sm text-gray-500'>
+                  <strong>Total gains:</strong>{' '}
+                  {renderTokenAmountFromConfig(gain.token.address, gain.totalGain)}{' '}
+                </p>
+              ))}
+          </div>
         )}
-        {referralData &&
-          referralData.length > 0 &&
-          referralData.map(gain => (
-            <>
-              <p className='text-sm text-gray-500 mt-4'>
-                <strong>Token:</strong> {gain.token.symbol}
-              </p>
-              <p className='text-sm text-gray-500 mt-4'>
-                <strong>Total gains:</strong> {gain.totalGain}
-              </p>
-            </>
-          ))}
       </div>
 
       {currentUser?.id === user.id && (
