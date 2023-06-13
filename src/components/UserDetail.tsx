@@ -63,21 +63,29 @@ function UserDetail({ user }: { user: IUser }) {
             </p>
           )}
         </div>
-        {!!Number(currentUser?.userStat.numReferredUsers) && (
-          <div className='border-t border-gray-100 pt-4 w-full'>
-            <p className='text-m text-gray-600 mt-4'>
-              <strong>Referral data</strong>
-            </p>
-            <p className='text-sm text-gray-500 mt-4'>
-              <strong>Referred users:</strong> {currentUser?.userStat.numReferredUsers}
-            </p>
-            {!!Number(currentUser?.userStat.averageReferredRating) && (
-              <p className='text-sm text-gray-500 mt-4'>
-                <strong>Average rating for referred services:</strong>{' '}
-                {currentUser?.userStat.averageReferredRating}
+
+        <div className='border-t border-gray-100 pt-4 w-full'>
+          {!!Number(user?.userStat.numReferredUsers) && (
+            <>
+              <p className='text-m text-gray-600 mt-4'>
+                <strong>Referral data</strong>
               </p>
-            )}
-            {currentUser?.referralGains && currentUser?.referralGains.length > 0 && (
+              {!!Number(user?.userStat.averageReferredRating) && (
+                <p className='text-sm text-gray-500 mt-4'>
+                  <strong>Referred users:</strong> {user?.userStat.numReferredUsers}
+                </p>
+              )}
+              {!!Number(user?.userStat.averageReferredRating) && (
+                <p className='text-sm text-gray-500 mt-4'>
+                  <strong>Average rating for referred services:</strong>{' '}
+                  {user?.userStat.averageReferredRating}
+                </p>
+              )}
+            </>
+          )}
+          {currentUser?.id == user.id &&
+            currentUser?.referralGains &&
+            currentUser?.referralGains.length > 0 && (
               <>
                 <p className='text-m text-gray-600 mt-4'>
                   <strong>Referral gains</strong>
@@ -89,8 +97,7 @@ function UserDetail({ user }: { user: IUser }) {
                 ))}
               </>
             )}
-          </div>
-        )}
+        </div>
       </div>
 
       {currentUser?.id === user.id && (
