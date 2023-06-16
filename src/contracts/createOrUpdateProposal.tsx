@@ -60,17 +60,7 @@ export const createOrUpdateProposal = async (
             expirationDate,
             referrerId,
           )
-        : !referrerId
-        ? await contract.createProposal(
-            userId,
-            serviceId,
-            rateAmount,
-            process.env.NEXT_PUBLIC_PLATFORM_ID,
-            cid,
-            expirationDate,
-            signature,
-          )
-        : await contract.createProposalWithReferrer(
+        : await contract.createProposal(
             userId,
             serviceId,
             rateAmount,

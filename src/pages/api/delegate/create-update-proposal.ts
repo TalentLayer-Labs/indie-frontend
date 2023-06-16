@@ -50,17 +50,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           convertExpirationDateString,
           referrerId,
         ))
-      : !referrerId
-      ? (transaction = await serviceRegistryContract.createProposal(
-          userId,
-          serviceId,
-          parsedRateAmountString,
-          process.env.NEXT_PUBLIC_PLATFORM_ID,
-          cid,
-          convertExpirationDateString,
-          signature,
-        ))
-      : (transaction = await serviceRegistryContract.createProposalWithReferrer(
+      : (transaction = await serviceRegistryContract.createProposal(
           userId,
           serviceId,
           parsedRateAmountString,
