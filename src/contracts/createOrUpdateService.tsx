@@ -2,11 +2,7 @@ import { BigNumber, Contract, ethers, Signer } from 'ethers';
 import { config } from '../config';
 import ServiceRegistry from './ABI/TalentLayerService.json';
 import { getServiceSignature } from '../utils/signature';
-import {
-  delegateCreateService,
-  delegateCreateServiceWithReferral,
-  delegateUpdateService,
-} from '../components/request';
+import { delegateCreateService, delegateUpdateService } from '../components/request';
 import { createMultiStepsTransactionToast, showErrorTransactionToast } from '../utils/toast';
 import { NextRouter } from 'next/router';
 import { Provider } from '@wagmi/core';
@@ -28,7 +24,6 @@ export const createOrUpdateService = async (
   setSubmitting: (isSubmitting: boolean) => void,
   resetForm: () => void,
 ): Promise<void> => {
-  const ZERO = BigNumber.from(0);
   try {
     const contract = getServiceContract(signer);
 
@@ -39,17 +34,8 @@ export const createOrUpdateService = async (
 
     if (isActiveDelegate) {
       const response = existingServiceId
-        ? await delegateUpdateService(
-            userId,
-            userAddress,
-            existingServiceId,
-            referralAmount,
-            token,
-            cid,
-          )
-        : referralAmount === ZERO
-        ? await delegateCreateService(userId, userAddress, cid, token)
-        : await delegateCreateServiceWithReferral(userId, userAddress, cid, token, referralAmount);
+        ? await delegateUpdateService(userId, userAddress, existingServiceId, referralAmount, cid)
+        : await delegateCreateService(userId, userAddress, cid, token, referralAmount);
       tx = response.data.transaction;
     } else {
       tx = existingServiceId
