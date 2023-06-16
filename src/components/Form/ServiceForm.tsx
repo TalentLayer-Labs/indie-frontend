@@ -214,24 +214,30 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
               </label>
               <label className='block'>
                 <span className='text-gray-700'>Token</span>
-                <Field
-                  component='select'
-                  id='rateToken'
-                  name='rateToken'
-                  className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
-                  placeholder=''
-                  onChange={(e: { target: { value: string } }) => {
-                    const token = allowedTokenList.find(token => token.address === e.target.value);
-                    setSelectedToken(token);
-                    setFieldValue('rateToken', e.target.value);
-                  }}>
-                  <option value=''>Select a token</option>
-                  {allowedTokenList.map((token, index) => (
-                    <option key={index} value={token.address}>
-                      {token.symbol}
-                    </option>
-                  ))}
-                </Field>
+                {!existingService ? (
+                  <Field
+                    component='select'
+                    id='rateToken'
+                    name='rateToken'
+                    className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
+                    placeholder=''
+                    onChange={(e: { target: { value: string } }) => {
+                      const token = allowedTokenList.find(
+                        token => token.address === e.target.value,
+                      );
+                      setSelectedToken(token);
+                      setFieldValue('rateToken', e.target.value);
+                    }}>
+                    <option value=''>Select a token</option>
+                    {allowedTokenList.map((token, index) => (
+                      <option key={index} value={token.address}>
+                        {token.symbol}
+                      </option>
+                    ))}
+                  </Field>
+                ) : (
+                  <p className='my-2 block w-full text-gray-500'>{existingService?.token.symbol}</p>
+                )}
                 <span className='text-red-500'>
                   <ErrorMessage name='rateToken' />
                 </span>
