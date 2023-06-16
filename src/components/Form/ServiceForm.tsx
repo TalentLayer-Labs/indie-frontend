@@ -102,6 +102,12 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
       }),
   });
 
+  const validateReferralAmount = (value: number) => {
+    if (value < initialValues.referralAmount && initialValues.referralAmount !== 0) {
+      return 'Referral amount cannot be inferior to previous amount';
+    }
+  };
+
   const onSubmit = async (
     values: IFormValues,
     {
@@ -155,7 +161,8 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
       initialValues={initialValues}
       enableReinitialize={true}
       onSubmit={onSubmit}
-      validationSchema={validationSchema}>
+      validationSchema={validationSchema}
+      validateOnChange={true}>
       {({ isSubmitting, setFieldValue }) => (
         <Form>
           <div className='grid grid-cols-1 gap-6 border border-gray-200 rounded-md p-8'>
@@ -253,6 +260,7 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
                 name='referralAmount'
                 className='mt-1 mb-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
                 placeholder=''
+                validate={validateReferralAmount}
               />
               <span className='text-red-500'>
                 <ErrorMessage name='referralAmount' />
