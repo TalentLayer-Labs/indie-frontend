@@ -18,6 +18,18 @@ function UserDetail({ user }: { user: IUser }) {
     return <Loading />;
   }
 
+  const hasClaimableBalance = () => {
+    let hasBalance = false;
+    currentUser?.referralGains?.forEach(gain => {
+      if (Number(gain.availableBalance) > 0) {
+        hasBalance = true;
+      }
+    });
+    return hasBalance;
+  };
+
+  console.log('hasClaimableBalance', hasClaimableBalance());
+
   return (
     <div className='flex flex-col rounded-xl p-4 border border-gray-200'>
       <div className='flex items-top justify-between w-full'>
@@ -87,14 +99,23 @@ function UserDetail({ user }: { user: IUser }) {
             currentUser?.referralGains &&
             currentUser?.referralGains.length > 0 && (
               <>
-                <p className='text-m text-gray-600 mt-4'>
-                  <strong>Referral gains</strong>
-                </p>
-                {currentUser?.referralGains.map(gain => (
-                  <p className='text-sm text-gray-500'>
-                    - {renderTokenAmountFromConfig(gain.token.address, gain.totalGain)}{' '}
-                  </p>
-                ))}
+                <div className='flex flex-row mt-4'>
+                  <div className=''>
+                    <p className='text-m text-gray-600'>
+                      <strong>Referral gains</strong>
+                    </p>
+                    {currentUser?.referralGains.map(gain => (
+                      <p className='text-sm text-gray-500'>
+                        - {renderTokenAmountFromConfig(gain.token.address, gain.totalGain)}{' '}
+                      </p>
+                    ))}
+                  </div>
+                  {hasClaimableBalance() && (
+                    <div className='ml-2 self-start text-indigo-600 bg-indigo-50 text-xs hover:bg-indigo-500 hover:text-white px-3 py-1 rounded-lg'>
+                      <button>Claim balance !</button>
+                    </div>
+                  )}
+                </div>
               </>
             )}
         </div>

@@ -77,6 +77,7 @@ export const getUserByAddress = (address: string): Promise<any> => {
         }
         referralGains {
           totalGain
+          availableBalance
           token {
             address
             symbol

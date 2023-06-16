@@ -229,4 +229,5 @@ export type IReferralGain = {
   token: IToken;
   service: IService;
   totalGain: string;
+  availableBalance: string;
 };
