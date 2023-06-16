@@ -9,6 +9,7 @@ import Stars from './Stars';
 import Image from 'next/image';
 import DelegateModal from './Modal/DelegateModal';
 import { renderTokenAmountFromConfig } from '../utils/conversion';
+import ClaimReferralBalanceModal from './Modal/ClaimReferralBalanceModal';
 
 function UserDetail({ user }: { user: IUser }) {
   const { user: currentUser } = useContext(TalentLayerContext);
@@ -27,8 +28,6 @@ function UserDetail({ user }: { user: IUser }) {
     });
     return hasBalance;
   };
-
-  console.log('hasClaimableBalance', hasClaimableBalance());
 
   return (
     <div className='flex flex-col rounded-xl p-4 border border-gray-200'>
@@ -112,7 +111,13 @@ function UserDetail({ user }: { user: IUser }) {
                   </div>
                   {hasClaimableBalance() && (
                     <div className='ml-2 self-start text-indigo-600 bg-indigo-50 text-xs hover:bg-indigo-500 hover:text-white px-3 py-1 rounded-lg'>
-                      <button>Claim balance !</button>
+                      {/*<button>Claim balance !</button>*/}
+                      {
+                        <ClaimReferralBalanceModal
+                          userId={currentUser.id}
+                          referralGains={currentUser.referralGains}
+                        />
+                      }
                     </div>
                   )}
                 </div>
