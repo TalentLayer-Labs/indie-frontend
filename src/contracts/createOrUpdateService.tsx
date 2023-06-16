@@ -53,16 +53,8 @@ export const createOrUpdateService = async (
       tx = response.data.transaction;
     } else {
       tx = existingServiceId
-        ? await contract.updateService(userId, existingServiceId, referralAmount, token, cid)
-        : referralAmount === ZERO
-        ? await contract.createService(
-            userId,
-            process.env.NEXT_PUBLIC_PLATFORM_ID,
-            cid,
-            signature,
-            token,
-          )
-        : await contract.createServiceWithReferral(
+        ? await contract.updateService(userId, existingServiceId, referralAmount, cid)
+        : await contract.createService(
             userId,
             process.env.NEXT_PUBLIC_PLATFORM_ID,
             cid,
