@@ -63,19 +63,22 @@ function ClaimReferralBalanceModal({ userId, referralGains }: IReferralModalProp
                 <h3 className='text-xl font-semibold leading-5 text-gray-800'>
                   Available balances:
                 </h3>
-                <div className='flex space-y-4 flex-col border-gray-200 border-b pb-4'>
-                  {referralGains.map(gain => (
-                    <div className='flex flex-row gap-2'>
-                      <p className='text-base leading-4 text-gray-800'>
-                        {renderTokenAmountFromConfig(gain.token.address, gain.availableBalance)}
-                      </p>
-                      <button
-                        onClick={() => handleClaim(gain.token.address)}
-                        className='ml-2 self-start text-indigo-600 bg-indigo-50 text-xs hover:bg-indigo-500 hover:text-white px-3 py-1 rounded-lg'>
-                        Claim
-                      </button>
-                    </div>
-                  ))}
+                <div className='flex space-y-1 flex-col border-gray-200 border-b pb-4'>
+                  {referralGains.map(
+                    gain =>
+                      gain.availableBalance !== '0' && (
+                        <div className='flex flex-row gap-2'>
+                          <button
+                            onClick={() => handleClaim(gain.token.address)}
+                            className='ml-2 self-start text-indigo-600 bg-indigo-50 text-xs hover:bg-indigo-500 hover:text-white px-3 py-1 rounded-lg'>
+                            Claim
+                          </button>
+                          <p className='text-base text-gray-800'>
+                            {renderTokenAmountFromConfig(gain.token.address, gain.availableBalance)}
+                          </p>
+                        </div>
+                      ),
+                  )}
                 </div>
               </div>
             </div>

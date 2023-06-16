@@ -111,7 +111,6 @@ function UserDetail({ user }: { user: IUser }) {
                   </div>
                   {hasClaimableBalance() && (
                     <div className='ml-2 self-start text-indigo-600 bg-indigo-50 text-xs hover:bg-indigo-500 hover:text-white px-3 py-1 rounded-lg'>
-                      {/*<button>Claim balance !</button>*/}
                       {
                         <ClaimReferralBalanceModal
                           userId={currentUser.id}
