@@ -14,7 +14,7 @@ export const getAllProposalsByServiceId = (id: string): Promise<any> => {
           platform {
             id
           }
-          token {
+          rateToken {
             address
             decimals
             name
@@ -75,7 +75,7 @@ export const getAllProposalsByUser = (id: string): Promise<any> => {
               id
               handle
             }
-            token {
+            rateToken {
               address
               decimals
               name
@@ -101,7 +101,7 @@ export const getProposalById = (id: string): Promise<any> => {
       {
         proposals(where: {id: "${id}"}) {
           service {
-            token {
+            rateToken {
                 address
             }
           }

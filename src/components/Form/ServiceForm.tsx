@@ -36,7 +36,7 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
   const existingService = useServiceById(serviceId as string);
   const allowedTokenList = useAllowedTokens();
   const existingToken = allowedTokenList.find(value => {
-    return value.address === existingService?.token.address;
+    return value.address === existingService?.rateToken.address;
   });
   const [selectedToken, setSelectedToken] = useState<IToken>();
   const { isActiveDelegate } = useContext(TalentLayerContext);
@@ -45,7 +45,7 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
     title: existingService?.description?.title || '',
     about: existingService?.description?.about || '',
     keywords: existingService?.description?.keywords_raw || '',
-    rateToken: existingService?.token.address || '',
+    rateToken: existingService?.rateToken.address || '',
     rateAmount:
       existingService?.description?.rateAmount &&
       allowedTokenList &&
@@ -236,7 +236,9 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
                     ))}
                   </Field>
                 ) : (
-                  <p className='my-2 block w-full text-gray-500'>{existingService?.token.symbol}</p>
+                  <p className='my-2 block w-full text-gray-500'>
+                    {existingService?.rateToken.symbol}
+                  </p>
                 )}
                 <span className='text-red-500'>
                   <ErrorMessage name='rateToken' />

@@ -81,11 +81,11 @@ function ServiceDetail({ service }: { service: IService }) {
               <p className='text-sm text-gray-500 mt-4'>
                 <strong>About:</strong> {service.description?.about}
               </p>
-              {service.token && service.description?.rateAmount && (
+              {service.rateToken && service.description?.rateAmount && (
                 <p className='text-sm text-gray-500 mt-4'>
                   <strong>Budget:</strong>{' '}
                   {renderTokenAmountFromConfig(
-                    service.token.address,
+                    service.rateToken.address,
                     service.description.rateAmount,
                   )}
                 </p>
@@ -106,7 +106,10 @@ function ServiceDetail({ service }: { service: IService }) {
                     <strong>Referral amount:</strong>{' '}
                     <span className='text-sm text-gray-500 '>
                       {service.referralAmount &&
-                        renderTokenAmountFromConfig(service.token.address, service.referralAmount)}
+                        renderTokenAmountFromConfig(
+                          service.rateToken.address,
+                          service.referralAmount,
+                        )}
                     </span>
                   </p>
                   {!isCopied ? (

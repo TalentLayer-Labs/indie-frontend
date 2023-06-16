@@ -60,7 +60,7 @@ function ProposalForm({
       (Number(existingProposal?.expirationDate) - Date.now() / 1000) / (60 * 60 * 24),
     );
 
-    const token = allowedTokenList.find(token => token.address === service.token.address);
+    const token = allowedTokenList.find(token => token.address === service.rateToken.address);
 
     existingRateTokenAmount = FixedNumber.from(
       ethers.utils.formatUnits(existingProposal.rateAmount, token?.decimals),
@@ -87,11 +87,11 @@ function ProposalForm({
       resetForm,
     }: { setSubmitting: (isSubmitting: boolean) => void; resetForm: () => void },
   ) => {
-    const token = allowedTokenList.find(token => token.address === service.token.address);
+    const token = allowedTokenList.find(token => token.address === service.rateToken.address);
     if (provider && signer && token) {
       const parsedRateAmount = await parseRateAmount(
         values.rateAmount.toString(),
-        service.token.address,
+        service.rateToken.address,
         token.decimals,
       );
       const now = Math.floor(Date.now() / 1000);
@@ -164,7 +164,7 @@ function ProposalForm({
               </label>
               <label className='block'>
                 <span className='text-gray-700'>Token</span>
-                <p className='my-2 block w-full text-gray-500'>{service.token.symbol}</p>
+                <p className='my-2 block w-full text-gray-500'>{service.rateToken.symbol}</p>
                 <span className='text-red-500'>
                   <ErrorMessage name='rateToken' />
                 </span>

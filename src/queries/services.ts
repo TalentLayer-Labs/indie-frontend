@@ -17,7 +17,7 @@ const serviceQueryFields = `
   createdAt
   cid
   referralAmount
-  token {
+  rateToken {
     name
     symbol
     address

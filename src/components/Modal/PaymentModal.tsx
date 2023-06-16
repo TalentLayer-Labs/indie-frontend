@@ -14,7 +14,7 @@ interface IPaymentModalProps {
 
 function PaymentModal({ service, payments, isBuyer }: IPaymentModalProps) {
   const [show, setShow] = useState(false);
-  const rateToken = service.token;
+  const rateToken = service.rateToken;
   const rateAmount = service.validatedProposal[0].rateAmount;
   const network = useNetwork();
 

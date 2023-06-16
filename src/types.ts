@@ -52,7 +52,7 @@ export type ITransaction = {
 export type IService = {
   id: string;
   status: ServiceStatusEnum;
-  token: IToken;
+  rateToken: IToken;
   referralAmount?: string;
   buyer: IUser;
   seller: IUser;
