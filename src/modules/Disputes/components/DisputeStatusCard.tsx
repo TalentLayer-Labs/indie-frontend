@@ -4,7 +4,7 @@ import TimeOutCountDown from '../../../components/TimeoutCountDown';
 import DisputeButton from '../../../components/DisputeButton';
 import { BigNumber } from 'ethers';
 
-function DisputeStatus({
+function DisputeStatusCard({
   transaction,
   user,
   arbitrationFee,
@@ -71,4 +71,4 @@ function DisputeStatus({
   );
 }
 
-export default DisputeStatus;
+export default DisputeStatusCard;

@@ -10,7 +10,7 @@ import DisputeButton from '../../components/DisputeButton';
 import useArbitrationCost from '../../hooks/useArbitrationCost';
 import { ethers } from 'ethers';
 import Steps from '../../components/Steps';
-import DisputeStatusCard from '../../modules/Disputes/components/DisputeDetail';
+import DisputeStatusCard from '../../modules/Disputes/components/DisputeStatusCard';
 import EvidenceDetails from '../../modules/Disputes/components/EvidenceDetails';
 
 function Dispute() {
