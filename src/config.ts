@@ -89,13 +89,14 @@ const fuji: Config = {
 
 const mumbai: Config = {
   networkId: NetworkEnum.MUMBAI,
-  subgraphUrl: 'https://api.thegraph.com/subgraphs/name/talentlayer/talent-layer-mumbai',
+  subgraphUrl: 'https://api.thegraph.com/subgraphs/name/quent043/talentlayer-mumbai',
   contracts: {
-    talentLayerId: '0x3F87289e6Ec2D05C32d8A74CCfb30773fF549306',
-    serviceRegistry: '0x27ED516dC1df64b4c1517A64aa2Bb72a434a5A6D',
-    talentLayerReview: '0x050F59E1871d3B7ca97e6fb9DCE64b3818b14B18',
-    talentLayerEscrow: '0x4bE920eC3e8552292B2147480111063E0dc36872',
-    talentLayerPlatformId: '0xEFD8dbC421380Ee04BAdB69216a0FD97F64CbFD4',
+    // 36843729
+    talentLayerId: '0x87a247A1Aed184F7BC2b4F287Fc23D82E720721b',
+    serviceRegistry: '0x9B7C6FB51D2EEE39b259BDe874710642120a58ED',
+    talentLayerReview: '0x815035199D281be97D092710fE659445F1EB0DC9',
+    talentLayerEscrow: '0xC184101F1C1E4D71bd18F88FB7f36F53ec4F2De8',
+    talentLayerPlatformId: '0xE95a9d7d673716e40B8aa9851592672D6D697c25',
   },
   escrowConfig: {
     adminFee: '0',
@@ -109,11 +110,11 @@ const mumbai: Config = {
       name: 'Matic',
       decimals: 18,
     },
-    '0xe6b8a5CF854791412c1f6EFC7CAf629f5Df1c747': {
-      address: '0xe6b8a5CF854791412c1f6EFC7CAf629f5Df1c747',
-      symbol: 'USDC',
-      name: 'USDC Stablecoin',
-      decimals: 6,
+    '0x1a87740fc249e8f917af7d1f99bfbd4eed6f98a1': {
+      address: '0x1a87740fc249e8f917af7d1f99bfbd4eed6f98a1',
+      symbol: 'SERC20',
+      name: 'Simple ERC20',
+      decimals: 18,
     },
   },
 };
