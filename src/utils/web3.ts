@@ -1,7 +1,6 @@
 import { Contract } from '@ethersproject/contracts';
 import { ExternalProvider, JsonRpcFetchFunc, Web3Provider } from '@ethersproject/providers';
-import { BigNumber, ethers, FixedNumber, Signer } from 'ethers';
-import ERC20 from '../contracts/ABI/ERC20.json';
+import { BigNumber, ethers, FixedNumber } from 'ethers';
 import { ITokenFormattedValues } from '../types';
 
 export default function getLibrary(provider: ExternalProvider | JsonRpcFetchFunc): Web3Provider {

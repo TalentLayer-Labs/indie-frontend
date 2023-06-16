@@ -125,13 +125,10 @@ function MetaEvidenceModal({
                   provided by {seller.handle} in the way described in the proposal below. The
                   completion of this agreement shall result in the payment using the token which
                   ethereum address is the following {proposalData?.rateToken} for an amount of:{' '}
-                  {token &&
-                    formatRateAmount(
-                      proposalData?.rateAmount as string,
-                      token.address,
-                      token.decimals,
-                    ).exactValue}{' '}
-                  {token?.symbol}.
+                  <strong>
+                    {proposalData?.rateAmount as string} {token?.symbol}
+                  </strong>
+                  .
                 </p>
                 <div className='flex justify-center w-full space-y-4 flex-col border-gray-200 border-b pb-4'>
                   {/*<div className='flex justify-between w-full'>*/}
