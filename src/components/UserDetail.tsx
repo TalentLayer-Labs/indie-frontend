@@ -36,7 +36,6 @@ function UserDetail({ user }: { user: IUser }) {
             </div>
             <div className=''>
               <PohModule address={user.address} />
-              <Anima />
             </div>
           </div>
         </div>
@@ -54,6 +53,9 @@ function UserDetail({ user }: { user: IUser }) {
         <p className='text-sm text-gray-500 mt-4'>
           <strong>About:</strong> {userDescription?.about}
         </p>
+        <Anima />
+        {/* <Anima userId={user?.id} /> */}
+
         {userDescription?.role && (
           <p className='text-sm text-gray-500 mt-4'>
             <strong>Role:</strong> {userDescription?.role}
