@@ -4,9 +4,9 @@ import { useSignMessage, useAccount } from 'wagmi';
 import { useCallback, useContext } from 'react';
 import TalentLayerContext from '../../context/talentLayer';
 
-export default function Anima(): JSX.Element {
+export default function Anima({ userAddress }: { userAddress: any }): JSX.Element {
   const { account, user } = useContext(TalentLayerContext);
-  console.log('address', user?.address);
+  console.log('address', userAddress);
 
   const { signMessageAsync } = useSignMessage();
 
@@ -31,7 +31,7 @@ export default function Anima(): JSX.Element {
             onFinish={shared}
             sessionId={process.env.NEXT_PUBLIC_ANIMA_SESSION_ID || ''}
             signCallback={(payload: any) => signMessageAsync({ message: payload })}
-            walletAddress={user?.address}
+            walletAddress={userAddress}
           />
         </div>
       )}

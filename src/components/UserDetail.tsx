@@ -12,7 +12,8 @@ import Anima from '../modules/Anima/Anima';
 
 function UserDetail({ user }: { user: IUser }) {
   const { user: currentUser } = useContext(TalentLayerContext);
-  const userDescription = user?.id ? useUserById(user?.id)?.description : null;
+  const userDetails = user?.id ? useUserById(user?.id) : null;
+  console.log('userDetails', userDetails);
 
   if (!user?.id) {
     return <Loading />;
@@ -32,7 +33,7 @@ function UserDetail({ user }: { user: IUser }) {
             />
             <div className='flex flex-col'>
               <p className='text-gray-900 font-medium break-all'>{user?.handle}</p>
-              <p className='text-gray-900 text-xs'>{userDescription?.title}</p>
+              <p className='text-gray-900 text-xs'>{userDetails?.description?.title}</p>
             </div>
             <div className=''>
               <PohModule address={user.address} />
@@ -42,23 +43,23 @@ function UserDetail({ user }: { user: IUser }) {
         <Stars rating={Number(user.rating)} numReviews={user.userStats.numReceivedReviews} />
       </div>
       <div className=' border-t border-gray-100 pt-4 w-full'>
-        {userDescription?.name && (
+        {userDetails?.description?.name && (
           <p className='text-sm text-gray-500 mt-4'>
-            <strong>Name:</strong> {userDescription?.name}
+            <strong>Name:</strong> {userDetails?.description?.name}
           </p>
         )}
         <p className='text-sm text-gray-500 mt-4'>
-          <strong>Skills:</strong> {userDescription?.skills_raw}
+          <strong>Skills:</strong> {userDetails?.description?.skills_raw}
         </p>
         <p className='text-sm text-gray-500 mt-4'>
-          <strong>About:</strong> {userDescription?.about}
+          <strong>About:</strong> {userDetails?.description?.about}
         </p>
-        <Anima />
-        {/* <Anima userId={user?.id} /> */}
+        {/* <Anima /> */}
+        <Anima userAddress={userDetails?.address} />
 
-        {userDescription?.role && (
+        {userDetails?.description?.role && (
           <p className='text-sm text-gray-500 mt-4'>
-            <strong>Role:</strong> {userDescription?.role}
+            <strong>Role:</strong> {userDetails?.description?.role}
           </p>
         )}
       </div>
