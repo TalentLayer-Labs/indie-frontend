@@ -17,7 +17,7 @@ export const maxDecimals = {
 export const FEE_RATE_DIVIDER = 10_000;
 
 export const sismo: SismoConnectConfig = {
-  appId: '', // replace with your appId
+  appId: process.env.NEXT_APP_ID as string, // replace with your appId
 };
 
 const goerli: Config = {
