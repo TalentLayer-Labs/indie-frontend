@@ -117,3 +117,4 @@ export const validateProposal = async (
     showErrorTransactionToast(error);
   }
 };
+~

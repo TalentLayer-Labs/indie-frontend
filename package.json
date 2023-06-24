@@ -19,6 +19,7 @@
     "heroicons-react": "^1.4.1",
     "ipfs-http-client": "^59.0.0",
     "next": "^13.3.4",
+    "next-auth": "^4.22.1",
     "next-seo": "^6.0.0",
     "next-themes": "^0.2.1",
     "nextjs-google-analytics": "^2.3.3",
