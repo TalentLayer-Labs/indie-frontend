@@ -15,6 +15,12 @@ import '../styles/globals.css';
 import 'react-toastify/dist/ReactToastify.css';
 import Layout from './Layout';
 import { useEffect } from 'react';
+import {
+  SismoConnectButton,
+  AuthType,
+  SismoConnectResponse,
+} from '@sismo-core/sismo-connect-react';
+import { sismo } from '../config';
 
 const chains: Chain[] = [customChains.polygonMumbai];
 
@@ -51,16 +57,26 @@ function MyApp({ Component, pageProps }: AppProps) {
             <MessagingProvider>
               <ThemeProvider enableSystem={false}>
                 <Layout>
+                  <SismoConnectButton
+                    config={sismo}
+                    // request proof of Github ownership
+                    auths={[{ authType: AuthType.GITHUB }]}
+                    onResponseBytes={(response: string) => {
+                      // TODO: Store this response in the smart contract
+                      console.log(response); // call your contract with the response as bytes
+                    }}
+                  />
                   <Component {...pageProps} />
                 </Layout>
               </ThemeProvider>
             </MessagingProvider>
           </XmtpContextProvider>
         </TalentLayerProvider>
-        <Web3Modal
+        {/* Comment out Wallect Connect Button - KIV if we still want use this */}
+        {/* <Web3Modal
           projectId={`${process.env.NEXT_PUBLIC_WALLECT_CONNECT_PROJECT_ID}`}
           ethereumClient={ethereumClient}
-        />
+        /> */}
       </WagmiConfig>
     </>
   );
