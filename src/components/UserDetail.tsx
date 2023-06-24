@@ -18,6 +18,7 @@ function UserDetail({ user }: { user: IUser }) {
   }
 
   return (
+    <div>
     <div className='flex flex-col rounded-xl p-4 border border-gray-200'>
       <div className='flex items-top justify-between w-full'>
         <div className='flex flex-col justify-start items-start gap-4'>
@@ -52,6 +53,12 @@ function UserDetail({ user }: { user: IUser }) {
         <p className='text-sm text-gray-500 mt-4'>
           <strong>About:</strong> {userDescription?.about}
         </p>
+        <p className='text-sm text-gray-500 mt-4'>
+          <strong>Work Experience:</strong> { /* PLACEHOLDER */ }
+        </p>
+        <p className='text-sm text-gray-500 mt-4'>
+          <strong>Projects:</strong> { /* PLACEHOLDER */ }
+        </p>
         {userDescription?.role && (
           <p className='text-sm text-gray-500 mt-4'>
             <strong>Role:</strong> {userDescription?.role}
@@ -62,6 +69,16 @@ function UserDetail({ user }: { user: IUser }) {
       {currentUser?.id === user.id && (
         <div className=' border-t border-gray-100 pt-4 w-full mt-4'>
           <div className='flex flex-row gap-4 justify-end items-center'>
+            <Link
+              className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg'
+              href={`/profile/WorkExperience`}>
+              Add Work Experience
+            </Link>
+            <Link
+              className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg'
+              href={`/profile/ProjectContributions`}>
+              Add Project Contributions
+            </Link>
             <Link
               className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg'
               href={`/profile/${user.id}`}>
@@ -81,6 +98,7 @@ function UserDetail({ user }: { user: IUser }) {
           </div>
         </div>
       )}
+    </div>
     </div>
   );
 }

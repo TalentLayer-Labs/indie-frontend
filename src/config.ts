@@ -2,6 +2,22 @@ import { ethers } from 'ethers';
 import { IToken, NetworkEnum } from './types';
 import { SismoConnectConfig } from '@sismo-core/sismo-connect-react';
 
+import { EAS, Offchain, SchemaEncoder, SchemaRegistry } from "@ethereum-attestation-service/eas-sdk";
+
+export const EASContractAddress = "0xC2679fBD37d54388Ce493F1DB75320D236e1815e"; // Sepolia v0.26
+
+// Initialize the sdk with the address of the EAS Schema contract address
+const eas = new EAS(EASContractAddress);
+
+// Gets a default provider (in production use something else like infura/alchemy)
+const provider = ethers.providers.getDefaultProvider(
+  "sepolia"
+);
+
+// Connects an ethers style provider/signingProvider to perform read/write functions.
+// MUST be a signer to do write operations!
+eas.connect(provider);
+
 export type Config = {
   networkId: NetworkEnum;
   subgraphUrl: string;
@@ -17,7 +33,7 @@ export const maxDecimals = {
 export const FEE_RATE_DIVIDER = 10_000;
 
 export const sismo: SismoConnectConfig = {
-  appId: '', // replace with your appId
+  appId: '0xc8296b55ab40894b58d094e76248898b', // replace with your appId
 };
 
 const goerli: Config = {
