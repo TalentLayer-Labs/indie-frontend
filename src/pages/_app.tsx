@@ -60,7 +60,20 @@ function MyApp({ Component, pageProps }: AppProps) {
                   <SismoConnectButton
                     config={sismo}
                     // request proof of Github ownership
-                    auths={[{ authType: AuthType.GITHUB }]}
+                    auths={[
+                      { authType: AuthType.VAULT },
+                      { authType: AuthType.TWITTER },
+                      { authType: AuthType.GITHUB },
+                      { authType: AuthType.EVM_ACCOUNT },
+                      { authType: AuthType.TELEGRAM },
+                    ]}
+                    claim={[
+                      { groupId: '0xe19b522e51d5750c690c36515611b934' },
+                      { groupId: '0x251d25c1e9192286e0e329bc4a46b84e' },
+                    ]}
+                    onResponse={async (response: SismoConnectResponse) => {
+                      console.log(response);
+                    }}
                     onResponseBytes={(response: string) => {
                       // TODO: Store this response in the smart contract
                       console.log(response); // call your contract with the response as bytes
