@@ -61,7 +61,7 @@ function MyApp({ Component, pageProps }: AppProps) {
                     config={sismo}
                     // request proof of Github ownership
                     auths={[{ authType: AuthType.VAULT }, { authType: AuthType.GITHUB }]}
-                    claim={[
+                    claims={[
                       { groupId: '0xe19b522e51d5750c690c36515611b934' },
                       { groupId: '0x251d25c1e9192286e0e329bc4a46b84e' },
                     ]}
