@@ -1,14 +1,8 @@
-# Indie Frontend for a TalentLayer-Integrated Job Marketplace
+# V-Lancer - A Freelancer Passport
 
-## About Indie
+## About V-Lancer
 
-Indie is an open-source fork-able codebase that is available for marketplaces and other platforms integrating with [TalentLayer](https://docs.talentlayer.org/) to borrow from and use to get inspired. 
-
-Indie lays the groundwork for what will eventually become the TalentLayer SDK.
-
-View a video demo of the Indie Frontend [here](https://youtu.be/8Y6E282Nwtc). 
-
-## Requirements 
+## Requirements
 
 - Node & npm
 
@@ -17,6 +11,7 @@ View a video demo of the Indie Frontend [here](https://youtu.be/8Y6E282Nwtc).
 - `npm install`
 - `cp .env.example .env`
 - `npm run dev`
+- Add the sismo appId in config.ts
 
 ## Stacks
 
@@ -29,6 +24,7 @@ View a video demo of the Indie Frontend [here](https://youtu.be/8Y6E282Nwtc).
 - [WalletConnect - Web3Modal](https://github.com/WalletConnect/web3modal/blob/V2/docs/react.md)
 - [Heroicons](https://heroicons.com/)
 - [Headlessui](https://headlessui.com/)
+- [Sismo](https://docs.sismo.io/sismo-docs/build-with-sismo-connect/technical-documentation/packages/react)
 
 ## Dev stacks
 
@@ -37,6 +33,4 @@ View a video demo of the Indie Frontend [here](https://youtu.be/8Y6E282Nwtc).
 
 ## VSCode useful plugins
 
-- Tailwind CSS IntelliSense: https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss
-
-
+- Tailwind CSS IntelliSense: <https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss>
