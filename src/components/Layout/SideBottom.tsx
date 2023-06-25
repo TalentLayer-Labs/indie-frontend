@@ -12,7 +12,7 @@ function SideBottom() {
           <div className=''>
             <a
               href={`https://${
-                network?.chain?.name == 'Ethereum' ? 'www' : network?.chain?.name.toLowerCase()
+                network?.chain?.name == 'Ethereum' ? 'www' : network?.chain?.name?.toLowerCase()
               }.etherscan.io/block/${blockNumber}`}
               target='_blank'
               className='text-xs font-medium text-indigo-100 flex items-center'>

@@ -30,7 +30,7 @@ function ServiceItem({ service }: { service: IService }) {
               {service.description?.keywords_raw?.split(',').map((keyword, i) => (
                 <span
                   key={i}
-                  className='inline-block bg-gray-200 rounded-full px-2 py-1 text-xs font-semibold text-gray-700 mr-2 mb-2'>
+                  className='inline-block bg-blue-200 rounded-full px-2 py-1 text-xs font-semibold text-gray-700 mr-2 mb-2'>
                   {keyword}
                 </span>
               ))}
@@ -51,7 +51,7 @@ function ServiceItem({ service }: { service: IService }) {
             </p>
           )}
           <Link
-            className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg'
+            className='text-white-600 bg-red-300 hover:bg-red-500 hover:text-white px-5 py-2 rounded-lg'
             href={`/services/${service.id}`}>
             Show details
           </Link>

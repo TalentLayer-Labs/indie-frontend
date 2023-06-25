@@ -43,7 +43,7 @@ function SearchServiceButton(props?: { value?: string }) {
           <input
             className='text-gray-500 py-2 focus:ring-0 outline-none text-sm sm:text-lg border-0'
             type='text'
-            placeholder='Search by title'
+            placeholder='Search'
             onChange={e => setSearchQuery(e.target.value)}
             value={searchQuery}
           />
@@ -51,7 +51,7 @@ function SearchServiceButton(props?: { value?: string }) {
         <div className='sm:px-4 flex flex-row  sm:space-x-4 justify-between items-center'>
           <button
             type='submit'
-            className='px-5 py-2 border border-indigo-600 rounded-lg hover:text-indigo-600 hover:bg-white text-white bg-indigo-700'>
+            className='px-5 py-2 border border-red-600 rounded-lg hover:text-red-600 hover:bg-red-200 text-white bg-red-700'>
             Search
           </button>
         </div>

@@ -20,7 +20,7 @@ function DelegateModal({ user }: { user: IUser }) {
     const getUser = await getUserByAddress(user.address);
     const delegateAddresses = getUser.data?.data?.users[0].delegates;
 
-    if (delegateAddresses && delegateAddresses.indexOf(delegateAddress.toLowerCase()) != -1) {
+    if (delegateAddresses && delegateAddresses.indexOf(delegateAddress?.toLowerCase()) != -1) {
       setHasPlatformAsDelegate(true);
     } else {
       setHasPlatformAsDelegate(false);
