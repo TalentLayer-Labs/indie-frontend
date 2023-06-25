@@ -43,7 +43,7 @@ const wagmiClient = createClient({
 // Web3Modal Ethereum Client
 const ethereumClient = new EthereumClient(wagmiClient, chains);
 
-function MyApp({ Component, pageProps: { session, ...pageProps }, }: AppProps) {
+function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   useEffect(() => {
     wagmiClient.autoConnect();
   }, []);
