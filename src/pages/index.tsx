@@ -6,7 +6,7 @@ import SearchTalent from '../components/Home/SearchTalent';
 function Home() {
   return (
     <>
-      <CreateId />
+      {/* <CreateId /> */}
       <SearchService />
       <SearchTalent />
       <Search />

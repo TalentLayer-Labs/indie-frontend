@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@enzoferey/ethers-error-parser": "^0.2.2",
+    "@ethereum-attestation-service/eas-sdk": "^0.29.0",
     "@headlessui/react": "^1.7.3",
     "@heroicons/react": "^2.0.12",
     "@sismo-core/sismo-connect-react": "^0.0.15",

@@ -13,13 +13,25 @@ function Dashboard() {
 
   return (
     <div className='max-w-7xl mx-auto text-gray-900 sm:px-4 lg:px-0'>
-      <p className='text-5xl font-medium tracking-wider mb-8' style={{ fontFamily: 'CustomFont' }}>
-        GET{' '}
-        <span className='text-red-600' style={{ fontFamily: 'CustomFont' }}>
-          STARTED
-        </span>
-      </p>
-
+      {user  == null ? (
+        <p
+          className='text-5xl font-medium tracking-wider mb-8'
+          style={{ fontFamily: 'CustomFont' }}>
+          GET{' '}
+          <span className='text-red-600' style={{ fontFamily: 'CustomFont' }}>
+            STARTED
+          </span>
+        </p>
+      ) : (
+        <p
+          className='text-5xl font-medium tracking-wider mb-8'
+          style={{ fontFamily: 'CustomFont' }}>
+          YOUR{' '}
+          <span className='text-red-600' style={{ fontFamily: 'CustomFont' }}>
+            DASHBOARD
+          </span>
+        </p>
+      )}
       <Steps targetTitle={'Explore'} />
 
       {account?.isConnected && user && (

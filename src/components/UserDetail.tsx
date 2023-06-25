@@ -8,6 +8,12 @@ import Loading from './Loading';
 import Stars from './Stars';
 import Image from 'next/image';
 import DelegateModal from './Modal/DelegateModal';
+import {
+  SismoConnectButton,
+  AuthType,
+  SismoConnectResponse,
+} from '@sismo-core/sismo-connect-react';
+import { sismo } from '../config';
 
 function UserDetail({ user }: { user: IUser }) {
   const { user: currentUser } = useContext(TalentLayerContext);
@@ -65,6 +71,20 @@ function UserDetail({ user }: { user: IUser }) {
 
       {currentUser?.id === user.id && (
         <div className=' border-t border-gray-100 pt-4 w-full mt-4'>
+          <SismoConnectButton
+            config={sismo}
+            // request proof of Github ownership
+            auths={[{ authType: AuthType.VAULT }, { authType: AuthType.GITHUB }]}
+            claims={[{ groupId: '0xfb20933ed4261d329255c10c64c53ff0' }]}
+            onResponse={async (response: SismoConnectResponse) => {
+              console.log(response);
+            }}
+            onResponseBytes={(response: string) => {
+              // TODO: Store this response in the smart contract
+              console.log(response); // call your contract with the response as bytes
+            }}
+          />
+          <br></br>
           <div className='flex flex-row gap-4 justify-end items-center'>
             <Link
               className='text-blue-600 bg-blue-50 hover:bg-blue-500 hover:text-white px-5 py-2 rounded-lg'
