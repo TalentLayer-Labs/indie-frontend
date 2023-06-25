@@ -21,7 +21,7 @@ import {
   SismoConnectResponse,
 } from '@sismo-core/sismo-connect-react';
 import { sismo } from '../config';
-import { SessionProvider } from "next-auth/react"
+import { SessionProvider } from "next-auth/react";
 import UserOAuth from '../components/UserOAuth';
 
 const chains: Chain[] = [customChains.polygonMumbai];

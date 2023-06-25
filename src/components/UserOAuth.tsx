@@ -1,6 +1,6 @@
-import { useSession, signIn, signOut } from "next-auth/react"
+import { useSession, signIn, signOut } from "next-auth/react";
 export default function UserOAuth() {
-  const { data: session } = useSession()
+  const { data: session } = useSession();
   if (session && session.user) {
     return (
       <>
@@ -14,5 +14,5 @@ export default function UserOAuth() {
       Not signed in <br />
       <button onClick={() => signIn()}>Sign in</button>
     </>
-  )
+  );
 }
