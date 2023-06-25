@@ -56,9 +56,6 @@ function UserDetail({ user }: { user: IUser }) {
         <p className='text-sm text-gray-500 mt-4'>
           <strong>Work Experience:</strong> { /* PLACEHOLDER */ }
         </p>
-        <p className='text-sm text-gray-500 mt-4'>
-          <strong>Projects:</strong> { /* PLACEHOLDER */ }
-        </p>
         {userDescription?.role && (
           <p className='text-sm text-gray-500 mt-4'>
             <strong>Role:</strong> {userDescription?.role}
@@ -70,27 +67,12 @@ function UserDetail({ user }: { user: IUser }) {
         <div className=' border-t border-gray-100 pt-4 w-full mt-4'>
           <div className='flex flex-row gap-4 justify-end items-center'>
             <Link
-              className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg'
+              className='text-blue-600 bg-blue-50 hover:bg-blue-500 hover:text-white px-5 py-2 rounded-lg'
               href={`/profile/WorkExperience`}>
               Add Work Experience
             </Link>
             <Link
-              className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg'
-              href={`/profile/ProjectContributions`}>
-              Add Project Contributions
-            </Link>
-            <Link
-              className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg'
-              href={`/profile/WorkExperience`}>
-              Add Work Experience
-            </Link>
-            <Link
-              className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg'
-              href={`/profile/ProjectContributions`}>
-              Add Project Contributions
-            </Link>
-            <Link
-              className='text-white bg-red-500 hover:bg-red-200 hover:white px-5 py-2 rounded-lg'
+              className='text-red-600 bg-red-50 hover:bg-red-500 hover:text-white px-5 py-2 rounded-lg'
               href={`/profile/${user.id}`}>
               View profile
             </Link>

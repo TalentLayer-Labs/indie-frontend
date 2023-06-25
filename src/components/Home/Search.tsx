@@ -31,7 +31,7 @@ function Search() {
                   </span>
                 </p>
                 <br></br>
-                <p className='text-gray-500' style={{ fontFamily: 'customFont' }}>
+                <p className='text-gray-500' style={{ fontFamily: 'customFont', textAlign: 'center' }}>
                   Forget the old rules. You can have the best people. Right now. Right here.
                 </p>
                 <br></br>
