@@ -50,7 +50,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   }, []);
 
   return (
-    <SessionProvider session={pageProps.session}>
+    <>
       <GoogleAnalytics trackPageViews />
       <DefaultSeo />
       <ToastContainer position='bottom-right' />
@@ -85,7 +85,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           ethereumClient={ethereumClient}
         /> */}
       </WagmiConfig>
-    </SessionProvider>
+    </>
   );
 }
 
