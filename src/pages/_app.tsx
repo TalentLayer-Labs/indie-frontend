@@ -77,10 +77,10 @@ function MyApp({ Component, pageProps }: AppProps) {
           </XmtpContextProvider>
         </TalentLayerProvider>
         {/* Comment out Wallect Connect Button - KIV if we still want use this */}
-        {<Web3Modal
+        <Web3Modal
           projectId={`${process.env.NEXT_PUBLIC_WALLECT_CONNECT_PROJECT_ID}`}
           ethereumClient={ethereumClient}
-        />}
+        />
       </WagmiConfig>
     </>
   );

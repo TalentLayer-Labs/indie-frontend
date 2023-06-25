@@ -27,6 +27,7 @@ interface IFormValues {
 const validationSchema = Yup.object({
   title: Yup.string().required('title is required'),
   company: Yup.string().required('company is required'),
+  startDate: Yup.string().required('start date is required'),
 });
 
 function WorkExperienceForm({ callback }: { callback?: () => void }) {
@@ -57,7 +58,7 @@ function WorkExperienceForm({ callback }: { callback?: () => void }) {
   ) => {
     if (user && provider && signer) {
       try {
-        const schemaRegistryContractAddress = ""; // PLACEHOLDER - replace with registry address of user's smart contract
+        const schemaRegistryContractAddress = "0x340a861431d6f541b12b060f543BA64EBc559354";
         const schemaRegistry = new SchemaRegistry(schemaRegistryContractAddress);
 
         schemaRegistry.connect(signer);

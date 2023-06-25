@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 function SideLink({ children, href }: { children: React.ReactNode; href: string }) {
   const router = useRouter();
   let className =
-    router.asPath === href ? 'bg-indigo-800 text-white' : 'text-indigo-100 hover:bg-indigo-700';
+    router.asPath === href ? 'bg-red-600 text-white' : 'text-red-100 hover:bg-red-700';
 
   className += ' group flex items-center px-2 py-2 text-base font-medium rounded-md';
 
@@ -13,7 +13,7 @@ function SideLink({ children, href }: { children: React.ReactNode; href: string 
   };
 
   return (
-    <a href={href} onClick={handleClick} className={className}>
+    <a href={href} onClick={handleClick} className={className} style={{ fontFamily: 'CustomFont' }}>
       {children}
     </a>
   );

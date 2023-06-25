@@ -1,0 +1,3 @@
+[submodule "vlance_contracts"]
+	path = vlance_contracts
+	url = git@github.com:alinobrasil/vlance_contracts.git

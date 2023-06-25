@@ -54,7 +54,7 @@ function ProjectContributionForm({ callback }: { callback?: () => void }) {
   ) => {
     if (user && provider && signer) {
       try {
-        const schemaRegistryContractAddress = ""; // PLACEHOLDER - replace with registry address of user's smart contract
+        const schemaRegistryContractAddress = "0x340a861431d6f541b12b060f543BA64EBc559354";
         const schemaRegistry = new SchemaRegistry(schemaRegistryContractAddress);
 
         schemaRegistry.connect(signer);
