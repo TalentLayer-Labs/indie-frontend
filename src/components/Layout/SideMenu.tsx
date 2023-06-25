@@ -17,9 +17,9 @@ function SideMenu() {
           <img
             src={item.icon}
             alt={item.name}
-            className='mr-3 h-5 w-5 flex-shrink-0 text-white-300'
+            className='mr-3 h-8 w-8 flex-shrink-0 text-white-300'
           />
-          {item.name}
+          <span className='text-2xl'>{item.name}</span>
         </SideLink>
       ))}
     </nav>

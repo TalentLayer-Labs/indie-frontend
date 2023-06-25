@@ -1,7 +1,7 @@
-import SearchServiceButton from '../Form/SearchServiceButton';
 import Image from 'next/image';
+import SearchButton from '../Form/SearchButton';
 
-function SearchService() {
+function Search() {
   return (
     <div>
       <div className='max-w-7xl mx-auto text-gray-900 px-4'>
@@ -9,11 +9,11 @@ function SearchService() {
           <div className='flex items-center'>
             <div className='w-1/2'>
               <Image
-                src='/images/1.png'
+                src='/images/3.png'
                 alt='Image'
                 width={1000}
                 height={1}
-                style={{ width: '100%' }}
+                style={{ width: '80%' }}
               />
             </div>
             <div className='w-1/2'>
@@ -21,22 +21,22 @@ function SearchService() {
                 <p
                   className='text-5xl sm:text-7xl font-medium tracking-wider max-w-lg text-center'
                   style={{ fontFamily: 'LondrinaSolidShadow' }}>
-                  The{' '}
+                  Find{' '}
                   <span className='text-blue-600' style={{ fontFamily: 'customFont' }}>
-                    Gateway{' '}
+                    Your{' '}
                   </span>{' '}
-                  To The Best{' '}
-                  <span className='text-red-600' style={{ fontFamily: 'customFont' }}>
-                    Jobs{' '}
+                  Dream{' '}
+                  <span className='text-yellow-300	' style={{ fontFamily: 'customFont' }}>
+                    Talent{' '}
                   </span>
                 </p>
                 <br></br>
-                <p className='text-gray-500' style={{ fontFamily: 'customFont', textAlign: 'center' }}>
-                  Your work, Your network, Your future. Own Your Story Prove Your Worth
+                <p className='text-gray-500' style={{ fontFamily: 'customFont' }}>
+                  Forget the old rules. You can have the best people. Right now. Right here.
                 </p>
                 <br></br>
                 <br></br>
-                <SearchServiceButton value={''} />
+                <SearchButton value={''} />
               </div>
             </div>
           </div>
@@ -46,4 +46,4 @@ function SearchService() {
   );
 }
 
-export default SearchService;
+export default Search;
