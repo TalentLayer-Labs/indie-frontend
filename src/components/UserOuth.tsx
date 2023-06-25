@@ -1,10 +1,11 @@
 import { signIn } from 'next-auth/react'
+import GithubButton from 'react-github-login-button';
 
 const UserOuth = () => {
   return (
-    <button onClick={() => signIn('github')}>
+    <GithubButton onClick={() => signIn('github')}>
       Sign in with GitHub
-    </button>
+    </GithubButton>
   )
 }
 

@@ -2,11 +2,12 @@ import Link from 'next/link';
 
 function Logo() {
   return (
-    <h1 className='text-2xl text-white'>
-      <Link href='/'>
-        TL<span className='text-indigo-300'>indie</span>
-      </Link>
-    </h1>
+    <div className='flex items-center'>
+      <img src='/icon.png' alt='Logo' className='w-11 h-11 mr-2' />
+      <h1 className='text-3xl text-white' style={{ fontFamily: 'CustomFont' }}>
+        <Link href='/'>V-LANCE</Link>
+      </h1>
+    </div>
   );
 }
 
