@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import ProjectContributionForm from '../../components/Form/ProjectContributions';
+import ProjectContributionForm from '../../components/Form/ProjectContributionsForm';
 import Steps from '../../components/Steps';
 import TalentLayerContext from '../../context/talentLayer';
 

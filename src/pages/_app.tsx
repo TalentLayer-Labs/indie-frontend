@@ -61,10 +61,7 @@ function MyApp({ Component, pageProps }: AppProps) {
                     config={sismo}
                     // request proof of Github ownership
                     auths={[{ authType: AuthType.VAULT }, { authType: AuthType.GITHUB }]}
-                    claims={[
-                      { groupId: '0xe19b522e51d5750c690c36515611b934' },
-                      { groupId: '0x251d25c1e9192286e0e329bc4a46b84e' },
-                    ]}
+                    claims={[{ groupId: '0xfb20933ed4261d329255c10c64c53ff0' }]}
                     onResponse={async (response: SismoConnectResponse) => {
                       console.log(response);
                     }}
@@ -80,10 +77,10 @@ function MyApp({ Component, pageProps }: AppProps) {
           </XmtpContextProvider>
         </TalentLayerProvider>
         {/* Comment out Wallect Connect Button - KIV if we still want use this */}
-        {/* <Web3Modal
+        {<Web3Modal
           projectId={`${process.env.NEXT_PUBLIC_WALLECT_CONNECT_PROJECT_ID}`}
           ethereumClient={ethereumClient}
-        /> */}
+        />}
       </WagmiConfig>
     </>
   );

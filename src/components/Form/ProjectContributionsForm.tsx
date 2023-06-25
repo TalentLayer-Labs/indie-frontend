@@ -1,6 +1,6 @@
 import { useWeb3Modal } from '@web3modal/react';
-import { SchemaRegistry } from "@ethereum-attestation-service/eas-sdk";
 import { ethers } from 'ethers';
+import { SchemaRegistry } from "@ethereum-attestation-service/eas-sdk";
 import { Field, Form, Formik } from 'formik';
 import { useContext } from 'react';
 import { useProvider, useSigner } from 'wagmi';
@@ -18,7 +18,6 @@ import { delegateUpdateProfileData } from '../request';
 
 interface IFormValues {
   title?: string;
-  company?: string;
   startDate?: string;
   endDate?: string;
   description?: string;
@@ -26,10 +25,9 @@ interface IFormValues {
 
 const validationSchema = Yup.object({
   title: Yup.string().required('title is required'),
-  company: Yup.string().required('company is required'),
 });
 
-function WorkExperienceForm({ callback }: { callback?: () => void }) {
+function ProjectContributionForm({ callback }: { callback?: () => void }) {
   const { open: openConnectModal } = useWeb3Modal();
   const { user } = useContext(TalentLayerContext);
   const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
@@ -45,7 +43,6 @@ function WorkExperienceForm({ callback }: { callback?: () => void }) {
 
   const initialValues: IFormValues = {
     title: userDescription?.title || '',
-    company: userDescription?.role || '',
     startDate: userDescription?.image_url || '',
     endDate: userDescription?.video_url || '',
     description: userDescription?.name || '',
@@ -108,16 +105,6 @@ function WorkExperienceForm({ callback }: { callback?: () => void }) {
               />
             </label>
             <label className='block'>
-              <span className='text-gray-700'>Company</span>
-              <Field
-                type='text'
-                id='company'
-                name='company'
-                className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
-                placeholder=''
-              />
-            </label>
-            <label className='block'>
               <span className='text-gray-700'>Start Date</span>
               <Field
                 type='date'
@@ -131,8 +118,8 @@ function WorkExperienceForm({ callback }: { callback?: () => void }) {
               <span className='text-gray-700'>End Date</span>
               <Field
                 type='date'
-                id='endDate'
-                name='endDate'
+                id='end_date'
+                name='end_date'
                 className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
                 placeholder=''>
               </Field>
@@ -158,4 +145,4 @@ function WorkExperienceForm({ callback }: { callback?: () => void }) {
   );
 }
 
-export default WorkExperienceForm;
+export default ProjectContributionForm;
