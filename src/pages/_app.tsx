@@ -60,7 +60,6 @@ function MyApp({ Component, pageProps }: AppProps) {
             <MessagingProvider>
               <ThemeProvider enableSystem={false}>
                 <Layout>
-                  <UserOuth />
                   <SismoConnectButton
                     config={sismo}
                     // request proof of Github ownership
