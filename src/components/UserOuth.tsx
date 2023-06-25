@@ -1,4 +1,4 @@
-import { signIn } from 'next-auth/react'
+import { signIn } from 'next-auth/react';
 
 const UserOuth = () => {
   return (
@@ -6,6 +6,6 @@ const UserOuth = () => {
       Sign in with GitHub
     </button>
   )
-}
+};
 
-export default UserOuth
+export default UserOuth;

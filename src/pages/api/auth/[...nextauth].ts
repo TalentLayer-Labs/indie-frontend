@@ -1,6 +1,6 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import NextAuth from 'next-auth'
-import GitHubProvider from 'next-auth/providers/github'
+import { NextApiRequest, NextApiResponse } from 'next';
+import NextAuth from 'next-auth';
+import GitHubProvider from 'next-auth/providers/github';
 const GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID!;
 const GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET!;
 
