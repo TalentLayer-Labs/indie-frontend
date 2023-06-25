@@ -9,6 +9,7 @@ interface IProps {
   offset?: number;
   searchQuery?: string;
   platformId?: string;
+  keywordList?: string[];
 }
 
 const serviceQueryFields = `
@@ -62,15 +63,101 @@ const serviceDescriptionQueryFields = `
   }
 `;
 
+// **********************  OPTION 1-  we apply each case of filtering with AND & OR **********************
 const getFilteredServiceCondition = (params: IProps) => {
-  let condition = ', where: {';
-  condition += params.serviceStatus ? `status: "${params.serviceStatus}"` : '';
-  condition += params.buyerId ? `, buyer: "${params.buyerId}"` : '';
-  condition += params.sellerId ? `, seller: "${params.sellerId}"` : '';
-  condition += params.platformId ? `, platform: "${params.platformId}"` : '';
+  let condition = 'where: {';
+
+  if (params.serviceStatus) condition += `status: "${params.serviceStatus}",`;
+  if (params.buyerId) condition += `buyer: "${params.buyerId}",`;
+  if (params.sellerId) condition += `seller: "${params.sellerId}",`;
+  if (params.platformId) condition += `platform: "${params.platformId}",`;
+
+  let keywordFilter = '';
+
+  // Filter by keyword
+  // This code filters the list of keywords to only those that are included in the keyword list.
+
+  if (params.keywordList && params.keywordList.length > 0) {
+    keywordFilter = params.keywordList
+      .map(keyword => `{keywords_raw_contains: "${keyword}"}`)
+      .join(', ');
+  }
+
+  // Prepare description_ filter
+  let descriptionCondition = '';
+  if (params.searchQuery) {
+    descriptionCondition += `{keywords_raw_contains: "${params.searchQuery}"}`;
+  }
+  if (keywordFilter) {
+    descriptionCondition = descriptionCondition
+      ? `{ and: [ { or: [${keywordFilter}]}, ${descriptionCondition} ] }`
+      : `{ or: [${keywordFilter}]}`;
+  }
+
+  if (descriptionCondition) {
+    condition += `description_: ${descriptionCondition},`;
+  }
+
   condition += '}';
-  return condition === ', where: {}' ? '' : condition;
+
+  return condition === 'where: {}' ? '' : `, ${condition}`;
 };
+
+// **********************  OPTION 2 - We check if the searchQuery is in the keywordList then replace the keyword filter by the searchQuery **********************
+// const getFilteredServiceCondition = (params: IProps) => {
+//   let condition = 'where: {';
+
+//   if (params.serviceStatus) condition += `status: "${params.serviceStatus}",`;
+//   if (params.buyerId) condition += `buyer: "${params.buyerId}",`;
+//   if (params.sellerId) condition += `seller: "${params.sellerId}",`;
+//   if (params.platformId) condition += `platform: "${params.platformId}",`;
+
+//   let keywordConditions: string[] = [];
+
+//   // If searchQuery exists, it becomes the only keyword. Else, use keywords from keywordList.
+//   if (params.searchQuery) {
+//    need to check if the searchQuery is in the keywordList
+//     keywordConditions = [`{keywords_raw_contains: "${params.searchQuery}"}`];
+//   } else if (params.keywordList && params.keywordList.length > 0) {
+//     keywordConditions = params.keywordList.map(keyword => `{keywords_raw_contains: "${keyword}"}`);
+//   }
+
+//   // Add keywordConditions to condition
+//   if (keywordConditions.length > 0) {
+//     condition += `description_: { or: [${keywordConditions.join(', ')}]},`;
+//   }
+
+//   condition += '}';
+//   return condition === 'where: {}' ? '' : `, ${condition}`;
+// };
+
+// **********************  0 - initial query  **********************
+// const getFilteredServiceCondition = (params: IProps) => {
+//   let condition = 'where: {';
+
+//   if (params.serviceStatus) condition += `status: "${params.serviceStatus}",`;
+//   if (params.buyerId) condition += `buyer: "${params.buyerId}",`;
+//   if (params.sellerId) condition += `seller: "${params.sellerId}",`;
+//   if (params.platformId) condition += `platform: "${params.platformId}",`;
+
+//   if (params.keywordList && params.keywordList.length > 0) {
+//     let keywordConditions = params.keywordList.map(
+//       keyword => `{keywords_raw_contains: "${keyword}"}`,
+//     );
+//     condition += `description_: { or: [${keywordConditions.join(', ')}]},`;
+//   }
+
+//   console.log('params.searchQuery', params.searchQuery);
+
+//   // Add a searchQuery filter
+//   if (params.searchQuery) {
+//     condition += `description_: { or: [{keywords_raw_contains: "${params.searchQuery}"}]},`;
+//   }
+
+//   condition += '}';
+
+//   return condition === 'where: {}' ? '' : `, ${condition}`;
+// };
 
 const getFilteredServiceDescriptionCondition = (params: IProps) => {
   let condition = ', where: {';
