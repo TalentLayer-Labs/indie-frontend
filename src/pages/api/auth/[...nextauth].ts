@@ -11,6 +11,4 @@ export default (req: NextApiRequest, res: NextApiResponse) => NextAuth(req, res,
       clientSecret: GITHUB_CLIENT_SECRET
     }),
   ],
-
-  // Other options...
 });
