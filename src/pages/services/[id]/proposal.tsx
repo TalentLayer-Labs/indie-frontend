@@ -46,7 +46,7 @@ function CreateOrEditProposal() {
 
       {!userExists() && account?.isConnected && user && (
         <div className='border border-gray-200 rounded-md p-8'>
-          <p className='text-gray-500 py-4'>
+          <p className='text-gray-500 py-4' style={{ fontFamily: 'CustomFont' }}>
             In order to create a proposal, you need to be registered to our decentralized messaging
             service. Please sign in to our messaging service to verify your identity :
           </p>

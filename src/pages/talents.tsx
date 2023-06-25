@@ -15,9 +15,11 @@ function Talents() {
   );
 
   return (
-    <div className='max-w-7xl mx-auto text-gray-900 sm:px-4 lg:px-0'>
-      <p className='text-5xl font-medium tracking-wider mb-8'>
-        All <span className='text-indigo-600'>Talents </span>
+    <div
+      className='max-w-7xl mx-auto text-gray-900 sm:px-4 lg:px-0'
+      style={{ fontFamily: 'CustomFont' }}>
+      <p className='text-5xl font-medium tracking-wider mb-8' style={{ fontFamily: 'CustomFont' }}>
+        FIND <span className='text-red-600'>TALENT </span>
       </p>
 
       {searchQuery && users.length > 0 && (

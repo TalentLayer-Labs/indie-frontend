@@ -20,8 +20,11 @@ function Services() {
 
   return (
     <div className='max-w-7xl mx-auto text-gray-900 sm:px-4 lg:px-0'>
-      <p className='text-5xl font-medium tracking-wider mb-8'>
-        All <span className='text-indigo-600'>Jobs </span>
+      <p className='text-5xl font-medium tracking-wider mb-8' style={{ fontFamily: 'CustomFont' }}>
+        ALL{' '}
+        <span className='text-red-600' style={{ fontFamily: 'CustomFont' }}>
+          BOUNTIES{' '}
+        </span>
       </p>
       {searchQuery && services.length > 0 && (
         <p className='text-xl font-medium tracking-wider mb-8'>

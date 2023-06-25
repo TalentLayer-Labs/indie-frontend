@@ -17,12 +17,12 @@ function Steps({ targetTitle }: { targetTitle: string }) {
       <nav className='mb-8'>
         <ol className='divide-y divide-gray-200 rounded-md border border-gray-200 md:flex md:divide-y-0'>
           <Step
-            title='Connect your wallet'
+            title='Connect your account'
             status={!account?.isConnected ? 'inprogress' : 'done'}
             order={1}
           />
           <Step
-            title='Create your TalentLayer ID'
+            title='Create your talent passport'
             status={!account?.isConnected ? 'todo' : user === undefined ? 'inprogress' : 'done'}
             order={2}
           />

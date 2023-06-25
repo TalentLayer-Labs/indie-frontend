@@ -52,7 +52,7 @@ function SearchTalentButton(props?: { value?: string }) {
         <div className='sm:px-4 flex flex-row  sm:space-x-4 justify-between items-center'>
           <button
             type='submit'
-            className='px-5 py-2 border border-indigo-600 rounded-lg hover:text-indigo-600 hover:bg-white text-white bg-indigo-700'>
+            className='px-5 py-2 border border-red-600 rounded-lg hover:text-red-600 hover:bg-white text-white bg-red-700'>
             Search
           </button>
         </div>

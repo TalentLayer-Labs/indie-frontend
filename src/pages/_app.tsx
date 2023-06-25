@@ -21,6 +21,8 @@ import {
   SismoConnectResponse,
 } from '@sismo-core/sismo-connect-react';
 import { sismo } from '../config';
+import { SessionProvider } from "next-auth/react"
+import UserOAuth from '../components/UserOAuth';
 
 const chains: Chain[] = [customChains.polygonMumbai];
 
@@ -41,13 +43,13 @@ const wagmiClient = createClient({
 // Web3Modal Ethereum Client
 const ethereumClient = new EthereumClient(wagmiClient, chains);
 
-function MyApp({ Component, pageProps }: AppProps) {
+function MyApp({ Component, pageProps:{ session, ...pageProps }, }: AppProps) {
   useEffect(() => {
     wagmiClient.autoConnect();
   }, []);
 
   return (
-    <>
+    <SessionProvider session={session}>
       <GoogleAnalytics trackPageViews />
       <DefaultSeo />
       <ToastContainer position='bottom-right' />
@@ -57,6 +59,7 @@ function MyApp({ Component, pageProps }: AppProps) {
             <MessagingProvider>
               <ThemeProvider enableSystem={false}>
                 <Layout>
+                  <UserOAuth />
                   <SismoConnectButton
                     config={sismo}
                     // request proof of Github ownership
@@ -82,7 +85,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           ethereumClient={ethereumClient}
         />
       </WagmiConfig>
-    </>
+    </SessionProvider>
   );
 }
 

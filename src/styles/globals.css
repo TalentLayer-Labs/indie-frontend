@@ -6,11 +6,3 @@
   font-family: 'CustomFont';
   src: url('../../public/fonts/Londrina_Solid/LondrinaSolid-Black.ttf') format('truetype');
 }
-
-.outlined-text {
-  font-family: 'CustomFont', sans-serif;
-  -webkit-text-stroke: 2px black; /* Add an outline with a width of 2px and color of black */
-  text-stroke: 2px black;
-  -webkit-text-fill-color: white; /* Set the text color to white */
-  color: white;
-}

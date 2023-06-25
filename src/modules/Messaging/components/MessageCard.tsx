@@ -16,7 +16,7 @@ const MessageCard = ({ message, dateHasChanged }: IMessageCardProps) => {
   const { user } = useContext(TalentLayerContext);
   const userSending = useUserByAddress(message.from);
 
-  const isSender = message.from.toLowerCase() === user?.address.toLowerCase();
+  const isSender = message.from.toLowerCase() === user?.address?.toLowerCase();
 
   return (
     <>
