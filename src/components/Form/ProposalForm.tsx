@@ -16,6 +16,8 @@ import { getProposalSignature } from '../../utils/signature';
 import { delegateCreateOrUpdateProposal } from '../request';
 import { useContext } from 'react';
 import TalentLayerContext from '../../context/talentLayer';
+import { useState } from 'react';
+import MetaEvidenceModal from '../../modules/Disputes/components/MetaEvidenceModal';
 
 interface IFormValues {
   about: string;
@@ -48,6 +50,7 @@ function ProposalForm({
   const router = useRouter();
   const allowedTokenList = useAllowedTokens();
   const { isActiveDelegate } = useContext(TalentLayerContext);
+  const [conditionsValidated, setConditionsValidated] = useState(false);
 
   if (allowedTokenList.length === 0) {
     return <div>Loading...</div>;
@@ -175,7 +178,7 @@ function ProposalForm({
 
   return (
     <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
-      {({ isSubmitting }) => (
+      {({ isSubmitting, values }) => (
         <Form>
           <h2 className='mb-2 text-gray-900 font-bold'>For the job:</h2>
           <ServiceItem service={service} />
@@ -245,7 +248,7 @@ function ProposalForm({
               </span>
             </label>
             <label className='block flex-1'>
-              <span className='text-gray-700'>Video URL (optionnal)</span>
+              <span className='text-gray-700'>Video URL (optional)</span>
               <Field
                 type='text'
                 id='videoUrl'
@@ -258,7 +261,21 @@ function ProposalForm({
               </span>
             </label>
 
-            <SubmitButton isSubmitting={isSubmitting} label='Post' />
+            <div className='flex-col items-center mb-4'>
+              <MetaEvidenceModal
+                conditionsValidated={conditionsValidated}
+                setConditionsValidated={setConditionsValidated}
+                serviceData={service}
+                proposalData={values}
+                token={allowedTokenList.filter(token => token.address === values.rateToken)[0]}
+                seller={user}
+              />
+              <SubmitButton
+                isSubmitting={isSubmitting}
+                disabled={!conditionsValidated}
+                label='Post'
+              />
+            </div>
           </div>
         </Form>
       )}
