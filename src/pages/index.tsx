@@ -1,4 +1,5 @@
 import CreateId from '../components/Home/CreateId';
+import Search from '../components/Home/Search';
 import SearchService from '../components/Home/SearchService';
 import SearchTalent from '../components/Home/SearchTalent';
 
@@ -8,6 +9,7 @@ function Home() {
       <CreateId />
       <SearchService />
       <SearchTalent />
+      <Search />
     </>
   );
 }
