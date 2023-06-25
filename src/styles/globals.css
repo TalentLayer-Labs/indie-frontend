@@ -6,3 +6,8 @@
   font-family: 'CustomFont';
   src: url('../../public/fonts/Londrina_Solid/LondrinaSolid-Black.ttf') format('truetype');
 }
+
+@font-face {
+  font-family: 'LondrinaSolidShadow';
+  src: url('../../public/fonts/Londrina_Solid/LondrinaShadow-Regular.ttf') format('truetype');
+}
