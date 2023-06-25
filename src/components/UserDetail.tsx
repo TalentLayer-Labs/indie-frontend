@@ -87,6 +87,7 @@ function UserDetail({ user }: { user: IUser }) {
               console.log(response); // call your contract with the response as bytes
             }}
           />
+          <br></br>
           <div className='flex flex-row gap-4 justify-end items-center'>
             <Link
               className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg'
