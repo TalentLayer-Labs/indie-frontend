@@ -21,8 +21,6 @@ import {
   SismoConnectResponse,
 } from '@sismo-core/sismo-connect-react';
 import { sismo } from '../config';
-import UserOuth from '../components/UserOuth'
-import { SessionProvider } from 'next-auth/react'
 
 
 const chains: Chain[] = [customChains.polygonMumbai];
@@ -50,7 +48,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   }, []);
 
   return (
-    <SessionProvider session={pageProps.session}>
+    <>
       <GoogleAnalytics trackPageViews />
       <DefaultSeo />
       <ToastContainer position='bottom-right' />
@@ -60,7 +58,6 @@ function MyApp({ Component, pageProps }: AppProps) {
             <MessagingProvider>
               <ThemeProvider enableSystem={false}>
                 <Layout>
-                  <UserOuth />
                   <SismoConnectButton
                     config={sismo}
                     // request proof of Github ownership
@@ -86,7 +83,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           ethereumClient={ethereumClient}
         />
       </WagmiConfig>
-    </SessionProvider>
+    </>
   );
 }
 
