@@ -31,7 +31,7 @@ function SearchService() {
                   </span>
                 </p>
                 <br></br>
-                <p className='text-gray-500' style={{ fontFamily: 'customFont' }}>
+                <p className='text-gray-500' style={{ fontFamily: 'customFont', textAlign: 'center' }}>
                   Your work, Your network, Your future. Own Your Story Prove Your Worth
                 </p>
                 <br></br>
