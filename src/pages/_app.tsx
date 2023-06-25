@@ -22,7 +22,6 @@ import {
 } from '@sismo-core/sismo-connect-react';
 import { sismo } from '../config';
 
-
 const chains: Chain[] = [customChains.polygonMumbai];
 
 // Wagmi client
