@@ -15,12 +15,6 @@ import '../styles/globals.css';
 import 'react-toastify/dist/ReactToastify.css';
 import Layout from './Layout';
 import { useEffect } from 'react';
-import {
-  SismoConnectButton,
-  AuthType,
-  SismoConnectResponse,
-} from '@sismo-core/sismo-connect-react';
-import { sismo } from '../config';
 import { SessionProvider } from 'next-auth/react';
 import UserOAuth from '../components/UserOAuth';
 
@@ -60,19 +54,6 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
               <ThemeProvider enableSystem={false}>
                 <Layout>
                   <UserOAuth />
-                  <SismoConnectButton
-                    config={sismo}
-                    // request proof of Github ownership
-                    auths={[{ authType: AuthType.VAULT }, { authType: AuthType.GITHUB }]}
-                    claims={[{ groupId: '0xfb20933ed4261d329255c10c64c53ff0' }]}
-                    onResponse={async (response: SismoConnectResponse) => {
-                      console.log(response);
-                    }}
-                    onResponseBytes={(response: string) => {
-                      // TODO: Store this response in the smart contract
-                      console.log(response); // call your contract with the response as bytes
-                    }}
-                  />
                   <Component {...pageProps} />
                 </Layout>
               </ThemeProvider>
