@@ -44,13 +44,12 @@ function ProposalForm({
   const router = useRouter();
   const allowedTokenList = useAllowedTokens();
   const { isActiveDelegate } = useContext(TalentLayerContext);
+  //Store referrerId in local storage if any
+  useStoreInLocalStorage(`${service.id}-${user.id}`, router.query.referrerId as string);
 
   if (allowedTokenList.length === 0) {
     return <div>Loading...</div>;
   }
-
-  //Store referrerId in local storage if any
-  useStoreInLocalStorage(`${service.id}-${user.id}`, router.query.referrerId as string);
 
   let existingExpirationDate, existingRateTokenAmount;
 

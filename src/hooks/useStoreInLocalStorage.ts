@@ -1,7 +1,8 @@
 import { useEffect } from 'react';
 
-const useStoreInLocalStorage = (data: string, key: string): void => {
+const useStoreInLocalStorage = (key: string, data: string): void => {
   useEffect(() => {
+    if (!data) return;
     localStorage.setItem(key, data);
   }, [data]);
 };
