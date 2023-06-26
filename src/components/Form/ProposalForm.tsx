@@ -12,6 +12,7 @@ import useAllowedTokens from '../../hooks/useAllowedTokens';
 import { useContext } from 'react';
 import TalentLayerContext from '../../context/talentLayer';
 import { createOrUpdateProposal } from '../../contracts/createOrUpdateProposal';
+import useStoreInLocalStorage from '../../hooks/useStoreInLocalStorage';
 
 interface IFormValues {
   about: string;
@@ -49,9 +50,7 @@ function ProposalForm({
   }
 
   //Store referrerId in local storage if any
-  if (router.query.referrerId) {
-    localStorage.setItem(`${service.id}-${user.id}`, router.query.referrerId as string);
-  }
+  useStoreInLocalStorage(`${service.id}-${user.id}`, router.query.referrerId as string);
 
   let existingExpirationDate, existingRateTokenAmount;
 
