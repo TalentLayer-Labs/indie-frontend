@@ -73,9 +73,9 @@ function ProposalForm({
     videoUrl: existingProposal?.description?.video_url || '',
     referrerId:
       (service.referralAmount &&
-        (Number(localStorage.getItem(`${service.id}-${user.id}`)) ||
-          Number(router.query.referrerId as string) ||
-          Number(existingProposal?.referrer?.id))) ||
+        (Number(existingProposal?.referrer?.id) ||
+          Number(localStorage.getItem(`${service.id}-${user.id}`)) ||
+          Number(router.query.referrerId as string))) ||
       0,
   };
 
