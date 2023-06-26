@@ -110,6 +110,12 @@ const mumbai: Config = {
       name: 'Matic',
       decimals: 18,
     },
+    '0xe6b8a5CF854791412c1f6EFC7CAf629f5Df1c747': {
+      address: '0xe6b8a5CF854791412c1f6EFC7CAf629f5Df1c747',
+      symbol: 'USDC',
+      name: 'USDC Stablecoin',
+      decimals: 6,
+    },
     '0x1a87740fc249e8f917af7d1f99bfbd4eed6f98a1': {
       address: '0x1a87740fc249e8f917af7d1f99bfbd4eed6f98a1',
       symbol: 'SERC20',
