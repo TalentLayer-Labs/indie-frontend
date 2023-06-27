@@ -9,10 +9,9 @@ import { parseRateAmount } from '../../utils/web3';
 import ServiceItem from '../ServiceItem';
 import SubmitButton from './SubmitButton';
 import useAllowedTokens from '../../hooks/useAllowedTokens';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import TalentLayerContext from '../../context/talentLayer';
 import { createOrUpdateProposal } from '../../contracts/createOrUpdateProposal';
-import useStoreInLocalStorage from '../../hooks/useStoreInLocalStorage';
 
 interface IFormValues {
   about: string;
@@ -45,7 +44,9 @@ function ProposalForm({
   const allowedTokenList = useAllowedTokens();
   const { isActiveDelegate } = useContext(TalentLayerContext);
   //Store referrerId in local storage if any
-  useStoreInLocalStorage(`${service.id}-${user.id}`, router.query.referrerId as string);
+  useEffect(() => {
+    localStorage.setItem(`${service.id}-${user.id}`, router.query.referrerId as string);
+  }, [router.query.referrerId]);
 
   if (allowedTokenList.length === 0) {
     return <div>Loading...</div>;
