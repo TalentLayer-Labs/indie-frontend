@@ -10,9 +10,12 @@ export default function Anima({ userAddress }: { userAddress: any }): JSX.Elemen
 
   const { signMessageAsync } = useSignMessage();
 
-  const shared = useCallback((e: { state: string }) => {
-    console.log('shared', e);
-  }, []);
+  const shared = useCallback(
+    (e: { state: string }) => {
+      console.log('shared', e);
+    },
+    [userAddress],
+  );
 
   return process.env.NEXT_PUBLIC_ACTIVE_ANIMA === 'true' && account?.isConnected ? (
     <div>
