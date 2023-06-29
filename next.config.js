@@ -5,7 +5,7 @@ const nextConfig = {
   images: {
     domains: ['ipfs.io'],
     unoptimized: true
-  },
+  }
 };
 
 module.exports = {
