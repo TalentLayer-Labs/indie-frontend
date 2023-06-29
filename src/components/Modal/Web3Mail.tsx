@@ -5,13 +5,17 @@ import Toggle from '../Form/Toggle';
 
 // Switch import statement will depend on your UI library or your custom component
 
-function Web3Mail({ showMail }: { showMail: boolean }) {
-  const [show, setShow] = useState(showMail);
+function Web3Mail({ showMailModal }: { showMailModal: boolean }) {
+  const [show, setShow] = useState(showMailModal);
   const [allowNotifications, setAllowNotifications] = useState(false);
 
+  interface IFormValues {
+    email: string;
+  }
+
   useEffect(() => {
-    setShow(showMail);
-  }, [showMail]);
+    setShow(showMailModal);
+  }, [showMailModal]);
 
   const initialValues = {
     email: '',
@@ -21,9 +25,18 @@ function Web3Mail({ showMail }: { showMail: boolean }) {
     email: Yup.string().email('Invalid email address').required('Required'),
   });
 
-  const onSubmit = (values, { setSubmitting }) => {
-    // handle form submission here
-    setSubmitting(false);
+  const onSubmit = async (
+    values: IFormValues,
+    {
+      setSubmitting,
+      resetForm,
+    }: {
+      setSubmitting: (isSubmitting: boolean) => void;
+      resetForm: () => void;
+    },
+  ) => {
+    setSubmitting(true);
+    resetForm();
   };
 
   return (

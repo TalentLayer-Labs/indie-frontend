@@ -108,7 +108,6 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
       resetForm: () => void;
     },
   ) => {
-    console.log('showMailModal', showMailModal);
     const token = allowedTokenList.find(token => token.address === values.rateToken);
     if (account?.isConnected === true && provider && signer && token && user) {
       try {
@@ -139,7 +138,6 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
         const signature = await getServiceSignature({ profileId: Number(user?.id), cid });
 
         let tx;
-        setShowMailModal(true);
 
         if (isActiveDelegate) {
           const response = existingService
@@ -171,6 +169,9 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
 
         setSubmitting(false);
         resetForm();
+
+        // set the modal to true to show the mail modal
+        setShowMailModal(true);
 
         if (newId) {
           router.push(`/services/${newId}`);
@@ -279,7 +280,7 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
           </Form>
         )}
       </Formik>
-      <Web3Mail showMail={showMailModal} />
+      <Web3Mail showMailModal={showMailModal} />
     </>
   );
 }
