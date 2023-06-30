@@ -17,7 +17,7 @@ import { getServiceSignature } from '../../utils/signature';
 import { IToken } from '../../types';
 import useServiceById from '../../hooks/useServiceById';
 import { SkillsInput } from './skills-input';
-import { delegateCreateService, delegateUpdateService } from '../request';
+import { delegateCreateService, delegateUpdateService, web3Mail } from '../request';
 import Web3Mail from '../Modal/Web3Mail';
 
 interface IFormValues {
@@ -36,7 +36,7 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
     chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
   });
   const existingService = useServiceById(serviceId as string);
-  const [showMailModal, setShowMailModal] = useState(false);
+  const [showMailModal, setShowMailModal] = useState(true);
   const [newServiceId, setNewServiceId] = useState<number | null>(null);
 
   const router = useRouter();

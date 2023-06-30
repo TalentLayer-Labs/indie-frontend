@@ -139,3 +139,12 @@ export const delegateMintID = async (
     throw err;
   }
 };
+
+export const web3Mail = async (): Promise<any> => {
+  try {
+    return await axios.post('/api/web3mail/web3mail');
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+};
