@@ -37,6 +37,7 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
   });
   const existingService = useServiceById(serviceId as string);
   const [showMailModal, setShowMailModal] = useState(false);
+  const [newServiceId, setNewServiceId] = useState<number | null>(null);
 
   const router = useRouter();
   const allowedTokenList = useAllowedTokens();
@@ -174,7 +175,7 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
         setShowMailModal(true);
 
         if (newId) {
-          router.push(`/services/${newId}`);
+          setNewServiceId(newId);
         }
       } catch (error) {
         showErrorTransactionToast(error);
@@ -183,6 +184,14 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
       openConnectModal();
     }
   };
+
+  useEffect(() => {
+    if (!showMailModal && newServiceId) {
+      router.push(`/services/${newServiceId}`);
+      // reset newServiceId state to null
+      setNewServiceId(null);
+    }
+  }, [showMailModal]);
 
   return (
     <>
@@ -280,7 +289,7 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
           </Form>
         )}
       </Formik>
-      <Web3Mail showMailModal={showMailModal} />
+      <Web3Mail showMailModal={showMailModal} setShowMailModal={setShowMailModal} />
     </>
   );
 }

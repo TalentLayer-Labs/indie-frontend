@@ -89,7 +89,7 @@ const fuji: Config = {
 
 const mumbai: Config = {
   networkId: NetworkEnum.MUMBAI,
-  subgraphUrl: 'https://api.thegraph.com/subgraphs/name/talentlayer/talent-layer-mumbai',
+  subgraphUrl: 'https://api.thegraph.com/subgraphs/name/akugone/web3mail-tl-mumbai',
   contracts: {
     talentLayerId: '0x3F87289e6Ec2D05C32d8A74CCfb30773fF549306',
     serviceRegistry: '0x27ED516dC1df64b4c1517A64aa2Bb72a434a5A6D',

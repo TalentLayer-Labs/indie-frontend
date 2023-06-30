@@ -5,7 +5,13 @@ import Toggle from '../Form/Toggle';
 
 // Switch import statement will depend on your UI library or your custom component
 
-function Web3Mail({ showMailModal }: { showMailModal: boolean }) {
+function Web3Mail({
+  showMailModal,
+  setShowMailModal,
+}: {
+  showMailModal: boolean;
+  setShowMailModal: Function;
+}) {
   const [show, setShow] = useState(showMailModal);
   const [allowNotifications, setAllowNotifications] = useState(false);
 
@@ -51,7 +57,10 @@ function Web3Mail({ showMailModal }: { showMailModal: boolean }) {
               <h3 className='text-xl font-semibold text-gray-900 '>Web3Mail information</h3>
               {/* close button */}
               <button
-                onClick={() => setShow(false)}
+                onClick={() => {
+                  setShow(false);
+                  setShowMailModal(false);
+                }}
                 type='button'
                 className='text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center '
                 data-modal-toggle='defaultModal'>
