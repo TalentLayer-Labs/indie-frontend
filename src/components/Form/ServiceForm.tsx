@@ -17,7 +17,7 @@ import { getServiceSignature } from '../../utils/signature';
 import { IToken } from '../../types';
 import useServiceById from '../../hooks/useServiceById';
 import { SkillsInput } from './skills-input';
-import { delegateCreateService, delegateUpdateService, web3Mail } from '../request';
+import { delegateCreateService, delegateUpdateService } from '../request';
 import Web3Mail from '../Modal/Web3Mail';
 
 interface IFormValues {

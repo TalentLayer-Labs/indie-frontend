@@ -6,6 +6,7 @@
     "@enzoferey/ethers-error-parser": "^0.2.2",
     "@headlessui/react": "^1.7.3",
     "@heroicons/react": "^2.0.12",
+    "@iexec/dataprotector": "^0.1.1",
     "@iexec/web3mail": "^0.1.1",
     "@types/node": "^16.18.0",
     "@types/react": "^18.0.23",

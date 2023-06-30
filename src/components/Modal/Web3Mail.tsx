@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import Toggle from '../Form/Toggle';
+import { web3Mail, dataProtector } from '../request';
 
 // Switch import statement will depend on your UI library or your custom component
 
