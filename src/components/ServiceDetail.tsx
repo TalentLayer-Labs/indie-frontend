@@ -38,6 +38,8 @@ function ServiceDetail({ service }: { service: IService }) {
     return proposal.status === ProposalStatusEnum.Validated;
   });
 
+  // TODO : add mail if service receive a proposal
+
   return (
     <>
       <div className='flex flex-row gap-2 rounded-xl p-4 border border-gray-200'>
