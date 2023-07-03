@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import Toggle from '../Form/Toggle';
-import { dataProtector } from '../request';
+import { web3Mail, dataProtector } from '../request';
 
 // Switch import statement will depend on your UI library or your custom component
 
@@ -42,7 +42,14 @@ function Web3Mail({
       resetForm: () => void;
     },
   ) => {
-    const dataProtectorTest = await dataProtector();
+    const web3mail = await web3Mail(
+      'bonjour',
+      'test',
+      '0x1caab8ded4535bf42728fea90afa7da1ac637e1e',
+    );
+    console.log('web3mail', web3mail);
+
+    const dataProtectorTest = await dataProtector({ data: { email: values.email } });
     console.log(dataProtectorTest);
 
     setSubmitting(true);

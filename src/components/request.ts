@@ -1,5 +1,7 @@
 /* eslint-disable no-console */
+import { ProtectDataParams } from '@iexec/dataprotector';
 import axios from 'axios';
+import { Address } from 'wagmi';
 
 export const delegateCreateService = async (
   userId: string,
@@ -140,18 +142,22 @@ export const delegateMintID = async (
   }
 };
 
-export const web3Mail = async (): Promise<any> => {
+export const web3Mail = async (
+  emailSubject: string,
+  emailContent: string,
+  protectedData: Address,
+): Promise<any> => {
   try {
-    return await axios.post('/api/iexec/web3mail');
+    return await axios.post('/api/iexec/web3mail', { emailSubject, emailContent, protectedData });
   } catch (err) {
     console.error(err);
     throw err;
   }
 };
 
-export const dataProtector = async (): Promise<any> => {
+export const dataProtector = async (protectDataArgs: ProtectDataParams): Promise<any> => {
   try {
-    return await axios.post('/api/iexec/data-protector');
+    return await axios.post('/api/iexec/data-protector', { protectDataArgs });
   } catch (err) {
     console.error(err);
     throw err;

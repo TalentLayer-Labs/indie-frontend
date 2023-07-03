@@ -3,7 +3,7 @@ import { BigNumber, BigNumberish, ethers, FixedNumber } from 'ethers';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import { useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { useProvider, useSigner } from 'wagmi';
+import { Address, useProvider, useSigner } from 'wagmi';
 import * as Yup from 'yup';
 import { config } from '../../config';
 import TalentLayerContext from '../../context/talentLayer';
@@ -17,7 +17,7 @@ import { getServiceSignature } from '../../utils/signature';
 import { IToken } from '../../types';
 import useServiceById from '../../hooks/useServiceById';
 import { SkillsInput } from './skills-input';
-import { delegateCreateService, delegateUpdateService } from '../request';
+import { delegateCreateService, delegateUpdateService, web3Mail, dataProtector } from '../request';
 import Web3Mail from '../Modal/Web3Mail';
 
 interface IFormValues {
