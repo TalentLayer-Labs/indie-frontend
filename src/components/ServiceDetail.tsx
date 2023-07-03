@@ -39,6 +39,7 @@ function ServiceDetail({ service }: { service: IService }) {
   });
 
   // TODO : add mail if service receive a proposal
+  // If authorize mail notification during the service creation display a mail icon
 
   return (
     <>
