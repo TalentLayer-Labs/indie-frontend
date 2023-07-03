@@ -30,6 +30,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       throw new Error('Authorized app is not set');
     }
 
+    // we directly grant the access to the data to the authorized app
     const grantAccessArgs: GrantAccessParams = {
       protectedData: protectedData.address,
       authorizedApp,
