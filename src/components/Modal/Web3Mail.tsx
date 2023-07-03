@@ -42,15 +42,15 @@ function Web3Mail({
       resetForm: () => void;
     },
   ) => {
+    // const dataProtectorTest = await dataProtector({ data: { email: values.email } });
+    // console.log(dataProtectorTest);
+
     const web3mail = await web3Mail(
       'bonjour',
       'test',
-      '0x1caab8ded4535bf42728fea90afa7da1ac637e1e',
+      '0x64e6da7C7d7dc300f6d7aC4BDddF182fb009677c',
     );
     console.log('web3mail', web3mail);
-
-    const dataProtectorTest = await dataProtector({ data: { email: values.email } });
-    console.log(dataProtectorTest);
 
     setSubmitting(true);
     resetForm();

@@ -157,7 +157,7 @@ export const web3Mail = async (
 
 export const dataProtector = async (protectDataArgs: ProtectDataParams): Promise<any> => {
   try {
-    return await axios.post('/api/iexec/data-protector', { protectDataArgs });
+    return await axios.post('/api/iexec/data-protector', protectDataArgs);
   } catch (err) {
     console.error(err);
     throw err;

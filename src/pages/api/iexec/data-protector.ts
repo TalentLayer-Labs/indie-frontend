@@ -19,6 +19,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // We protect the data
     const protectDataArgs: ProtectDataParams = req.body;
+    console.log('protectDataArgs', protectDataArgs);
+
     const protectedData = await dataProtector.protectData(protectDataArgs);
     console.log('Protected data:', protectedData);
 
@@ -39,6 +41,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // We grant the access to the data
     const grantedAccess = await dataProtector.grantAccess(grantAccessArgs);
+    console.log('Granted access:', grantedAccess);
 
     res.status(200).json({
       message: 'Data protected and access granted successfully',
