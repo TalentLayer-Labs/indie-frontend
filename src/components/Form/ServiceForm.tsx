@@ -18,7 +18,7 @@ import { IToken } from '../../types';
 import useServiceById from '../../hooks/useServiceById';
 import { SkillsInput } from './skills-input';
 import { delegateCreateService, delegateUpdateService } from '../request';
-import Web3Mail from '../Modal/Web3Mail';
+import Web3MailModal from '../Modal/Web3MailModal';
 
 interface IFormValues {
   title: string;

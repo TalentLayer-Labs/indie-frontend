@@ -7,7 +7,7 @@ import { FetchProtectedDataParams } from '@iexec/dataprotector';
 
 // Switch import statement will depend on your UI library or your custom component
 
-function Web3Mail({
+function Web3MailModal({
   showMailModal,
   setShowMailModal,
 }: {
@@ -159,4 +159,5 @@ function Web3Mail({
   );
 }
 
-export default Web3Mail;
+export default Web3MailModal;
+Web3MailModal;
