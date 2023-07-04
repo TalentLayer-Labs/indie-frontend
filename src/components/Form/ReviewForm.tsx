@@ -1,8 +1,7 @@
-import { useWeb3Modal } from '@web3modal/react';
 import { ethers } from 'ethers';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import { useContext } from 'react';
-import { useProvider, useSigner } from 'wagmi';
+import { usePublicClient, useWalletClient } from 'wagmi';
 import * as Yup from 'yup';
 import { config } from '../../config';
 import TalentLayerContext from '../../context/talentLayer';
@@ -29,11 +28,12 @@ const initialValues: IFormValues = {
 };
 
 function ReviewForm({ serviceId }: { serviceId: string }) {
-  const { open: openConnectModal } = useWeb3Modal();
   const { user } = useContext(TalentLayerContext);
   const { isActiveDelegate } = useContext(TalentLayerContext);
-  const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
-  const { data: signer } = useSigner({
+  const provider = usePublicClient({
+    chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
+  });
+  const { data: signer } = useWalletClient({
     chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
   });
 
@@ -91,8 +91,6 @@ function ReviewForm({ serviceId }: { serviceId: string }) {
       } catch (error) {
         showErrorTransactionToast(error);
       }
-    } else {
-      openConnectModal();
     }
   };
 

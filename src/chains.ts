@@ -20,10 +20,6 @@ export const customChains = {
         url: 'https://mumbai.polygonscan.com',
       },
     },
-    multicall: {
-      address: '0xca11bde05977b3631167028862be2a173976ca11',
-      blockCreated: 25444704,
-    },
     testnet: true,
   },
   fuji: {

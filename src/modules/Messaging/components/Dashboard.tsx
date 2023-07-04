@@ -1,7 +1,7 @@
 import { useContext, useState } from 'react';
 import { XmtpContext } from '../context/XmtpContext';
 import TalentLayerContext from '../../../context/talentLayer';
-import { useSigner } from 'wagmi';
+import { useWalletClient } from 'wagmi';
 import { watchAccount } from '@wagmi/core';
 import ConversationList from './ConversationList';
 import CardHeader from './CardHeader';
@@ -17,7 +17,7 @@ import { ChatMessageStatus, XmtpChatMessage } from '../utils/types';
 
 function Dashboard() {
   const { user } = useContext(TalentLayerContext);
-  const { data: signer } = useSigner({
+  const { data: signer } = useWalletClient({
     chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
   });
   const { providerState, setProviderState } = useContext(XmtpContext);

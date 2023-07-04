@@ -1,7 +1,7 @@
 import { BigNumber } from 'ethers';
 import { Field, Form, Formik } from 'formik';
 import { useContext, useMemo, useState } from 'react';
-import { useProvider, useSigner } from 'wagmi';
+import { usePublicClient, useWalletClient } from 'wagmi';
 import TalentLayerContext from '../../context/talentLayer';
 import { executePayment } from '../../contracts/executePayment';
 import { IService, IToken, ServiceStatusEnum } from '../../types';
@@ -27,10 +27,12 @@ function ReleaseForm({
   isBuyer,
 }: IReleaseFormProps) {
   const { user, isActiveDelegate } = useContext(TalentLayerContext);
-  const { data: signer } = useSigner({
+  const { data: signer } = useWalletClient({
     chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
   });
-  const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
+  const provider = usePublicClient({
+    chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
+  });
   const [percent, setPercentage] = useState(0);
 
   const handleSubmit = async (values: any) => {

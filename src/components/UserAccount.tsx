@@ -1,11 +1,11 @@
 import { Menu, Transition } from '@headlessui/react';
-import { ConnectButton } from '@web3modal/react';
 import { Fragment, useContext } from 'react';
 import { useEnsAvatar } from 'wagmi';
 import TalentLayerContext from '../context/talentLayer';
 import { truncateAddress } from '../utils';
 import UserSubMenu from './UserSubMenu';
 import Image from 'next/image';
+import ConnectButton from './ConnectButton';
 
 function UserAccount() {
   const { account, user } = useContext(TalentLayerContext);

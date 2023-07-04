@@ -1,4 +1,4 @@
-import { ConnectButton } from '@web3modal/react';
+import ConnectButton from './ConnectButton';
 
 function ConnectBlock() {
   return (

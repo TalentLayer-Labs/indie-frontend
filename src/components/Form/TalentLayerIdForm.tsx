@@ -1,9 +1,8 @@
-import { useWeb3Modal } from '@web3modal/react';
 import { ethers } from 'ethers';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import { useContext } from 'react';
 import { useRouter } from 'next/router';
-import { useProvider, useSigner } from 'wagmi';
+import { usePublicClient, useWalletClient } from 'wagmi';
 import * as Yup from 'yup';
 import { config } from '../../config';
 import TalentLayerContext from '../../context/talentLayer';
@@ -23,13 +22,14 @@ const initialValues: IFormValues = {
 };
 
 function TalentLayerIdForm() {
-  const { open: openConnectModal } = useWeb3Modal();
   const { user, account } = useContext(TalentLayerContext);
-  const { data: signer } = useSigner({
+  const { data: signer } = useWalletClient({
     chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
   });
 
-  const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
+  const provider = usePublicClient({
+    chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
+  });
   const router = useRouter();
   let tx: ethers.providers.TransactionResponse;
 
@@ -88,8 +88,6 @@ function TalentLayerIdForm() {
       } catch (error: any) {
         showErrorTransactionToast(error);
       }
-    } else {
-      openConnectModal();
     }
   };
 

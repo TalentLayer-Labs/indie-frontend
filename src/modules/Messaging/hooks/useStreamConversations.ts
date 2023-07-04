@@ -1,11 +1,11 @@
 import { useState, useEffect, useContext } from 'react';
 import { XmtpContext } from '../context/XmtpContext';
-import { useSigner } from 'wagmi';
+import { useWalletClient } from 'wagmi';
 import { Conversation, Stream } from '@xmtp/xmtp-js';
 import { buildChatMessage, CONVERSATION_PREFIX } from '../utils/messaging';
 
 const useStreamConversations = () => {
-  const { data: signer } = useSigner({
+  const { data: signer } = useWalletClient({
     chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
   });
   const { providerState, setProviderState } = useContext(XmtpContext);

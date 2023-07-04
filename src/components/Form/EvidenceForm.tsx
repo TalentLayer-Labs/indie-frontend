@@ -7,9 +7,8 @@ import { postToIPFS } from '../../utils/ipfs';
 import { showErrorTransactionToast } from '../../utils/toast';
 import { generateEvidence } from '../../modules/Disputes/utils/dispute';
 import TalentLayerContext from '../../context/talentLayer';
-import { useWeb3Modal } from '@web3modal/react';
 import { submitEvidence } from '../../contracts/disputes';
-import { useProvider, useSigner } from 'wagmi';
+import { usePublicClient, useWalletClient } from 'wagmi';
 
 interface IFormValues {
   title: string;
@@ -31,8 +30,10 @@ const initialValues: IFormValues = {
 
 function EvidenceForm({ transactionId }: { transactionId: string }) {
   const { account, user } = useContext(TalentLayerContext);
-  const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
-  const { data: signer } = useSigner({
+  const provider = usePublicClient({
+    chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
+  });
+  const { data: signer } = useWalletClient({
     chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
   });
   const { open: openConnectModal } = useWeb3Modal();
@@ -67,8 +68,6 @@ function EvidenceForm({ transactionId }: { transactionId: string }) {
       } catch (error) {
         showErrorTransactionToast(error);
       }
-    } else {
-      openConnectModal();
     }
   };
 

@@ -1,6 +1,6 @@
 import { ITransaction, IUser, TransactionStatusEnum } from '../types';
 import { arbitrationFeeTimeout, payArbitrationFee } from '../contracts/disputes';
-import { useProvider, useSigner } from 'wagmi';
+import { usePublicClient, useWalletClient } from 'wagmi';
 import { useRouter } from 'next/router';
 import { BigNumber } from 'ethers';
 
@@ -17,10 +17,12 @@ function DisputeButton({
   arbitrationFee: BigNumber;
   content?: string;
 }) {
-  const { data: signer } = useSigner({
+  const { data: signer } = useWalletClient({
     chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
   });
-  const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
+  const provider = usePublicClient({
+    chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
+  });
   const router = useRouter();
   const transactionId = transaction?.id;
 
