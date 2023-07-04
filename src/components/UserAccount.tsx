@@ -1,14 +1,18 @@
 import { Menu, Transition } from '@headlessui/react';
 import { ConnectButton } from '@web3modal/react';
 import { Fragment, useContext } from 'react';
-import { useEnsAvatar } from 'wagmi';
+import { useConnect, useEnsAvatar } from 'wagmi';
 import TalentLayerContext from '../context/talentLayer';
 import { truncateAddress } from '../utils';
 import UserSubMenu from './UserSubMenu';
 import Image from 'next/image';
+import useMagic from '../modules/Magic/hooks/useMagic';
+import Web3 from 'web3';
+import ConnectMagicButton from '../modules/Magic/ConnectMagicButton';
 
 function UserAccount() {
   const { account, user } = useContext(TalentLayerContext);
+  const { connectors, connect, isLoading, pendingConnector } = useConnect();
 
   const { data: avatarImage } = useEnsAvatar();
 
@@ -53,7 +57,23 @@ function UserAccount() {
                 </Menu.Button>
               </div>
             ) : (
-              <ConnectButton />
+              <div>
+                {/*<ConnectButton />*/}
+                {/*<ConnectMagicButton />*/}
+                {connectors.map(connector => {
+                  return (
+                    <button
+                      className='px-5 py-2 mx-2 border border-indigo-600 rounded-full hover:text-indigo-600 hover:bg-white text-white bg-indigo-500'
+                      disabled={!connector.ready}
+                      key={connector.id}
+                      onClick={() => connect({ connector })}>
+                      {connector.name}
+                      {!connector.ready}
+                      {isLoading && connector.id === pendingConnector?.id && ' (connecting)'}
+                    </button>
+                  );
+                })}
+              </div>
             )}
           </div>
           <Transition

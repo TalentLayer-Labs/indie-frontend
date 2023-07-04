@@ -13,6 +13,7 @@ import HelpPopover from '../HelpPopover';
 import SubmitButton from './SubmitButton';
 import { HandlePrice } from './handle-price';
 import { delegateMintID } from '../request';
+import useMagic from '../../modules/Magic/hooks/useMagic';
 
 interface IFormValues {
   handle: string;
@@ -33,6 +34,9 @@ function TalentLayerIdForm() {
   const router = useRouter();
   let tx: ethers.providers.TransactionResponse;
 
+  const ethersProvider = new ethers.providers.JsonRpcProvider();
+  console.log('ethersProvider', ethersProvider.getSigner(0));
+
   const validationSchema = Yup.object().shape({
     handle: Yup.string()
       .min(2)
@@ -48,12 +52,26 @@ function TalentLayerIdForm() {
     submittedValues: IFormValues,
     { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void },
   ) => {
-    if (account && account.address && account.isConnected && provider && signer) {
+    console.log('submit');
+    console.log('account', account);
+    console.log('isCOnnected', account?.address);
+    console.log('provider', provider);
+    console.log('signer', signer);
+    console.log('ethersProvider.getSigner()', ethersProvider.getSigner());
+
+    if (
+      account &&
+      account.address &&
+      account.isConnected &&
+      provider &&
+      signer
+      // ethersProvider.getSigner()
+    ) {
       try {
         const contract = new ethers.Contract(
           config.contracts.talentLayerId,
           TalentLayerID.abi,
-          signer,
+          ethersProvider.getSigner(),
         );
 
         const handlePrice = await contract.getHandlePrice(submittedValues.handle);

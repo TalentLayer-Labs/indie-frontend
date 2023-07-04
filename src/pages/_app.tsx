@@ -15,6 +15,11 @@ import '../styles/globals.css';
 import 'react-toastify/dist/ReactToastify.css';
 import Layout from './Layout';
 import { useEffect } from 'react';
+import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet';
+import { InjectedConnector } from 'wagmi/connectors/injected';
+import { MetaMaskConnector } from 'wagmi/connectors/metaMask';
+import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
+import { MagicConnectConnector } from '@everipedia/wagmi-magic-connector';
 
 const chains: Chain[] = [customChains.polygonMumbai];
 
@@ -32,12 +37,56 @@ const wagmiClient = createClient({
   provider,
 });
 
+const connector = new MagicConnectConnector({
+  chains: chains,
+  options: {
+    apiKey: process.env.NEXT_PUBLIC_MAGIC_KEY as string, //required
+    //...Other options
+  },
+});
+
+const wagmiMagicClient = createClient({
+  autoConnect: false,
+  // connectors: modalConnectors({ appName: 'web3Modal', chains }),
+  connectors: [
+    new MetaMaskConnector({ chains }),
+    new CoinbaseWalletConnector({
+      chains,
+      options: {
+        appName: 'wagmi',
+      },
+    }),
+    new WalletConnectConnector({
+      chains,
+      options: {
+        qrcode: true,
+      },
+    }),
+    new InjectedConnector({
+      chains,
+      // options: {
+      //   name: 'Injected',
+      //   shimDisconnect: true,
+      // },
+    }),
+    new MagicConnectConnector({
+      chains: chains,
+      options: {
+        apiKey: process.env.NEXT_PUBLIC_MAGIC_KEY as string, //required
+        //...Other options
+      },
+    }),
+  ],
+  provider,
+});
+
 // Web3Modal Ethereum Client
-const ethereumClient = new EthereumClient(wagmiClient, chains);
+// const ethereumClient = new EthereumClient(wagmiClient, chains);
 
 function MyApp({ Component, pageProps }: AppProps) {
   useEffect(() => {
-    wagmiClient.autoConnect();
+    // wagmiClient.autoConnect();
+    wagmiMagicClient.autoConnect();
   }, []);
 
   return (
@@ -45,7 +94,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       <GoogleAnalytics trackPageViews />
       <DefaultSeo />
       <ToastContainer position='bottom-right' />
-      <WagmiConfig client={wagmiClient}>
+      <WagmiConfig client={wagmiMagicClient}>
         <TalentLayerProvider>
           <XmtpContextProvider>
             <MessagingProvider>
@@ -57,10 +106,10 @@ function MyApp({ Component, pageProps }: AppProps) {
             </MessagingProvider>
           </XmtpContextProvider>
         </TalentLayerProvider>
-        <Web3Modal
-          projectId={`${process.env.NEXT_PUBLIC_WALLECT_CONNECT_PROJECT_ID}`}
-          ethereumClient={ethereumClient}
-        />
+        {/*<Web3Modal*/}
+        {/*  projectId={`${process.env.NEXT_PUBLIC_WALLECT_CONNECT_PROJECT_ID}`}*/}
+        {/*  ethereumClient={ethereumClient}*/}
+        {/*/>*/}
       </WagmiConfig>
     </>
   );
