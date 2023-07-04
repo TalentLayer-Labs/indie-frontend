@@ -15,8 +15,14 @@ import '../styles/globals.css';
 import 'react-toastify/dist/ReactToastify.css';
 import Layout from './Layout';
 import { useEffect } from 'react';
+import { Magic } from 'magic-sdk';
 
 const chains: Chain[] = [customChains.polygonMumbai];
+
+const customNodeOptions = {
+  rpcUrl: 'https://rpc-mumbai.maticvigil.com/', // Polygon RPC URL
+  chainId: 80001, // Polygon chain id
+};
 
 // Wagmi client
 const { provider } = configureChains(chains, [
@@ -39,6 +45,16 @@ function MyApp({ Component, pageProps }: AppProps) {
   useEffect(() => {
     wagmiClient.autoConnect();
   }, []);
+
+  const connect = async () => {
+    const magic = new Magic('pk_live_78EA8AA09E13625B', {
+      network: customNodeOptions,
+    });
+    const accounts = await magic.wallet.connectWithUI();
+    console.log(accounts);
+  };
+
+  connect();
 
   return (
     <>

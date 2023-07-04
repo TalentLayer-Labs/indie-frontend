@@ -2,6 +2,30 @@ import { chain } from 'wagmi';
 
 export const customChains = {
   ...chain,
+  polygonMumbai: {
+    id: 80001,
+    name: 'Polygon Mumbai',
+    network: 'maticmum',
+    nativeCurrency: {
+      name: 'MATIC',
+      symbol: 'MATIC',
+      decimals: 18,
+    },
+    rpcUrls: {
+      default: 'https://rpc-mumbai.maticvigil.com/',
+    },
+    blockExplorers: {
+      default: {
+        name: 'PolygonScan',
+        url: 'https://mumbai.polygonscan.com',
+      },
+    },
+    multicall: {
+      address: '0xca11bde05977b3631167028862be2a173976ca11',
+      blockCreated: 25444704,
+    },
+    testnet: true,
+  },
   fuji: {
     id: 43_113,
     name: 'Fuji',

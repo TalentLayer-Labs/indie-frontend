@@ -17,6 +17,7 @@
     "formik": "^2.2.9",
     "heroicons-react": "^1.4.1",
     "ipfs-http-client": "^59.0.0",
+    "magic-sdk": "^18.2.1",
     "next": "^13.3.4",
     "next-seo": "^6.0.0",
     "next-themes": "^0.2.1",
