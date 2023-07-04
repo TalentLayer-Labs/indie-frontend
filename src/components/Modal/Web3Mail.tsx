@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import Toggle from '../Form/Toggle';
-import { web3Mail, dataProtector } from '../request';
+import { web3Mail, dataProtector, fetchMailContact, fetchProtectedData } from '../request';
+import { FetchProtectedDataParams } from '@iexec/dataprotector';
 
 // Switch import statement will depend on your UI library or your custom component
 
@@ -42,15 +43,43 @@ function Web3Mail({
       resetForm: () => void;
     },
   ) => {
+    //***************** Data protection ************* */
+    // OK
+    // TODO : Add a name to the data to protect like the user handle
     // const dataProtectorTest = await dataProtector({ data: { email: values.email } });
     // console.log(dataProtectorTest);
 
-    const web3mail = await web3Mail(
-      'bonjour',
-      'test',
-      '0x64e6da7C7d7dc300f6d7aC4BDddF182fb009677c',
-    );
-    console.log('web3mail', web3mail);
+    //***************** Fetch the protected data of a user ************* */
+    // OK : correctly fetch the data from the owner
+    // TODO : replace by the owner address dynamically
+    // const fetchProtectedDataArg: FetchProtectedDataParams = {
+    //   owner: '0x1caAb8ded4535bF42728feA90aFa7da1ac637E1E', // or your actual owner address
+    // };
+    // const fetchProtectedDataTest = await fetchProtectedData(fetchProtectedDataArg);
+    // console.log('fetchProtectedDataTest:', fetchProtectedDataTest);
+
+    //***************** Web3Mail ************* */
+    // OK
+    // TODO : set up the talentLayer Dapp to send mail
+    // TODO : correctly fetch the data to send mail
+    // TODO : mail template object and content
+    // const web3mail = await web3Mail(
+    //   'bonjour',
+    //   'test',
+    //   '0x64e6da7C7d7dc300f6d7aC4BDddF182fb009677c',
+    // );
+    // console.log('web3mail', web3mail);
+
+    //***************** fetchMailContact ************* */
+    // NOK
+    // TODO : no arg to fetch the data
+    // const fetchMailContactTest = await fetchMailContact();
+    // console.log(fetchMailContactTest);
+
+    //***************** Revoke access ************* */
+    // TODO : NOT TESTED
+    // const revokeAccessTest = await revokeAccess();
+    // console.log(revokeAccessTest);
 
     setSubmitting(true);
     resetForm();
