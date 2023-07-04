@@ -1,9 +1,10 @@
 import { processSismoRequest } from '../utils/graphql';
 
 export const getSismoGroupSnapshot = async (groupId: string): Promise<any> => {
-  let condition = ', where: {';
-  condition += groupId ? `, id: "${groupId}"` : '';
-  condition += '}';
+  const condition = `, where: {
+      ${groupId ? `, id: "${groupId}"` : ''}
+    }
+  `;
 
   const query = `
     {
@@ -21,10 +22,12 @@ export const getSismoGroupSnapshot = async (groupId: string): Promise<any> => {
 
   return processSismoRequest(query);
 };
+
 export const getSismoGroupSnapshotUrl = async (groupId: string): Promise<any> => {
-  let condition = ', where: {';
-  condition += groupId ? `, id: "${groupId}"` : '';
-  condition += '}';
+  const condition = `, where: {
+      ${groupId ? `, id: "${groupId}"` : ''}
+    }
+  `;
 
   const query = `
     {
@@ -40,9 +43,9 @@ export const getSismoGroupSnapshotUrl = async (groupId: string): Promise<any> =>
 };
 
 export const getSismoBadgesPerAddress = async (address: string): Promise<any> => {
-  let condition = ', where: {';
-  condition += address ? `, id: "${address}"` : '';
-  condition += '}';
+  const condition = `, where: {
+    ${address ? `, id: "${address}"` : ''}
+  }`;
 
   const query = `
     {
