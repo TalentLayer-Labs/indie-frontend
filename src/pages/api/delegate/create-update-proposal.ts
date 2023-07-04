@@ -1,4 +1,3 @@
-// pages/api/createService.ts
 import { NextApiRequest, NextApiResponse } from 'next';
 import { Contract } from 'ethers';
 import { config } from '../../../config';
@@ -18,7 +17,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     existingProposalStatus,
   } = req.body;
 
-  // @dev : you can add here all the check you need to confirm the delagation for a user
+  // @dev : you can add here all the checks you need to confirm the delegation for a user
   await isPlatformAllowedToDelegate(userAddress, res);
 
   try {

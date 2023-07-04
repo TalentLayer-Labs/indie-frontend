@@ -65,7 +65,7 @@ function ProposalItem({ proposal }: { proposal: IProposal }) {
             {renderTokenAmount(proposal.rateToken, proposal.rateAmount)}
           </p>
           {account && isBuyer && proposal.status === ProposalStatusEnum.Pending && (
-            <ValidateProposalModal proposal={proposal} account={account} />
+            <ValidateProposalModal proposal={proposal} service={service} account={account} />
           )}
         </div>
         {account &&

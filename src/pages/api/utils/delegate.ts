@@ -1,6 +1,5 @@
 import { NextApiResponse } from 'next';
 import { ethers, Wallet } from 'ethers';
-import { config } from '../../../config';
 import { getUserByAddress } from '../../../queries/users';
 
 export async function isPlatformAllowedToDelegate(
