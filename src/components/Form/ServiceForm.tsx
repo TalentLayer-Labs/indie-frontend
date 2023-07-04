@@ -289,7 +289,7 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
           </Form>
         )}
       </Formik>
-      <Web3Mail showMailModal={showMailModal} setShowMailModal={setShowMailModal} />
+      <Web3MailModal showMailModal={showMailModal} setShowMailModal={setShowMailModal} />
     </>
   );
 }

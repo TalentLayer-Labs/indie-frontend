@@ -19,13 +19,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // We protect the data
     const protectDataArgs: ProtectDataParams = req.body;
-    console.log('protectDataArgs', protectDataArgs);
-
     const protectedData = await dataProtector.protectData(protectDataArgs);
-    console.log('Protected data:', protectedData);
 
-    /* The address zero `0x0000000000000000000000000000000000000000` can be use to authorize any user to use the `protectedData` */
-    const authorizedUser = '0x0000000000000000000000000000000000000000';
+    /* You can use the `0x0000000000000000000000000000000000000000` can be use to authorize any user to use the `protectedData` */
+    const authorizedUser = web3Provider.address;
+    console.log('Address:', authorizedUser);
     const authorizedApp = process.env.NEXT_PUBLIC_MAIL_AUTHORIZE_APP_ADDRESS;
 
     if (!authorizedApp) {
