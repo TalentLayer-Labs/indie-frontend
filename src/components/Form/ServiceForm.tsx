@@ -36,7 +36,7 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
     chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
   });
   const existingService = useServiceById(serviceId as string);
-  const [showMailModal, setShowMailModal] = useState(true);
+  const [showMailModal, setShowMailModal] = useState(false);
   const [newServiceId, setNewServiceId] = useState<number | null>(null);
 
   const router = useRouter();
@@ -185,6 +185,7 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
     }
   };
 
+  // TODO routing doesn't work if the user have some protected data
   useEffect(() => {
     if (!showMailModal && newServiceId) {
       router.push(`/services/${newServiceId}`);
