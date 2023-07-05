@@ -1,9 +1,23 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { ethers } from 'ethers';
+import { config } from '../../config';
+import TalentLayerID from '../../contracts/ABI/TalentLayerID.json';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
+import { useProvider, useSigner } from 'wagmi';
+import { createMultiStepsTransactionToast, showErrorTransactionToast } from '../../utils/toast';
 import * as Yup from 'yup';
 import Toggle from '../Form/Toggle';
-import { web3Mail, dataProtector, fetchMailContact, fetchProtectedData } from '../request';
+import {
+  web3Mail,
+  dataProtector,
+  fetchMailContact,
+  fetchProtectedData,
+  delegateUpdateProfileData,
+} from '../request';
 import { FetchProtectedDataParams } from '@iexec/dataprotector';
+import TalentLayerContext from '../../context/talentLayer';
+import { useWeb3Modal } from '@web3modal/react';
+import { postToIPFS } from '../../utils/ipfs';
 
 // Switch import statement will depend on your UI library or your custom component
 
@@ -15,7 +29,70 @@ function Web3MailModal({
   setShowMailModal: Function;
 }) {
   const [show, setShow] = useState(showMailModal);
-  const [allowNotifications, setAllowNotifications] = useState(false);
+  const { open: openConnectModal } = useWeb3Modal();
+  const [accordionOpen, setAccordionOpen] = useState(false);
+  const [proposalConsent, setProposalConsent] = useState(false);
+  const { user } = useContext(TalentLayerContext);
+  const { isActiveDelegate } = useContext(TalentLayerContext);
+  const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
+
+  const { data: signer } = useSigner({
+    chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
+  });
+
+  async function handleAgreeAndClose() {
+    if (user && provider && signer) {
+      console.log('user', user);
+
+      try {
+        const cid = await postToIPFS(
+          JSON.stringify({
+            title: user.description?.title,
+            role: user.description?.role,
+            image_url: user.description?.image_url,
+            video_url: user.description?.video_url,
+            name: user.description?.name,
+            about: user.description?.about,
+            skills: user.description?.skills_raw,
+            mail: {
+              proposalConsent: proposalConsent,
+            },
+          }),
+        );
+
+        console.log('cid', cid);
+
+        let tx;
+        if (isActiveDelegate) {
+          const response = await delegateUpdateProfileData(user.id, user.address, cid);
+          tx = response.data.transaction;
+        } else {
+          const contract = new ethers.Contract(
+            config.contracts.talentLayerId,
+            TalentLayerID.abi,
+            signer,
+          );
+          tx = await contract.updateProfileData(user.id, cid);
+        }
+
+        await createMultiStepsTransactionToast(
+          {
+            pending: 'Updating profile...',
+            success: 'Congrats! Your preferences has been updated',
+            error: 'An error occurred while updating your preferences',
+          },
+          provider,
+          tx,
+          'user',
+          cid,
+        );
+      } catch (error) {
+        showErrorTransactionToast(error);
+      }
+    } else {
+      openConnectModal();
+    }
+  }
 
   interface IFormValues {
     email: string;
@@ -49,38 +126,6 @@ function Web3MailModal({
     const dataProtectorTest = await dataProtector({ data: { email: values.email } });
     console.log(dataProtectorTest);
 
-    //***************** Fetch the protected data of a user ************* */
-    // OK : correctly fetch the data from the owner
-    // TODO : replace by the owner address dynamically
-    // const fetchProtectedDataArg: FetchProtectedDataParams = {
-    //   owner: '0x1caAb8ded4535bF42728feA90aFa7da1ac637E1E', // or your actual owner address
-    // };
-    // const fetchProtectedDataTest = await fetchProtectedData(fetchProtectedDataArg);
-    // console.log('fetchProtectedDataTest:', fetchProtectedDataTest);
-
-    //***************** Web3Mail ************* */
-    // OK
-    // TODO : set up the talentLayer Dapp to send mail
-    // TODO : correctly fetch the data to send mail
-    // TODO : mail template object and content
-    // const web3mail = await web3Mail(
-    //   'bonjour',
-    //   'test',
-    //   '0x64e6da7C7d7dc300f6d7aC4BDddF182fb009677c',
-    // );
-    // console.log('web3mail', web3mail);
-
-    //***************** fetchMailContact ************* */
-    // NOK
-    // TODO : no arg to fetch the data
-    // const fetchMailContactTest = await fetchMailContact();
-    // console.log(fetchMailContactTest);
-
-    //***************** Revoke access ************* */
-    // TODO : NOT TESTED
-    // const revokeAccessTest = await revokeAccess();
-    // console.log(revokeAccessTest);
-
     setSubmitting(true);
     resetForm();
   };
@@ -95,27 +140,6 @@ function Web3MailModal({
           <div className='relative bg-white rounded-lg shadow '>
             <div className='flex justify-between items-start p-4 rounded-t border-b '>
               <h3 className='text-xl font-semibold text-gray-900 '>Web3Mail information</h3>
-              {/* close button */}
-              <button
-                onClick={() => {
-                  setShow(false);
-                  setShowMailModal(false);
-                }}
-                type='button'
-                className='text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center '
-                data-modal-toggle='defaultModal'>
-                <svg
-                  className='w-5 h-5'
-                  fill='currentColor'
-                  viewBox='0 0 20 20'
-                  xmlns='http://www.w3.org/2000/svg'>
-                  <path
-                    fillRule='evenodd'
-                    d='M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z'
-                    clipRule='evenodd'></path>
-                </svg>
-                <span className='sr-only'>Close modal</span>
-              </button>
             </div>
             <Formik
               initialValues={initialValues}
@@ -125,7 +149,9 @@ function Web3MailModal({
                 <Form className='p-6 space-y-6'>
                   <div className='flex flex-col px-4 py-6 md:p-6 xl:p-8 w-full bg-gray-50 space-y-6'>
                     <div className='flex flex-row'>
-                      <h3 className='font-semibold text-gray-900'>Mail privacy </h3>
+                      <h3 className='font-semibold text-gray-900'>
+                        Mail protection and grant access
+                      </h3>
                     </div>
                     <p>Here we will explain how the mail protector and grant access is working</p>
                     <Field
@@ -138,14 +164,46 @@ function Web3MailModal({
                     <button
                       type='submit'
                       disabled={isSubmitting}
-                      className='block text-blue-600 bg-blue-50 hover:bg-green-500 hover:text-white rounded-lg px-5 py-2.5 text-center'>
-                      Protect my mail
+                      className='block text-white bg-blue-600 font-medium rounded-lg px-5 py-2.5 text-center'>
+                      PROTECT MY MAIL
                     </button>
                     <div className='mt-4'>
-                      <label>
-                        <Toggle />
-                        <span className='ml-2'>I allow the platform to send me notifications</span>
-                      </label>
+                      <div className='flex flex-row mb-4'>
+                        <h3 className='font-semibold text-gray-900'>Consent Management</h3>
+                      </div>
+                      <p className='mb-4'>
+                        Here we will explain how the mail protector and grant access is working
+                      </p>
+                      <div className='flex flex-row mb-4'>
+                        <button
+                          onClick={() => setAccordionOpen(prevState => !prevState)}
+                          type='submit'
+                          disabled={isSubmitting}
+                          className='block text-black bg-white border border-black font-medium rounded-lg px-5 py-2.5 text-center mr-4'>
+                          LEARN MORE
+                        </button>
+                        <button
+                          onClick={async () => {
+                            await handleAgreeAndClose();
+                            setShow(false);
+                            setShowMailModal(false);
+                          }}
+                          type='submit'
+                          disabled={isSubmitting}
+                          className='block text-white bg-blue-600 font-medium rounded-lg px-5 py-2.5 text-center'>
+                          AGREE AND CLOSE
+                        </button>
+                      </div>
+                      {accordionOpen && (
+                        <div className='mt-4'>
+                          <label>
+                            <Toggle
+                              proposalConsent={proposalConsent}
+                              setProposalConsent={setProposalConsent}
+                            />
+                          </label>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </Form>
