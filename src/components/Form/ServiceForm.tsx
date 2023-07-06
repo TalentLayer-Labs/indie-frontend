@@ -171,7 +171,7 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
         }
         resetForm();
 
-        if (isRedirect) {
+        if (!show) {
           router.push(`/services/${newId}`);
         }
       } catch (error) {
