@@ -13,6 +13,7 @@ import { XmtpContextProvider } from '../modules/Messaging/context/XmtpContext';
 import { MessagingProvider } from '../modules/Messaging/context/messging';
 import '../styles/globals.css';
 import Layout from './Layout';
+import { InjectedConnector } from 'wagmi/connectors/injected';
 
 // const customNodeOptions = {
 //   rpcUrl: polygonMumbai.rpcUrls.default as unknown as string, // Polygon RPC URL
@@ -20,12 +21,14 @@ import Layout from './Layout';
 // };
 
 // Magic Connect integration
-const connector = new MagicConnectConnector({
+const magicConnector = new MagicConnectConnector({
   options: {
-    apiKey: 'pk_live_78EA8AA09E13625B', //required
+    apiKey: 'pk_live_97CD53269B986DB0', //required
     //...Other options
   },
 });
+
+const metamaskConnector = new InjectedConnector();
 
 const { chains, publicClient } = configureChains([polygonMumbai], [publicProvider()]);
 
@@ -37,7 +40,9 @@ const config = createConfig({
   //   transport: http(),
   // }),
   publicClient: publicClient,
-  connectors: [connector],
+  connectors: [magicConnector,
+      metamaskConnector
+  ],
 });
 
 function MyApp({ Component, pageProps }: AppProps) {

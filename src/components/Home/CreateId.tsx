@@ -1,6 +1,7 @@
 import { useContext } from 'react';
 import TalentLayerContext from '../../context/talentLayer';
 import TalentLayerIdForm from '../Form/TalentLayerIdForm';
+import ShowUIButton from "../../modules/Magic/ShowUIButton";
 
 function CreateId() {
   const { user } = useContext(TalentLayerContext);
@@ -25,6 +26,7 @@ function CreateId() {
             </p>
 
             <TalentLayerIdForm />
+            <ShowUIButton />
           </div>
         </div>
       </div>

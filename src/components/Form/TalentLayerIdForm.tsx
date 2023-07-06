@@ -12,6 +12,10 @@ import HelpPopover from '../HelpPopover';
 import SubmitButton from './SubmitButton';
 import { HandlePrice } from './handle-price';
 import { delegateMintID } from '../request';
+import { createPublicClient, createWalletClient, custom, http } from 'viem';
+import { polygonMumbai } from '@wagmi/core/chains';
+import useMagic from '../../modules/Magic/hooks/useMagic';
+import Web3 from 'web3';
 
 interface IFormValues {
   handle: string;
@@ -30,8 +34,22 @@ function TalentLayerIdForm() {
   const provider = usePublicClient({
     chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
   });
+  const publicClient = createPublicClient({
+    chain: polygonMumbai,
+    transport: http(),
+  });
+  const walletClient =
+    typeof window !== 'undefined'
+      ? createWalletClient({
+          chain: polygonMumbai,
+          transport: custom(window.ethereum),
+        })
+      : undefined;
   const router = useRouter();
-  let tx: ethers.providers.TransactionResponse;
+
+  const { magic, provider: magicProvider } = useMagic();
+
+  const web3 = new Web3(magic?.rpcProvider);
 
   const validationSchema = Yup.object().shape({
     handle: Yup.string()
@@ -48,16 +66,30 @@ function TalentLayerIdForm() {
     submittedValues: IFormValues,
     { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void },
   ) => {
-    if (account && account.address && account.isConnected && provider && signer) {
+    if (
+      // account && account.address && account.isConnected && signer &&
+      provider &&
+      walletClient
+    ) {
+      console.log('submittedValues', submittedValues);
       try {
-        const contract = new ethers.Contract(
-          config.contracts.talentLayerId,
-          TalentLayerID.abi,
-          signer,
-        );
+        // const contract = new ethers.Contract(
+        //   config.contracts.talentLayerId,
+        //   TalentLayerID.abi,
+        //   signer,
+        // );
 
-        const handlePrice = await contract.getHandlePrice(submittedValues.handle);
-        console.log(process.env.NEXT_PUBLIC_ACTIVE_DELEGATE_MINT);
+        // const handlePrice = await contract.getHandlePrice(submittedValues.handle);
+
+        // const web3 = new Web3(provider);
+
+        const handlePrice = await provider.readContract({
+          address: config.contracts.talentLayerId,
+          abi: TalentLayerID.abi,
+          functionName: 'getHandlePrice',
+          args: [submittedValues.handle],
+        });
+        console.log('getHandlePrice', handlePrice);
 
         if (process.env.NEXT_PUBLIC_ACTIVE_DELEGATE_MINT === 'true') {
           const response = await delegateMintID(
@@ -65,26 +97,73 @@ function TalentLayerIdForm() {
             handlePrice,
             account.address,
           );
-          tx = response.data.transaction;
+          const tx = response.data.transaction;
         } else {
-          tx = await contract.mint(process.env.NEXT_PUBLIC_PLATFORM_ID, submittedValues.handle, {
-            value: handlePrice,
-          });
+          // tx = await contract.mint(process.env.NEXT_PUBLIC_PLATFORM_ID, submittedValues.handle, {
+          //   value: handlePrice,
+          // });
+          // const [address] = await walletClient.getAddresses();
+
+          // const walletInfo = await magic?.user.getInfo();
+          // const address = walletInfo?.publicAddress;
+          // console.log('walletClient address', address);
+
+          //TODO => Will open Metamask
+          // const resp = await window.ethereum.request({
+          //   method: 'eth_requestAccounts',
+          // });
+          // console.log('resp', resp);
+
+          const contract = new web3.eth.Contract(TalentLayerID.abi, config.contracts.talentLayerId);
+
+          console.log('contract.methods',contract?.methods);
+          //TODO test simple send
+
+          web3.eth
+            .sendTransaction({
+              from: account?.address,
+              to: config.contracts.talentLayerId,
+              value: handlePrice,
+              gas: 2100000,
+              data: contract.methods
+                .mint(process.env.NEXT_PUBLIC_PLATFORM_ID, submittedValues.handle)
+                .encodeABI(),
+            })
+            .on('transactionHash', hash => {
+              console.log('Transaction hash:', hash);
+            })
+            .then(receipt => {
+              console.log('Transaction receipt:', receipt);
+            })
+            .catch(error => {
+              console.error('error sending with web3.js',error);
+            });
+
+          // const { request } = await publicClient.simulateContract({
+          //   address: config.contracts.talentLayerId,
+          //   abi: TalentLayerID.abi,
+          //   functionName: 'mint',
+          //   account: address,
+          //   args: [process.env.NEXT_PUBLIC_PLATFORM_ID, submittedValues.handle],
+          //   value: handlePrice as string,
+          // });
+          //
+          // const tx = await walletClient.writeContract(request);
         }
-        await createTalentLayerIdTransactionToast(
-          {
-            pending: 'Minting your Talent Layer Id...',
-            success: 'Congrats! Your Talent Layer Id is minted',
-            error: 'An error occurred while creating your Talent Layer Id',
-          },
-          provider,
-          tx,
-          account.address,
-        );
+        // await createTalentLayerIdTransactionToast(
+        //   {
+        //     pending: 'Minting your Talent Layer Id...',
+        //     success: 'Congrats! Your Talent Layer Id is minted',
+        //     error: 'An error occurred while creating your Talent Layer Id',
+        //   },
+        //   provider,
+        //   tx,
+        //   account.address,
+        // );
 
         setSubmitting(false);
         // TODO: add a refresh function on TL context and call it here rather than hard refresh
-        router.reload();
+        // router.reload();
       } catch (error: any) {
         showErrorTransactionToast(error);
       }
