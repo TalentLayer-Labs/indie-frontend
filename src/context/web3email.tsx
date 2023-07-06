@@ -112,9 +112,8 @@ const Web3MailModalProvider = ({ children }: { children: ReactNode }) => {
   }
 
   useEffect(() => {
-    setShow(show);
     fetchProtectedMail();
-  }, [show]);
+  }, [user]);
 
   const initialValues = {
     email: '',
