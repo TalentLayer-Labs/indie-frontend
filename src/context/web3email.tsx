@@ -21,29 +21,22 @@ import { postToIPFS } from '../utils/ipfs';
 
 const Web3MailModalContext = createContext<{
   isRedirect: boolean;
-  setShow: (show: boolean) => void;
-  show: boolean;
-  protectedMails: any;
 }>({
   isRedirect: true,
-  setShow: () => {},
-  show: false,
-  protectedMails: [],
 });
 
 const Web3MailModalProvider = ({ children }: { children: ReactNode }) => {
   const [show, setShow] = useState(false);
   const [isRedirect, setIsRedirect] = useState(false);
-  console.log('isRedirect', isRedirect);
-
   const { open: openConnectModal } = useWeb3Modal();
   const [accordionOpen, setAccordionOpen] = useState(false);
   const [proposalConsent, setProposalConsent] = useState(false);
   const { user } = useContext(TalentLayerContext);
-  console.log('user', user);
 
   const { isActiveDelegate } = useContext(TalentLayerContext);
   const [protectedMails, setProtectedMails] = useState([]);
+  console.log('protectedMails server side', protectedMails);
+
   const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
 
   const { data: signer } = useSigner({
@@ -52,8 +45,6 @@ const Web3MailModalProvider = ({ children }: { children: ReactNode }) => {
 
   async function handleAgreeAndClose() {
     if (user && provider && signer) {
-      console.log('user', user);
-
       try {
         const cid = await postToIPFS(
           JSON.stringify({
@@ -97,6 +88,7 @@ const Web3MailModalProvider = ({ children }: { children: ReactNode }) => {
           cid,
         );
         setShow(false);
+        setIsRedirect(true);
       } catch (error) {
         showErrorTransactionToast(error);
       }
@@ -115,6 +107,10 @@ const Web3MailModalProvider = ({ children }: { children: ReactNode }) => {
       const tx = await fetchProtectedData(fetchProtectedDataArg);
       console.log('fetchProtectedDataTest:', tx.data.data.fetchProtectedData);
       setProtectedMails(tx.data.data.fetchProtectedData);
+    }
+
+    if (protectedMails.length > 0) {
+      setIsRedirect(true);
     }
   }
 
@@ -147,7 +143,6 @@ const Web3MailModalProvider = ({ children }: { children: ReactNode }) => {
     //***************** Data fetch & protection ************* */
     // TODO : Add a name to the data to protect like the user handle
     const dataProtectorFetch = await dataProtector({ data: { email: values.email } });
-    console.log(dataProtectorFetch);
     setSubmitting(true);
     resetForm();
   };
@@ -155,7 +150,6 @@ const Web3MailModalProvider = ({ children }: { children: ReactNode }) => {
   const value = useMemo(() => {
     return {
       isRedirect,
-      setShow,
     };
   }, [show, isRedirect]);
 
