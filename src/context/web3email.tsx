@@ -149,9 +149,9 @@ const Web3MailModalProvider = ({ children }: { children: ReactNode }) => {
   ) => {
     setIsLoading(true);
     try {
-      const dataProtectorFetch = await dataProtector({ data: { email: values.email } });
-      console.log('dataProtectorFetch', dataProtectorFetch);
-      if (dataProtectorFetch) {
+      const protectedData = await dataProtector({ data: { email: values.email } });
+      console.log('protectedData', protectedData);
+      if (protectedData) {
         setMailProtectionMessage('Your email has been protected');
         setIsMailError(false);
       }
