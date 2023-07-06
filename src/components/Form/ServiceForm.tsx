@@ -169,10 +169,9 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
 
         resetForm();
 
-        if (isRedirect === false) {
+        if (!isRedirect) {
           setShow(true);
-        }
-        if (isRedirect === true && newId) {
+        } else if (newId) {
           router.push(`/services/${newId}`);
         }
       } catch (error) {

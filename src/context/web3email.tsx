@@ -105,6 +105,7 @@ const Web3MailModalProvider = ({ children }: { children: ReactNode }) => {
     const fetchProtectedDataArg: FetchProtectedDataParams = {
       owner: user?.address,
     };
+    console.log('fetchProtectedDataArg', fetchProtectedDataArg);
 
     // if user?.address is undefined it will fetch the whole protected data
     if (user?.address) {
