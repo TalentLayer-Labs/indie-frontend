@@ -22,9 +22,13 @@ import { postToIPFS } from '../utils/ipfs';
 const Web3MailModalContext = createContext<{
   isRedirect: boolean;
   setShow: (show: boolean) => void;
+  show: boolean;
+  protectedMails: any;
 }>({
   isRedirect: true,
   setShow: () => {},
+  show: false,
+  protectedMails: [],
 });
 
 const Web3MailModalProvider = ({ children }: { children: ReactNode }) => {
@@ -90,6 +94,7 @@ const Web3MailModalProvider = ({ children }: { children: ReactNode }) => {
           'user',
           cid,
         );
+        setIsRedirect(true);
       } catch (error) {
         showErrorTransactionToast(error);
       }
@@ -103,6 +108,7 @@ const Web3MailModalProvider = ({ children }: { children: ReactNode }) => {
       owner: user?.address,
     };
 
+    // if user?.address is undefined it will fetch the whole protected data
     if (user?.address) {
       const tx = await fetchProtectedData(fetchProtectedDataArg);
       console.log('fetchProtectedDataTest:', tx.data.data.fetchProtectedData);
