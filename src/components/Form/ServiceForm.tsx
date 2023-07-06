@@ -31,8 +31,7 @@ interface IFormValues {
 function ServiceForm({ serviceId }: { serviceId?: string }) {
   const { open: openConnectModal } = useWeb3Modal();
   const { user, account } = useContext(TalentLayerContext);
-  const { show, protectedMails, setShow, isRedirect } = useContext(Web3MailModalContext);
-  console.log('protectedMails', protectedMails);
+  const { setShow, isRedirect } = useContext(Web3MailModalContext);
 
   const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
   const { data: signer } = useSigner({
@@ -167,9 +166,6 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
         );
         setSubmitting(false);
 
-        if (protectedMails.length === 0) {
-          setShow(true);
-        }
         resetForm();
         if (newId) {
           router.push(`/services/${newId}`);
