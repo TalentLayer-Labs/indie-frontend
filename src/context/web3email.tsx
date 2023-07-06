@@ -35,7 +35,6 @@ const Web3MailModalProvider = ({ children }: { children: ReactNode }) => {
 
   const { isActiveDelegate } = useContext(TalentLayerContext);
   const [protectedMails, setProtectedMails] = useState([]);
-  console.log('protectedMails server side', protectedMails);
 
   const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
 
@@ -108,19 +107,21 @@ const Web3MailModalProvider = ({ children }: { children: ReactNode }) => {
       console.log('fetchProtectedDataTest:', tx.data.data.fetchProtectedData);
       setProtectedMails(tx.data.data.fetchProtectedData);
     }
-
-    if (protectedMails.length > 0) {
-      setIsRedirect(true);
-    }
-  }
-
-  interface IFormValues {
-    email: string;
   }
 
   useEffect(() => {
     fetchProtectedMail();
   }, [user]);
+
+  useEffect(() => {
+    if (protectedMails.length > 0) {
+      setIsRedirect(true);
+    }
+  }, [protectedMails]);
+
+  interface IFormValues {
+    email: string;
+  }
 
   const initialValues = {
     email: '',

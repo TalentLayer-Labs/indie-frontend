@@ -32,7 +32,7 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
   const { open: openConnectModal } = useWeb3Modal();
   const { user, account } = useContext(TalentLayerContext);
   const { isRedirect } = useContext(Web3MailModalContext);
-  console.log('isRedirect', isRedirect);
+  console.log('isRedirecttttt', isRedirect);
 
   const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
   const { data: signer } = useSigner({
