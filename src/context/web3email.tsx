@@ -7,6 +7,7 @@ import { useProvider, useSigner } from 'wagmi';
 import { createMultiStepsTransactionToast, showErrorTransactionToast } from '../utils/toast';
 import * as Yup from 'yup';
 import Toggle from '../components/Form/Toggle';
+import Loading from '../components/Loading';
 import {
   dataProtector,
   fetchProtectedData,
@@ -21,8 +22,10 @@ import { postToIPFS } from '../utils/ipfs';
 
 const Web3MailModalContext = createContext<{
   isRedirect: boolean;
+  setShow: (setShow: boolean) => void;
 }>({
   isRedirect: true,
+  setShow: () => {},
 });
 
 const Web3MailModalProvider = ({ children }: { children: ReactNode }) => {
@@ -32,9 +35,11 @@ const Web3MailModalProvider = ({ children }: { children: ReactNode }) => {
   const [accordionOpen, setAccordionOpen] = useState(false);
   const [proposalConsent, setProposalConsent] = useState(false);
   const { user } = useContext(TalentLayerContext);
-
   const { isActiveDelegate } = useContext(TalentLayerContext);
   const [protectedMails, setProtectedMails] = useState([]);
+  const [mailProtectionMessage, setMailProtectionMessage] = useState('');
+  const [isMailError, setIsMailError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
 
@@ -141,9 +146,20 @@ const Web3MailModalProvider = ({ children }: { children: ReactNode }) => {
       resetForm: () => void;
     },
   ) => {
-    //***************** Data fetch & protection ************* */
-    // TODO : Add a name to the data to protect like the user handle
-    const dataProtectorFetch = await dataProtector({ data: { email: values.email } });
+    setIsLoading(true);
+    try {
+      const dataProtectorFetch = await dataProtector({ data: { email: values.email } });
+      console.log('dataProtectorFetch', dataProtectorFetch);
+      if (dataProtectorFetch) {
+        setMailProtectionMessage('Your email has been protected');
+        setIsMailError(false);
+      }
+    } catch (error) {
+      console.error('Error occurred while protecting your email: ', error);
+      setMailProtectionMessage('An error occurred while protecting your email');
+      setIsMailError(true);
+    }
+    setIsLoading(false);
     setSubmitting(true);
     resetForm();
   };
@@ -151,6 +167,7 @@ const Web3MailModalProvider = ({ children }: { children: ReactNode }) => {
   const value = useMemo(() => {
     return {
       isRedirect,
+      setShow,
     };
   }, [show, isRedirect]);
 
@@ -193,6 +210,13 @@ const Web3MailModalProvider = ({ children }: { children: ReactNode }) => {
                         className='block text-white bg-blue-600 font-medium rounded-lg px-5 py-2.5 text-center'>
                         PROTECT MY MAIL
                       </button>
+                      {isLoading ? (
+                        <Loading size='8' />
+                      ) : (
+                        <p className={isMailError ? 'text-red-500' : 'text-green-500'}>
+                          {mailProtectionMessage}
+                        </p>
+                      )}
                       <div className='mt-4'>
                         <div className='flex flex-row mb-4'>
                           <h3 className='font-semibold text-gray-900'>Consent Management</h3>
