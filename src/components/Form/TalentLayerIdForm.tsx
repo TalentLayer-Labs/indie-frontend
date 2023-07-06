@@ -1,19 +1,19 @@
-import { useWeb3Modal } from '@web3modal/react';
-import { ethers } from 'ethers';
-import { ErrorMessage, Field, Form, Formik } from 'formik';
-import { useContext } from 'react';
-import { useRouter } from 'next/router';
-import { useProvider, useSigner } from 'wagmi';
-import * as Yup from 'yup';
-import { config } from '../../config';
-import TalentLayerContext from '../../context/talentLayer';
-import TalentLayerID from '../../contracts/ABI/TalentLayerID.json';
-import { createTalentLayerIdTransactionToast, showErrorTransactionToast } from '../../utils/toast';
-import HelpPopover from '../HelpPopover';
-import SubmitButton from './SubmitButton';
-import { HandlePrice } from './handle-price';
-import { delegateMintID } from '../request';
-import useMagic from '../../modules/Magic/hooks/useMagic';
+import { useWeb3Modal } from "@web3modal/react";
+import { ethers } from "ethers";
+import { ErrorMessage, Field, Form, Formik } from "formik";
+import { useContext } from "react";
+import { useRouter } from "next/router";
+import { useProvider, useSigner } from "wagmi";
+import * as Yup from "yup";
+import { config } from "../../config";
+import TalentLayerContext from "../../context/talentLayer";
+import TalentLayerID from "../../contracts/ABI/TalentLayerID.json";
+import { createTalentLayerIdTransactionToast, showErrorTransactionToast } from "../../utils/toast";
+import HelpPopover from "../HelpPopover";
+import SubmitButton from "./SubmitButton";
+import { HandlePrice } from "./handle-price";
+import { delegateMintID } from "../request";
+import useMagic from "../../modules/Magic/hooks/useMagic";
 
 interface IFormValues {
   handle: string;
@@ -29,13 +29,11 @@ function TalentLayerIdForm() {
   const { data: signer } = useSigner({
     chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
   });
+  const { magic, ethersMagicProvider } = useMagic();
 
   const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
   const router = useRouter();
   let tx: ethers.providers.TransactionResponse;
-
-  const ethersProvider = new ethers.providers.JsonRpcProvider();
-  console.log('ethersProvider', ethersProvider.getSigner(0));
 
   const validationSchema = Yup.object().shape({
     handle: Yup.string()
@@ -52,26 +50,22 @@ function TalentLayerIdForm() {
     submittedValues: IFormValues,
     { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void },
   ) => {
-    console.log('submit');
-    console.log('account', account);
-    console.log('isCOnnected', account?.address);
-    console.log('provider', provider);
-    console.log('signer', signer);
-    console.log('ethersProvider.getSigner()', ethersProvider.getSigner());
-
     if (
       account &&
       account.address &&
-      account.isConnected &&
-      provider &&
-      signer
+      account.isConnected
+      // provider &&
+      // signer
       // ethersProvider.getSigner()
     ) {
+      console.log"getSigner: "', ethersMagicProvider?.getSigner());
+      // ethersMagicProvider?.sendTransaction();
+
       try {
         const contract = new ethers.Contract(
           config.contracts.talentLayerId,
           TalentLayerID.abi,
-          ethersProvider.getSigner(),
+          signer || ethersMagicProvider?.getSigner(,
         );
 
         const handlePrice = await contract.getHandlePrice(submittedValues.handle);

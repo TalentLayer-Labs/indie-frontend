@@ -1,25 +1,22 @@
-import { EthereumClient, modalConnectors } from '@web3modal/ethereum';
-import { Web3Modal } from '@web3modal/react';
-import { DefaultSeo } from 'next-seo';
-import { ThemeProvider } from 'next-themes';
-import type { AppProps } from 'next/app';
-import { GoogleAnalytics } from 'nextjs-google-analytics';
-import { ToastContainer } from 'react-toastify';
-import { Chain, WagmiConfig, configureChains, createClient } from 'wagmi';
-import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
-import { customChains } from '../chains';
-import { TalentLayerProvider } from '../context/talentLayer';
-import { MessagingProvider } from '../modules/Messaging/context/messging';
-import { XmtpContextProvider } from '../modules/Messaging/context/XmtpContext';
-import '../styles/globals.css';
-import 'react-toastify/dist/ReactToastify.css';
-import Layout from './Layout';
-import { useEffect } from 'react';
-import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet';
-import { InjectedConnector } from 'wagmi/connectors/injected';
-import { MetaMaskConnector } from 'wagmi/connectors/metaMask';
-import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
-import { MagicConnectConnector } from '@everipedia/wagmi-magic-connector';
+import { DefaultSeo } from "next-seo";
+import { ThemeProvider } from "next-themes";
+import type { AppProps } from "next/app";
+import { GoogleAnalytics } from "nextjs-google-analytics";
+import { ToastContainer } from "react-toastify";
+import { Chain, configureChains, createClient, WagmiConfig } from "wagmi";
+import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
+import { customChains } from "../chains";
+import { TalentLayerProvider } from "../context/talentLayer";
+import { MessagingProvider } from "../modules/Messaging/context/messging";
+import { XmtpContextProvider } from "../modules/Messaging/context/XmtpContext";
+import "../styles/globals.css";
+import "react-toastify/dist/ReactToastify.css";
+import Layout from "./Layout";
+import { useEffect } from "react";
+import { CoinbaseWalletConnector } from "wagmi/connectors/coinbaseWallet";
+import { InjectedConnector } from "wagmi/connectors/injected";
+import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
+import { MagicConnectConnector } from "@everipedia/wagmi-magic-connector";
 
 const chains: Chain[] = [customChains.polygonMumbai];
 
@@ -31,25 +28,28 @@ const { provider } = configureChains(chains, [
     },
   }),
 ]);
-const wagmiClient = createClient({
-  autoConnect: false,
-  connectors: modalConnectors({ appName: 'web3Modal', chains }),
-  provider,
-});
 
-const connector = new MagicConnectConnector({
-  chains: chains,
-  options: {
-    apiKey: process.env.NEXT_PUBLIC_MAGIC_KEY as string, //required
-    //...Other options
-  },
-});
+//TODO Not working => "irefox ne peut établir de connexion avec le serveur à l’adresse wss://j.bridge.walletconnect.org/?env=browser&host=localhost%3A5000&protocol=wc&version=1."
+// const magicConnector = new MagicConnectConnector({
+//   chains: chains,
+//   options: {
+//     apiKey: process.env.NEXT_PUBLIC_MAGIC_KEY as string, //required
+//     //...Other options
+//   },
+// });
+// console.log('wbe3modal', modalConnectors({ appName: 'web3Modal', chains }));
+// const connectors = [...modalConnectors({ appName: 'web3Modal', chains }), magicConnector];
+// const wagmiClient = createClient({
+//   autoConnect: false,
+//   connectors: connectors,
+//   provider,
+// });
 
 const wagmiMagicClient = createClient({
   autoConnect: false,
   // connectors: modalConnectors({ appName: 'web3Modal', chains }),
   connectors: [
-    new MetaMaskConnector({ chains }),
+    // new MetaMaskConnector({ chains }),
     new CoinbaseWalletConnector({
       chains,
       options: {
@@ -64,10 +64,10 @@ const wagmiMagicClient = createClient({
     }),
     new InjectedConnector({
       chains,
-      // options: {
-      //   name: 'Injected',
-      //   shimDisconnect: true,
-      // },
+      options: {
+        nam"MetaMask"sk',
+        shimDisconnect: tue,
+     },
     }),
     new MagicConnectConnector({
       chains: chains,
