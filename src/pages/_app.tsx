@@ -14,7 +14,9 @@ import { XmtpContextProvider } from '../modules/Messaging/context/XmtpContext';
 import '../styles/globals.css';
 import 'react-toastify/dist/ReactToastify.css';
 import Layout from './Layout';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import Web3MailModal from '../components/Modal/Web3MailModal';
+import { Web3MailModalProvider } from '../context/web3email';
 
 const chains: Chain[] = [customChains.polygonMumbai];
 
@@ -47,15 +49,17 @@ function MyApp({ Component, pageProps }: AppProps) {
       <ToastContainer position='bottom-right' />
       <WagmiConfig client={wagmiClient}>
         <TalentLayerProvider>
-          <XmtpContextProvider>
-            <MessagingProvider>
-              <ThemeProvider enableSystem={false}>
-                <Layout>
-                  <Component {...pageProps} />
-                </Layout>
-              </ThemeProvider>
-            </MessagingProvider>
-          </XmtpContextProvider>
+          <Web3MailModalProvider>
+            <XmtpContextProvider>
+              <MessagingProvider>
+                <ThemeProvider enableSystem={false}>
+                  <Layout>
+                    <Component {...pageProps} />
+                  </Layout>
+                </ThemeProvider>
+              </MessagingProvider>
+            </XmtpContextProvider>
+          </Web3MailModalProvider>
         </TalentLayerProvider>
         <Web3Modal
           projectId={`${process.env.NEXT_PUBLIC_WALLECT_CONNECT_PROJECT_ID}`}

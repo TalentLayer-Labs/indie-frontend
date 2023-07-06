@@ -1,9 +1,9 @@
 import { useWeb3Modal } from '@web3modal/react';
 import { BigNumber, BigNumberish, ethers, FixedNumber } from 'ethers';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { useRouter } from 'next/router';
-import { Address, useProvider, useSigner } from 'wagmi';
+import { useProvider, useSigner } from 'wagmi';
 import * as Yup from 'yup';
 import { config } from '../../config';
 import TalentLayerContext from '../../context/talentLayer';
@@ -18,7 +18,7 @@ import { IToken } from '../../types';
 import useServiceById from '../../hooks/useServiceById';
 import { SkillsInput } from './skills-input';
 import { delegateCreateService, delegateUpdateService } from '../request';
-import Web3MailModal from '../Modal/Web3MailModal';
+import Web3MailModalContext from '../../context/web3email';
 
 interface IFormValues {
   title: string;
@@ -31,13 +31,14 @@ interface IFormValues {
 function ServiceForm({ serviceId }: { serviceId?: string }) {
   const { open: openConnectModal } = useWeb3Modal();
   const { user, account } = useContext(TalentLayerContext);
+  const { show, protectedMails, setShow, isRedirect } = useContext(Web3MailModalContext);
+  console.log('protectedMails', protectedMails);
+
   const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
   const { data: signer } = useSigner({
     chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
   });
   const existingService = useServiceById(serviceId as string);
-  const [showMailModal, setShowMailModal] = useState(false);
-  const [newServiceId, setNewServiceId] = useState<number | null>(null);
 
   const router = useRouter();
   const allowedTokenList = useAllowedTokens();
@@ -104,10 +105,7 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
     {
       setSubmitting,
       resetForm,
-    }: {
-      setSubmitting: (isSubmitting: boolean) => void;
-      resetForm: () => void;
-    },
+    }: { setSubmitting: (isSubmitting: boolean) => void; resetForm: () => void },
   ) => {
     const token = allowedTokenList.find(token => token.address === values.rateToken);
     if (account?.isConnected === true && provider && signer && token && user) {
@@ -167,15 +165,14 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
           'service',
           cid,
         );
-
         setSubmitting(false);
+
+        if (protectedMails.length === 0) {
+          setShow(true);
+        }
         resetForm();
-
-        // set the modal to true to show the mail modal
-        setShowMailModal(true);
-
         if (newId) {
-          setNewServiceId(newId);
+          router.push(`/services/${newId}`);
         }
       } catch (error) {
         showErrorTransactionToast(error);
@@ -185,113 +182,99 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
     }
   };
 
-  // TODO routing doesn't work if the user have some protected data
-  useEffect(() => {
-    if (!showMailModal && newServiceId) {
-      router.push(`/services/${newServiceId}`);
-      // reset newServiceId state to null
-      setNewServiceId(null);
-    }
-  }, [showMailModal]);
-
   return (
-    <>
-      <Formik
-        initialValues={initialValues}
-        enableReinitialize={true}
-        onSubmit={onSubmit}
-        validationSchema={validationSchema}>
-        {({ isSubmitting, setFieldValue }) => (
-          <Form>
-            <div className='grid grid-cols-1 gap-6 border border-gray-200 rounded-md p-8'>
-              <label className='block'>
-                <span className='text-gray-700'>Title</span>
+    <Formik
+      initialValues={initialValues}
+      enableReinitialize={true}
+      onSubmit={onSubmit}
+      validationSchema={validationSchema}>
+      {({ isSubmitting, setFieldValue }) => (
+        <Form>
+          <div className='grid grid-cols-1 gap-6 border border-gray-200 rounded-md p-8'>
+            <label className='block'>
+              <span className='text-gray-700'>Title</span>
+              <Field
+                type='text'
+                id='title'
+                name='title'
+                className='mt-1 mb-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
+                placeholder=''
+              />
+              <span className='text-red-500'>
+                <ErrorMessage name='title' />
+              </span>
+            </label>
+
+            <label className='block'>
+              <span className='text-gray-700'>About</span>
+              <Field
+                as='textarea'
+                id='about'
+                name='about'
+                className='mt-1 mb-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
+                placeholder=''
+              />
+              <span className='text-red-500'>
+                <ErrorMessage name='about' />
+              </span>
+            </label>
+
+            <label className='block'>
+              <span className='text-gray-700'>Keywords</span>
+
+              <SkillsInput
+                initialValues={existingService?.description?.keywords_raw}
+                entityId={'keywords'}
+              />
+
+              <Field type='hidden' id='keywords' name='keywords' />
+            </label>
+
+            <div className='flex'>
+              <label className='block flex-1 mr-4'>
+                <span className='text-gray-700'>Amount</span>
                 <Field
-                  type='text'
-                  id='title'
-                  name='title'
+                  type='number'
+                  id='rateAmount'
+                  name='rateAmount'
                   className='mt-1 mb-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
                   placeholder=''
                 />
-                <span className='text-red-500'>
-                  <ErrorMessage name='title' />
+                <span className='text-red-500 mt-2'>
+                  <ErrorMessage name='rateAmount' />
                 </span>
               </label>
-
               <label className='block'>
-                <span className='text-gray-700'>About</span>
+                <span className='text-gray-700'>Token</span>
                 <Field
-                  as='textarea'
-                  id='about'
-                  name='about'
-                  className='mt-1 mb-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
+                  component='select'
+                  id='rateToken'
+                  name='rateToken'
+                  className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
                   placeholder=''
-                />
+                  onChange={(e: { target: { value: string } }) => {
+                    const token = allowedTokenList.find(token => token.address === e.target.value);
+                    setSelectedToken(token);
+                    setFieldValue('rateToken', e.target.value);
+                  }}>
+                  <option value=''>Select a token</option>
+                  {allowedTokenList.map((token, index) => (
+                    <option key={index} value={token.address}>
+                      {token.symbol}
+                    </option>
+                  ))}
+                </Field>
                 <span className='text-red-500'>
-                  <ErrorMessage name='about' />
+                  <ErrorMessage name='rateToken' />
                 </span>
               </label>
-
-              <label className='block'>
-                <span className='text-gray-700'>Keywords</span>
-
-                <SkillsInput
-                  initialValues={existingService?.description?.keywords_raw}
-                  entityId={'keywords'}
-                />
-
-                <Field type='hidden' id='keywords' name='keywords' />
-              </label>
-
-              <div className='flex'>
-                <label className='block flex-1 mr-4'>
-                  <span className='text-gray-700'>Amount</span>
-                  <Field
-                    type='number'
-                    id='rateAmount'
-                    name='rateAmount'
-                    className='mt-1 mb-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
-                    placeholder=''
-                  />
-                  <span className='text-red-500 mt-2'>
-                    <ErrorMessage name='rateAmount' />
-                  </span>
-                </label>
-                <label className='block'>
-                  <span className='text-gray-700'>Token</span>
-                  <Field
-                    component='select'
-                    id='rateToken'
-                    name='rateToken'
-                    className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
-                    placeholder=''
-                    onChange={(e: { target: { value: string } }) => {
-                      const token = allowedTokenList.find(
-                        token => token.address === e.target.value,
-                      );
-                      setSelectedToken(token);
-                      setFieldValue('rateToken', e.target.value);
-                    }}>
-                    <option value=''>Select a token</option>
-                    {allowedTokenList.map((token, index) => (
-                      <option key={index} value={token.address}>
-                        {token.symbol}
-                      </option>
-                    ))}
-                  </Field>
-                  <span className='text-red-500'>
-                    <ErrorMessage name='rateToken' />
-                  </span>
-                </label>
-              </div>
-
-              <SubmitButton isSubmitting={isSubmitting} label='Post' />
             </div>
-          </Form>
-        )}
-      </Formik>
-      <Web3MailModal showMailModal={showMailModal} setShowMailModal={setShowMailModal} />
-    </>
+
+            <SubmitButton isSubmitting={isSubmitting} label='Post' />
+          </div>
+        </Form>
+      )}
+    </Formik>
   );
 }
 export default ServiceForm;
