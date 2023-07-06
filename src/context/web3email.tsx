@@ -33,7 +33,7 @@ const Web3MailModalContext = createContext<{
 
 const Web3MailModalProvider = ({ children }: { children: ReactNode }) => {
   const [show, setShow] = useState(false);
-  const [isRedirect, setIsRedirect] = useState(true);
+  const [isRedirect, setIsRedirect] = useState(false);
   const { open: openConnectModal } = useWeb3Modal();
   const [accordionOpen, setAccordionOpen] = useState(false);
   const [proposalConsent, setProposalConsent] = useState(false);

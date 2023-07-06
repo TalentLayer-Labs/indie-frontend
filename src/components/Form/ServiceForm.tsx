@@ -169,8 +169,8 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
         if (protectedMails.length === 0 && !show) {
           setShow(true);
         }
-
         resetForm();
+
         if (isRedirect) {
           router.push(`/services/${newId}`);
         }
