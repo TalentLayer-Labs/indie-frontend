@@ -102,9 +102,12 @@ const Web3MailModalProvider = ({ children }: { children: ReactNode }) => {
     const fetchProtectedDataArg: FetchProtectedDataParams = {
       owner: user?.address,
     };
-    const tx = await fetchProtectedData(fetchProtectedDataArg);
-    console.log('fetchProtectedDataTest:', tx.data.data.fetchProtectedData);
-    setProtectedMails(tx.data.data.fetchProtectedData);
+
+    if (user?.address) {
+      const tx = await fetchProtectedData(fetchProtectedDataArg);
+      console.log('fetchProtectedDataTest:', tx.data.data.fetchProtectedData);
+      setProtectedMails(tx.data.data.fetchProtectedData);
+    }
   }
 
   interface IFormValues {
