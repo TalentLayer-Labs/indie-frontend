@@ -1,19 +1,19 @@
-import { useWeb3Modal } from "@web3modal/react";
-import { ethers } from "ethers";
-import { ErrorMessage, Field, Form, Formik } from "formik";
-import { useContext } from "react";
-import { useRouter } from "next/router";
-import { useProvider, useSigner } from "wagmi";
-import * as Yup from "yup";
-import { config } from "../../config";
-import TalentLayerContext from "../../context/talentLayer";
-import TalentLayerID from "../../contracts/ABI/TalentLayerID.json";
-import { createTalentLayerIdTransactionToast, showErrorTransactionToast } from "../../utils/toast";
-import HelpPopover from "../HelpPopover";
-import SubmitButton from "./SubmitButton";
-import { HandlePrice } from "./handle-price";
-import { delegateMintID } from "../request";
-import useMagic from "../../modules/Magic/hooks/useMagic";
+import { useWeb3Modal } from '@web3modal/react';
+import { ethers } from 'ethers';
+import { ErrorMessage, Field, Form, Formik } from 'formik';
+import { useContext } from 'react';
+import { useRouter } from 'next/router';
+import { useProvider, useSigner } from 'wagmi';
+import * as Yup from 'yup';
+import { config } from '../../config';
+import TalentLayerContext from '../../context/talentLayer';
+import TalentLayerID from '../../contracts/ABI/TalentLayerID.json';
+import { createTalentLayerIdTransactionToast, showErrorTransactionToast } from '../../utils/toast';
+import HelpPopover from '../HelpPopover';
+import SubmitButton from './SubmitButton';
+import { HandlePrice } from './handle-price';
+import { delegateMintID } from '../request';
+import useMagic from '../../modules/Magic/hooks/useMagic';
 
 interface IFormValues {
   handle: string;
@@ -58,14 +58,14 @@ function TalentLayerIdForm() {
       // signer
       // ethersProvider.getSigner()
     ) {
-      console.log"getSigner: "', ethersMagicProvider?.getSigner());
+      console.log('getSigner: ', ethersMagicProvider?.getSigner());
       // ethersMagicProvider?.sendTransaction();
 
       try {
         const contract = new ethers.Contract(
           config.contracts.talentLayerId,
           TalentLayerID.abi,
-          signer || ethersMagicProvider?.getSigner(,
+          signer || ethersMagicProvider?.getSigner(),
         );
 
         const handlePrice = await contract.getHandlePrice(submittedValues.handle);

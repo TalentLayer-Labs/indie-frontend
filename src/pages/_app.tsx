@@ -1,22 +1,22 @@
-import { DefaultSeo } from "next-seo";
-import { ThemeProvider } from "next-themes";
-import type { AppProps } from "next/app";
-import { GoogleAnalytics } from "nextjs-google-analytics";
-import { ToastContainer } from "react-toastify";
-import { Chain, configureChains, createClient, WagmiConfig } from "wagmi";
-import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
-import { customChains } from "../chains";
-import { TalentLayerProvider } from "../context/talentLayer";
-import { MessagingProvider } from "../modules/Messaging/context/messging";
-import { XmtpContextProvider } from "../modules/Messaging/context/XmtpContext";
-import "../styles/globals.css";
-import "react-toastify/dist/ReactToastify.css";
-import Layout from "./Layout";
-import { useEffect } from "react";
-import { CoinbaseWalletConnector } from "wagmi/connectors/coinbaseWallet";
-import { InjectedConnector } from "wagmi/connectors/injected";
-import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
-import { MagicConnectConnector } from "@everipedia/wagmi-magic-connector";
+import { DefaultSeo } from 'next-seo';
+import { ThemeProvider } from 'next-themes';
+import type { AppProps } from 'next/app';
+import { GoogleAnalytics } from 'nextjs-google-analytics';
+import { ToastContainer } from 'react-toastify';
+import { Chain, configureChains, createClient, WagmiConfig } from 'wagmi';
+import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
+import { customChains } from '../chains';
+import { TalentLayerProvider } from '../context/talentLayer';
+import { MessagingProvider } from '../modules/Messaging/context/messging';
+import { XmtpContextProvider } from '../modules/Messaging/context/XmtpContext';
+import '../styles/globals.css';
+import 'react-toastify/dist/ReactToastify.css';
+import Layout from './Layout';
+import { useEffect } from 'react';
+import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet';
+import { InjectedConnector } from 'wagmi/connectors/injected';
+import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
+import { MagicConnectConnector } from '@everipedia/wagmi-magic-connector';
 
 const chains: Chain[] = [customChains.polygonMumbai];
 
@@ -65,12 +65,12 @@ const wagmiMagicClient = createClient({
     new InjectedConnector({
       chains,
       options: {
-        nam"MetaMask"sk',
-        shimDisconnect: tue,
-     },
+        name: 'MetaMask',
+        shimDisconnect: true,
+      },
     }),
     new MagicConnectConnector({
-      chains: chains,
+      chains,
       options: {
         apiKey: process.env.NEXT_PUBLIC_MAGIC_KEY as string, //required
         //...Other options
