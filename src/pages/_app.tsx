@@ -29,7 +29,7 @@ const { provider } = configureChains(chains, [
   }),
 ]);
 
-//TODO Not working => "irefox ne peut établir de connexion avec le serveur à l’adresse wss://j.bridge.walletconnect.org/?env=browser&host=localhost%3A5000&protocol=wc&version=1."
+//TODO Not working => "firefox ne peut établir de connexion avec le serveur à l’adresse wss://j.bridge.walletconnect.org/?env=browser&host=localhost%3A5000&protocol=wc&version=1."
 // const magicConnector = new MagicConnectConnector({
 //   chains: chains,
 //   options: {

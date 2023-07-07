@@ -11,6 +11,7 @@ const ConnectMagicButton = () => {
   const handleConnect = async () => {
     try {
       if (magic) {
+        console.log('Connecting...');
         // await magic?.user.logout();
         await magic.wallet.connectWithUI();
         console.log('handleConnect: magic wallet:', await magic?.wallet);

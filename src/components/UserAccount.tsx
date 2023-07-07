@@ -1,14 +1,11 @@
 import { Menu, Transition } from '@headlessui/react';
-import { ConnectButton } from '@web3modal/react';
 import { Fragment, useContext } from 'react';
 import { useConnect, useEnsAvatar } from 'wagmi';
 import TalentLayerContext from '../context/talentLayer';
 import { truncateAddress } from '../utils';
 import UserSubMenu from './UserSubMenu';
 import Image from 'next/image';
-import useMagic from '../modules/Magic/hooks/useMagic';
-import Web3 from 'web3';
-import ConnectMagicButton from '../modules/Magic/ConnectMagicButton';
+import WalletChoiceSwitch from './WalletChoiceSwitch';
 
 function UserAccount() {
   const { account, user } = useContext(TalentLayerContext);
@@ -22,7 +19,7 @@ function UserAccount() {
         {/* Profile dropdown */}
         <Menu as='div' className='relative'>
           <div>
-            {account && account.isConnected === true ? (
+            {account && account.isConnected ? (
               <div className='flex items-center'>
                 <Menu.Button className='flex max-w-xs items-center rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2'>
                   <span className='sr-only'>Open user menu</span>
@@ -60,19 +57,20 @@ function UserAccount() {
               <div>
                 {/*<ConnectButton />*/}
                 {/*<ConnectMagicButton />*/}
-                {connectors.map(connector => {
-                  return (
-                    <button
-                      className='px-5 py-2 mx-2 border border-indigo-600 rounded-full hover:text-indigo-600 hover:bg-white text-white bg-indigo-500'
-                      disabled={!connector.ready}
-                      key={connector.id}
-                      onClick={() => connect({ connector })}>
-                      {connector.name}
-                      {!connector.ready}
-                      {isLoading && connector.id === pendingConnector?.id && ' (connecting)'}
-                    </button>
-                  );
-                })}
+                {/*{connectors.map(connector => {*/}
+                {/*  return (*/}
+                {/*    <button*/}
+                {/*      className='px-5 py-2 mx-2 border border-indigo-600 rounded-full hover:text-indigo-600 hover:bg-white text-white bg-indigo-500'*/}
+                {/*      disabled={!connector.ready}*/}
+                {/*      key={connector.id}*/}
+                {/*      onClick={() => connect({ connector })}>*/}
+                {/*      {connector.name}*/}
+                {/*      {!connector.ready}*/}
+                {/*      {isLoading && connector.id === pendingConnector?.id && ' (connecting)'}*/}
+                {/*    </button>*/}
+                {/*  );*/}
+                {/*})}*/}
+                <WalletChoiceSwitch />
               </div>
             )}
           </div>
