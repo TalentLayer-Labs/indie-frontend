@@ -50,6 +50,13 @@ const wagmiMagicClient = createClient({
   // connectors: modalConnectors({ appName: 'web3Modal', chains }),
   connectors: [
     // new MetaMaskConnector({ chains }),
+    new MagicConnectConnector({
+      chains,
+      options: {
+        apiKey: process.env.NEXT_PUBLIC_MAGIC_KEY as string, //required
+        //...Other options
+      },
+    }),
     new CoinbaseWalletConnector({
       chains,
       options: {
@@ -67,13 +74,6 @@ const wagmiMagicClient = createClient({
       options: {
         name: 'MetaMask',
         shimDisconnect: true,
-      },
-    }),
-    new MagicConnectConnector({
-      chains,
-      options: {
-        apiKey: process.env.NEXT_PUBLIC_MAGIC_KEY as string, //required
-        //...Other options
       },
     }),
   ],
