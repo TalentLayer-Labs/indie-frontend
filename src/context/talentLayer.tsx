@@ -1,11 +1,11 @@
-import { createContext, ReactNode, useEffect, useMemo, useState } from "react";
-import { useAccount, useSigner } from "wagmi";
-import { getUserByAddress } from "../queries/users";
-import { IAccount, IUser } from "../types";
-import useMagic from "../modules/Magic/hooks/useMagic";
-import { FetchSignerResult } from "@wagmi/core";
-import { Signer } from "ethers";
-import { JsonRpcSigner } from "@ethersproject/providers";
+import { createContext, ReactNode, useEffect, useMemo, useState } from 'react';
+import { useAccount, useSigner } from 'wagmi';
+import { getUserByAddress } from '../queries/users';
+import { IAccount, IUser } from '../types';
+import useMagic from '../modules/Magic/hooks/useMagic';
+import { FetchSignerResult } from '@wagmi/core';
+import { Signer } from 'ethers';
+import { JsonRpcSigner } from '@ethersproject/providers';
 
 const TalentLayerContext = createContext<{
   user?: IUser;
@@ -22,19 +22,18 @@ const TalentLayerContext = createContext<{
 const TalentLayerProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<IUser | undefined>();
   const [signer, setSigner] = useState<FetchSignerResult<Signer> | JsonRpcSigner | undefined>(
-    undefine,
+    undefined,
   );
   const account = useAccount();
   const [isActiveDelegate, setIsActiveDelegate] = useState(false);
   const { data } = useSigner({
-    chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string,
+    chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
   });
   const { ethersMagicProvider } = useMagic();
-  console.log"ethersMagicProvider"', ethersMagicProvider);
+  console.log('ethersMagicProvider', ethersMagicProvider);
   const magicSigner = ethersMagicProvider?.getSigner();
 
   useEffect(() => {
-    console.log"caca"');
     const fetchData = async () => {
       if (!account.address || !account.isConnected || !account.connector) {
         return;
@@ -61,23 +60,23 @@ const TalentLayerProvider = ({ children }: { children: ReactNode }) => {
   }, [account.address, account.isConnected, isActiveDelegate]);
 
   useEffect(() => {
-    console.log("account.connector", account.connector);
-    console.log("metamask connector", data);
-    console.log("magic provider", ethersMagicProvider);
+    console.log('account.connector', account.connector);
+    console.log('metamask connector', data);
+    console.log('magic provider', ethersMagicProvider);
     if (!account.connector || (!data && !ethersMagicProvider)) {
       return;
     }
     try {
-      console.log("good to go");
-      const signer = account.connector?.id === "magic" ? magicSigner : data;
-      console.log("signer", signer);
+      console.log('good to go');
+      const signer = account.connector?.id === 'magic' ? magicSigner : data;
+      console.log('signer', signer);
       setSigner(signer);
     } catch (err: any) {
       // eslint-disable-next-line no-console
       console.error(err);
     } finally {
-      console.log("final user", user);
-      console.log("final signer", signer);
+      console.log('final user', user);
+      console.log('final signer', signer);
     }
   }, [account.connector, data, ethersMagicProvider]);
 
@@ -86,7 +85,7 @@ const TalentLayerProvider = ({ children }: { children: ReactNode }) => {
       user,
       account: account ? account : undefined,
       signer,
-      isActiveDelegate
+      isActiveDelegate,
     };
   }, [account.address, user?.id, isActiveDelegate]);
 
