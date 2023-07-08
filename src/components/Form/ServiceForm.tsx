@@ -3,7 +3,7 @@ import { BigNumber, BigNumberish, ethers, FixedNumber } from 'ethers';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import { useContext, useState } from 'react';
 import { useRouter } from 'next/router';
-import { useProvider, useSigner } from 'wagmi';
+import { useProvider } from 'wagmi';
 import * as Yup from 'yup';
 import { config } from '../../config';
 import TalentLayerContext from '../../context/talentLayer';
@@ -29,11 +29,8 @@ interface IFormValues {
 
 function ServiceForm({ serviceId }: { serviceId?: string }) {
   const { open: openConnectModal } = useWeb3Modal();
-  const { user, account } = useContext(TalentLayerContext);
+  const { user, account, signer } = useContext(TalentLayerContext);
   const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
-  const { data: signer } = useSigner({
-    chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
-  });
   const existingService = useServiceById(serviceId as string);
 
   const router = useRouter();
@@ -103,9 +100,11 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
       resetForm,
     }: { setSubmitting: (isSubmitting: boolean) => void; resetForm: () => void },
   ) => {
+    console.log('submit', user);
     const token = allowedTokenList.find(token => token.address === values.rateToken);
     if (account?.isConnected === true && provider && signer && token && user) {
       try {
+        console.log('submit Inside');
         const parsedRateAmount = await parseRateAmount(
           values.rateAmount.toString(),
           values.rateToken,

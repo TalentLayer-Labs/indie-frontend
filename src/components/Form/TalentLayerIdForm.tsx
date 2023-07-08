@@ -3,7 +3,7 @@ import { ethers } from 'ethers';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import { useContext } from 'react';
 import { useRouter } from 'next/router';
-import { useProvider, useSigner } from 'wagmi';
+import { useProvider } from 'wagmi';
 import * as Yup from 'yup';
 import { config } from '../../config';
 import TalentLayerContext from '../../context/talentLayer';
@@ -25,15 +25,14 @@ const initialValues: IFormValues = {
 
 function TalentLayerIdForm() {
   const { open: openConnectModal } = useWeb3Modal();
-  const { user, account } = useContext(TalentLayerContext);
-  const { data: signer } = useSigner({
-    chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
-  });
+  const { user, account, signer } = useContext(TalentLayerContext);
   const { magic, ethersMagicProvider } = useMagic();
 
   const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
   const router = useRouter();
   let tx: ethers.providers.TransactionResponse;
+
+  console.log('TalentLayerIdForm user', user);
 
   const validationSchema = Yup.object().shape({
     handle: Yup.string()
@@ -53,12 +52,11 @@ function TalentLayerIdForm() {
     if (
       account &&
       account.address &&
-      account.isConnected
+      account.isConnected &&
       // provider &&
-      // signer
+      signer
       // ethersProvider.getSigner()
     ) {
-      console.log('getSigner: ', ethersMagicProvider?.getSigner());
       // ethersMagicProvider?.sendTransaction();
 
       try {
