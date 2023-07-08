@@ -1,9 +1,6 @@
 import SearchTalentButton from '../Form/SearchTalentButton';
-import { ethers } from 'ethers';
 
 function SearchTalent() {
-  const ethersProvider = new ethers.providers.JsonRpcProvider();
-  console.log('ethersProvider - connected', ethersProvider.getSigner());
   return (
     <div className='bg-white'>
       <div className='max-w-7xl mx-auto text-gray-900 px-4'>

@@ -1,10 +1,14 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import useMagic from './hooks/useMagic';
+import { useAccount } from 'wagmi';
+import TalentLayerContext from '../../context/talentLayer';
 
 const ShowUIButton = () => {
   // Initialize state variable to decide whether to show button or not
   const [showButton, setShowButton] = useState(false);
   const { magic } = useMagic();
+  const { user, account } = useContext(TalentLayerContext);
+  const { address, connector } = useAccount();
 
   // Define a function to check the type of the wallet
   // const checkWalletType = async () => {
@@ -37,9 +41,9 @@ const ShowUIButton = () => {
   const handleShowUI = async () => {
     try {
       // Try to show the magic wallet user interface
-      const walletInfo = await magic?.user.getInfo();
-      console.log('walletInfo', walletInfo);
-      await magic?.wallet.showUI();
+      // const walletInfo = await magic?.user.getInfo();
+      // console.log('walletInfo', walletInfo);
+      // await magic?.wallet.showUI();
     } catch (error) {
       // Log any errors that occur during the process
       console.error('handleShowUI:', error);
