@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import useMagic from './hooks/useMagic';
 
 const ShowUIButton = () => {
@@ -7,31 +7,31 @@ const ShowUIButton = () => {
   const { magic } = useMagic();
 
   // Define a function to check the type of the wallet
-  const checkWalletType = async () => {
-    try {
-      // Fetch the wallet's information using Magic's user.getInfo method
-      const walletInfo = await magic?.user.getInfo();
-      console.log('walletInfo', walletInfo);
+  // const checkWalletType = async () => {
+  //   try {
+  //     // Fetch the wallet's information using Magic's user.getInfo method
+  //     const walletInfo = await magic?.user.getInfo();
+  //     console.log('walletInfo', walletInfo);
+  //
+  //     /*TODO: Wallet info renvoie "Metamask" au lieu de "magic", alors que c'est bien "magic" qui est utilisé
+  //      Le bouton showUi marche bien*/
+  //
+  //     // Determine if the wallet type is "magic"
+  //     // const isMagicWallet = walletInfo?.walletType === 'magic';
+  //     //
+  //     // // Set 'showButton' state based on the result of the check
+  //     // setShowButton(isMagicWallet);
+  //     setShowButton(true);
+  //   } catch (error) {
+  //     // Log any errors that occur during the wallet type check process
+  //     console.error('checkWalletType:', error);
+  //   }
+  // };
 
-      /*TODO: Wallet info renvoie "Metamask" au lieu de "magic", alors que c'est bien "magic" qui est utilisé
-       Le bouton showUi marche bien*/
-
-      // Determine if the wallet type is "magic"
-      // const isMagicWallet = walletInfo?.walletType === 'magic';
-      //
-      // // Set 'showButton' state based on the result of the check
-      // setShowButton(isMagicWallet);
-      setShowButton(true);
-    } catch (error) {
-      // Log any errors that occur during the wallet type check process
-      console.error('checkWalletType:', error);
-    }
-  };
-
-  useEffect(() => {
-    // Call the checkWalletType function
-    checkWalletType();
-  }, [magic]);
+  // useEffect(() => {
+  //   // Call the checkWalletType function
+  //   checkWalletType();
+  // }, [magic]);
 
   // Define the event handler for the button click
   const handleShowUI = async () => {
@@ -47,7 +47,8 @@ const ShowUIButton = () => {
   };
 
   // Render the button component if showButton is true, otherwise render nothing
-  return showButton ? <button onClick={handleShowUI}>Show UI</button> : null;
+  return <button onClick={handleShowUI}>Show UI</button>;
+  // return showButton ? <button onClick={handleShowUI}>Show UI</button> : null;
 };
 
 export default ShowUIButton;

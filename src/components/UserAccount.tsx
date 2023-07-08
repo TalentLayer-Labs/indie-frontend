@@ -6,6 +6,7 @@ import { truncateAddress } from '../utils';
 import UserSubMenu from './UserSubMenu';
 import Image from 'next/image';
 import WalletChoiceSwitch from './WalletChoiceSwitch';
+import ConnectMagicButton from '../modules/Magic/ConnectMagicButton';
 
 function UserAccount() {
   const { account, user } = useContext(TalentLayerContext);
@@ -56,7 +57,7 @@ function UserAccount() {
             ) : (
               <div>
                 {/*<ConnectButton />*/}
-                {/*<ConnectMagicButton />*/}
+                <ConnectMagicButton />
                 {/*{connectors.map(connector => {*/}
                 {/*  return (*/}
                 {/*    <button*/}

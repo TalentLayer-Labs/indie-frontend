@@ -1,4 +1,5 @@
 import SearchServiceButton from '../Form/SearchServiceButton';
+import ShowUIButton from '../../modules/Magic/ShowUIButton';
 
 function SearchService() {
   return (
@@ -11,6 +12,7 @@ function SearchService() {
           <p className='text-gray-500'>
             Earn money doing what you love. Find a job that fits your skills and schedule.
           </p>
+          <ShowUIButton />
           <SearchServiceButton value={''} />
         </div>
       </div>

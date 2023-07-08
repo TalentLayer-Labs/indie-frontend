@@ -2,7 +2,6 @@ import { createContext, ReactNode, useEffect, useMemo, useState } from 'react';
 import { useAccount } from 'wagmi';
 import { getUserByAddress } from '../queries/users';
 import { IAccount, IUser } from '../types';
-import { config } from '../config';
 
 const TalentLayerContext = createContext<{
   user?: IUser;

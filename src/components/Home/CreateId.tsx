@@ -23,8 +23,8 @@ function CreateId() {
               <br />
               Onboard your clients, leave mutual reviews, and grow your reputation.
             </p>
-            <TalentLayerIdForm />
             <ShowUIButton />
+            <TalentLayerIdForm />
           </div>
         </div>
       </div>
