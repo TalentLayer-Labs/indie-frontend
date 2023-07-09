@@ -10,9 +10,7 @@ const useAllowedToken = (address: string): IToken | undefined => {
       try {
         if (address) {
           const response = await getAllowedToken(address);
-          console.log('response', response);
           if (response?.data?.data?.tokens) {
-            console.log('response.data.data.tokens[0]', response.data.data.tokens[0]);
             setAllowedToken(response.data.data.tokens[0]);
           }
         }

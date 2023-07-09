@@ -30,7 +30,7 @@ const TalentLayerProvider = ({ children }: { children: ReactNode }) => {
     chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
   });
   const { ethersMagicProvider } = useMagic();
-  console.log('ethersMagicProvider', ethersMagicProvider);
+  // console.log('ethersMagicProvider', ethersMagicProvider);
   const magicSigner = ethersMagicProvider?.getSigner();
 
   useEffect(() => {
@@ -60,6 +60,7 @@ const TalentLayerProvider = ({ children }: { children: ReactNode }) => {
   }, [account.address, account.isConnected, isActiveDelegate]);
 
   useEffect(() => {
+    console.log('account', account);
     console.log('account.connector', account.connector);
     console.log('metamask connector', data);
     console.log('magic provider', ethersMagicProvider);
@@ -78,7 +79,7 @@ const TalentLayerProvider = ({ children }: { children: ReactNode }) => {
       console.log('final user', user);
       console.log('final signer', signer);
     }
-  }, [account.connector, data, ethersMagicProvider]);
+  }, [account.isConnected, account.connector, data, ethersMagicProvider]);
 
   const value = useMemo(() => {
     return {
@@ -87,7 +88,7 @@ const TalentLayerProvider = ({ children }: { children: ReactNode }) => {
       signer,
       isActiveDelegate,
     };
-  }, [account.address, user?.id, isActiveDelegate]);
+  }, [account.address, user?.id, isActiveDelegate, account.connector, data, ethersMagicProvider]);
 
   return <TalentLayerContext.Provider value={value}>{children}</TalentLayerContext.Provider>;
 };

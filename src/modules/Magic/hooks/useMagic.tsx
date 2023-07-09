@@ -18,7 +18,6 @@ const useMagic = (): {
     const fetchData = async () => {
       try {
         if (typeof window !== 'undefined') {
-          console.log('useMagic');
           const magicInstance = new Magic(process.env.NEXT_PUBLIC_MAGIC_KEY as string, {
             network: {
               // rpcUrl: 'https://rpc-mumbai.maticvigil.com/',
