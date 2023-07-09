@@ -2,7 +2,7 @@ import MetaEvidenceModal from './MetaEvidenceModal';
 import useEvidences from '../../../hooks/useEvidences';
 import { IProposal, ITransaction } from '../../../types';
 import Evidences from './Evidences';
-import { ethers } from 'ethers';
+import { formatUnits } from 'viem';
 
 function EvidenceDetails({
   transaction,
@@ -35,10 +35,7 @@ function EvidenceDetails({
             proposalData={{
               about: proposal?.description.about,
               expirationDate: proposal.expirationDate,
-              rateAmount: ethers.utils.formatUnits(
-                proposal.rateAmount,
-                proposal.rateToken.decimals,
-              ),
+              rateAmount: formatUnits(proposal.rateAmount, proposal.rateToken.decimals),
               rateToken: proposal.rateToken.address,
               videoUrl: proposal.description.video_url,
             }}

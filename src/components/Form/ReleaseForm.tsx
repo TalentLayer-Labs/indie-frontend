@@ -1,7 +1,6 @@
-import { BigNumber } from 'ethers';
 import { Field, Form, Formik } from 'formik';
 import { useContext, useMemo, useState } from 'react';
-import { useProvider, useSigner } from 'wagmi';
+import { usePublicClient, useWalletClient } from 'wagmi';
 import TalentLayerContext from '../../context/talentLayer';
 import { executePayment } from '../../contracts/executePayment';
 import { IService, IToken, ServiceStatusEnum } from '../../types';
@@ -12,7 +11,7 @@ interface IFormValues {
 }
 
 interface IReleaseFormProps {
-  totalInEscrow: BigNumber;
+  totalInEscrow: bigint;
   rateToken: IToken;
   service: IService;
   isBuyer: boolean;
@@ -27,22 +26,24 @@ function ReleaseForm({
   isBuyer,
 }: IReleaseFormProps) {
   const { user, isActiveDelegate } = useContext(TalentLayerContext);
-  const { data: signer } = useSigner({
+  const { data: walletClient } = useWalletClient({
     chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
   });
-  const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
+  const publicClient = usePublicClient({
+    chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
+  });
   const [percent, setPercentage] = useState(0);
 
   const handleSubmit = async (values: any) => {
-    if (!user || !signer || !provider) {
+    if (!user || !walletClient || !publicClient) {
       return;
     }
     const percentToToken = totalInEscrow.mul(percent).div(100);
 
     await executePayment(
       user.address,
-      signer,
-      provider,
+      walletClient,
+      publicClient,
       user.id,
       service.transaction.id,
       percentToToken,

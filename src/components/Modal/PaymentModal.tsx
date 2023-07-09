@@ -1,5 +1,4 @@
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
-import { ethers } from 'ethers';
 import { useState } from 'react';
 import { renderTokenAmount } from '../../utils/conversion';
 import { IPayment, IService, PaymentTypeEnum, ServiceStatusEnum } from '../../types';
@@ -19,10 +18,10 @@ function PaymentModal({ service, payments, isBuyer }: IPaymentModalProps) {
   const network = useNetwork();
 
   const totalPayments = payments.reduce((acc, payment) => {
-    return acc.add(ethers.BigNumber.from(payment.amount));
-  }, ethers.BigNumber.from('0'));
+    return acc.add(BigInt(payment.amount));
+  }, BigInt('0'));
 
-  const totalInEscrow = ethers.BigNumber.from(rateAmount).sub(totalPayments);
+  const totalInEscrow = BigInt(rateAmount).sub(totalPayments);
 
   return (
     <>

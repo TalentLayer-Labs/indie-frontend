@@ -1,7 +1,7 @@
 import { useContext, useState } from 'react';
 import { XmtpContext } from '../context/XmtpContext';
 import TalentLayerContext from '../../../context/talentLayer';
-import { useSigner } from 'wagmi';
+import { useWalletClient } from 'wagmi';
 import { watchAccount } from '@wagmi/core';
 import ConversationList from './ConversationList';
 import CardHeader from './CardHeader';
@@ -17,10 +17,10 @@ import { ChatMessageStatus, XmtpChatMessage } from '../utils/types';
 
 function Dashboard() {
   const { user } = useContext(TalentLayerContext);
-  const { data: signer } = useSigner({
+  const { data: walletClient } = useWalletClient({
     chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
   });
-  const { providerState, setProviderState } = useContext(XmtpContext);
+  const { publicClientState, setProviderState } = useContext(XmtpContext);
   const [messageContent, setMessageContent] = useState<string>('');
   const router = useRouter();
   const { address } = router.query;
@@ -35,7 +35,7 @@ function Dashboard() {
   const peerUser = useUserByAddress(selectedConversationPeerAddress);
 
   watchAccount(() => {
-    providerState?.disconnect?.();
+    publicClientState?.disconnect?.();
     selectedConversationPeerAddress
       ? router.push(`/messaging/${selectedConversationPeerAddress}`)
       : router.push(`/messaging`);
@@ -45,13 +45,13 @@ function Dashboard() {
   useStreamConversations();
 
   const handleXmtpConnect = async () => {
-    if (providerState && providerState.initClient && signer) {
-      await providerState.initClient(signer);
+    if (publicClientState && publicClientState.initClient && walletClient) {
+      await publicClientState.initClient(walletClient);
     }
   };
 
   const sendNewMessage = async () => {
-    if (user && user.address && messageContent && providerState && setProviderState) {
+    if (user && user.address && messageContent && publicClientState && setProviderState) {
       setSendingPending(true);
       const sentMessage: XmtpChatMessage = {
         from: user.address,
@@ -60,7 +60,7 @@ function Dashboard() {
         timestamp: new Date(),
         status: ChatMessageStatus.PENDING,
       };
-      const cloneState = { ...providerState };
+      const cloneState = { ...publicClientState };
       const allMessages = cloneState.conversationMessages;
       let messages = cloneState.conversationMessages.get(selectedConversationPeerAddress);
       if (messages) {
@@ -79,7 +79,7 @@ function Dashboard() {
       try {
         //Send message
         setProviderState({
-          ...providerState,
+          ...publicClientState,
           conversationMessages: allMessages,
         });
         const response = await sendMessage(messageContent);
@@ -106,7 +106,7 @@ function Dashboard() {
           allMessages.set(selectedConversationPeerAddress, messages);
         }
         setProviderState({
-          ...providerState,
+          ...publicClientState,
           conversationMessages: allMessages,
         });
         setSendingPending(false);
@@ -120,7 +120,7 @@ function Dashboard() {
 
   return (
     <div className='mx-auto text-gray-900 sm:px-4 lg:px-0'>
-      {!providerState?.client && user && (
+      {!publicClientState?.client && user && (
         <button
           type='submit'
           className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
@@ -128,7 +128,7 @@ function Dashboard() {
           Connect to XMTP
         </button>
       )}
-      {providerState?.client && (
+      {publicClientState?.client && (
         <div className='-mx-6 -mt-6'>
           <CardHeader peerAddress={selectedConversationPeerAddress} />
           <div className='flex flex-row'>
@@ -136,40 +136,45 @@ function Dashboard() {
               style={{ overflowAnchor: 'revert' }}
               className='basis-1/4 h-[calc(100vh-128px)] flex-no-wrap flex-none overflow-y-auto border-r'>
               <ConversationList
-                conversationMessages={providerState.conversationMessages}
+                conversationMessages={publicClientState.conversationMessages}
                 selectedConversationPeerAddress={selectedConversationPeerAddress}
-                conversationsLoading={providerState.loadingConversations}
+                conversationsLoading={publicClientState.loadingConversations}
               />
             </div>
-            {providerState?.client && selectedConversationPeerAddress && user?.id && peerUser?.id && (
-              <div className='basis-3/4 w-full pl-5 flex flex-col justify-between h-[calc(100vh-128px)]'>
-                <div className='overflow-y-auto'>
-                  <MessageList
-                    conversationMessages={
-                      providerState.conversationMessages.get(selectedConversationPeerAddress) ?? []
-                    }
-                    selectedConversationPeerAddress={selectedConversationPeerAddress}
-                    userId={user?.id}
-                    peerUserId={peerUser?.id as string}
-                    messagesLoading={providerState.loadingMessages}
-                    sendingPending={sendingPending}
-                    setMessageSendingErrorMsg={setMessageSendingErrorMsg}
-                  />
+            {publicClientState?.client &&
+              selectedConversationPeerAddress &&
+              user?.id &&
+              peerUser?.id && (
+                <div className='basis-3/4 w-full pl-5 flex flex-col justify-between h-[calc(100vh-128px)]'>
+                  <div className='overflow-y-auto'>
+                    <MessageList
+                      conversationMessages={
+                        publicClientState.conversationMessages.get(
+                          selectedConversationPeerAddress,
+                        ) ?? []
+                      }
+                      selectedConversationPeerAddress={selectedConversationPeerAddress}
+                      userId={user?.id}
+                      peerUserId={peerUser?.id as string}
+                      messagesLoading={publicClientState.loadingMessages}
+                      sendingPending={sendingPending}
+                      setMessageSendingErrorMsg={setMessageSendingErrorMsg}
+                    />
+                  </div>
+                  {(!publicClientState.loadingMessages || messageSendingErrorMsg) && (
+                    <MessageComposer
+                      messageContent={messageContent}
+                      setMessageContent={setMessageContent}
+                      sendNewMessage={sendNewMessage}
+                      sendingPending={sendingPending}
+                      peerUserExistsOnXMTP={
+                        messageSendingErrorMsg !== NON_EXISTING_XMTP_USER_ERROR_MESSAGE
+                      }
+                      peerUserExistsOnTalentLayer={!!peerUser}
+                    />
+                  )}
                 </div>
-                {(!providerState.loadingMessages || messageSendingErrorMsg) && (
-                  <MessageComposer
-                    messageContent={messageContent}
-                    setMessageContent={setMessageContent}
-                    sendNewMessage={sendNewMessage}
-                    sendingPending={sendingPending}
-                    peerUserExistsOnXMTP={
-                      messageSendingErrorMsg !== NON_EXISTING_XMTP_USER_ERROR_MESSAGE
-                    }
-                    peerUserExistsOnTalentLayer={!!peerUser}
-                  />
-                )}
-              </div>
-            )}
+              )}
           </div>
           {messageSendingErrorMsg && (
             <div className={'text-center'}>

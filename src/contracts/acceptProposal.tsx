@@ -1,30 +1,29 @@
-import { Provider } from '@wagmi/core';
-import { Contract, ethers, Signer } from 'ethers';
 import { toast } from 'react-toastify';
 import TransactionToast from '../components/TransactionToast';
-import { config } from '../config';
+import { ADDRESS_ZERO, config } from '../config';
 import { showErrorTransactionToast } from '../utils/toast';
 import ERC20 from './ABI/ERC20.json';
 import TalentLayerEscrow from './ABI/TalentLayerEscrow.json';
+import { PublicClient, WalletClient } from 'viem';
 
 export const validateProposal = async (
-  signer: Signer,
-  provider: Provider,
+  walletClient: WalletClient,
+  publicClient: PublicClient,
   serviceId: string,
   proposalId: string,
   rateToken: string,
   cid: string,
   metaEvidenceCid: string,
-  value: ethers.BigNumber,
+  value: bigint,
 ): Promise<void> => {
   const talentLayerEscrow = new Contract(
     config.contracts.talentLayerEscrow,
     TalentLayerEscrow.abi,
-    signer,
+    walletClient,
   );
 
   try {
-    if (rateToken === ethers.constants.AddressZero) {
+    if (rateToken === ADDRESS_ZERO) {
       const tx1 = await talentLayerEscrow.createTransaction(
         parseInt(serviceId, 10),
         parseInt(proposalId, 10),
@@ -35,7 +34,7 @@ export const validateProposal = async (
         },
       );
 
-      const receipt1 = await toast.promise(provider.waitForTransaction(tx1.hash), {
+      const receipt1 = await toast.promise(publicClient.waitForTransaction(tx1.hash), {
         pending: {
           render() {
             return (
@@ -54,21 +53,21 @@ export const validateProposal = async (
       }
     } else {
       // Token transfer approval for escrow contract
-      const ERC20Token = new Contract(rateToken, ERC20.abi, signer);
+      const ERC20Token = new Contract(rateToken, ERC20.abi, walletClient);
 
-      const balance = await ERC20Token.balanceOf(signer.getAddress());
+      const balance = await ERC20Token.balanceOf(walletClient.getAddress());
       if (balance.lt(value)) {
         throw new Error('Insufficient balance');
       }
 
       const allowance = await ERC20Token.allowance(
-        signer.getAddress(),
+        walletClient.getAddress(),
         config.contracts.talentLayerEscrow,
       );
 
       if (allowance.lt(value)) {
         const tx1 = await ERC20Token.approve(config.contracts.talentLayerEscrow, value);
-        const receipt1 = await toast.promise(provider.waitForTransaction(tx1.hash), {
+        const receipt1 = await toast.promise(publicClient.waitForTransaction(tx1.hash), {
           pending: {
             render() {
               return (
@@ -93,7 +92,7 @@ export const validateProposal = async (
         metaEvidenceCid,
         cid,
       );
-      const receipt2 = await toast.promise(provider.waitForTransaction(tx2.hash), {
+      const receipt2 = await toast.promise(publicClient.waitForTransaction(tx2.hash), {
         pending: {
           render() {
             return (

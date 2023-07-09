@@ -2,7 +2,6 @@ import DisputeStatusDetail from './DisputeStatusDetail';
 import { ITransaction, IUser, TransactionStatusEnum } from '../../../types';
 import TimeOutCountDown from '../../../components/TimeoutCountDown';
 import DisputeButton from '../../../components/DisputeButton';
-import { BigNumber } from 'ethers';
 
 function DisputeStatusCard({
   transaction,
@@ -11,7 +10,7 @@ function DisputeStatusCard({
 }: {
   transaction: ITransaction;
   user: IUser;
-  arbitrationFee: BigNumber;
+  arbitrationFee: bigint;
 }) {
   const isSender = (): boolean => {
     return !!user && !!transaction && user.id === transaction.sender.id;

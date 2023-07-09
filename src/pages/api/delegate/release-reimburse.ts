@@ -1,5 +1,4 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { Contract } from 'ethers';
 import { config } from '../../../config';
 import TalentLayerEscrow from '../../../contracts/ABI/TalentLayerEscrow.json';
 import { getDelegationSigner, isPlatformAllowedToDelegate } from '../utils/delegate';
@@ -12,16 +11,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   await isPlatformAllowedToDelegate(userAddress, res);
 
   try {
-    const signer = await getDelegationSigner(res);
+    const walletClient = await getDelegationSigner(res);
 
-    if (!signer) {
+    if (!walletClient) {
       return;
     }
 
     const talentLayerEscrow = new Contract(
       config.contracts.talentLayerEscrow,
       TalentLayerEscrow.abi,
-      signer,
+      walletClient,
     );
 
     let transaction;

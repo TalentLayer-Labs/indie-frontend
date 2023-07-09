@@ -1,16 +1,15 @@
-import { Provider } from '@wagmi/core';
-import { ethers } from 'ethers';
+import { PublicClient } from 'viem';
 import { createMultiStepsTransactionToast, showErrorTransactionToast } from '../utils/toast';
 
 export const toggleDelegation = async (
   user: string,
   DelegateAddress: string,
-  provider: Provider,
+  publicClient: PublicClient,
   validateState: boolean,
-  contract: ethers.Contract,
+  contract: Contract,
 ): Promise<void> => {
   try {
-    let tx: ethers.providers.TransactionResponse;
+    let tx;
     let toastMessages;
     if (validateState === true) {
       tx = await contract.addDelegate(user, DelegateAddress);
@@ -28,7 +27,7 @@ export const toggleDelegation = async (
       };
     }
 
-    await createMultiStepsTransactionToast(toastMessages, provider, tx, 'Delegation');
+    await createMultiStepsTransactionToast(toastMessages, publicClient, tx, 'Delegation');
   } catch (error) {
     showErrorTransactionToast(error);
   }

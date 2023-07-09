@@ -6,9 +6,9 @@ import { buildConversationId } from '../utils/messaging';
 import { DecodedMessage } from '@xmtp/xmtp-js';
 
 const useSendMessage = (peerAddress: string, senderId: string | undefined) => {
-  const { providerState } = useContext(XmtpContext);
+  const { publicClientState } = useContext(XmtpContext);
   const peerUser = useUserByAddress(peerAddress);
-  const { client } = providerState || {};
+  const { client } = publicClientState || {};
 
   const sendMessage = async (message: string): Promise<DecodedMessage> => {
     if (!client || !peerAddress || !peerUser?.id || !senderId) {

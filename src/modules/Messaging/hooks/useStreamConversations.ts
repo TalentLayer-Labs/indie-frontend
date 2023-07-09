@@ -1,27 +1,28 @@
 import { useState, useEffect, useContext } from 'react';
 import { XmtpContext } from '../context/XmtpContext';
-import { useSigner } from 'wagmi';
+import { useWalletClient } from 'wagmi';
 import { Conversation, Stream } from '@xmtp/xmtp-js';
 import { buildChatMessage, CONVERSATION_PREFIX } from '../utils/messaging';
 
 const useStreamConversations = () => {
-  const { data: signer } = useSigner({
+  const { data: walletClient } = useWalletClient({
     chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
   });
-  const { providerState, setProviderState } = useContext(XmtpContext);
+  const { publicClientState, setProviderState } = useContext(XmtpContext);
   const [stream, setStream] = useState<Stream<Conversation> | undefined>();
 
   useEffect(() => {
-    if (!providerState?.conversations || !providerState?.client || !setProviderState) return;
+    if (!publicClientState?.conversations || !publicClientState?.client || !setProviderState)
+      return;
 
     const streamConversations = async () => {
-      const newStream = await providerState.client?.conversations.stream();
+      const newStream = await publicClientState.client?.conversations.stream();
       if (!newStream) return;
       // /!\ in ex was set to 'stream' instead of 'newStream'
       setStream(newStream);
       for await (const conversation of newStream) {
         if (
-          conversation.peerAddress !== (await signer?.getAddress()) &&
+          conversation.peerAddress !== (await walletClient?.getAddress()) &&
           conversation.context?.conversationId.startsWith(CONVERSATION_PREFIX)
         ) {
           //If a new conversation is detected, we get its messages
@@ -29,12 +30,12 @@ const useStreamConversations = () => {
           const chatMessages = messages.map(msg => {
             return buildChatMessage(msg);
           });
-          providerState.conversationMessages.set(conversation.peerAddress, chatMessages);
-          providerState.conversations.set(conversation.peerAddress, conversation);
+          publicClientState.conversationMessages.set(conversation.peerAddress, chatMessages);
+          publicClientState.conversations.set(conversation.peerAddress, conversation);
           setProviderState({
-            ...providerState,
-            conversationMessages: providerState.conversationMessages,
-            conversations: providerState.conversations,
+            ...publicClientState,
+            conversationMessages: publicClientState.conversationMessages,
+            conversations: publicClientState.conversations,
           });
         }
       }
@@ -49,7 +50,7 @@ const useStreamConversations = () => {
       };
       closeStream();
     };
-  }, [providerState?.conversations]);
+  }, [publicClientState?.conversations]);
 };
 
 export default useStreamConversations;

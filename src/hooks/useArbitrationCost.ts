@@ -1,22 +1,22 @@
 import { useState, useEffect } from 'react';
-import { BigNumber, Contract, ethers } from 'ethers';
 import TalentLayerArbitrator from '../contracts/ABI/TalentLayerArbitrator.json';
-import { useSigner } from 'wagmi';
+import { useWalletClient } from 'wagmi';
+import { ADDRESS_ZERO } from '../config';
 
-const useArbitrationCost = (arbitratorAddress: string | undefined): BigNumber | null => {
-  const [arbitrationCost, setArbitrationCost] = useState<BigNumber | null>(null);
-  const { data: signer } = useSigner({
+const useArbitrationCost = (arbitratorAddress: string | undefined): bigint | null => {
+  const [arbitrationCost, setArbitrationCost] = useState<bigint | null>(null);
+  const { data: walletClient } = useWalletClient({
     chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
   });
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        if (signer && arbitratorAddress && arbitratorAddress !== ethers.constants.AddressZero) {
+        if (walletClient && arbitratorAddress && arbitratorAddress !== ADDRESS_ZERO) {
           const talentLayerArbitrator = new Contract(
             arbitratorAddress,
             TalentLayerArbitrator.abi,
-            signer,
+            walletClient,
           );
           const response = await talentLayerArbitrator.arbitrationPrice(
             process.env.NEXT_PUBLIC_PLATFORM_ID,

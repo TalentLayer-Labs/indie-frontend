@@ -1,24 +1,23 @@
-import { Provider } from '@wagmi/core';
-import { BigNumber, Contract, Signer, ethers } from 'ethers';
 import { toast } from 'react-toastify';
 import TransactionToast from '../components/TransactionToast';
 import { config } from '../config';
 import TalentLayerEscrow from './ABI/TalentLayerEscrow.json';
 import { showErrorTransactionToast } from '../utils/toast';
 import { delegateReleaseOrReimburse } from '../components/request';
+import { PublicClient, WalletClient } from 'viem';
 
 export const executePayment = async (
   userAddress: string,
-  signer: Signer,
-  provider: Provider,
+  walletClient: WalletClient,
+  publicClient: PublicClient,
   profileId: string,
   transactionId: string,
-  amount: BigNumber,
+  amount: bigint,
   isBuyer: boolean,
   isActiveDelegate: boolean,
 ): Promise<void> => {
   try {
-    let tx: ethers.providers.TransactionResponse;
+    let tx;
 
     if (isActiveDelegate) {
       const response = await delegateReleaseOrReimburse(
@@ -33,7 +32,7 @@ export const executePayment = async (
       const talentLayerEscrow = new Contract(
         config.contracts.talentLayerEscrow,
         TalentLayerEscrow.abi,
-        signer,
+        walletClient,
       );
       tx = isBuyer
         ? await talentLayerEscrow.release(profileId, parseInt(transactionId, 10), amount.toString())
@@ -48,7 +47,7 @@ export const executePayment = async (
       ? 'Your payment release is in progress'
       : 'Your payment reimbursement is in progress';
 
-    const receipt = await toast.promise(provider.waitForTransaction(tx.hash), {
+    const receipt = await toast.promise(publicClient.waitForTransaction(tx.hash), {
       pending: {
         render() {
           return <TransactionToast message={message} transactionHash={tx.hash} />;

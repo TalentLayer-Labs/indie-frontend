@@ -1,41 +1,25 @@
-import { Contract } from '@ethersproject/contracts';
-import { ExternalProvider, JsonRpcFetchFunc, Web3Provider } from '@ethersproject/providers';
-import { BigNumber, ethers, FixedNumber } from 'ethers';
 import { ITokenFormattedValues } from '../types';
-
-export default function getLibrary(provider: ExternalProvider | JsonRpcFetchFunc): Web3Provider {
-  const library = new Web3Provider(provider);
-  library.pollingInterval = 8000;
-  return library;
-}
-
-const getDecimal = async (erc20Token: Contract): Promise<string> => {
-  if (!sessionStorage[erc20Token.address]) {
-    const tokenDecimals = await erc20Token.decimals();
-    sessionStorage[erc20Token.address] = tokenDecimals;
-    return tokenDecimals;
-  }
-  return JSON.parse(sessionStorage[erc20Token.address]);
-};
+import { ADDRESS_ZERO } from '../config';
+import { formatEther, formatUnits, parseEther, parseUnits } from 'viem';
 
 export const parseRateAmount = async (
   rateAmount: string,
   rateToken: string,
   decimals?: number,
-): Promise<BigNumber> => {
-  if (rateToken === ethers.constants.AddressZero) {
-    return ethers.utils.parseEther(rateAmount);
+): Promise<bigint> => {
+  if (rateToken === ADDRESS_ZERO) {
+    return parseEther(rateAmount);
   }
-  return ethers.utils.parseUnits(rateAmount, decimals);
+  return parseUnits(rateAmount, decimals || 18);
 };
 
 export const formatRateAmount = (
-  rateAmount: string,
+  rateAmount: bigint,
   rateToken: string,
   tokenDecimals: number,
 ): ITokenFormattedValues => {
-  if (rateToken === ethers.constants.AddressZero) {
-    const valueInEther = ethers.utils.formatEther(rateAmount);
+  if (rateToken === ADDRESS_ZERO) {
+    const valueInEther = formatEther(rateAmount);
     const roundedValue = FixedNumber.from(valueInEther).round(2).toString();
     const exactValue = FixedNumber.from(valueInEther).toString();
     return {
@@ -43,7 +27,7 @@ export const formatRateAmount = (
       exactValue,
     };
   }
-  const valueInToken = ethers.utils.formatUnits(rateAmount, tokenDecimals);
+  const valueInToken = formatUnits(rateAmount, tokenDecimals);
   const roundedValue = FixedNumber.from(valueInToken).round(2).toString();
   const exactValue = FixedNumber.from(valueInToken).toString();
   return {

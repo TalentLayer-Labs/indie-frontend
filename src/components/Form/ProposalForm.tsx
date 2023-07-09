@@ -1,7 +1,6 @@
-import { ethers, FixedNumber } from 'ethers';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import { useRouter } from 'next/router';
-import { useProvider, useSigner } from 'wagmi';
+import { usePublicClient, useWalletClient } from 'wagmi';
 import * as Yup from 'yup';
 import { config } from '../../config';
 import ServiceRegistry from '../../contracts/ABI/TalentLayerService.json';
@@ -18,6 +17,7 @@ import { useContext } from 'react';
 import TalentLayerContext from '../../context/talentLayer';
 import { useState } from 'react';
 import MetaEvidenceModal from '../../modules/Disputes/components/MetaEvidenceModal';
+import { formatUnits } from 'viem';
 
 interface IFormValues {
   about: string;
@@ -43,8 +43,10 @@ function ProposalForm({
   service: IService;
   existingProposal?: IProposal;
 }) {
-  const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
-  const { data: signer } = useSigner({
+  const publicClient = usePublicClient({
+    chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
+  });
+  const { data: walletClient } = useWalletClient({
     chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
   });
   const router = useRouter();
@@ -68,7 +70,7 @@ function ProposalForm({
     );
 
     existingRateTokenAmount = FixedNumber.from(
-      ethers.utils.formatUnits(existingProposal.rateAmount, token?.decimals),
+      formatUnits(existingProposal.rateAmount, token?.decimals),
     ).toUnsafeFloat();
   }
 
@@ -88,7 +90,7 @@ function ProposalForm({
     }: { setSubmitting: (isSubmitting: boolean) => void; resetForm: () => void },
   ) => {
     const token = allowedTokenList.find(token => token.address === values.rateToken);
-    if (provider && signer && token) {
+    if (publicClient && walletClient && token) {
       try {
         const parsedRateAmount = await parseRateAmount(
           values.rateAmount.toString(),
@@ -133,7 +135,7 @@ function ProposalForm({
           const contract = new ethers.Contract(
             config.contracts.serviceRegistry,
             ServiceRegistry.abi,
-            signer,
+            walletClient,
           );
           tx = existingProposal
             ? await contract.updateProposal(
@@ -162,7 +164,7 @@ function ProposalForm({
             success: 'Congrats! Your proposal has been added',
             error: 'An error occurred while creating your proposal',
           },
-          provider,
+          publicClient,
           tx,
           'proposal',
           cid,

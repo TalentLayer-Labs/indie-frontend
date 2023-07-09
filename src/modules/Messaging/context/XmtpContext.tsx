@@ -1,7 +1,6 @@
 import React, { createContext, ReactNode, useEffect, useMemo, useState } from 'react';
 import { Client, Conversation, DecodedMessage } from '@xmtp/xmtp-js';
-import { Signer } from 'ethers';
-import { useAccount, useSigner } from 'wagmi';
+import { useAccount, useWalletClient } from 'wagmi';
 import { buildChatMessage, CONVERSATION_PREFIX } from '../utils/messaging';
 import { XmtpChatMessage } from '../utils/types';
 
@@ -19,20 +18,20 @@ interface IProviderProps {
 }
 
 export const XmtpContext = createContext<{
-  providerState?: IProviderProps;
+  publicClientState?: IProviderProps;
   setProviderState?: React.Dispatch<React.SetStateAction<IProviderProps>>;
 }>({
-  providerState: undefined,
+  publicClientState: undefined,
   setProviderState: undefined,
 });
 
 export const XmtpContextProvider = ({ children }: { children: ReactNode }) => {
-  const { data: signer } = useSigner({
+  const { data: walletClient } = useWalletClient({
     chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
   });
   const { address: walletAddress } = useAccount();
 
-  const [providerState, setProviderState] = useState<IProviderProps>({
+  const [publicClientState, setProviderState] = useState<IProviderProps>({
     client: undefined,
     initClient: undefined,
     loadingConversations: false,
@@ -45,7 +44,7 @@ export const XmtpContextProvider = ({ children }: { children: ReactNode }) => {
 
   const disconnect = (): void => {
     setProviderState({
-      ...providerState,
+      ...publicClientState,
       client: undefined,
       conversations: new Map(),
       conversationMessages: new Map(),
@@ -54,10 +53,10 @@ export const XmtpContextProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const initClient = async (wallet: Signer) => {
-    console.log('initClient w signer: ', wallet);
-    if (wallet && !providerState.client && signer) {
+    console.log('initClient w walletClient: ', wallet);
+    if (wallet && !publicClientState.client && walletClient) {
       try {
-        const keys = await Client.getKeys(signer, {
+        const keys = await Client.getKeys(walletClient, {
           env: process.env.NEXT_PUBLIC_MESSENGING_ENV as clientEnv,
         });
         const client = await Client.create(null, {
@@ -65,7 +64,7 @@ export const XmtpContextProvider = ({ children }: { children: ReactNode }) => {
           privateKeyOverride: keys,
         });
         setProviderState({
-          ...providerState,
+          ...publicClientState,
           client,
           disconnect,
           userExists: !!keys,
@@ -79,22 +78,22 @@ export const XmtpContextProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     const checkUserExistence = async (): Promise<void> => {
-      if (signer) {
+      if (walletClient) {
         const userExists = await Client.canMessage(walletAddress as string, {
           env: process.env.NEXT_PUBLIC_MESSENGING_ENV as clientEnv,
         });
-        setProviderState({ ...providerState, userExists, initClient });
+        setProviderState({ ...publicClientState, userExists, initClient });
       }
     };
     checkUserExistence();
-  }, [signer]);
+  }, [walletClient]);
 
   useEffect(() => {
-    if (!providerState.client) return;
+    if (!publicClientState.client) return;
 
     const listConversations = async (): Promise<void> => {
-      setProviderState({ ...providerState, loadingConversations: true, loadingMessages: true });
-      const { client, conversationMessages, conversations } = providerState;
+      setProviderState({ ...publicClientState, loadingConversations: true, loadingMessages: true });
+      const { client, conversationMessages, conversations } = publicClientState;
       if (client) {
         let conv: Conversation[] = [];
         try {
@@ -104,7 +103,7 @@ export const XmtpContextProvider = ({ children }: { children: ReactNode }) => {
         } catch (e: any) {
           console.log('Error listing conversations - ', e);
         } finally {
-          setProviderState({ ...providerState, loadingConversations: false });
+          setProviderState({ ...publicClientState, loadingConversations: false });
         }
 
         Promise.all(
@@ -126,26 +125,26 @@ export const XmtpContextProvider = ({ children }: { children: ReactNode }) => {
                 conversations.set(conversation.peerAddress, conversation);
               }
               setProviderState({
-                ...providerState,
+                ...publicClientState,
                 conversationMessages,
                 conversations,
               });
             }
           }),
         ).then(() => {
-          setProviderState({ ...providerState, loadingMessages: false });
+          setProviderState({ ...publicClientState, loadingMessages: false });
         });
       }
     };
     listConversations();
-  }, [providerState.client]);
+  }, [publicClientState.client]);
 
   const value = useMemo(() => {
     return {
-      providerState,
+      publicClientState,
       setProviderState,
     };
-  }, [signer, providerState]);
+  }, [walletClient, publicClientState]);
 
   return <XmtpContext.Provider value={value}>{children}</XmtpContext.Provider>;
 };

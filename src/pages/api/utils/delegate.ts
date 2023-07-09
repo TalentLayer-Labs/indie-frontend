@@ -1,6 +1,6 @@
 import { NextApiResponse } from 'next';
-import { ethers, Wallet } from 'ethers';
 import { getUserByAddress } from '../../../queries/users';
+import { createPublicClient } from 'viem';
 
 export async function isPlatformAllowedToDelegate(
   userAddress: string,
@@ -22,7 +22,7 @@ export async function isPlatformAllowedToDelegate(
 }
 
 export async function getDelegationSigner(res: NextApiResponse): Promise<Wallet | null> {
-  const provider = new ethers.providers.JsonRpcProvider(process.env.NEXT_PUBLIC_BACKEND_RPC_URL);
+  const publicClient = createPublicClient({ transport: process.env.NEXT_PUBLIC_BACKEND_RPC_URL });
   const delegateSeedPhrase = process.env.NEXT_PRIVATE_DELEGATE_SEED_PHRASE;
 
   if (!delegateSeedPhrase) {
@@ -30,7 +30,7 @@ export async function getDelegationSigner(res: NextApiResponse): Promise<Wallet 
     return null;
   }
 
-  const signer = Wallet.fromMnemonic(delegateSeedPhrase).connect(provider);
+  const walletClient = Wallet.fromMnemonic(delegateSeedPhrase).connect(publicClient);
 
-  return signer;
+  return walletClient;
 }

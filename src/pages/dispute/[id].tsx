@@ -8,10 +8,10 @@ import { TransactionStatusEnum } from '../../types';
 import useTransactionsById from '../../hooks/useTransactionsById';
 import DisputeButton from '../../components/DisputeButton';
 import useArbitrationCost from '../../hooks/useArbitrationCost';
-import { ethers } from 'ethers';
 import Steps from '../../components/Steps';
 import DisputeStatusCard from '../../modules/Disputes/components/DisputeStatusCard';
 import EvidenceDetails from '../../modules/Disputes/components/EvidenceDetails';
+import { ADDRESS_ZERO } from '../../config';
 
 function Dispute() {
   const router = useRouter();
@@ -41,7 +41,7 @@ function Dispute() {
         </div>
       ) : account?.isConnected &&
         transaction &&
-        (!transaction?.arbitrator || transaction?.arbitrator === ethers.constants.AddressZero) ? (
+        (!transaction?.arbitrator || transaction?.arbitrator === ADDRESS_ZERO) ? (
         <div className={'p-8'}>
           <h2 className='mb-2 text-xl text-gray-900'>
             Your platform has not implemented an arbitrator, you cannot raise a dispute yet :(

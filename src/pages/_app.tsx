@@ -6,7 +6,6 @@ import type { AppProps } from 'next/app';
 import { GoogleAnalytics } from 'nextjs-google-analytics';
 import { ToastContainer } from 'react-toastify';
 import { Chain, WagmiConfig, configureChains, createClient } from 'wagmi';
-import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
 import { customChains } from '../chains';
 import { TalentLayerProvider } from '../context/talentLayer';
 import { MessagingProvider } from '../modules/Messaging/context/messging';
@@ -19,7 +18,7 @@ import { useEffect } from 'react';
 const chains: Chain[] = [customChains.polygonMumbai];
 
 // Wagmi client
-const { provider } = configureChains(chains, [
+const { publicClient } = configureChains(chains, [
   jsonRpcProvider({
     rpc: chain => {
       return { http: chain.rpcUrls.default };
@@ -29,7 +28,7 @@ const { provider } = configureChains(chains, [
 const wagmiClient = createClient({
   autoConnect: false,
   connectors: modalConnectors({ appName: 'web3Modal', chains }),
-  provider,
+  publicClient,
 });
 
 // Web3Modal Ethereum Client

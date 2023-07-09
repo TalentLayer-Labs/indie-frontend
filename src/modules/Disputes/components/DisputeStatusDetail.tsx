@@ -1,13 +1,12 @@
 import { ITransaction } from '../../../types';
 import { formatRateAmount } from '../../../utils/web3';
-import { BigNumber } from 'ethers';
 
 function DisputeStatusDetail({
   transaction,
   arbitrationFee,
 }: {
   transaction: ITransaction;
-  arbitrationFee: BigNumber | null;
+  arbitrationFee: bigint | null;
 }) {
   return (
     <div>

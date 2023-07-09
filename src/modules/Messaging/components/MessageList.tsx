@@ -25,7 +25,7 @@ const MessageList = ({
   sendingPending,
   setMessageSendingErrorMsg,
 }: IMessageListProps) => {
-  const { providerState } = useContext(XmtpContext);
+  const { publicClientState } = useContext(XmtpContext);
   //We only listen to the active selected conversation
   useStreamMessages(selectedConversationPeerAddress, userId, peerUserId, setMessageSendingErrorMsg);
   let lastMessageDate: Date | undefined;
@@ -33,7 +33,7 @@ const MessageList = ({
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [sendingPending, conversationMessages, bottomRef, providerState]);
+  }, [sendingPending, conversationMessages, bottomRef, publicClientState]);
 
   return (
     <div className='flex flex-col mt-5'>

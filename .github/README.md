@@ -24,7 +24,7 @@ View a video demo of the Indie Frontend [here](https://youtu.be/8Y6E282Nwtc).
 - [ReactJS](https://reactjs.org)
 - [TypeScript](https://www.typescriptlang.org)
 - [TailwindCSS](https://tailwindcss.com)
-- [Ethers.js](https://docs.ethers.io/v5)
+- [Viem](https://viem.sh/docs/getting-started.html)
 - [Wagmi](https://wagmi.sh)
 - [WalletConnect - Web3Modal](https://github.com/WalletConnect/web3modal/blob/V2/docs/react.md)
 - [Heroicons](https://heroicons.com/)

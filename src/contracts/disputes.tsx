@@ -1,31 +1,34 @@
-import { BigNumber, Contract, ethers, Signer } from 'ethers';
-import { Provider } from '@wagmi/core';
 import { config } from '../config';
 import TalentLayerEscrow from './ABI/TalentLayerEscrow.json';
 import { toast } from 'react-toastify';
 import TransactionToast from '../components/TransactionToast';
 import { NextRouter } from 'next/router';
 import { createMultiStepsTransactionToast } from '../utils/toast';
+import { PublicClient, WalletClient } from 'viem';
 
-export const getEscrowContract = (signer: Signer): Contract => {
-  return new ethers.Contract(config.contracts.talentLayerEscrow, TalentLayerEscrow.abi, signer);
+export const getEscrowContract = (walletClient: WalletClient): Contract => {
+  return new ethers.Contract(
+    config.contracts.talentLayerEscrow,
+    TalentLayerEscrow.abi,
+    walletClient,
+  );
 };
 
 export const payArbitrationFee = async (
-  signer: Signer,
-  provider: Provider,
-  arbitrationFee: BigNumber,
+  walletClient: WalletClient,
+  publicClient: PublicClient,
+  arbitrationFee: bigint,
   isSender: boolean,
   transactionId: string,
   router: NextRouter,
 ) => {
-  if (signer) {
-    const contract = getEscrowContract(signer);
+  if (walletClient) {
+    const contract = getEscrowContract(walletClient);
     try {
       const tx = isSender
         ? await contract.payArbitrationFeeBySender(transactionId, { value: arbitrationFee })
         : await contract.payArbitrationFeeByReceiver(transactionId, { value: arbitrationFee });
-      const receipt = await toast.promise(provider.waitForTransaction(tx.hash), {
+      const receipt = await toast.promise(publicClient.waitForTransaction(tx.hash), {
         pending: {
           render() {
             return (
@@ -46,16 +49,16 @@ export const payArbitrationFee = async (
   }
 };
 export const arbitrationFeeTimeout = async (
-  signer: Signer,
-  provider: Provider,
+  walletClient: WalletClient,
+  publicClient: Provider,
   transactionId: string,
   router: NextRouter,
 ) => {
-  if (signer) {
-    const contract = getEscrowContract(signer);
+  if (walletClient) {
+    const contract = getEscrowContract(walletClient);
     try {
       const tx = await contract.arbitrationFeeTimeout(transactionId);
-      const receipt = await toast.promise(provider.waitForTransaction(tx.hash), {
+      const receipt = await toast.promise(publicClient.waitForTransaction(tx.hash), {
         pending: {
           render() {
             return <TransactionToast message={'Calling timeout...'} transactionHash={tx.hash} />;
@@ -75,13 +78,13 @@ export const arbitrationFeeTimeout = async (
 };
 
 export const submitEvidence = async (
-  signer: Signer,
-  provider: Provider,
+  walletClient: WalletClient,
+  publicClient: Provider,
   userId: string,
   transactionId: string,
   evidenceCid: string,
 ) => {
-  const contract = getEscrowContract(signer);
+  const contract = getEscrowContract(walletClient);
   const tx = await contract.submitEvidence(userId, transactionId, evidenceCid);
   await createMultiStepsTransactionToast(
     {
@@ -89,7 +92,7 @@ export const submitEvidence = async (
       success: 'Your evidence has been submitted',
       error: 'Your evidence has been submitted',
     },
-    provider,
+    publicClient,
     tx,
     'evidence',
     evidenceCid,

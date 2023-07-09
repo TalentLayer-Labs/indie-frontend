@@ -1,4 +1,3 @@
-import { ethers } from 'ethers';
 import { IToken, NetworkEnum } from './types';
 
 export type Config = {
@@ -14,6 +13,7 @@ export const maxDecimals = {
 };
 
 export const FEE_RATE_DIVIDER = 10_000;
+export const ADDRESS_ZERO = '0x0000000000000000000000000000000000000000';
 
 const goerli: Config = {
   networkId: NetworkEnum.GOERLI,
@@ -29,8 +29,8 @@ const goerli: Config = {
     timeoutPayment: 3600 * 24 * 7,
   },
   tokens: {
-    [ethers.constants.AddressZero]: {
-      address: ethers.constants.AddressZero,
+    [ADDRESS_ZERO]: {
+      address: ADDRESS_ZERO,
       symbol: 'ETH',
       name: 'ETH',
       decimals: 18,
@@ -56,37 +56,6 @@ const goerli: Config = {
   },
 };
 
-const fuji: Config = {
-  networkId: NetworkEnum.FUJI,
-  subgraphUrl: 'https://api.thegraph.com/subgraphs/name/talentlayer/talent-layer-fuji',
-  contracts: {
-    talentLayerId: '0x9a76eA2C056B6Bee5A1179BBece77D28FceE48C4',
-    serviceRegistry: '0x9EA2678d5A69CEDEc52ecafA367659b1d2Ff7824',
-    talentLayerReview: '0xD8c4fD1D8Dd2f3a6E4d26BeB167e73D9E28db7F0',
-    talentLayerEscrow: '0x8754a129D3F53222dd94Ce45749134c15C9Ed119',
-    talentLayerPlatformId: '0x8799479a39b6e563969126328e2323cbA01e8742',
-  },
-  escrowConfig: {
-    adminFee: '0',
-    adminWallet: '0x96573C632c88996711de69389b501F4D9005Ff4e',
-    timeoutPayment: 3600 * 24 * 7,
-  },
-  tokens: {
-    [ethers.constants.AddressZero]: {
-      address: ethers.constants.AddressZero,
-      symbol: 'AVAX',
-      name: 'Avalanche',
-      decimals: 18,
-    },
-    '0xAF82969ECF299c1f1Bb5e1D12dDAcc9027431160': {
-      address: '0xAF82969ECF299c1f1Bb5e1D12dDAcc9027431160',
-      symbol: 'USDC',
-      name: 'USDC Stablecoin',
-      decimals: 6,
-    },
-  },
-};
-
 const mumbai: Config = {
   networkId: NetworkEnum.MUMBAI,
   subgraphUrl: 'https://api.thegraph.com/subgraphs/name/talentlayer/talent-layer-mumbai',
@@ -104,8 +73,8 @@ const mumbai: Config = {
     timeoutPayment: 3600 * 24 * 7,
   },
   tokens: {
-    [ethers.constants.AddressZero]: {
-      address: ethers.constants.AddressZero,
+    [ADDRESS_ZERO]: {
+      address: ADDRESS_ZERO,
       symbol: 'MATIC',
       name: 'Matic',
       decimals: 18,
@@ -133,8 +102,8 @@ const local: Config = {
     timeoutPayment: 3600 * 24 * 7,
   },
   tokens: {
-    [ethers.constants.AddressZero]: {
-      address: ethers.constants.AddressZero,
+    [ADDRESS_ZERO]: {
+      address: ADDRESS_ZERO,
       symbol: 'ETH',
       name: 'ETH',
       decimals: 18,

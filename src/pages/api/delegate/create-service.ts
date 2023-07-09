@@ -1,5 +1,4 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { Contract } from 'ethers';
 import { config } from '../../../config';
 import TalentLayerService from '../../../contracts/ABI/TalentLayerService.json';
 import { getServiceSignature } from '../../../utils/signature';
@@ -12,8 +11,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   await isPlatformAllowedToDelegate(userAddress, res);
 
   try {
-    const signer = await getDelegationSigner(res);
-    if (!signer) {
+    const walletClient = await getDelegationSigner(res);
+    if (!walletClient) {
       return;
     }
 
@@ -21,7 +20,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const serviceRegistryContract = new Contract(
       config.contracts.serviceRegistry,
       TalentLayerService.abi,
-      signer,
+      walletClient,
     );
 
     const transaction = await serviceRegistryContract.createService(

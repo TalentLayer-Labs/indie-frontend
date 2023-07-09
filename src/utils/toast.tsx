@@ -1,10 +1,10 @@
 import { getParsedEthersError, RETURN_VALUE_ERROR_CODES } from '@enzoferey/ethers-error-parser';
 import { EthersError } from '@enzoferey/ethers-error-parser/dist/types';
-import { Provider } from '@wagmi/core';
-import { Transaction } from 'ethers';
 import { toast } from 'react-toastify';
 import MultiStepsTransactionToast from '../components/MultiStepsTransactionToast';
 import { graphIsSynced, graphUserIsSynced } from '../queries/global';
+import { PublicClient, Transaction } from 'viem';
+import { waitForTransaction } from '@wagmi/core';
 
 interface IMessages {
   pending: string;
@@ -14,7 +14,7 @@ interface IMessages {
 
 export const createMultiStepsTransactionToast = async (
   messages: IMessages,
-  provider: Provider,
+  publicClient: PublicClient,
   tx: Transaction,
   entity: string,
   newUri?: string,
@@ -31,7 +31,7 @@ export const createMultiStepsTransactionToast = async (
 
   let receipt;
   try {
-    receipt = await provider.waitForTransaction(tx.hash as string);
+    receipt = await waitForTransaction({ hash: tx.hash as `0x${string}` });
     currentStep = 2;
     toast.update(toastId, {
       render: (
@@ -96,7 +96,7 @@ export const showErrorTransactionToast = (error: any) => {
 
 export const createTalentLayerIdTransactionToast = async (
   messages: IMessages,
-  provider: Provider,
+  publicClient: PublicClient,
   tx: Transaction,
   address: string,
 ): Promise<number | undefined> => {
@@ -112,7 +112,7 @@ export const createTalentLayerIdTransactionToast = async (
 
   let receipt;
   try {
-    receipt = await provider.waitForTransaction(tx.hash as string);
+    receipt = await waitForTransaction({ hash: tx.hash as `0x${string}` });
     currentStep = 2;
     toast.update(toastId, {
       render: (

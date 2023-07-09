@@ -1,9 +1,8 @@
 import { useWeb3Modal } from '@web3modal/react';
-import { ethers } from 'ethers';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import { useContext } from 'react';
 import { useRouter } from 'next/router';
-import { useProvider, useSigner } from 'wagmi';
+import { usePublicClient, useWalletClient } from 'wagmi';
 import * as Yup from 'yup';
 import { config } from '../../config';
 import TalentLayerContext from '../../context/talentLayer';
@@ -25,13 +24,15 @@ const initialValues: IFormValues = {
 function TalentLayerIdForm() {
   const { open: openConnectModal } = useWeb3Modal();
   const { user, account } = useContext(TalentLayerContext);
-  const { data: signer } = useSigner({
+  const { data: walletClient } = useWalletClient({
     chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
   });
 
-  const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
+  const publicClient = usePublicClient({
+    chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
+  });
   const router = useRouter();
-  let tx: ethers.providers.TransactionResponse;
+  let tx;
 
   const validationSchema = Yup.object().shape({
     handle: Yup.string()
@@ -48,12 +49,12 @@ function TalentLayerIdForm() {
     submittedValues: IFormValues,
     { setSubmitting }: { setSubmitting: (isSubmitting: boolean) => void },
   ) => {
-    if (account && account.address && account.isConnected && provider && signer) {
+    if (account && account.address && account.isConnected && publicClient && walletClient) {
       try {
         const contract = new ethers.Contract(
           config.contracts.talentLayerId,
           TalentLayerID.abi,
-          signer,
+          walletClient,
         );
 
         const handlePrice = await contract.getHandlePrice(submittedValues.handle);
@@ -77,7 +78,7 @@ function TalentLayerIdForm() {
             success: 'Congrats! Your Talent Layer Id is minted',
             error: 'An error occurred while creating your Talent Layer Id',
           },
-          provider,
+          publicClient,
           tx,
           account.address,
         );

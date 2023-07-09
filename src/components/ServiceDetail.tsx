@@ -16,7 +16,7 @@ import ReviewItem from './ReviewItem';
 import ServiceStatus from './ServiceStatus';
 import Stars from './Stars';
 import { useRouter } from 'next/router';
-import { ethers } from 'ethers';
+import { ADDRESS_ZERO } from '../config';
 
 function ServiceDetail({ service }: { service: IService }) {
   const { account, user } = useContext(TalentLayerContext);
@@ -149,7 +149,7 @@ function ServiceDetail({ service }: { service: IService }) {
                 {account &&
                   service.status !== ServiceStatusEnum.Opened &&
                   validatedProposal &&
-                  service.transaction.arbitrator !== ethers.constants.AddressZero && (
+                  service.transaction.arbitrator !== ADDRESS_ZERO && (
                     <button
                       onClick={() => push(`/dispute/${validatedProposal.id}`)}
                       className='block hover:text-white rounded-lg px-5 py-2.5 text-center text-red-600 bg-red-50 hover:bg-red-500'

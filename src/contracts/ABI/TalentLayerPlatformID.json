@@ -420,7 +420,7 @@
         {
           "indexed": false,
           "internalType": "address",
-          "name": "signer",
+          "name": "walletClient",
           "type": "address"
         }
       ],
@@ -680,7 +680,7 @@
             },
             {
               "internalType": "address",
-              "name": "signer",
+              "name": "walletClient",
               "type": "address"
             }
           ],
@@ -1068,7 +1068,7 @@
         },
         {
           "internalType": "address",
-          "name": "signer",
+          "name": "walletClient",
           "type": "address"
         }
       ],
@@ -1491,7 +1491,7 @@
         },
         {
           "internalType": "address",
-          "name": "_signer",
+          "name": "_walletClient",
           "type": "address"
         }
       ],

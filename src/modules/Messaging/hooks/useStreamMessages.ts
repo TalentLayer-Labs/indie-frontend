@@ -15,13 +15,13 @@ const useStreamMessages = (
   setMessageSendingErrorMsg: React.Dispatch<React.SetStateAction<string>>,
 ) => {
   const { account } = useContext(TalentLayerContext);
-  const { providerState, setProviderState } = useContext(XmtpContext);
+  const { publicClientState, setProviderState } = useContext(XmtpContext);
   const [stream, setStream] = useState<Stream<DecodedMessage>>();
   const [conversation, setConversation] = useState<Conversation>();
 
   useEffect(() => {
     const getConversation = async () => {
-      if (!providerState?.client || !peerAddress) return;
+      if (!publicClientState?.client || !peerAddress) return;
       const conversationId = buildConversationId(peerUserId, userId);
 
       //Could add a context to define the linked job
@@ -30,7 +30,7 @@ const useStreamMessages = (
         metadata: { ['domain']: 'TalentLayer' },
       };
       try {
-        const conversation = await providerState.client.conversations.newConversation(
+        const conversation = await publicClientState.client.conversations.newConversation(
           peerAddress,
           context,
         );
@@ -45,7 +45,7 @@ const useStreamMessages = (
     return () => {
       setMessageSendingErrorMsg('');
     };
-  }, [providerState?.client, peerAddress, peerUserId, userId, account]);
+  }, [publicClientState?.client, peerAddress, peerUserId, userId, account]);
 
   useEffect(() => {
     const streamMessages = async () => {
@@ -53,9 +53,9 @@ const useStreamMessages = (
         const newMessageStream = await conversation.streamMessages();
         setStream(newMessageStream);
         for await (const msg of newMessageStream) {
-          if (providerState && setProviderState) {
+          if (publicClientState && setProviderState) {
             const newMessages =
-              providerState.conversationMessages.get(conversation.peerAddress) ?? [];
+              publicClientState.conversationMessages.get(conversation.peerAddress) ?? [];
             //If the message is already in the list, don't add it again
             if (getLatestMessage(newMessages)?.messageContent === msg.content) {
               continue;
@@ -63,13 +63,13 @@ const useStreamMessages = (
             const incomingChatMessage = buildChatMessage(msg);
             newMessages.push(incomingChatMessage);
 
-            providerState.conversationMessages.set(conversation.peerAddress, newMessages);
+            publicClientState.conversationMessages.set(conversation.peerAddress, newMessages);
 
             setProviderState({
-              ...providerState,
+              ...publicClientState,
               loadingConversations: false,
               loadingMessages: false,
-              conversationMessages: providerState.conversationMessages,
+              conversationMessages: publicClientState.conversationMessages,
             });
           }
         }
@@ -84,7 +84,7 @@ const useStreamMessages = (
       };
       closeStream();
     };
-  }, [providerState, conversation, account]);
+  }, [publicClientState, conversation, account]);
 };
 
 export default useStreamMessages;

@@ -1,8 +1,7 @@
 import { useWeb3Modal } from '@web3modal/react';
-import { ethers } from 'ethers';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import { useContext } from 'react';
-import { useProvider, useSigner } from 'wagmi';
+import { usePublicClient, useWalletClient } from 'wagmi';
 import * as Yup from 'yup';
 import { config } from '../../config';
 import TalentLayerContext from '../../context/talentLayer';
@@ -32,8 +31,10 @@ function ReviewForm({ serviceId }: { serviceId: string }) {
   const { open: openConnectModal } = useWeb3Modal();
   const { user } = useContext(TalentLayerContext);
   const { isActiveDelegate } = useContext(TalentLayerContext);
-  const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
-  const { data: signer } = useSigner({
+  const publicClient = usePublicClient({
+    chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
+  });
+  const { data: walletClient } = useWalletClient({
     chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
   });
 
@@ -44,7 +45,7 @@ function ReviewForm({ serviceId }: { serviceId: string }) {
       resetForm,
     }: { setSubmitting: (isSubmitting: boolean) => void; resetForm: () => void },
   ) => {
-    if (user && provider && signer) {
+    if (user && publicClient && walletClient) {
       try {
         const uri = await postToIPFS(
           JSON.stringify({
@@ -70,7 +71,7 @@ function ReviewForm({ serviceId }: { serviceId: string }) {
           const contract = new ethers.Contract(
             config.contracts.talentLayerReview,
             TalentLayerReview.abi,
-            signer,
+            walletClient,
           );
           tx = await contract.mint(user.id, serviceId, uri, values.rating);
         }
@@ -81,7 +82,7 @@ function ReviewForm({ serviceId }: { serviceId: string }) {
             success: 'Congrats! Your review has been posted',
             error: 'An error occurred while creating your review',
           },
-          provider,
+          publicClient,
           tx,
           'review',
           uri,

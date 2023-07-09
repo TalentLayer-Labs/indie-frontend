@@ -1,9 +1,8 @@
 import { useWeb3Modal } from '@web3modal/react';
-import { BigNumber, BigNumberish, ethers, FixedNumber } from 'ethers';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import { useContext, useState } from 'react';
 import { useRouter } from 'next/router';
-import { useProvider, useSigner } from 'wagmi';
+import { usePublicClient, useWalletClient } from 'wagmi';
 import * as Yup from 'yup';
 import { config } from '../../config';
 import TalentLayerContext from '../../context/talentLayer';
@@ -18,6 +17,7 @@ import { IToken } from '../../types';
 import useServiceById from '../../hooks/useServiceById';
 import { SkillsInput } from './skills-input';
 import { delegateCreateService, delegateUpdateService } from '../request';
+import { formatUnits } from 'viem';
 
 interface IFormValues {
   title: string;
@@ -30,8 +30,10 @@ interface IFormValues {
 function ServiceForm({ serviceId }: { serviceId?: string }) {
   const { open: openConnectModal } = useWeb3Modal();
   const { user, account } = useContext(TalentLayerContext);
-  const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
-  const { data: signer } = useSigner({
+  const publicClient = usePublicClient({
+    chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
+  });
+  const { data: walletClient } = useWalletClient({
     chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
   });
   const existingService = useServiceById(serviceId as string);
@@ -55,10 +57,7 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
       existingToken &&
       existingToken.decimals
         ? Number(
-            ethers.utils.formatUnits(
-              BigNumber.from(existingService?.description?.rateAmount),
-              existingToken.decimals,
-            ),
+            formatUnits(BigInt(existingService?.description?.rateAmount), existingToken.decimals),
           )
         : 0,
   };
@@ -76,8 +75,8 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
           schema.moreThan(
             selectedToken
               ? FixedNumber.from(
-                  ethers.utils.formatUnits(
-                    selectedToken?.minimumTransactionAmount as BigNumberish,
+                  formatUnits(
+                    selectedToken?.minimumTransactionAmount as bigint,
                     selectedToken?.decimals,
                   ),
                 ).toUnsafeFloat()
@@ -85,8 +84,8 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
             `Amount must be greater than ${
               selectedToken
                 ? FixedNumber.from(
-                    ethers.utils.formatUnits(
-                      selectedToken?.minimumTransactionAmount as BigNumberish,
+                    formatUnits(
+                      selectedToken?.minimumTransactionAmount as bigint,
                       selectedToken?.decimals,
                     ),
                   ).toUnsafeFloat()
@@ -104,7 +103,7 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
     }: { setSubmitting: (isSubmitting: boolean) => void; resetForm: () => void },
   ) => {
     const token = allowedTokenList.find(token => token.address === values.rateToken);
-    if (account?.isConnected === true && provider && signer && token && user) {
+    if (account?.isConnected === true && publicClient && walletClient && token && user) {
       try {
         const parsedRateAmount = await parseRateAmount(
           values.rateAmount.toString(),
@@ -126,7 +125,7 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
         const contract = new ethers.Contract(
           config.contracts.serviceRegistry,
           ServiceRegistry.abi,
-          signer,
+          walletClient,
         );
 
         // Get platform signature
@@ -156,7 +155,7 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
             success: `Congrats! Your job has been ${existingService ? 'updated' : 'created'} !`,
             error: `An error occurred while ${existingService ? 'Updating' : 'Creating'} your job`,
           },
-          provider,
+          publicClient,
           tx,
           'service',
           cid,

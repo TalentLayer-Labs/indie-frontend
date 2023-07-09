@@ -1,5 +1,4 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { Contract } from 'ethers';
 import { config } from '../../../config';
 import TalentLayerReview from '../../../contracts/ABI/TalentLayerReview.json';
 import { getDelegationSigner, isPlatformAllowedToDelegate } from '../utils/delegate';
@@ -11,16 +10,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   await isPlatformAllowedToDelegate(userAddress, res);
 
   try {
-    const signer = await getDelegationSigner(res);
+    const walletClient = await getDelegationSigner(res);
 
-    if (!signer) {
+    if (!walletClient) {
       return;
     }
 
     const talentLayerReview = new Contract(
       config.contracts.talentLayerReview,
       TalentLayerReview.abi,
-      signer,
+      walletClient,
     );
     const transaction = await talentLayerReview.mint(userId, serviceId, uri, valuesRating);
 

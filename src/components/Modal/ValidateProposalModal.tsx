@@ -1,8 +1,7 @@
-import { ethers } from 'ethers';
 import { Check, X } from 'heroicons-react';
 import { useState } from 'react';
-import { useBalance, useProvider, useSigner } from 'wagmi';
-import { FEE_RATE_DIVIDER } from '../../config';
+import { useBalance, usePublicClient, useWalletClient } from 'wagmi';
+import { ADDRESS_ZERO, FEE_RATE_DIVIDER } from '../../config';
 import { validateProposal } from '../../contracts/acceptProposal';
 import useFees from '../../hooks/useFees';
 import ContactButton from '../../modules/Messaging/components/ContactButton';
@@ -21,13 +20,15 @@ function ValidateProposalModal({
   service: IService;
   account: IAccount;
 }) {
-  const { data: signer } = useSigner({
+  const { data: walletClient } = useWalletClient({
     chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
   });
-  const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
+  const publicClient = usePublicClient({
+    chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
+  });
   const [show, setShow] = useState(false);
   const { data: ethBalance } = useBalance({ address: account.address });
-  const isProposalUseEth: boolean = proposal.rateToken.address === ethers.constants.AddressZero;
+  const isProposalUseEth: boolean = proposal.rateToken.address === ADDRESS_ZERO;
   const { data: tokenBalance } = useBalance({
     address: account.address,
     enabled: !isProposalUseEth,
@@ -42,19 +43,15 @@ function ValidateProposalModal({
     originValidatedProposalPlatformId,
   );
 
-  const jobRateAmount = ethers.BigNumber.from(proposal.rateAmount);
-  const protocolFee = jobRateAmount.mul(protocolEscrowFeeRate).div(FEE_RATE_DIVIDER);
-  const originServiceFee = jobRateAmount.mul(originServiceFeeRate).div(FEE_RATE_DIVIDER);
-  const originValidatedProposalFee = jobRateAmount
-    .mul(originValidatedProposalFeeRate)
-    .div(FEE_RATE_DIVIDER);
-  const totalAmount = jobRateAmount
-    .add(originServiceFee)
-    .add(originValidatedProposalFee)
-    .add(protocolFee);
+  const jobRateAmount = BigInt(proposal.rateAmount);
+  const protocolFee = (jobRateAmount * protocolEscrowFeeRate) / FEE_RATE_DIVIDER;
+  const originServiceFee = (jobRateAmount * originServiceFeeRate) / FEE_RATE_DIVIDER;
+  const originValidatedProposalFee =
+    (jobRateAmount * originValidatedProposalFeeRate) / FEE_RATE_DIVIDER;
+  const totalAmount = jobRateAmount + originServiceFee + originValidatedProposalFee + protocolFee;
 
   const onSubmit = async () => {
-    if (!signer || !provider) {
+    if (!walletClient || !publicClient) {
       return;
     }
 
@@ -73,8 +70,8 @@ function ValidateProposalModal({
     const metaEvidenceCid = await postToIPFS(JSON.stringify(metaEvidence));
 
     await validateProposal(
-      signer,
-      provider,
+      walletClient,
+      publicClient,
       proposal.service.id,
       proposal.seller.id,
       proposal.rateToken.address,
