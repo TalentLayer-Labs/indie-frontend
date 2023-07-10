@@ -28,6 +28,14 @@ const Web3MailModalContext = createContext<{
   setShow: () => {},
 });
 
+type ProtectedData = {
+  name: string;
+  address: string;
+  owner: string;
+  schema: { email: string };
+  creationTimestamp: string;
+};
+
 const Web3MailModalProvider = ({ children }: { children: ReactNode }) => {
   const [show, setShow] = useState(false);
   const [isRedirect, setIsRedirect] = useState(false);
@@ -110,20 +118,25 @@ const Web3MailModalProvider = ({ children }: { children: ReactNode }) => {
     // if user?.address is undefined it will fetch the whole protected data
     if (user?.address) {
       const tx = await fetchProtectedData(fetchProtectedDataArg);
-      console.log('fetchProtectedDataTest:', tx.data.data.fetchProtectedData);
+      console.log('fetchProtectedData:', tx.data.data.fetchProtectedData);
       setProtectedMails(tx.data.data.fetchProtectedData);
+
+      // check if the user's address exists in the fetched data
+      const userInProtectedData = tx.data.data.fetchProtectedData.some(
+        (data: ProtectedData) => data.owner === user.address,
+      );
+
+      console.log('userInProtectedData', userInProtectedData);
+
+      if (userInProtectedData) {
+        setIsRedirect(true);
+      }
     }
   }
 
   useEffect(() => {
     fetchProtectedMail();
   }, [user]);
-
-  useEffect(() => {
-    if (protectedMails.length > 0) {
-      setIsRedirect(true);
-    }
-  }, [protectedMails]);
 
   interface IFormValues {
     email: string;
