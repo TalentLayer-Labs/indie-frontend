@@ -1,15 +1,14 @@
 import { useContext, useState } from 'react';
-import { ethers } from 'ethers';
+import { ethers, providers } from 'ethers';
 import { config } from '../../../config';
 import TalentLayerID from '../../../contracts/ABI/TalentLayerID.json';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import { useProvider, useSigner } from 'wagmi';
 import { createMultiStepsTransactionToast, showErrorTransactionToast } from '../../../utils/toast';
 import * as Yup from 'yup';
-import Toggle from '../../../components/Form/Toggle';
+import Toggle from './Toggle';
 import Loading from '../../../components/Loading';
 import { delegateUpdateProfileData } from '../../../components/request';
-import { dataProtector } from '../components/request';
 import TalentLayerContext from '../../../context/talentLayer';
 import { useWeb3Modal } from '@web3modal/react';
 import { postToIPFS } from '../../../utils/ipfs';
@@ -21,25 +20,93 @@ interface Web3EmailModalProps {
 }
 
 function Web3EmailModal({ protectedMails, activeModal }: Web3EmailModalProps) {
-  const [show, setShow] = useState(activeModal);
+  //TODO : activeModal instead of true, only for test purpose
+  const [show, setShow] = useState(true);
   const { open: openConnectModal } = useWeb3Modal();
   const [accordionOpen, setAccordionOpen] = useState(false);
-  const [proposalConsent, setProposalConsent] = useState(false);
+  const [consentsMgmt, setConsentsMgmt] = useState([true, true]);
   const { user } = useContext(TalentLayerContext);
   const { isActiveDelegate } = useContext(TalentLayerContext);
   const [mailProtectionMessage, setMailProtectionMessage] = useState('');
   const [isMailError, setIsMailError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const authorizedApp = process.env.NEXT_PUBLIC_MAIL_AUTHORIZE_APP_ADDRESS;
-
   const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
 
   const { data: signer } = useSigner({
     chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
   });
 
+  interface IFormValues {
+    email: string;
+  }
+
+  const initialValues = {
+    email: '',
+  };
+
+  const validationSchema = Yup.object({
+    email: Yup.string().email('Invalid email address').required('Required'),
+  });
+
+  const onSubmit = async (
+    values: IFormValues,
+    {
+      setSubmitting,
+      resetForm,
+    }: {
+      setSubmitting: (isSubmitting: boolean) => void;
+      resetForm: () => void;
+    },
+  ) => {
+    setIsLoading(true);
+    try {
+      //   if (!window.ethereum) {
+      //     // Handle error here
+      //     console.error('No Ethereum provider found.');
+      //     return;
+      //   }
+      //   const web3Provider = window.ethereum;
+      //   const dataProtector = new IExecDataProtector(provider);
+      //   if (!web3Provider || !dataProtector) {
+      //     // Handle error here
+      //     console.error('No Ethereum provider found.');
+      //     return;
+      //   }
+      //   const protectedData = await dataProtector.protectData({ data: { email: values.email } });
+      //   console.log('protectedData', protectedData);
+      //   if (!protectedData || !authorizedApp || !user?.address) {
+      //     // Handle error here
+      //     console.error('please check your data');
+      //     return;
+      //   }
+      //   const grantAccessArgs: GrantAccessParams = {
+      //     protectedData: protectedData.address,
+      //     authorizedApp: authorizedApp as string,
+      //     authorizedUser: user?.address as string,
+      //   };
+      //   //   We grant the access to the data
+      //   const grantedAccess = await dataProtector.grantAccess(grantAccessArgs);
+      //   console.log('Granted access:', grantedAccess);
+      //   if (protectedData) {
+      //     setMailProtectionMessage('Your email has been protected');
+      //     setIsMailError(false);
+      //   }
+    } catch (error) {
+      console.error('Error occurred while protecting your email: ', error);
+      setMailProtectionMessage('An error occurred while protecting your email');
+      setIsMailError(true);
+    }
+    setIsLoading(false);
+    setSubmitting(true);
+    resetForm();
+  };
+
   async function handleAgreeAndClose() {
     if (user && provider && signer) {
+      if (!consentsMgmt.includes(false)) {
+        return;
+      }
       try {
         const cid = await postToIPFS(
           JSON.stringify({
@@ -50,9 +117,7 @@ function Web3EmailModal({ protectedMails, activeModal }: Web3EmailModalProps) {
             name: user.description?.name,
             about: user.description?.about,
             skills: user.description?.skills_raw,
-            mail: {
-              proposalConsent: proposalConsent,
-            },
+            mail: consentsMgmt,
           }),
         );
 
@@ -91,72 +156,6 @@ function Web3EmailModal({ protectedMails, activeModal }: Web3EmailModalProps) {
       openConnectModal();
     }
   }
-
-  interface IFormValues {
-    email: string;
-  }
-
-  const initialValues = {
-    email: '',
-  };
-
-  const validationSchema = Yup.object({
-    email: Yup.string().email('Invalid email address').required('Required'),
-  });
-
-  const onSubmit = async (
-    values: IFormValues,
-    {
-      setSubmitting,
-      resetForm,
-    }: {
-      setSubmitting: (isSubmitting: boolean) => void;
-      resetForm: () => void;
-    },
-  ) => {
-    setIsLoading(true);
-    try {
-      const web3Provider = window.ethereum;
-      const dataProtector = new IExecDataProtector(web3Provider);
-
-      if (!web3Provider && !dataProtector) {
-        // Handle error here
-        console.error('No Ethereum provider found.');
-        return;
-      }
-
-      const protectedData = await dataProtector.protectData({ data: { email: values.email } });
-      console.log('protectedData', protectedData);
-
-      if (!protectedData && !authorizedApp && !user?.address) {
-        // Handle error here
-        console.error('No Ethereum provider found.');
-        return;
-      }
-
-      const grantAccessArgs: GrantAccessParams = {
-        protectedData: protectedData.address,
-        authorizedApp: authorizedApp as string,
-        authorizedUser: user?.address as string,
-      };
-
-      // We grant the access to the data
-      const grantedAccess = await dataProtector.grantAccess(grantAccessArgs);
-      console.log('Granted access:', grantedAccess);
-
-      if (protectedData) {
-        setMailProtectionMessage('Your email has been protected');
-        setIsMailError(false);
-      }
-    } catch (error) {
-      console.error('Error occurred while protecting your email: ', error);
-      setMailProtectionMessage('An error occurred while protecting your email');
-      setIsMailError(true);
-    }
-    setIsLoading(false);
-    setSubmitting(true);
-    resetForm();
-  };
 
   return (
     <>
@@ -233,8 +232,13 @@ function Web3EmailModal({ protectedMails, activeModal }: Web3EmailModalProps) {
                           <div className='mt-4'>
                             <label>
                               <Toggle
-                                proposalConsent={proposalConsent}
-                                setProposalConsent={setProposalConsent}
+                                consentsMgmt={consentsMgmt}
+                                setConsentsMgmt={setConsentsMgmt}
+                                labels={[
+                                  'Receive notification when someone send a proposal',
+                                  'Another consent',
+                                  'Third consent',
+                                ]}
                               />
                             </label>
                           </div>

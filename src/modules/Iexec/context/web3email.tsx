@@ -13,7 +13,7 @@ const Web3MailModalContext = createContext<{
 });
 
 const Web3MailModalProvider = ({ children }: { children: ReactNode }) => {
-  const [activeModal, setActiveModal] = useState(false);
+  const [activeModal, setActiveModal] = useState(true);
   const [isRedirect, setIsRedirect] = useState(false);
   const { user } = useContext(TalentLayerContext);
   const [protectedMails, setProtectedMails] = useState('');
