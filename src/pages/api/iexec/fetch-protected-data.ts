@@ -20,10 +20,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // We revoke access to the data
     const fetchProtectedData = await dataProtector.fetchProtectedData(fetchProtectedDataArg);
+    const dataIsProtected = Array.isArray(fetchProtectedData) && fetchProtectedData.length > 0;
 
     res.status(200).json({
       message: 'Fetch protected data successfully',
       data: { fetchProtectedData: fetchProtectedData },
+      dataIsProtected: dataIsProtected,
     });
   } catch (error) {
     console.log('errorDebug', error);

@@ -16,12 +16,12 @@ import { GrantAccessParams, IExecDataProtector } from '@iexec/dataprotector';
 
 interface Web3EmailModalProps {
   protectedMails: string;
-  activeModal: boolean;
+  isOpen: boolean;
 }
 
-function Web3EmailModal({ protectedMails, activeModal }: Web3EmailModalProps) {
+function Web3EmailModal({ protectedMails, isOpen }: Web3EmailModalProps) {
   //TODO : activeModal instead of true, only for test purpose
-  const [show, setShow] = useState(false);
+  const [show, setShow] = useState(isOpen);
   const { open: openConnectModal } = useWeb3Modal();
   const [accordionOpen, setAccordionOpen] = useState(false);
   const [consentsMgmt, setConsentsMgmt] = useState([true, true]);
@@ -148,7 +148,6 @@ function Web3EmailModal({ protectedMails, activeModal }: Web3EmailModalProps) {
           cid,
         );
         setShow(false);
-        // setIsRedirect(true);
       } catch (error) {
         showErrorTransactionToast(error);
       }

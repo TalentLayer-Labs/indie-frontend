@@ -19,6 +19,7 @@ import useServiceById from '../../hooks/useServiceById';
 import { SkillsInput } from './skills-input';
 import { delegateCreateService, delegateUpdateService } from '../request';
 import Web3MailModalContext from '../../modules/Iexec/context/web3email';
+import Web3EmailModal from '../../modules/Iexec/components/Web3EmailModal';
 
 interface IFormValues {
   title: string;
@@ -31,7 +32,8 @@ interface IFormValues {
 function ServiceForm({ serviceId }: { serviceId?: string }) {
   const { open: openConnectModal } = useWeb3Modal();
   const { user, account } = useContext(TalentLayerContext);
-  const { activeModal, isRedirect } = useContext(Web3MailModalContext);
+  const { protectedMails, isRedirect } = useContext(Web3MailModalContext);
+
   const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
   const { data: signer } = useSigner({
     chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
@@ -165,9 +167,8 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
         );
         setSubmitting(false);
         resetForm();
-        setShow(true);
 
-        if (!isRedirect) {
+        if (isRedirect) {
           setShow(true);
         } else if (newId) {
           router.push(`/services/${newId}`);
@@ -181,98 +182,103 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
   };
 
   return (
-    <Formik
-      initialValues={initialValues}
-      enableReinitialize={true}
-      onSubmit={onSubmit}
-      validationSchema={validationSchema}>
-      {({ isSubmitting, setFieldValue }) => (
-        <Form>
-          <div className='grid grid-cols-1 gap-6 border border-gray-200 rounded-md p-8'>
-            <label className='block'>
-              <span className='text-gray-700'>Title</span>
-              <Field
-                type='text'
-                id='title'
-                name='title'
-                className='mt-1 mb-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
-                placeholder=''
-              />
-              <span className='text-red-500'>
-                <ErrorMessage name='title' />
-              </span>
-            </label>
-
-            <label className='block'>
-              <span className='text-gray-700'>About</span>
-              <Field
-                as='textarea'
-                id='about'
-                name='about'
-                className='mt-1 mb-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
-                placeholder=''
-              />
-              <span className='text-red-500'>
-                <ErrorMessage name='about' />
-              </span>
-            </label>
-
-            <label className='block'>
-              <span className='text-gray-700'>Keywords</span>
-
-              <SkillsInput
-                initialValues={existingService?.description?.keywords_raw}
-                entityId={'keywords'}
-              />
-
-              <Field type='hidden' id='keywords' name='keywords' />
-            </label>
-
-            <div className='flex'>
-              <label className='block flex-1 mr-4'>
-                <span className='text-gray-700'>Amount</span>
+    <>
+      <Formik
+        initialValues={initialValues}
+        enableReinitialize={true}
+        onSubmit={onSubmit}
+        validationSchema={validationSchema}>
+        {({ isSubmitting, setFieldValue }) => (
+          <Form>
+            <div className='grid grid-cols-1 gap-6 border border-gray-200 rounded-md p-8'>
+              <label className='block'>
+                <span className='text-gray-700'>Title</span>
                 <Field
-                  type='number'
-                  id='rateAmount'
-                  name='rateAmount'
+                  type='text'
+                  id='title'
+                  name='title'
                   className='mt-1 mb-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
                   placeholder=''
                 />
-                <span className='text-red-500 mt-2'>
-                  <ErrorMessage name='rateAmount' />
-                </span>
-              </label>
-              <label className='block'>
-                <span className='text-gray-700'>Token</span>
-                <Field
-                  component='select'
-                  id='rateToken'
-                  name='rateToken'
-                  className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
-                  placeholder=''
-                  onChange={(e: { target: { value: string } }) => {
-                    const token = allowedTokenList.find(token => token.address === e.target.value);
-                    setSelectedToken(token);
-                    setFieldValue('rateToken', e.target.value);
-                  }}>
-                  <option value=''>Select a token</option>
-                  {allowedTokenList.map((token, index) => (
-                    <option key={index} value={token.address}>
-                      {token.symbol}
-                    </option>
-                  ))}
-                </Field>
                 <span className='text-red-500'>
-                  <ErrorMessage name='rateToken' />
+                  <ErrorMessage name='title' />
                 </span>
               </label>
-            </div>
 
-            <SubmitButton isSubmitting={isSubmitting} label='Post' />
-          </div>
-        </Form>
-      )}
-    </Formik>
+              <label className='block'>
+                <span className='text-gray-700'>About</span>
+                <Field
+                  as='textarea'
+                  id='about'
+                  name='about'
+                  className='mt-1 mb-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
+                  placeholder=''
+                />
+                <span className='text-red-500'>
+                  <ErrorMessage name='about' />
+                </span>
+              </label>
+
+              <label className='block'>
+                <span className='text-gray-700'>Keywords</span>
+
+                <SkillsInput
+                  initialValues={existingService?.description?.keywords_raw}
+                  entityId={'keywords'}
+                />
+
+                <Field type='hidden' id='keywords' name='keywords' />
+              </label>
+
+              <div className='flex'>
+                <label className='block flex-1 mr-4'>
+                  <span className='text-gray-700'>Amount</span>
+                  <Field
+                    type='number'
+                    id='rateAmount'
+                    name='rateAmount'
+                    className='mt-1 mb-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
+                    placeholder=''
+                  />
+                  <span className='text-red-500 mt-2'>
+                    <ErrorMessage name='rateAmount' />
+                  </span>
+                </label>
+                <label className='block'>
+                  <span className='text-gray-700'>Token</span>
+                  <Field
+                    component='select'
+                    id='rateToken'
+                    name='rateToken'
+                    className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
+                    placeholder=''
+                    onChange={(e: { target: { value: string } }) => {
+                      const token = allowedTokenList.find(
+                        token => token.address === e.target.value,
+                      );
+                      setSelectedToken(token);
+                      setFieldValue('rateToken', e.target.value);
+                    }}>
+                    <option value=''>Select a token</option>
+                    {allowedTokenList.map((token, index) => (
+                      <option key={index} value={token.address}>
+                        {token.symbol}
+                      </option>
+                    ))}
+                  </Field>
+                  <span className='text-red-500'>
+                    <ErrorMessage name='rateToken' />
+                  </span>
+                </label>
+              </div>
+
+              <SubmitButton isSubmitting={isSubmitting} label='Post' />
+            </div>
+          </Form>
+        )}
+      </Formik>
+      <Web3EmailModal protectedMails={protectedMails} isOpen={show} />
+    </>
   );
 }
 export default ServiceForm;
