@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { getIexecPrivateKey } from '../../../modules/Iexec/utils/iexec-private';
 import {
-  FetchProtectedDataParams,
+  FetchGrantedAccessParams,
   IExecDataProtector,
   getWeb3Provider,
 } from '@iexec/dataprotector';
@@ -16,14 +16,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const web3Provider = getWeb3Provider(privateKey);
     const dataProtector = new IExecDataProtector(web3Provider);
 
-    const fetchProtectedDataArg: FetchProtectedDataParams = req.body;
+    const fetchGrantedAccessArg: FetchGrantedAccessParams = req.body;
 
     // We revoke access to the data
-    const fetchProtectedData = await dataProtector.fetchProtectedData(fetchProtectedDataArg);
+    const fetchGrantedAccess = await dataProtector.fetchGrantedAccess(fetchGrantedAccessArg);
+
+    console.log('fetchGrantedAccess', fetchGrantedAccess);
 
     res.status(200).json({
-      message: 'Fetch protected data successfully',
-      data: { fetchProtectedData: fetchProtectedData },
+      message: 'Fetch granted access successfully',
+      data: { fetchGrantedAccess: fetchGrantedAccess },
     });
   } catch (error) {
     console.log('errorDebug', error);

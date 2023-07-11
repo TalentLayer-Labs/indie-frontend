@@ -16,7 +16,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import Layout from './Layout';
 import { useEffect, useState } from 'react';
 import Web3MailModal from '../components/Modal/Web3MailModal';
-import { Web3MailModalProvider } from '../context/web3email';
+import { Web3MailModalProvider } from '../modules/Iexec/context/web3email';
 
 const chains: Chain[] = [customChains.polygonMumbai];
 

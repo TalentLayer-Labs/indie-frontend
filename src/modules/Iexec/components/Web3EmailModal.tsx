@@ -1,45 +1,36 @@
-import { ReactNode, createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { useContext, useState } from 'react';
 import { ethers } from 'ethers';
-import { config } from '../config';
-import TalentLayerID from '../contracts/ABI/TalentLayerID.json';
+import { config } from '../../../config';
+import TalentLayerID from '../../../contracts/ABI/TalentLayerID.json';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import { useProvider, useSigner } from 'wagmi';
-import { createMultiStepsTransactionToast, showErrorTransactionToast } from '../utils/toast';
+import { createMultiStepsTransactionToast, showErrorTransactionToast } from '../../../utils/toast';
 import * as Yup from 'yup';
-import Toggle from '../components/Form/Toggle';
-import Loading from '../components/Loading';
-import {
-  dataProtector,
-  fetchProtectedData,
-  delegateUpdateProfileData,
-} from '../components/request';
-import { FetchProtectedDataParams } from '@iexec/dataprotector';
-import TalentLayerContext from './talentLayer';
+import Toggle from '../../../components/Form/Toggle';
+import Loading from '../../../components/Loading';
+import { delegateUpdateProfileData } from '../../../components/request';
+import { dataProtector } from '../components/request';
+import TalentLayerContext from '../../../context/talentLayer';
 import { useWeb3Modal } from '@web3modal/react';
-import { postToIPFS } from '../utils/ipfs';
+import { postToIPFS } from '../../../utils/ipfs';
+import { GrantAccessParams, IExecDataProtector } from '@iexec/dataprotector';
 
-// Switch import statement will depend on your UI library or your custom component
+interface Web3EmailModalProps {
+  protectedMails: string;
+  activeModal: boolean;
+}
 
-const Web3MailModalContext = createContext<{
-  isRedirect: boolean;
-  setShow: (setShow: boolean) => void;
-}>({
-  isRedirect: true,
-  setShow: () => {},
-});
-
-const Web3MailModalProvider = ({ children }: { children: ReactNode }) => {
-  const [show, setShow] = useState(false);
-  const [isRedirect, setIsRedirect] = useState(false);
+function Web3EmailModal({ protectedMails, activeModal }: Web3EmailModalProps) {
+  const [show, setShow] = useState(activeModal);
   const { open: openConnectModal } = useWeb3Modal();
   const [accordionOpen, setAccordionOpen] = useState(false);
   const [proposalConsent, setProposalConsent] = useState(false);
   const { user } = useContext(TalentLayerContext);
   const { isActiveDelegate } = useContext(TalentLayerContext);
-  const [protectedMails, setProtectedMails] = useState([]);
   const [mailProtectionMessage, setMailProtectionMessage] = useState('');
   const [isMailError, setIsMailError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const authorizedApp = process.env.NEXT_PUBLIC_MAIL_AUTHORIZE_APP_ADDRESS;
 
   const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
 
@@ -92,7 +83,7 @@ const Web3MailModalProvider = ({ children }: { children: ReactNode }) => {
           cid,
         );
         setShow(false);
-        setIsRedirect(true);
+        // setIsRedirect(true);
       } catch (error) {
         showErrorTransactionToast(error);
       }
@@ -100,30 +91,6 @@ const Web3MailModalProvider = ({ children }: { children: ReactNode }) => {
       openConnectModal();
     }
   }
-
-  async function fetchProtectedMail() {
-    const fetchProtectedDataArg: FetchProtectedDataParams = {
-      owner: user?.address,
-    };
-    console.log('fetchProtectedDataArg', fetchProtectedDataArg);
-
-    // if user?.address is undefined it will fetch the whole protected data
-    if (user?.address) {
-      const tx = await fetchProtectedData(fetchProtectedDataArg);
-      console.log('fetchProtectedDataTest:', tx.data.data.fetchProtectedData);
-      setProtectedMails(tx.data.data.fetchProtectedData);
-    }
-  }
-
-  useEffect(() => {
-    fetchProtectedMail();
-  }, [user]);
-
-  useEffect(() => {
-    if (protectedMails.length > 0) {
-      setIsRedirect(true);
-    }
-  }, [protectedMails]);
 
   interface IFormValues {
     email: string;
@@ -149,8 +116,34 @@ const Web3MailModalProvider = ({ children }: { children: ReactNode }) => {
   ) => {
     setIsLoading(true);
     try {
-      const protectedData = await dataProtector({ data: { email: values.email } });
+      const web3Provider = window.ethereum;
+      const dataProtector = new IExecDataProtector(web3Provider);
+
+      if (!web3Provider && !dataProtector) {
+        // Handle error here
+        console.error('No Ethereum provider found.');
+        return;
+      }
+
+      const protectedData = await dataProtector.protectData({ data: { email: values.email } });
       console.log('protectedData', protectedData);
+
+      if (!protectedData && !authorizedApp && !user?.address) {
+        // Handle error here
+        console.error('No Ethereum provider found.');
+        return;
+      }
+
+      const grantAccessArgs: GrantAccessParams = {
+        protectedData: protectedData.address,
+        authorizedApp: authorizedApp as string,
+        authorizedUser: user?.address as string,
+      };
+
+      // We grant the access to the data
+      const grantedAccess = await dataProtector.grantAccess(grantAccessArgs);
+      console.log('Granted access:', grantedAccess);
+
       if (protectedData) {
         setMailProtectionMessage('Your email has been protected');
         setIsMailError(false);
@@ -165,16 +158,8 @@ const Web3MailModalProvider = ({ children }: { children: ReactNode }) => {
     resetForm();
   };
 
-  const value = useMemo(() => {
-    return {
-      isRedirect,
-      setShow,
-    };
-  }, [show, isRedirect]);
-
   return (
     <>
-      <Web3MailModalContext.Provider value={value}>{children}</Web3MailModalContext.Provider>
       {protectedMails.length === 0 && show && (
         <div
           className={`${
@@ -266,8 +251,6 @@ const Web3MailModalProvider = ({ children }: { children: ReactNode }) => {
       )}
     </>
   );
-};
+}
 
-export { Web3MailModalProvider };
-
-export default Web3MailModalContext;
+export default Web3EmailModal;

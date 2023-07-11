@@ -18,7 +18,7 @@ import { IToken } from '../../types';
 import useServiceById from '../../hooks/useServiceById';
 import { SkillsInput } from './skills-input';
 import { delegateCreateService, delegateUpdateService } from '../request';
-import Web3MailModalContext from '../../context/web3email';
+import Web3MailModalContext from '../../modules/Iexec/context/web3email';
 
 interface IFormValues {
   title: string;
@@ -32,8 +32,6 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
   const { open: openConnectModal } = useWeb3Modal();
   const { user, account } = useContext(TalentLayerContext);
   const { setShow, isRedirect } = useContext(Web3MailModalContext);
-  console.log('isRedirect', isRedirect);
-
   const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
   const { data: signer } = useSigner({
     chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),

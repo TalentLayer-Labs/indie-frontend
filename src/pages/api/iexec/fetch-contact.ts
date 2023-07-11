@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getIexecPrivateKey } from '../utils/iexec-private';
+import { getIexecPrivateKey } from '../../../modules/Iexec/utils/iexec-private';
 import { IExecWeb3mail, getWeb3Provider } from '@iexec/web3mail';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {

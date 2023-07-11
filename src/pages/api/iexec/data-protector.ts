@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getIexecPrivateKey } from '../utils/iexec-private';
+import { getIexecPrivateKey } from '../../../modules/Iexec/utils/iexec-private';
 import {
   GrantAccessParams,
   IExecDataProtector,
