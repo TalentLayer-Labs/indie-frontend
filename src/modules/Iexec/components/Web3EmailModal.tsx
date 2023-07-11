@@ -21,7 +21,7 @@ interface Web3EmailModalProps {
 
 function Web3EmailModal({ protectedMails, activeModal }: Web3EmailModalProps) {
   //TODO : activeModal instead of true, only for test purpose
-  const [show, setShow] = useState(true);
+  const [show, setShow] = useState(false);
   const { open: openConnectModal } = useWeb3Modal();
   const [accordionOpen, setAccordionOpen] = useState(false);
   const [consentsMgmt, setConsentsMgmt] = useState([true, true]);
@@ -88,7 +88,7 @@ function Web3EmailModal({ protectedMails, activeModal }: Web3EmailModalProps) {
       //   //   We grant the access to the data
       //   const grantedAccess = await dataProtector.grantAccess(grantAccessArgs);
       //   console.log('Granted access:', grantedAccess);
-      //   if (protectedData) {
+      //   if (protectedData && grantedAccess) {
       //     setMailProtectionMessage('Your email has been protected');
       //     setIsMailError(false);
       //   }

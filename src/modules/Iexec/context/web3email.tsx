@@ -6,14 +6,14 @@ import Web3EmailModal from '../components/Web3EmailModal';
 
 const Web3MailModalContext = createContext<{
   isRedirect: boolean;
-  setActiveModal: (setShow: boolean) => void;
+  activeModal: boolean;
 }>({
-  isRedirect: true,
-  setActiveModal: () => {},
+  isRedirect: false,
+  activeModal: false,
 });
 
 const Web3MailModalProvider = ({ children }: { children: ReactNode }) => {
-  const [activeModal, setActiveModal] = useState(true);
+  const [activeModal, setActiveModal] = useState(false);
   const [isRedirect, setIsRedirect] = useState(false);
   const { user } = useContext(TalentLayerContext);
   const [protectedMails, setProtectedMails] = useState('');
@@ -25,8 +25,11 @@ const Web3MailModalProvider = ({ children }: { children: ReactNode }) => {
     };
 
     if (user?.address) {
-      const tx = await fetchProtectedData(fetchProtectedDataArg);
-      setProtectedMails(tx.data.data.fetchProtectedData);
+      return fetchProtectedData(fetchProtectedDataArg).then(tx => {
+        setProtectedMails(tx.data.data.fetchProtectedData);
+      });
+    } else {
+      return Promise.resolve();
     }
   }
 
@@ -38,12 +41,20 @@ const Web3MailModalProvider = ({ children }: { children: ReactNode }) => {
 
     if (protectedMails && process.env.NEXT_PUBLIC_IEXEC_AUTHORIZED_USER) {
       const tx = await fetchGrantedAccess(fetchGrantedAccessArg);
+    } else {
+      return Promise.resolve();
     }
   }
 
   useEffect(() => {
-    checkIfEmailIsProtected();
-    checkGrantedPlatform();
+    Promise.all([checkIfEmailIsProtected(), checkGrantedPlatform()])
+      .then(() => {
+        setIsRedirect(true);
+      })
+      .catch(error => {
+        console.error('mail or access hve not been set up:', error);
+        setActiveModal(true);
+      });
   }, [user]);
 
   useEffect(() => {
@@ -55,7 +66,7 @@ const Web3MailModalProvider = ({ children }: { children: ReactNode }) => {
   const value = useMemo(() => {
     return {
       isRedirect,
-      setActiveModal,
+      activeModal,
     };
   }, [activeModal, isRedirect]);
 

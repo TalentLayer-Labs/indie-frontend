@@ -5,10 +5,12 @@ import {
   IExecDataProtector,
   getWeb3Provider,
 } from '@iexec/dataprotector';
+import { useState } from 'react';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
     const privateKey = await getIexecPrivateKey(res);
+    const [isGranted, setIsGranted] = useState(false);
 
     if (!privateKey) {
       throw new Error('Private key is not set');
@@ -21,11 +23,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // We revoke access to the data
     const fetchGrantedAccess = await dataProtector.fetchGrantedAccess(fetchGrantedAccessArg);
 
+    if (fetchGrantedAccess.length > 0) {
+      setIsGranted(true);
+    }
+
     console.log('fetchGrantedAccess', fetchGrantedAccess);
+    console.log('isGranted', isGranted);
 
     res.status(200).json({
       message: 'Fetch granted access successfully',
-      data: { fetchGrantedAccess: fetchGrantedAccess },
+      data: { isGranted: isGranted },
     });
   } catch (error) {
     console.log('errorDebug', error);

@@ -31,13 +31,13 @@ interface IFormValues {
 function ServiceForm({ serviceId }: { serviceId?: string }) {
   const { open: openConnectModal } = useWeb3Modal();
   const { user, account } = useContext(TalentLayerContext);
-  const { setShow, isRedirect } = useContext(Web3MailModalContext);
+  const { activeModal, isRedirect } = useContext(Web3MailModalContext);
   const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
   const { data: signer } = useSigner({
     chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
   });
   const existingService = useServiceById(serviceId as string);
-
+  const [show, setShow] = useState(false);
   const router = useRouter();
   const allowedTokenList = useAllowedTokens();
   const existingToken = allowedTokenList.find(value => {
@@ -164,8 +164,8 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
           cid,
         );
         setSubmitting(false);
-
         resetForm();
+        setShow(true);
 
         if (!isRedirect) {
           setShow(true);
