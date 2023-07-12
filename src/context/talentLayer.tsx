@@ -2,20 +2,28 @@ import { createContext, ReactNode, useEffect, useMemo, useState } from 'react';
 import { useAccount, useSigner } from 'wagmi';
 import { getUserByAddress } from '../queries/users';
 import { IAccount, IUser } from '../types';
-import useMagic from '../modules/Magic/hooks/useMagic';
 import { FetchSignerResult } from '@wagmi/core';
-import { Signer } from 'ethers';
+import { ethers, Signer } from 'ethers';
 import { JsonRpcSigner } from '@ethersproject/providers';
+import { InstanceWithExtensions, SDKBase } from '@magic-sdk/provider';
+import { Magic, MagicSDKExtensionsOption } from 'magic-sdk';
+
+interface magicProvider {
+  magic: InstanceWithExtensions<SDKBase, MagicSDKExtensionsOption<string>> | undefined;
+  ethersMagicProvider: ethers.providers.Web3Provider | undefined;
+}
 
 const TalentLayerContext = createContext<{
   user?: IUser;
   account?: IAccount;
   signer?: FetchSignerResult<Signer> | JsonRpcSigner | undefined;
+  magicProvider?: magicProvider;
   isActiveDelegate: boolean;
 }>({
   user: undefined,
   account: undefined,
   signer: undefined,
+  magicProvider: undefined,
   isActiveDelegate: false,
 });
 
@@ -29,9 +37,34 @@ const TalentLayerProvider = ({ children }: { children: ReactNode }) => {
   const { data } = useSigner({
     chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
   });
-  const { ethersMagicProvider } = useMagic();
-  // console.log('ethersMagicProvider', ethersMagicProvider);
-  const magicSigner = ethersMagicProvider?.getSigner();
+
+  const [magicProvider, setMagicProvider] = useState<magicProvider | undefined>(undefined);
+  const [magicSigner, setMagicSigner] = useState<ethers.providers.JsonRpcSigner | undefined>(
+    undefined,
+  );
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (typeof window !== 'undefined') {
+          const magicInstance = new Magic(process.env.NEXT_PUBLIC_MAGIC_KEY as string, {
+            network: {
+              rpcUrl: process.env.NEXT_PUBLIC_RPC_PROVIDER_URL as string,
+              chainId: 80001,
+            },
+          });
+          const magicProvider = await magicInstance?.wallet.getProvider();
+          const ethersMagicProvider = new ethers.providers.Web3Provider(magicProvider);
+          setMagicProvider({ magic: magicInstance, ethersMagicProvider: ethersMagicProvider });
+          setMagicSigner(ethersMagicProvider.getSigner());
+        }
+      } catch (error: any) {
+        // eslint-disable-next-line no-console
+        console.error(error);
+      }
+    };
+    fetchData();
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -60,11 +93,12 @@ const TalentLayerProvider = ({ children }: { children: ReactNode }) => {
   }, [account.address, account.isConnected, isActiveDelegate]);
 
   useEffect(() => {
-    console.log('account', account);
-    console.log('account.connector', account.connector);
-    console.log('metamask connector', data);
-    console.log('magic provider', ethersMagicProvider);
-    if (!account.connector || (!data && !ethersMagicProvider)) {
+    // console.log('account', account);
+    // console.log('account.connector', account.connector);
+    // console.log('metamask connector', data);
+    // console.log('magic', magicProvider);
+    // console.log('magicSigner', magicSigner);
+    if (!account.connector || (!data && !magicSigner)) {
       return;
     }
     try {
@@ -79,16 +113,24 @@ const TalentLayerProvider = ({ children }: { children: ReactNode }) => {
       console.log('final user', user);
       console.log('final signer', signer);
     }
-  }, [account.isConnected, account.connector, data, ethersMagicProvider]);
+  }, [account.isConnected, account.connector, data, magicSigner]);
 
   const value = useMemo(() => {
     return {
       user,
       account: account ? account : undefined,
       signer,
+      magicProvider,
       isActiveDelegate,
     };
-  }, [account.address, user?.id, isActiveDelegate, account.connector, data, ethersMagicProvider]);
+  }, [
+    account.address,
+    user?.id,
+    isActiveDelegate,
+    account.connector,
+    data,
+    magicProvider?.ethersMagicProvider,
+  ]);
 
   return <TalentLayerContext.Provider value={value}>{children}</TalentLayerContext.Provider>;
 };
