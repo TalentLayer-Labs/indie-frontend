@@ -47,15 +47,19 @@ const { provider } = configureChains(chains, [
 
 const wagmiMagicClient = createClient({
   autoConnect: false,
-  // connectors: modalConnectors({ appName: 'web3Modal', chains }),
   connectors: [
-    // new MetaMaskConnector({ chains }),
     new MagicConnectConnector({
       chains,
       options: {
         apiKey: process.env.NEXT_PUBLIC_MAGIC_KEY as string, //required
         //...Other options
       },
+      // magicSdkConfiguration: {
+      //   network: {
+      //     rpcUrl: 'https://polygon-mumbai.infura.io/v3/6f07c5b58e32490bbefabd84c55290c7',
+      //     chainId: 80001,
+      //   },
+      // },
     }),
     new CoinbaseWalletConnector({
       chains,
@@ -80,9 +84,6 @@ const wagmiMagicClient = createClient({
   provider,
 });
 
-// Web3Modal Ethereum Client
-// const ethereumClient = new EthereumClient(wagmiClient, chains);
-
 function MyApp({ Component, pageProps }: AppProps) {
   useEffect(() => {
     // wagmiClient.autoConnect();
@@ -106,10 +107,6 @@ function MyApp({ Component, pageProps }: AppProps) {
             </MessagingProvider>
           </XmtpContextProvider>
         </TalentLayerProvider>
-        {/*<Web3Modal*/}
-        {/*  projectId={`${process.env.NEXT_PUBLIC_WALLECT_CONNECT_PROJECT_ID}`}*/}
-        {/*  ethereumClient={ethereumClient}*/}
-        {/*/>*/}
       </WagmiConfig>
     </>
   );
