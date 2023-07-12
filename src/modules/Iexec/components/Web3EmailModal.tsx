@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { ethers, providers } from 'ethers';
 import { config } from '../../../config';
 import TalentLayerID from '../../../contracts/ABI/TalentLayerID.json';
@@ -12,14 +12,16 @@ import { delegateUpdateProfileData } from '../../../components/request';
 import TalentLayerContext from '../../../context/talentLayer';
 import { useWeb3Modal } from '@web3modal/react';
 import { postToIPFS } from '../../../utils/ipfs';
+import { useRouter } from 'next/router';
 import { GrantAccessParams, IExecDataProtector } from '@iexec/dataprotector';
 
 interface Web3EmailModalProps {
   protectedMails: string;
   isOpen: boolean;
+  newServiceId: number | undefined;
 }
 
-function Web3EmailModal({ protectedMails, isOpen }: Web3EmailModalProps) {
+function Web3EmailModal({ protectedMails, isOpen, newServiceId }: Web3EmailModalProps) {
   //TODO : activeModal instead of true, only for test purpose
   const [show, setShow] = useState(isOpen);
   const { open: openConnectModal } = useWeb3Modal();
@@ -32,7 +34,7 @@ function Web3EmailModal({ protectedMails, isOpen }: Web3EmailModalProps) {
   const [isLoading, setIsLoading] = useState(false);
   const authorizedApp = process.env.NEXT_PUBLIC_MAIL_AUTHORIZE_APP_ADDRESS;
   const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
-
+  const router = useRouter();
   const { data: signer } = useSigner({
     chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
   });
@@ -148,6 +150,9 @@ function Web3EmailModal({ protectedMails, isOpen }: Web3EmailModalProps) {
           cid,
         );
         setShow(false);
+        if (newServiceId) {
+          router.push(`/services/${newServiceId}`);
+        }
       } catch (error) {
         showErrorTransactionToast(error);
       }
@@ -155,6 +160,10 @@ function Web3EmailModal({ protectedMails, isOpen }: Web3EmailModalProps) {
       openConnectModal();
     }
   }
+
+  useEffect(() => {
+    setShow(isOpen);
+  }, [isOpen]);
 
   return (
     <>

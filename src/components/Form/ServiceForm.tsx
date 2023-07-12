@@ -1,7 +1,7 @@
 import { useWeb3Modal } from '@web3modal/react';
 import { BigNumber, BigNumberish, ethers, FixedNumber } from 'ethers';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useProvider, useSigner } from 'wagmi';
 import * as Yup from 'yup';
@@ -32,7 +32,7 @@ interface IFormValues {
 function ServiceForm({ serviceId }: { serviceId?: string }) {
   const { open: openConnectModal } = useWeb3Modal();
   const { user, account } = useContext(TalentLayerContext);
-  const { protectedMails, isRedirect } = useContext(Web3MailModalContext);
+  const { protectedMails, platformHasAccess } = useContext(Web3MailModalContext);
 
   const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
   const { data: signer } = useSigner({
@@ -47,6 +47,7 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
   });
   const [selectedToken, setSelectedToken] = useState<IToken>();
   const { isActiveDelegate } = useContext(TalentLayerContext);
+  const [newServiceId, setNewServiceId] = useState<number | undefined>();
 
   const initialValues: IFormValues = {
     title: existingService?.description?.title || '',
@@ -107,6 +108,7 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
       resetForm,
     }: { setSubmitting: (isSubmitting: boolean) => void; resetForm: () => void },
   ) => {
+    console.log('platformHasAccess', platformHasAccess);
     const token = allowedTokenList.find(token => token.address === values.rateToken);
     if (account?.isConnected === true && provider && signer && token && user) {
       try {
@@ -168,8 +170,14 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
         setSubmitting(false);
         resetForm();
 
-        if (isRedirect) {
+        console.log('PUTAINNN', platformHasAccess);
+
+        if (platformHasAccess === false) {
+          setNewServiceId(newId);
+          console.log('newServiceId', newServiceId);
+
           setShow(true);
+          console.log('show', show);
         } else if (newId) {
           router.push(`/services/${newId}`);
         }
@@ -277,7 +285,8 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
           </Form>
         )}
       </Formik>
-      <Web3EmailModal protectedMails={protectedMails} isOpen={show} />
+
+      <Web3EmailModal protectedMails={protectedMails} isOpen={show} newServiceId={newServiceId} />
     </>
   );
 }
