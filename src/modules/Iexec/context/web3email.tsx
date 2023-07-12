@@ -4,61 +4,69 @@ import { FetchGrantedAccessParams, FetchProtectedDataParams } from '@iexec/datap
 import TalentLayerContext from '../../../context/talentLayer';
 
 const Web3MailModalContext = createContext<{
-  isRedirect: boolean;
+  platformHasAccess: boolean;
 
   protectedMails: string;
 }>({
-  isRedirect: false,
+  platformHasAccess: false,
 
   protectedMails: '',
 });
 
 const Web3MailModalProvider = ({ children }: { children: ReactNode }) => {
-  const [isRedirect, setIsRedirect] = useState(false);
   const { user } = useContext(TalentLayerContext);
+  const [platformHasAccess, setPlatformHasAccess] = useState(false);
   const [protectedMails, setProtectedMails] = useState('');
   const [isEmailProtected, setIsEmailProtected] = useState(false);
   const [isGranted, setIsGranted] = useState(false);
 
   async function checkIfEmailIsProtected() {
-    const fetchProtectedDataArg: FetchProtectedDataParams = {
-      owner: user?.address,
-    };
-
     if (user?.address) {
-      const tx = await fetchProtectedData(fetchProtectedDataArg);
-      setProtectedMails(tx.data.data.fetchProtectedData[0].address);
-      setIsEmailProtected(tx.data.dataIsProtected);
+      try {
+        const fetchProtectedDataArg: FetchProtectedDataParams = { owner: user?.address };
+        const tx = await fetchProtectedData(fetchProtectedDataArg);
+        setProtectedMails(tx.data.data.fetchProtectedData[0].address);
+        setIsEmailProtected(tx.data.dataIsProtected);
+      } catch (error) {
+        console.error('Error fetching protected data:', error);
+      }
     }
   }
 
   async function checkGrantedPlatform() {
-    const fetchGrantedAccessArg: FetchGrantedAccessParams = {
-      protectedData: protectedMails as string,
-      authorizedUser: process.env.NEXT_PUBLIC_IEXEC_AUTHORIZED_USER as string,
-    };
-
     if (protectedMails && process.env.NEXT_PUBLIC_IEXEC_AUTHORIZED_USER) {
-      const tx = await fetchGrantedAccess(fetchGrantedAccessArg);
-      setIsGranted(tx.data.isGranted);
+      try {
+        const fetchGrantedAccessArg: FetchGrantedAccessParams = {
+          protectedData: protectedMails as string,
+          authorizedUser: process.env.NEXT_PUBLIC_IEXEC_AUTHORIZED_USER as string,
+        };
+        const tx = await fetchGrantedAccess(fetchGrantedAccessArg);
+        setIsGranted(tx.data.isGranted);
+        console.log('isGranted', isGranted);
+
+        if (isEmailProtected && isGranted) {
+          setPlatformHasAccess(true);
+        }
+      } catch (error) {
+        console.error('Error checking granted platform:', error);
+      }
     }
   }
 
   useEffect(() => {
-    checkIfEmailIsProtected();
-    checkGrantedPlatform();
-
-    if (isEmailProtected && isGranted) {
-      setIsRedirect(true);
-    }
-  }, [user, isEmailProtected, isGranted]);
-
-  const value = useMemo(() => {
-    return {
-      isRedirect,
-      protectedMails,
+    const fetchData = async () => {
+      await checkIfEmailIsProtected();
+      await checkGrantedPlatform();
+      console.log('platformHasAccess', platformHasAccess);
     };
-  }, [isRedirect]);
+
+    fetchData();
+  }, [user, protectedMails]);
+
+  const value = useMemo(
+    () => ({ platformHasAccess, protectedMails }),
+    [platformHasAccess, protectedMails],
+  );
 
   return (
     <>
@@ -68,5 +76,4 @@ const Web3MailModalProvider = ({ children }: { children: ReactNode }) => {
 };
 
 export { Web3MailModalProvider };
-
 export default Web3MailModalContext;
