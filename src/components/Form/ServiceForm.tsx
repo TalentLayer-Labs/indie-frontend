@@ -167,17 +167,15 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
           'service',
           cid,
         );
+
+        setNewServiceId(newId);
         setSubmitting(false);
         resetForm();
 
-        console.log('PUTAINNN', platformHasAccess);
+        console.log('is platform has access', platformHasAccess);
 
         if (platformHasAccess === false) {
-          setNewServiceId(newId);
-          console.log('newServiceId', newServiceId);
-
           setShow(true);
-          console.log('show', show);
         } else if (newId) {
           router.push(`/services/${newId}`);
         }

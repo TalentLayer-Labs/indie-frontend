@@ -39,6 +39,8 @@ function Web3EmailModal({ protectedMails, isOpen, newServiceId }: Web3EmailModal
     chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
   });
 
+  console.log('newServiceIdInThe Modal', newServiceId);
+
   interface IFormValues {
     email: string;
   }
