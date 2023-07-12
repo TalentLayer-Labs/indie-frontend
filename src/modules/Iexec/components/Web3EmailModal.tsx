@@ -150,12 +150,12 @@ function Web3EmailModal({ protectedMails, isOpen, newServiceId }: Web3EmailModal
           cid,
         );
         setShow(false);
-        if (newServiceId) {
-          router.push(`/services/${newServiceId}`);
-        }
+        router.push(`/services/${newServiceId}`);
       } catch (error) {
         showErrorTransactionToast(error);
       }
+    } else if (newServiceId) {
+      router.push(`/services/${newServiceId}`);
     } else {
       openConnectModal();
     }

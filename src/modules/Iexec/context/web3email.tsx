@@ -25,8 +25,17 @@ const Web3MailModalProvider = ({ children }: { children: ReactNode }) => {
       try {
         const fetchProtectedDataArg: FetchProtectedDataParams = { owner: user?.address };
         const tx = await fetchProtectedData(fetchProtectedDataArg);
+
+        if (tx.data.data.fetchProtectedData.length === 0) {
+          console.log('No protected emails found.');
+          setProtectedMails('');
+          setIsEmailProtected(false);
+        }
         setProtectedMails(tx.data.data.fetchProtectedData[0].address);
         setIsEmailProtected(tx.data.dataIsProtected);
+
+        console.log('protectedMails', protectedMails);
+        console.log('isEmailProtected', isEmailProtected);
       } catch (error) {
         console.error('Error fetching protected data:', error);
       }

@@ -22,6 +22,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const fetchProtectedData = await dataProtector.fetchProtectedData(fetchProtectedDataArg);
     const dataIsProtected = Array.isArray(fetchProtectedData) && fetchProtectedData.length > 0;
 
+    console.log('fetchProtectedData', fetchProtectedData);
+    console.log('dataIsProtected', dataIsProtected);
+
     res.status(200).json({
       message: 'Fetch protected data successfully',
       data: { fetchProtectedData: fetchProtectedData },
