@@ -1,18 +1,17 @@
 import { ethers } from 'ethers';
-import { useEffect, useState } from 'react';
-import { useProvider, useSigner } from 'wagmi';
+import { useContext, useEffect, useState } from 'react';
+import { useProvider } from 'wagmi';
 import { toggleDelegation } from '../../contracts/toggleDelegation';
 import { config } from '../../config';
 import TalentLayerID from '../../contracts/ABI/TalentLayerID.json';
 import { getUserByAddress } from '../../queries/users';
 import { IUser } from '../../types';
+import TalentLayerContext from '../../context/talentLayer';
 
 function DelegateModal({ user }: { user: IUser }) {
+  const { signer } = useContext(TalentLayerContext);
   const [show, setShow] = useState(false);
   const [hasPlatformAsDelegate, setHasPlatformAsDelegate] = useState(false);
-  const { data: signer } = useSigner({
-    chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
-  });
   const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
   const delegateAddress = process.env.NEXT_PUBLIC_DELEGATE_ADDRESS as string;
 

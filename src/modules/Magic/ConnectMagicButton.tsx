@@ -1,7 +1,8 @@
-import useMagic from './hooks/useMagic';
+import { useContext } from 'react';
+import TalentLayerContext from '../../context/talentLayer';
 
 const ConnectMagicButton = () => {
-  const { magic } = useMagic();
+  const { magicProvider } = useContext(TalentLayerContext);
 
   if (typeof window !== 'undefined') {
     console.log('You are on the browser,You are good to go');
@@ -10,11 +11,14 @@ const ConnectMagicButton = () => {
   }
   const handleConnect = async () => {
     try {
-      if (magic) {
+      if (magicProvider?.magic) {
         console.log('Connecting...');
-        // await magic?.user.logout();
-        await magic.wallet.connectWithUI();
-        console.log('handleConnect: magic wallet:', await magic?.wallet);
+        // await magicProvider.?magic?.user.logout();
+        await magicProvider?.magic.wallet.connectWithUI();
+        console.log(
+          'handleConnect: magicProvider.?magic wallet:',
+          await magicProvider?.magic?.wallet,
+        );
       }
     } catch (error) {
       console.error('handleConnect:', error);

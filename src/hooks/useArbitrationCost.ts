@@ -1,13 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { BigNumber, Contract, ethers } from 'ethers';
 import TalentLayerArbitrator from '../contracts/ABI/TalentLayerArbitrator.json';
-import { useSigner } from 'wagmi';
+import TalentLayerContext from '../context/talentLayer';
 
 const useArbitrationCost = (arbitratorAddress: string | undefined): BigNumber | null => {
+  const { signer } = useContext(TalentLayerContext);
   const [arbitrationCost, setArbitrationCost] = useState<BigNumber | null>(null);
-  const { data: signer } = useSigner({
-    chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
-  });
 
   useEffect(() => {
     const fetchData = async () => {

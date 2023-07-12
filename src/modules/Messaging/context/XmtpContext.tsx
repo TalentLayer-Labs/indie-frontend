@@ -1,9 +1,10 @@
-import React, { createContext, ReactNode, useEffect, useMemo, useState } from 'react';
+import React, { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react';
 import { Client, Conversation, DecodedMessage } from '@xmtp/xmtp-js';
 import { Signer } from 'ethers';
-import { useAccount, useSigner } from 'wagmi';
+import { useAccount } from 'wagmi';
 import { buildChatMessage, CONVERSATION_PREFIX } from '../utils/messaging';
 import { XmtpChatMessage } from '../utils/types';
+import TalentLayerContext from '../../../context/talentLayer';
 
 type clientEnv = 'local' | 'dev' | 'production' | undefined;
 
@@ -27,9 +28,7 @@ export const XmtpContext = createContext<{
 });
 
 export const XmtpContextProvider = ({ children }: { children: ReactNode }) => {
-  const { data: signer } = useSigner({
-    chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
-  });
+  const { signer } = useContext(TalentLayerContext);
   const { address: walletAddress } = useAccount();
 
   const [providerState, setProviderState] = useState<IProviderProps>({

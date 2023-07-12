@@ -3,6 +3,8 @@ import { arbitrationFeeTimeout, payArbitrationFee } from '../contracts/disputes'
 import { useProvider, useSigner } from 'wagmi';
 import { useRouter } from 'next/router';
 import { BigNumber } from 'ethers';
+import TalentLayerContext from '../context/talentLayer';
+import { useContext } from 'react';
 
 function DisputeButton({
   user,
@@ -17,9 +19,7 @@ function DisputeButton({
   arbitrationFee: BigNumber;
   content?: string;
 }) {
-  const { data: signer } = useSigner({
-    chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
-  });
+  const { signer } = useContext(TalentLayerContext);
   const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
   const router = useRouter();
   const transactionId = transaction?.id;

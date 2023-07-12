@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 import { Check, X } from 'heroicons-react';
-import { useState } from 'react';
-import { useBalance, useProvider, useSigner } from 'wagmi';
+import { useContext, useState } from 'react';
+import { useBalance, useProvider } from 'wagmi';
 import { FEE_RATE_DIVIDER } from '../../config';
 import { validateProposal } from '../../contracts/acceptProposal';
 import useFees from '../../hooks/useFees';
@@ -11,6 +11,7 @@ import { renderTokenAmount } from '../../utils/conversion';
 import Step from '../Step';
 import { postToIPFS } from '../../utils/ipfs';
 import { generateMetaEvidence } from '../../modules/Disputes/utils/dispute';
+import TalentLayerContext from '../../context/talentLayer';
 
 function ValidateProposalModal({
   proposal,
@@ -21,9 +22,7 @@ function ValidateProposalModal({
   service: IService;
   account: IAccount;
 }) {
-  const { data: signer } = useSigner({
-    chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
-  });
+  const { signer } = useContext(TalentLayerContext);
   const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
   const [show, setShow] = useState(false);
   const { data: ethBalance } = useBalance({ address: account.address });

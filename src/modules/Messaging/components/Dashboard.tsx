@@ -1,7 +1,6 @@
 import { useContext, useState } from 'react';
 import { XmtpContext } from '../context/XmtpContext';
 import TalentLayerContext from '../../../context/talentLayer';
-import { useSigner } from 'wagmi';
 import { watchAccount } from '@wagmi/core';
 import ConversationList from './ConversationList';
 import CardHeader from './CardHeader';
@@ -16,10 +15,7 @@ import { useRouter } from 'next/router';
 import { ChatMessageStatus, XmtpChatMessage } from '../utils/types';
 
 function Dashboard() {
-  const { user } = useContext(TalentLayerContext);
-  const { data: signer } = useSigner({
-    chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
-  });
+  const { user, signer } = useContext(TalentLayerContext);
   const { providerState, setProviderState } = useContext(XmtpContext);
   const [messageContent, setMessageContent] = useState<string>('');
   const router = useRouter();
@@ -141,35 +137,39 @@ function Dashboard() {
                 conversationsLoading={providerState.loadingConversations}
               />
             </div>
-            {providerState?.client && selectedConversationPeerAddress && user?.id && peerUser?.id && (
-              <div className='basis-3/4 w-full pl-5 flex flex-col justify-between h-[calc(100vh-128px)]'>
-                <div className='overflow-y-auto'>
-                  <MessageList
-                    conversationMessages={
-                      providerState.conversationMessages.get(selectedConversationPeerAddress) ?? []
-                    }
-                    selectedConversationPeerAddress={selectedConversationPeerAddress}
-                    userId={user?.id}
-                    peerUserId={peerUser?.id as string}
-                    messagesLoading={providerState.loadingMessages}
-                    sendingPending={sendingPending}
-                    setMessageSendingErrorMsg={setMessageSendingErrorMsg}
-                  />
+            {providerState?.client &&
+              selectedConversationPeerAddress &&
+              user?.id &&
+              peerUser?.id && (
+                <div className='basis-3/4 w-full pl-5 flex flex-col justify-between h-[calc(100vh-128px)]'>
+                  <div className='overflow-y-auto'>
+                    <MessageList
+                      conversationMessages={
+                        providerState.conversationMessages.get(selectedConversationPeerAddress) ??
+                        []
+                      }
+                      selectedConversationPeerAddress={selectedConversationPeerAddress}
+                      userId={user?.id}
+                      peerUserId={peerUser?.id as string}
+                      messagesLoading={providerState.loadingMessages}
+                      sendingPending={sendingPending}
+                      setMessageSendingErrorMsg={setMessageSendingErrorMsg}
+                    />
+                  </div>
+                  {(!providerState.loadingMessages || messageSendingErrorMsg) && (
+                    <MessageComposer
+                      messageContent={messageContent}
+                      setMessageContent={setMessageContent}
+                      sendNewMessage={sendNewMessage}
+                      sendingPending={sendingPending}
+                      peerUserExistsOnXMTP={
+                        messageSendingErrorMsg !== NON_EXISTING_XMTP_USER_ERROR_MESSAGE
+                      }
+                      peerUserExistsOnTalentLayer={!!peerUser}
+                    />
+                  )}
                 </div>
-                {(!providerState.loadingMessages || messageSendingErrorMsg) && (
-                  <MessageComposer
-                    messageContent={messageContent}
-                    setMessageContent={setMessageContent}
-                    sendNewMessage={sendNewMessage}
-                    sendingPending={sendingPending}
-                    peerUserExistsOnXMTP={
-                      messageSendingErrorMsg !== NON_EXISTING_XMTP_USER_ERROR_MESSAGE
-                    }
-                    peerUserExistsOnTalentLayer={!!peerUser}
-                  />
-                )}
-              </div>
-            )}
+              )}
           </div>
           {messageSendingErrorMsg && (
             <div className={'text-center'}>

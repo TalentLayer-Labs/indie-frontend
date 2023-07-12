@@ -1,13 +1,11 @@
 import { useState, useEffect, useContext } from 'react';
 import { XmtpContext } from '../context/XmtpContext';
-import { useSigner } from 'wagmi';
 import { Conversation, Stream } from '@xmtp/xmtp-js';
 import { buildChatMessage, CONVERSATION_PREFIX } from '../utils/messaging';
+import TalentLayerContext from '../../../context/talentLayer';
 
 const useStreamConversations = () => {
-  const { data: signer } = useSigner({
-    chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
-  });
+  const { signer } = useContext(TalentLayerContext);
   const { providerState, setProviderState } = useContext(XmtpContext);
   const [stream, setStream] = useState<Stream<Conversation> | undefined>();
 
