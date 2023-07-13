@@ -7,7 +7,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const query = req.query;
 
   // @dev : here you can add the filter logic
-  let keywordList = keywordFilter.keywords;
+  const keywordList = keywordFilter.keywords;
 
   const serviceStatus = query.serviceStatus as ServiceStatusEnum;
   const buyerId = query.buyerId as string;
@@ -17,7 +17,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const searchQuery = query.searchQuery as string;
 
   try {
-    let response = await getServices({
+    const response = await getServices({
       serviceStatus,
       buyerId,
       sellerId,
