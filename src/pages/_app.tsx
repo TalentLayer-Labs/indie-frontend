@@ -51,7 +51,7 @@ const wagmiMagicClient = createClient({
     new MagicConnectConnector({
       chains,
       options: {
-        apiKey: process.env.NEXT_PUBLIC_MAGIC_KEY as string, //required
+        apiKey: process.env.NEXT_PUBLIC_MAGIC_KEY as string,
         //...Other options
       },
       // magicSdkConfiguration: {
@@ -86,7 +86,6 @@ const wagmiMagicClient = createClient({
 
 function MyApp({ Component, pageProps }: AppProps) {
   useEffect(() => {
-    // wagmiClient.autoConnect();
     wagmiMagicClient.autoConnect();
   }, []);
 
