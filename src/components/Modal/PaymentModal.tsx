@@ -1,10 +1,10 @@
 import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
 import { ethers } from 'ethers';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { renderTokenAmount } from '../../utils/conversion';
 import { IPayment, IService, PaymentTypeEnum, ServiceStatusEnum } from '../../types';
 import ReleaseForm from '../Form/ReleaseForm';
-import { useNetwork } from 'wagmi';
+import TalentLayerContext from '../../context/talentLayer';
 
 interface IPaymentModalProps {
   service: IService;
@@ -16,7 +16,8 @@ function PaymentModal({ service, payments, isBuyer }: IPaymentModalProps) {
   const [show, setShow] = useState(false);
   const rateToken = service.validatedProposal[0].rateToken;
   const rateAmount = service.validatedProposal[0].rateAmount;
-  const network = useNetwork();
+  const { account } = useContext(TalentLayerContext);
+  const chain = account?.connector?.chains[0];
 
   const totalPayments = payments.reduce((acc, payment) => {
     return acc.add(ethers.BigNumber.from(payment.amount));
@@ -92,7 +93,7 @@ function PaymentModal({ service, payments, isBuyer }: IPaymentModalProps) {
                       <p className='text-base leading-4 text-gray-800'>
                         <a
                           className='flex'
-                          href={`${network.chain?.blockExplorers?.default.url}/tx/${payment.transactionHash}`}
+                          href={`${chain?.blockExplorers?.default.url}/tx/${payment.transactionHash}`}
                           target='_blank'>
                           {payment.paymentType == PaymentTypeEnum.Release
                             ? 'Realease'

@@ -1,9 +1,12 @@
-import { useBlockNumber, useFeeData, useNetwork } from 'wagmi';
+import { useBlockNumber, useFeeData } from 'wagmi';
+import { useContext } from 'react';
+import TalentLayerContext from '../../context/talentLayer';
 
 function SideBottom() {
   const { data: blockNumber } = useBlockNumber({ watch: false, cacheTime: 0 });
   const { data: feeData } = useFeeData({ watch: false, cacheTime: 0 });
-  const network = useNetwork();
+  const { account } = useContext(TalentLayerContext);
+  const chain = account?.connector?.chains[0];
 
   return (
     <div className='flex flex-shrink-0 p-4 border-r border-gray-200'>
@@ -12,7 +15,7 @@ function SideBottom() {
           <div className=''>
             <a
               href={`https://${
-                network?.chain?.name == 'Ethereum' ? 'www' : network?.chain?.name.toLowerCase()
+                chain?.name == 'Ethereum' ? 'www' : chain?.name.toLowerCase()
               }.etherscan.io/block/${blockNumber}`}
               target='_blank'
               className='text-xs font-medium text-indigo-100 flex items-center'>

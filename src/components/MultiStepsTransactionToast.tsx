@@ -1,6 +1,6 @@
-import { useCallback } from 'react';
+import { useCallback, useContext } from 'react';
 import ToastStep from './ToastStep';
-import { useNetwork } from 'wagmi';
+import TalentLayerContext from '../context/talentLayer';
 
 function MultiStepsTransactionToast({
   transactionHash,
@@ -11,15 +11,16 @@ function MultiStepsTransactionToast({
   currentStep: number;
   hasOffchainData?: boolean;
 }) {
-  const network = useNetwork();
+  const { account } = useContext(TalentLayerContext);
+  const chain = account?.connector?.chains[0];
   const renderTransaction = useCallback(() => {
     return (
       <a
         className='flex flex-col text-sm font-normal w-full pt-2'
         target='_blank'
-        href={`${network.chain?.blockExplorers?.default.url}/tx/${transactionHash}`}>
+        href={`${chain?.blockExplorers?.default.url}/tx/${transactionHash}`}>
         <span className='inline-flex full-w justify-center w-full px-2 py-1.5 text-xs font-medium text-center text-gray-900 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 '>
-          Follow on {network.chain?.blockExplorers?.default.name}
+          Follow on {chain?.blockExplorers?.default.name}
         </span>
       </a>
     );

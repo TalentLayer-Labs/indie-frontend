@@ -1,12 +1,12 @@
 import { Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
-import { Fragment } from 'react';
+import { Fragment, useContext } from 'react';
 import { useConnect } from 'wagmi';
 import Loading from './Loading';
+import TalentLayerContext from '../context/talentLayer';
 
 function WalletChoiceSwitch() {
   const { connectors, connect, isLoading, pendingConnector } = useConnect();
-  const magicConnector = connectors[0];
 
   return (
     <Menu as='div' className='relative inline-block text-left mt-3'>

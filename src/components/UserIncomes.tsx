@@ -1,15 +1,16 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import Loading from './Loading';
 import { renderTokenAmount } from '../utils/conversion';
 import { formatStringCompleteDate } from '../utils/dates';
 import usePaymentsForUser from '../hooks/usePaymentsForUser';
-import { useNetwork } from 'wagmi';
+import TalentLayerContext from '../context/talentLayer';
 
 function UserIncomes({ id }: { id: string }) {
   const ROW_SIZE = 50;
   const [startDate, setStartDate] = useState<string>('');
   const [endDate, setEndDate] = useState<string>('');
-  const network = useNetwork();
+  const { account } = useContext(TalentLayerContext);
+  const chain = account?.connector?.chains[0];
 
   const { payments, hasMoreData, loading, loadMore } = usePaymentsForUser(
     id,
@@ -87,10 +88,10 @@ function UserIncomes({ id }: { id: string }) {
                         </a>
                       </td>
                       <td className='border border-gray-200 p-2 text-blue-500'>
-                        {network.chain?.id === 137 || network.chain?.id === 80001 ? (
+                        {chain?.id === 137 || chain?.id === 80001 ? (
                           <a
                             target='_blank'
-                            href={`${network.chain?.blockExplorers?.default.url}/tx/${payment.transactionHash}`}>
+                            href={`${chain?.blockExplorers?.default.url}/tx/${payment.transactionHash}`}>
                             Tx
                           </a>
                         ) : null}

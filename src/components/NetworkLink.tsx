@@ -1,10 +1,13 @@
-import { useNetwork, useSwitchNetwork } from 'wagmi';
+import { useSwitchNetwork } from 'wagmi';
+import { useContext } from 'react';
+import TalentLayerContext from '../context/talentLayer';
 
 function NetworkLink({ chaindId, chainName }: { chaindId: number; chainName: string }) {
   const { switchNetwork } = useSwitchNetwork({
     chainId: chaindId,
   });
-  const network = useNetwork();
+  const { account } = useContext(TalentLayerContext);
+  const chain = account?.connector?.chains[0];
 
   if (!switchNetwork) {
     return null;
@@ -16,7 +19,7 @@ function NetworkLink({ chaindId, chainName }: { chaindId: number; chainName: str
         switchNetwork();
       }}
       className={`cursor-pointer text-gray-700 block px-4 py-2 text-sm' ${
-        network?.chain?.id === chaindId ? 'bg-gray-100 ' : ''
+        chain?.id === chaindId ? 'bg-gray-100 ' : ''
       }`}>
       {chainName}
     </a>

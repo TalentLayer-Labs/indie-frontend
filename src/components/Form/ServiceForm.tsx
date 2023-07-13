@@ -101,6 +101,7 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
     }: { setSubmitting: (isSubmitting: boolean) => void; resetForm: () => void },
   ) => {
     console.log('submit', user);
+    console.log('signer', signer);
     const token = allowedTokenList.find(token => token.address === values.rateToken);
     if (account?.isConnected === true && provider && signer && token && user) {
       try {
