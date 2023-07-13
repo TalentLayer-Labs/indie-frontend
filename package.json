@@ -30,7 +30,7 @@
   },
   "scripts": {
     "dev": "next dev",
-    "build": "next build && next export",
+    "build": "next build",
     "start": "next start",
     "format": "prettier --config .prettierrc 'src/**/*.{js,ts,tsx}' --write",
     "lint": "tsc --noEmit && eslint",
