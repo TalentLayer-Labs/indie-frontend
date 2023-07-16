@@ -126,15 +126,6 @@ function ServiceDetail({ service }: { service: IService }) {
                 Edit Service
               </button>
             )}
-            {isBuyer && service.status === ServiceStatusEnum.Opened && (
-              <button
-                className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg'
-                onClick={() => {
-                  push(`/services/edit/${service.id}`);
-                }}>
-                Edit Service
-              </button>
-            )}
             {(isBuyer || isSeller) && (
               <>
                 {service.status === ServiceStatusEnum.Finished && !hasReviewed && (
