@@ -28,10 +28,9 @@ const useFilteredServices = (
     const fetchData = async () => {
       try {
         setLoading(true);
-        let response;
         let newServices: IService[] = [];
 
-        response = await getFilteredServicesByKeywords(
+        const response = await getFilteredServicesByKeywords(
           serviceStatus,
           buyerId,
           sellerId,
