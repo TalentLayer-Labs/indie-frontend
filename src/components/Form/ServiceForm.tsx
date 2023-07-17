@@ -31,7 +31,7 @@ interface IFormValues {
 
 function ServiceForm({ serviceId }: { serviceId?: string }) {
   const { open: openConnectModal } = useWeb3Modal();
-  const { user, account } = useContext(TalentLayerContext);
+  const { user, account, isActiveDelegate } = useContext(TalentLayerContext);
   const { protectedMails, platformHasAccess } = useContext(Web3MailModalContext);
 
   const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
@@ -46,7 +46,6 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
     return value.address === existingService?.description?.rateToken;
   });
   const [selectedToken, setSelectedToken] = useState<IToken>();
-  const { isActiveDelegate } = useContext(TalentLayerContext);
   const [newServiceId, setNewServiceId] = useState<number | undefined>();
 
   const initialValues: IFormValues = {
