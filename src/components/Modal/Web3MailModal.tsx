@@ -46,8 +46,8 @@ function Web3MailModal({
     //***************** Data protection ************* */
     // OK
     // TODO : Add a name to the data to protect like the user handle
-    const dataProtectorTest = await dataProtector({ data: { email: values.email } });
-    console.log(dataProtectorTest);
+    // const dataProtectorTest = await dataProtector({ data: { email: values.email } });
+    // console.log(dataProtectorTest);
 
     //***************** Fetch the protected data of a user ************* */
     // OK : correctly fetch the data from the owner
@@ -73,8 +73,8 @@ function Web3MailModal({
     //***************** fetchMailContact ************* */
     // NOK
     // TODO : no arg to fetch the data
-    // const fetchMailContactTest = await fetchMailContact();
-    // console.log(fetchMailContactTest);
+    const fetchMailContactTest = await fetchMailContact();
+    console.log(fetchMailContactTest);
 
     //***************** Revoke access ************* */
     // TODO : NOT TESTED
