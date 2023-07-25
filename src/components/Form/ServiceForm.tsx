@@ -1,9 +1,9 @@
 import { useWeb3Modal } from '@web3modal/react';
 import { BigNumber, BigNumberish, ethers, FixedNumber } from 'ethers';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { Address, useProvider, useSigner } from 'wagmi';
+import { useProvider, useSigner } from 'wagmi';
 import * as Yup from 'yup';
 import { config } from '../../config';
 import TalentLayerContext from '../../context/talentLayer';
@@ -18,7 +18,8 @@ import { IToken } from '../../types';
 import useServiceById from '../../hooks/useServiceById';
 import { SkillsInput } from './skills-input';
 import { delegateCreateService, delegateUpdateService } from '../request';
-import Web3MailModal from '../Modal/Web3MailModal';
+import Web3MailModalContext from '../../modules/Iexec/context/web3email';
+import Web3EmailModal from '../../modules/Iexec/components/Web3EmailModal';
 
 interface IFormValues {
   title: string;
@@ -30,22 +31,22 @@ interface IFormValues {
 
 function ServiceForm({ serviceId }: { serviceId?: string }) {
   const { open: openConnectModal } = useWeb3Modal();
-  const { user, account } = useContext(TalentLayerContext);
+  const { user, account, isActiveDelegate } = useContext(TalentLayerContext);
+  const { protectedMails, platformHasAccess } = useContext(Web3MailModalContext);
+
   const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
   const { data: signer } = useSigner({
     chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
   });
   const existingService = useServiceById(serviceId as string);
-  const [showMailModal, setShowMailModal] = useState(true);
-  const [newServiceId, setNewServiceId] = useState<number | null>(null);
-
+  const [show, setShow] = useState(false);
   const router = useRouter();
   const allowedTokenList = useAllowedTokens();
   const existingToken = allowedTokenList.find(value => {
     return value.address === existingService?.description?.rateToken;
   });
   const [selectedToken, setSelectedToken] = useState<IToken>();
-  const { isActiveDelegate } = useContext(TalentLayerContext);
+  const [newServiceId, setNewServiceId] = useState<number | undefined>();
 
   const initialValues: IFormValues = {
     title: existingService?.description?.title || '',
@@ -104,11 +105,9 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
     {
       setSubmitting,
       resetForm,
-    }: {
-      setSubmitting: (isSubmitting: boolean) => void;
-      resetForm: () => void;
-    },
+    }: { setSubmitting: (isSubmitting: boolean) => void; resetForm: () => void },
   ) => {
+    console.log('platformHasAccess', platformHasAccess);
     const token = allowedTokenList.find(token => token.address === values.rateToken);
     if (account?.isConnected === true && provider && signer && token && user) {
       try {
@@ -168,14 +167,16 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
           cid,
         );
 
+        setNewServiceId(newId);
         setSubmitting(false);
         resetForm();
 
-        // set the modal to true to show the mail modal
-        setShowMailModal(true);
+        console.log('is platform has access', platformHasAccess);
 
-        if (newId) {
-          setNewServiceId(newId);
+        if (platformHasAccess === false) {
+          setShow(true);
+        } else if (newId) {
+          router.push(`/services/${newId}`);
         }
       } catch (error) {
         showErrorTransactionToast(error);
@@ -184,14 +185,6 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
       openConnectModal();
     }
   };
-
-  useEffect(() => {
-    if (!showMailModal && newServiceId) {
-      router.push(`/services/${newServiceId}`);
-      // reset newServiceId state to null
-      setNewServiceId(null);
-    }
-  }, [showMailModal]);
 
   return (
     <>
@@ -289,7 +282,8 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
           </Form>
         )}
       </Formik>
-      <Web3MailModal showMailModal={showMailModal} setShowMailModal={setShowMailModal} />
+
+      <Web3EmailModal protectedMails={protectedMails} isOpen={show} newServiceId={newServiceId} />
     </>
   );
 }
