@@ -44,18 +44,20 @@ function ValidateProposalModal({
     originValidatedProposalPlatformId,
   );
 
+  //Extract amounts
   const jobRateAmount = ethers.BigNumber.from(proposal.rateAmount);
-  const protocolFee = jobRateAmount.mul(protocolEscrowFeeRate).div(FEE_RATE_DIVIDER);
-  const originServiceFee = jobRateAmount.mul(originServiceFeeRate).div(FEE_RATE_DIVIDER);
-  const originValidatedProposalFee = jobRateAmount
+  const referralAmount = BigNumber.from(proposal.service.referralAmount);
+  const totalAmountBeforeFees = jobRateAmount.add(referralAmount);
+  //Calculate fees
+  const protocolFee = totalAmountBeforeFees.mul(protocolEscrowFeeRate).div(FEE_RATE_DIVIDER);
+  const originServiceFee = totalAmountBeforeFees.mul(originServiceFeeRate).div(FEE_RATE_DIVIDER);
+  const originValidatedProposalFee = totalAmountBeforeFees
     .mul(originValidatedProposalFeeRate)
     .div(FEE_RATE_DIVIDER);
-  const referralAmount = BigNumber.from(proposal.service.referralAmount);
-  const totalAmount = jobRateAmount
+  const totalAmount = totalAmountBeforeFees
     .add(originServiceFee)
     .add(originValidatedProposalFee)
-    .add(protocolFee)
-    .add(referralAmount);
+    .add(protocolFee);
 
   const onSubmit = async () => {
     if (!signer || !provider) {

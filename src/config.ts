@@ -89,7 +89,8 @@ const fuji: Config = {
 
 const mumbai: Config = {
   networkId: NetworkEnum.MUMBAI,
-  subgraphUrl: 'https://api.thegraph.com/subgraphs/name/quent043/talentlayer-mumbai',
+  subgraphUrl: 'https://thegraph.com/explorer/subgraph/quent043/badass-graph-yamakasi-mothafuc',
+  // subgraphUrl: 'https://api.thegraph.com/subgraphs/name/quent043/talentlayer-mumbai',
   contracts: {
     // 36843729
     talentLayerId: '0x87a247A1Aed184F7BC2b4F287Fc23D82E720721b',
