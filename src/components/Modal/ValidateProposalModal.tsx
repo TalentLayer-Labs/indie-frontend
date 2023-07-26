@@ -6,17 +6,21 @@ import { FEE_RATE_DIVIDER } from '../../config';
 import { validateProposal } from '../../contracts/acceptProposal';
 import useFees from '../../hooks/useFees';
 import ContactButton from '../../modules/Messaging/components/ContactButton';
-import { IAccount, IProposal, IToken } from '../../types';
+import { IAccount, IProposal, IToken, IService } from '../../types';
 import { renderTokenAmount } from '../../utils/conversion';
 import Step from '../Step';
+import { postToIPFS } from '../../utils/ipfs';
+import { generateMetaEvidence } from '../../modules/Disputes/utils/dispute';
 
 function ValidateProposalModal({
   proposal,
   account,
+  service,
   token,
 }: {
   proposal: IProposal;
   account: IAccount;
+  service: IService;
   token: IToken;
 }) {
   const { data: signer } = useSigner({
@@ -57,6 +61,21 @@ function ValidateProposalModal({
     if (!signer || !provider) {
       return;
     }
+
+    const metaEvidence = generateMetaEvidence(
+      service.description?.about || '',
+      proposal.description?.about || '',
+      service.buyer.handle,
+      proposal.seller.handle,
+      proposal.rateToken.address,
+      proposal.rateToken.symbol,
+      proposal.rateAmount,
+      service.description?.title || '',
+      service.description?.startDate,
+      service.description?.expectedEndDate,
+    );
+    const metaEvidenceCid = await postToIPFS(JSON.stringify(metaEvidence));
+
     await validateProposal(
       signer,
       provider,
@@ -64,6 +83,7 @@ function ValidateProposalModal({
       proposal.seller.id,
       token.address,
       proposal.cid,
+      metaEvidenceCid,
       totalAmount,
     );
     setShow(false);
@@ -219,7 +239,7 @@ function ValidateProposalModal({
                   {ethBalance && token.address === ethers.constants.AddressZero && (
                     <div className='flex justify-between w-full'>
                       <p className='text-base leading-4 text-gray-800'>
-                        {ethBalance.formatted} ETH
+                        {ethBalance.formatted} MATIC
                       </p>
                       <p className=''>
                         <span

@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import SearchServiceButton from '../../components/Form/SearchServiceButton';
 import Loading from '../../components/Loading';
 import ServiceItem from '../../components/ServiceItem';
-import useServices from '../../hooks/useServices';
+import useFilteredServices from '../../hooks/useFilteredServices';
 import { IService, ServiceStatusEnum } from '../../types';
 
 function Services() {
@@ -10,7 +10,7 @@ function Services() {
   const router = useRouter();
   const query = router.query;
   const searchQuery = query.search as string;
-  const { hasMoreData, services, loading, loadMore } = useServices(
+  const { hasMoreData, services, loading, loadMore } = useFilteredServices(
     ServiceStatusEnum.Opened,
     undefined,
     undefined,

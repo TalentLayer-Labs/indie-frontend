@@ -9,12 +9,14 @@ import { parseRateAmount } from '../../utils/web3';
 import ServiceItem from '../ServiceItem';
 import SubmitButton from './SubmitButton';
 import useAllowedTokens from '../../hooks/useAllowedTokens';
-import { useContext, useEffect } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import TalentLayerContext from '../../context/talentLayer';
+import MetaEvidenceModal from '../../modules/Disputes/components/MetaEvidenceModal';
 import { createOrUpdateProposal } from '../../contracts/createOrUpdateProposal';
 
 interface IFormValues {
   about: string;
+  rateToken: string;
   rateAmount: number;
   expirationDate: number;
   videoUrl: string;
@@ -23,6 +25,7 @@ interface IFormValues {
 
 const validationSchema = Yup.object({
   about: Yup.string().required('Please provide a description of your service'),
+  rateToken: Yup.string().required('Please select a payment token'),
   rateAmount: Yup.string().required('Please provide an amount for your service'),
   expirationDate: Yup.number().integer().required('Please provide an expiration date'),
 });
@@ -43,6 +46,8 @@ function ProposalForm({
   const router = useRouter();
   const allowedTokenList = useAllowedTokens();
   const { isActiveDelegate } = useContext(TalentLayerContext);
+  const [conditionsValidated, setConditionsValidated] = useState(false);
+
   //Store referrerId in local storage if any
   useEffect(() => {
     localStorage.setItem(`${service.id}-${user.id}`, router.query.referrerId as string);
@@ -68,6 +73,7 @@ function ProposalForm({
 
   const initialValues: IFormValues = {
     about: existingProposal?.description?.about || '',
+    rateToken: existingProposal?.rateToken.address || '',
     rateAmount: existingRateTokenAmount || 0,
     expirationDate: existingExpirationDate || 15,
     videoUrl: existingProposal?.description?.video_url || '',
@@ -125,7 +131,7 @@ function ProposalForm({
 
   return (
     <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
-      {({ isSubmitting }) => (
+      {({ isSubmitting, values }) => (
         <Form>
           <h2 className='mb-2 text-gray-900 font-bold'>For the job:</h2>
           <ServiceItem service={service} />
@@ -163,7 +169,19 @@ function ProposalForm({
               </label>
               <label className='block'>
                 <span className='text-gray-700'>Token</span>
-                <p className='my-2 block w-full text-gray-500'>{service.rateToken.symbol}</p>
+                <Field
+                  component='select'
+                  id='rateToken'
+                  name='rateToken'
+                  className='mt-1 mb-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
+                  placeholder=''>
+                  <option value=''>Select a token</option>
+                  {allowedTokenList.map((token, index) => (
+                    <option key={index} value={token.address}>
+                      {token.symbol}
+                    </option>
+                  ))}
+                </Field>
                 <span className='text-red-500'>
                   <ErrorMessage name='rateToken' />
                 </span>
@@ -213,7 +231,21 @@ function ProposalForm({
               </>
             )}
 
-            <SubmitButton isSubmitting={isSubmitting} label='Post' />
+            <div className='flex-col items-center mb-4'>
+              <MetaEvidenceModal
+                conditionsValidated={conditionsValidated}
+                setConditionsValidated={setConditionsValidated}
+                serviceData={service}
+                proposalData={values}
+                token={allowedTokenList.filter(token => token.address === values.rateToken)[0]}
+                seller={user}
+              />
+              <SubmitButton
+                isSubmitting={isSubmitting}
+                disabled={!conditionsValidated}
+                label='Post'
+              />
+            </div>
           </div>
         </Form>
       )}

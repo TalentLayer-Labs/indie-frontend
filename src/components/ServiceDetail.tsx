@@ -6,7 +6,7 @@ import usePaymentsByService from '../hooks/usePaymentsByService';
 import useProposalsByService from '../hooks/useProposalsByService';
 import useReviewsByService from '../hooks/useReviewsByService';
 import ContactButton from '../modules/Messaging/components/ContactButton';
-import { IService, ProposalStatusEnum, ServiceStatusEnum } from '../types';
+import { IService, ProposalStatusEnum, ServiceStatusEnum, TransactionStatusEnum } from '../types';
 import { renderTokenAmountFromConfig } from '../utils/conversion';
 import { formatDate } from '../utils/dates';
 import PaymentModal from './Modal/PaymentModal';
@@ -18,14 +18,15 @@ import Stars from './Stars';
 import { useRouter } from 'next/router';
 import useCopyToClipBoard from '../hooks/useCopyToClipBoard';
 import { ClipboardCopy, CheckCircle } from 'heroicons-react';
+import { ethers } from 'ethers';
 
 function ServiceDetail({ service }: { service: IService }) {
   const { account, user } = useContext(TalentLayerContext);
   const { reviews } = useReviewsByService(service.id);
   const proposals = useProposalsByService(service.id);
   const payments = usePaymentsByService(service.id);
-  const router = useRouter();
   const [isCopied, copyToClipboard] = useCopyToClipBoard();
+  const { push } = useRouter();
 
   const isBuyer = user?.id === service.buyer.id;
   const isSeller = user?.id === service.seller?.id;
@@ -159,21 +160,37 @@ function ServiceDetail({ service }: { service: IService }) {
               <button
                 className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg'
                 onClick={() => {
-                  router.push(`/services/edit/${service.id}`);
+                  push(`/services/edit/${service.id}`);
                 }}>
                 Edit Service
               </button>
             )}
-            {(isBuyer || isSeller) &&
-              service.status === ServiceStatusEnum.Finished &&
-              !hasReviewed && (
-                <ReviewModal
-                  service={service}
-                  userToReview={isBuyer ? service.seller : service.buyer}
-                />
-              )}
-            {account && service.status !== ServiceStatusEnum.Opened && (
-              <PaymentModal service={service} payments={payments} isBuyer={isBuyer} />
+            {(isBuyer || isSeller) && (
+              <>
+                {service.status === ServiceStatusEnum.Finished && !hasReviewed && (
+                  <ReviewModal
+                    service={service}
+                    userToReview={isBuyer ? service.seller : service.buyer}
+                  />
+                )}
+                {account && service.status !== ServiceStatusEnum.Opened && (
+                  <PaymentModal service={service} payments={payments} isBuyer={isBuyer} />
+                )}
+                {account &&
+                  service.status !== ServiceStatusEnum.Opened &&
+                  validatedProposal &&
+                  service.transaction.arbitrator !== ethers.constants.AddressZero && (
+                    <button
+                      onClick={() => push(`/dispute/${validatedProposal.id}`)}
+                      className='block hover:text-white rounded-lg px-5 py-2.5 text-center text-red-600 bg-red-50 hover:bg-red-500'
+                      type='button'
+                      data-modal-toggle='defaultModal'>
+                      {service.transaction.status === TransactionStatusEnum.NoDispute
+                        ? 'Raise dispute'
+                        : 'View dispute'}
+                    </button>
+                  )}
+              </>
             )}
           </div>
         </div>
