@@ -69,6 +69,7 @@ function ProposalItem({ proposal }: { proposal: IProposal }) {
               proposal={proposal}
               account={account}
               token={service.rateToken}
+              service={service}
             />
           )}
         </div>
