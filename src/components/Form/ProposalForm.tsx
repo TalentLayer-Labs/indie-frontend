@@ -73,7 +73,7 @@ function ProposalForm({
 
   const initialValues: IFormValues = {
     about: existingProposal?.description?.about || '',
-    rateToken: existingProposal?.rateToken.address || '',
+    rateToken: service.rateToken.address,
     rateAmount: existingRateTokenAmount || 0,
     expirationDate: existingExpirationDate || 15,
     videoUrl: existingProposal?.description?.video_url || '',
@@ -170,17 +170,12 @@ function ProposalForm({
               <label className='block'>
                 <span className='text-gray-700'>Token</span>
                 <Field
-                  component='select'
+                  component='text'
                   id='rateToken'
                   name='rateToken'
-                  className='mt-1 mb-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
+                  className='mt-2 mb-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
                   placeholder=''>
-                  <option value=''>Select a token</option>
-                  {allowedTokenList.map((token, index) => (
-                    <option key={index} value={token.address}>
-                      {token.symbol}
-                    </option>
-                  ))}
+                  {service.rateToken.symbol}
                 </Field>
                 <span className='text-red-500'>
                   <ErrorMessage name='rateToken' />
