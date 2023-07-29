@@ -162,6 +162,14 @@ function ValidateProposalModal({
                       {renderTokenAmount(token, proposal.rateAmount)}
                     </p>
                   </div>
+                  {!!Number(referralAmount) && (
+                    <div className='flex justify-between items-center w-full'>
+                      <p className='text-base leading-4 text-gray-800'>Referral amount</p>
+                      <p className='text-base  leading-4 text-gray-600'>
+                        +{renderTokenAmount(token, referralAmount.toString())}
+                      </p>
+                    </div>
+                  )}
                   <div className='flex justify-between items-center w-full'>
                     <p className='text-base leading-4 text-gray-800'>
                       Fees from the marketplace originating the service{' '}
@@ -199,14 +207,6 @@ function ValidateProposalModal({
                       +{renderTokenAmount(token, protocolFee.toString())}
                     </p>
                   </div>
-                  {!!Number(referralAmount) && (
-                    <div className='flex justify-between items-center w-full'>
-                      <p className='text-base leading-4 text-gray-800'>Referral amount</p>
-                      <p className='text-base  leading-4 text-gray-600'>
-                        +{renderTokenAmount(token, referralAmount.toString())}
-                      </p>
-                    </div>
-                  )}
                 </div>
                 <div className='flex justify-between items-center w-full'>
                   <p className='text-base font-semibold leading-4 text-gray-800'>Total</p>
@@ -261,7 +261,7 @@ function ValidateProposalModal({
               </div>
             </div>
             <div className='flex items-center p-6 space-x-2 rounded-b border-t border-gray-200 '>
-              {hasEnoughBalance() ? (
+              {!hasEnoughBalance() ? (
                 <button
                   onClick={() => onSubmit()}
                   type='button'
