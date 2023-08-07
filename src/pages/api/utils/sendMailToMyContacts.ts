@@ -1,6 +1,9 @@
-import { IExecWeb3mail, getWeb3Provider, Contact } from '@iexec/web3mail';
-import { FetchProtectedDataParams, IExecDataProtector } from '@iexec/dataprotector';
-import { providers } from 'ethers';
+import { IExecWeb3mail, getWeb3Provider as getMailProvider, Contact } from '@iexec/web3mail';
+import {
+  IExecDataProtector,
+  ProtectedData,
+  getWeb3Provider as getProtectorProvider,
+} from '@iexec/dataprotector';
 
 //TODO: Add filters ?
 export const sendMailToMyContacts = async (
@@ -8,55 +11,54 @@ export const sendMailToMyContacts = async (
   emailContent: string,
   addresses?: [string],
 ) => {
-  const { NEXT_PUBLIC_WEB3MAIL_PLATFORM_PRIVATE_KEY } = process.env;
-  if (!NEXT_PUBLIC_WEB3MAIL_PLATFORM_PRIVATE_KEY) {
+  console.log('sendMailToMyContacts');
+  const privateKey = process.env.NEXT_PUBLIC_WEB3MAIL_PLATFORM_PRIVATE_KEY;
+  if (!privateKey) {
     throw new Error('Private key is not set');
   }
-  const web3Provider = getWeb3Provider(NEXT_PUBLIC_WEB3MAIL_PLATFORM_PRIVATE_KEY);
-  // const web3Provider2 = (await account.connector?.getProvider()) as providers.ExternalProvider;
-  // const dataProtector = new IExecDataProtector(web3Provider);
-  const web3mail = new IExecWeb3mail(web3Provider);
-  const contactList: Contact[] = await web3mail.fetchMyContacts();
-  console.log('contactList', contactList);
+  try {
+    const mailWeb3Provider = getMailProvider(privateKey);
+    const web3mail = new IExecWeb3mail(mailWeb3Provider);
 
-  if (addresses) {
-    // TODO: For not use dataset address " Unsupported ethProvider"
-    // TODO: Faire un fetch par owner sur les protected data.
-    // const fetchProtectedDataArg: FetchProtectedDataParams = { owner: addresses[0] };
-    // const protectedData = await dataProtector.fetchProtectedData(fetchProtectedDataArg);
-    // console.log('protectedData', protectedData);
-    // for (const address of addresses) {
-    //   console.log('sing send');
-    //   const sent = await web3mail.sendEmail({
-    //     protectedData: addresses[0],
-    //     // protectedData: protectedData[0],
-    //     emailSubject: emailSubject,
-    //     emailContent: emailContent,
-    //   });
-    //
-    //   console.log('sent email', sent);
-    // }
-  } else {
-    for (const contact of contactList) {
-      const sentMail = await web3mail.sendEmail({
-        protectedData: contact.address,
-        emailSubject: emailSubject,
-        emailContent: emailContent,
-      });
-      // const sentMail = await sendMail(web3mail, contact.address, emailSubject, emailContent);
-      console.log('sentMail', sentMail);
+    if (addresses) {
+      // const mocks = [
+      //   '0x89de0dd433bd1f6a4ec5dd2593f44b9dd4fad2f0',
+      //   '0xb57c073f2862619b4d1abf634476978c3810444c',
+      //   '0x99e0655f7bca444638c5a9b122d7d75e65dfd153',
+      //   '0xfc5013e22193957ad0eff829d62ebdec7d5a9a63',
+      // ];
+      for (const address of addresses) {
+        // for (const mock of mocks) {
+        console.log('------- Selected Addresses -------');
+        const protectorWebProvider = getProtectorProvider(privateKey);
+        const dataProtector = new IExecDataProtector(protectorWebProvider);
+        const protectedData: ProtectedData[] = await dataProtector.fetchProtectedData({
+          owner: address,
+        });
+        console.log('protectedData', protectedData);
+        const sent = await web3mail.sendEmail({
+          protectedData: protectedData[0].address,
+          // protectedData: mock,
+          emailSubject: emailSubject,
+          emailContent: emailContent,
+        });
+
+        console.log('sent email', sent);
+      }
+    } else {
+      console.log('------- All Contacts -------');
+      const contactList: Contact[] = await web3mail.fetchMyContacts();
+      console.log('contactList', contactList);
+      for (const contact of contactList) {
+        const sentMail = await web3mail.sendEmail({
+          protectedData: contact.address,
+          emailSubject: emailSubject,
+          emailContent: emailContent,
+        });
+        console.log('sentMail', sentMail);
+      }
     }
+  } catch (e) {
+    console.error(e);
   }
 };
-
-// const sendMail = async (
-//   web3mail: IExecWeb3mail,
-//   address: string,
-//   subject: string,
-//   content: string,
-// ) =>
-//   web3mail.sendEmail({
-//     protectedData: address,
-//     emailSubject: subject,
-//     emailContent: content,
-//   });
