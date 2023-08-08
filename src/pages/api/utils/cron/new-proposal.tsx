@@ -4,7 +4,6 @@ import mongoose from 'mongoose';
 import { Proposal } from './proposal-model';
 import { getProposalsFromPlatformServices } from '../../../../queries/proposals';
 
-// TODO: Run dans le context
 await mongoose.connect(process.env.MONGO_URI as string);
 
 console.log('pipi');

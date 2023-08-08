@@ -36,14 +36,14 @@ export const sendMailToMyContacts = async (
           owner: address,
         });
         console.log('protectedData', protectedData);
-        const sent = await web3mail.sendEmail({
+        const mailSent = await web3mail.sendEmail({
           protectedData: protectedData[0].address,
           // protectedData: mock,
           emailSubject: emailSubject,
           emailContent: emailContent,
         });
 
-        console.log('sent email', sent);
+        console.log('sent email', mailSent);
       }
     } else {
       console.log('------- All Contacts -------');

@@ -138,3 +138,17 @@ export const getProposalById = (id: string): Promise<any> => {
     `;
   return processRequest(query);
 };
+
+export const getProposalsFromPlatformServices = (id: string): Promise<any> => {
+  const query = `
+      {
+          proposals(where: {service_: {platform: "${id}"}}) {
+            id
+            seller {
+              address
+            }
+          }
+      }
+    `;
+  return processRequest(query);
+};
