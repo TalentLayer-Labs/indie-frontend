@@ -1,110 +1,51 @@
 import * as cron from 'node-cron';
-import { sendMailToMyContacts } from '../../../pages/api/utils/sendMailToMyContacts';
 import mongoose from 'mongoose';
 import { Proposal } from './proposal-model';
 import { getProposalsFromPlatformServices } from '../../../../queries/proposals';
+import { IProposal } from '../../../../types';
+import { sendMailToMyContacts } from '../sendMailToMyContacts';
 
-await mongoose.connect(process.env.MONGO_URI as string);
+const setCron = async () => {
+  const mongoUri = process.env.NEXT_PUBLIC_MONGO_URI;
 
-console.log('pipi');
-const cronJob = cron.schedule('* * */1 * * *', async () => {
-  console.log('Running a task every 1 hour');
-  const platformId = process.env.NEXT_PUBLIC_PLATFORM_ID;
-
-  if (!platformId) {
-    throw new Error('Private key is not set');
+  if (!mongoUri) {
+    throw new Error('MongoDb URI is not set');
   }
-  const response = await getProposalsFromPlatformServices(platformId);
-  console.log('proposals', response);
-  const proposalIds: string[] = [];
-  const nonSentProposalIdsEmails: string[] = [];
-  if (response.data.proposals.length > 0) {
-    response.data.proposals.forEach((proposal: any) => {
-      proposalIds.push(proposal.id);
-    });
-    for (const id of proposalIds) {
-      const proposal = await Proposal.findById(id);
-      if (!proposal) {
-        nonSentProposalIdsEmails.push(id);
-      }
+  await mongoose.connect(mongoUri as string);
+
+  cron.schedule('* */1 * * * *', async () => {
+    console.log('Running a task every 1 hour');
+    const platformId = process.env.NEXT_PUBLIC_PLATFORM_ID;
+
+    if (!platformId) {
+      throw new Error('Private key is not set');
     }
-    if (nonSentProposalIdsEmails) {
-      for (const id of nonSentProposalIdsEmails) {
-        await sendMailToMyContacts('You got a new proposal !', 'Blablablabla');
+    try {
+      const response = await getProposalsFromPlatformServices(platformId);
+      const nonSentProposalIds: IProposal[] = [];
+      // Check if some proposals are not already in the DB
+      if (response.data.data.proposals.length > 0) {
+        for (const proposal of response.data.data.proposals as IProposal[]) {
+          const existingProposal = await Proposal.findOne({ id: proposal.id });
+          if (!existingProposal) {
+            nonSentProposalIds.push(proposal);
+          }
+        }
       }
+      // If there are some proposals not already in the DB, send an email to the hirer & persist the proposal in the DB
+      if (nonSentProposalIds) {
+        for (const proposal of nonSentProposalIds) {
+          const sent = await sendMailToMyContacts(
+            'You got a new proposal !',
+            `You just received a new proposal from the service ${proposal.service.id} you posted on TalentLayer !`,
+            [proposal.service.buyer.address],
+          );
+          const sentProposal = await Proposal.create({ id: proposal.id });
+          sentProposal.save();
+        }
+      }
+    } catch (error) {
+      console.log(error);
     }
-  }
-});
-
-const cronJob2 = setInterval(async () => {
-  console.log('Running a task every 1 hour');
-  //   TODO: Query new proposals ==> Gonna need a centralized DB to store the proposals already consumed
-  //Emple query: send email to hirer when someone posts a proposal on their services (regardless of the platform).
-  const platformId = process.env.NEXT_PUBLIC_PLATFORM_ID;
-
-  if (!platformId) {
-    throw new Error('Private key is not set');
-  }
-  const proposals = await getProposalsFromPlatformServices(platformId);
-  // TODO proposals ? Push in array.
-  console.log('proposals', proposals);
-  // const proposal = await Proposal.findById();
-}, 10000);
-
-const mockProposals = {
-  data: {
-    proposals: [
-      {
-        id: '10-12',
-      },
-      {
-        id: '11-12',
-      },
-      {
-        id: '1-2',
-      },
-      {
-        id: '12-6',
-      },
-      {
-        id: '1-3',
-      },
-      {
-        id: '13-12',
-      },
-      {
-        id: '14-13',
-      },
-      {
-        id: '15-13',
-      },
-      {
-        id: '16-8',
-      },
-      {
-        id: '2-4',
-      },
-      {
-        id: '26-10',
-      },
-      {
-        id: '3-5',
-      },
-      {
-        id: '3-7',
-      },
-      {
-        id: '4-13',
-      },
-      {
-        id: '5-7',
-      },
-      {
-        id: '6-19',
-      },
-      {
-        id: '9-7',
-      },
-    ],
-  },
+  });
 };
