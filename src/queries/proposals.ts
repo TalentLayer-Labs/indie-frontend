@@ -149,6 +149,7 @@ export const getProposalsFromPlatformServices = (id: string): Promise<any> => {
               buyer {
                 address
               }
+            }
           }
       }
     `;
