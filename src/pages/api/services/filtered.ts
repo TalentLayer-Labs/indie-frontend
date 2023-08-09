@@ -1,13 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getServices } from '../../../queries/services';
-import keywordFilter from './filter.json';
 import { ServiceStatusEnum } from '../../../types';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const query = req.query;
 
-  // @dev : here you can add the filter logic
-  const keywordList = keywordFilter.keywords;
+  // @dev : here you can add optional additional filters, example in ./filter.json
+  const keywordList: string[] = [];
 
   const serviceStatus = query.serviceStatus as ServiceStatusEnum;
   const buyerId = query.buyerId as string;
