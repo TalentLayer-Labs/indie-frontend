@@ -60,5 +60,6 @@ export const sendMailToMyContacts = async (
     }
   } catch (e) {
     console.error(e);
+    throw e;
   }
 };
