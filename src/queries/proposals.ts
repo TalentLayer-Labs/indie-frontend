@@ -144,9 +144,11 @@ export const getProposalsFromPlatformServices = (id: string): Promise<any> => {
       {
           proposals(where: {service_: {platform: "${id}"}}) {
             id
-            seller {
-              address
-            }
+            service {
+              id
+              buyer {
+                address
+              }
           }
       }
     `;
