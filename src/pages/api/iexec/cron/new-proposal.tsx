@@ -3,7 +3,8 @@ import mongoose from 'mongoose';
 import { Proposal } from './proposal-model';
 import { getProposalsFromPlatformServices } from '../../../../queries/proposals';
 import { IProposal } from '../../../../types';
-import { sendMailToMyContacts } from '../sendMailToMyContacts';
+import { sendMailToMyContacts } from '../../utils/sendMailToMyContacts';
+import { userGaveAccessToPlatform } from '../../utils/iexec-utils';
 
 const setCron = async () => {
   const mongoUri = process.env.NEXT_PUBLIC_MONGO_URI;
@@ -32,10 +33,16 @@ const setCron = async () => {
           }
         }
       }
-      // If there are some proposals not already in the DB, send an email to the hirer & persist the proposal in the DB
+      // If there are some proposals not already in the DB, email the hirer & persist the proposal in the DB
       if (nonSentProposalIds) {
         for (const proposal of nonSentProposalIds) {
-          const sent = await sendMailToMyContacts(
+          // Check if user granted access to his email
+          const userGaveAccess = await userGaveAccessToPlatform(proposal.service.buyer.address);
+          if (!userGaveAccess) {
+            console.warn('User did not grant access to his email');
+            continue;
+          }
+          await sendMailToMyContacts(
             'You got a new proposal !',
             `You just received a new proposal from the service ${proposal.service.id} you posted on TalentLayer !`,
             [proposal.service.buyer.address],
@@ -49,3 +56,6 @@ const setCron = async () => {
     }
   });
 };
+
+//TODO Create service with my validated address
+//TODO Need a check to see if user wants to receive mails
