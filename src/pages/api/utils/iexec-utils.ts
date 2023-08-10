@@ -1,5 +1,4 @@
-import { getWeb3Provider as getProtectorProvider } from '@iexec/dataprotector/dist/utils/getWeb3Provider';
-import { IExecDataProtector } from '@iexec/dataprotector';
+import { IExecDataProtector, getWeb3Provider as getProtectorProvider } from '@iexec/dataprotector';
 
 export const userGaveAccessToPlatform = async (userAddress: string): Promise<boolean> => {
   const privateKey = process.env.NEXT_PUBLIC_WEB3MAIL_PLATFORM_PRIVATE_KEY;
