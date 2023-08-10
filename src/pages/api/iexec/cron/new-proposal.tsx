@@ -14,7 +14,7 @@ const setCron = async () => {
   }
   await mongoose.connect(mongoUri as string);
 
-  cron.schedule('* */1 * * * *', async () => {
+  cron.schedule('0 0 */1 * * *', async () => {
     console.log('Running a task every 1 hour');
     const platformId = process.env.NEXT_PUBLIC_PLATFORM_ID;
 
@@ -24,6 +24,7 @@ const setCron = async () => {
     try {
       const response = await getProposalsFromPlatformServices(platformId);
       const nonSentProposalIds: IProposal[] = [];
+
       // Check if some proposals are not already in the DB
       if (response.data.data.proposals.length > 0) {
         for (const proposal of response.data.data.proposals as IProposal[]) {
@@ -33,7 +34,8 @@ const setCron = async () => {
           }
         }
       }
-      // If there are some proposals not already in the DB, email the hirer & persist the proposal in the DB
+
+      // If some proposals are not already in the DB, email the hirer & persist the proposal in the DB
       if (nonSentProposalIds) {
         for (const proposal of nonSentProposalIds) {
           // Check if user granted access to his email
@@ -42,6 +44,7 @@ const setCron = async () => {
             console.warn('User did not grant access to his email');
             continue;
           }
+
           await sendMailToMyContacts(
             'You got a new proposal !',
             `You just received a new proposal from the service ${proposal.service.id} you posted on TalentLayer !`,
@@ -49,6 +52,7 @@ const setCron = async () => {
           );
           const sentProposal = await Proposal.create({ id: proposal.id });
           sentProposal.save();
+          console.log('Email sent');
         }
       }
     } catch (error) {
@@ -56,6 +60,3 @@ const setCron = async () => {
     }
   });
 };
-
-//TODO Create service with my validated address
-//TODO Need a check to see if user wants to receive mails

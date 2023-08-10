@@ -31,5 +31,7 @@ export const userGaveAccessToPlatform = async (userAddress: string): Promise<boo
     return false;
   }
 
+  console.warn('Web3MailProvider ----  - User has granted access');
+
   return true;
 };
