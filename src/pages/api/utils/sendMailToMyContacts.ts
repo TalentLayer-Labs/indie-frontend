@@ -28,22 +28,26 @@ export const sendMailToMyContacts = async (
       //   '0xfc5013e22193957ad0eff829d62ebdec7d5a9a63',
       // ];
       for (const address of addresses) {
-        // for (const mock of mocks) {
-        console.log('------- Selected Addresses -------');
-        const protectorWebProvider = getProtectorProvider(privateKey);
-        const dataProtector = new IExecDataProtector(protectorWebProvider);
-        const protectedData: ProtectedData[] = await dataProtector.fetchProtectedData({
-          owner: address,
-        });
-        console.log('protectedData', protectedData);
-        const mailSent = await web3mail.sendEmail({
-          protectedData: protectedData[0].address,
-          // protectedData: mock,
-          emailSubject: emailSubject,
-          emailContent: emailContent,
-        });
+        try {
+          // for (const mock of mocks) {
+          console.log('------- Selected Addresses -------');
+          const protectorWebProvider = getProtectorProvider(privateKey);
+          const dataProtector = new IExecDataProtector(protectorWebProvider);
+          const protectedData: ProtectedData[] = await dataProtector.fetchProtectedData({
+            owner: address,
+          });
+          console.log('protectedData', protectedData);
+          const mailSent = await web3mail.sendEmail({
+            protectedData: protectedData[0].address,
+            // protectedData: mock,
+            emailSubject: emailSubject,
+            emailContent: emailContent,
+          });
 
-        console.log('sent email', mailSent);
+          console.log('sent email', mailSent);
+        } catch (e) {
+          console.error(e);
+        }
       }
     } else {
       console.log('------- All Contacts -------');
