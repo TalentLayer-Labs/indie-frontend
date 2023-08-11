@@ -1,12 +1,22 @@
 import { IExecDataProtector, getWeb3Provider as getProtectorProvider } from '@iexec/dataprotector';
 
-export const userGaveAccessToPlatform = async (userAddress: string): Promise<boolean> => {
+export const userGaveAccessToPlatform = async (
+  userAddress: string,
+  providedDataProtector?: IExecDataProtector,
+): Promise<boolean> => {
   const privateKey = process.env.NEXT_PUBLIC_WEB3MAIL_PLATFORM_PRIVATE_KEY;
   if (!privateKey) {
     throw new Error('Private key is not set');
   }
-  const protectorWebProvider = getProtectorProvider(privateKey);
-  const dataProtector = new IExecDataProtector(protectorWebProvider);
+
+  let dataProtector: IExecDataProtector;
+  if (!providedDataProtector) {
+    const protectorWebProvider = getProtectorProvider(privateKey);
+    dataProtector = new IExecDataProtector(protectorWebProvider);
+  } else {
+    dataProtector = providedDataProtector;
+  }
+
   const protectedData = await dataProtector.fetchProtectedData({
     owner: userAddress,
     requiredSchema: {

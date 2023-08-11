@@ -1,0 +1,51 @@
+import { IExecWeb3mail, getWeb3Provider as getMailProvider } from '@iexec/web3mail';
+import {
+  IExecDataProtector,
+  ProtectedData,
+  getWeb3Provider as getProtectorProvider,
+} from '@iexec/dataprotector';
+import { userGaveAccessToPlatform } from './iexec-utils';
+
+export const sendMailToAddresses = async (
+  emailSubject: string,
+  emailContent: string,
+  addresses: [string],
+) => {
+  console.log('Sending email to addresses');
+  const privateKey = process.env.NEXT_PUBLIC_WEB3MAIL_PLATFORM_PRIVATE_KEY;
+  if (!privateKey) {
+    throw new Error('Private key is not set');
+  }
+  try {
+    const mailWeb3Provider = getMailProvider(privateKey);
+    const web3mail = new IExecWeb3mail(mailWeb3Provider);
+    const protectorWebProvider = getProtectorProvider(privateKey);
+    const dataProtector = new IExecDataProtector(protectorWebProvider);
+
+    for (const address of addresses) {
+      try {
+        console.log('------- Selected Addresses -------');
+        if (!(await userGaveAccessToPlatform(address, dataProtector))) {
+          console.warn(`User ${address} did not grant access to the platform`);
+          continue;
+        }
+        const protectedData: ProtectedData[] = await dataProtector.fetchProtectedData({
+          owner: address,
+        });
+        console.log('protectedData', protectedData);
+        const mailSent = await web3mail.sendEmail({
+          protectedData: protectedData[0].address,
+          emailSubject: emailSubject,
+          emailContent: emailContent,
+        });
+
+        console.log('sent email', mailSent);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+};
