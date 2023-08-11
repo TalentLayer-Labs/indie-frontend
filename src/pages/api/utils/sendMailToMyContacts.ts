@@ -18,10 +18,12 @@ export const sendMailToMyContacts = async (emailSubject: string, emailContent: s
     const contactList: Contact[] = await web3mail.fetchMyContacts();
     for (const contact of contactList) {
       try {
+        // Check whether user granted access to his email
         if (!(await userGaveAccessToPlatform(contact.address, dataProtector))) {
-          console.warn(`User ${contact.address} did not grant access to the platform`);
+          console.warn(`User ${contact.address} did not grant access to his email`);
           continue;
         }
+
         const sentMail = await web3mail.sendEmail({
           protectedData: contact.address,
           emailSubject: emailSubject,

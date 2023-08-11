@@ -43,16 +43,10 @@ const setCron = async () => {
       if (nonSentProposalIds) {
         for (const proposal of nonSentProposalIds) {
           try {
-            // Check if user granted access to his email
-            const userGaveAccess = await userGaveAccessToPlatform(proposal.service.buyer.address);
-            if (!userGaveAccess) {
-              console.warn('User did not grant access to his email');
-              continue;
-            }
-
             await sendMailToAddresses(
               'You got a new proposal !',
-              `You just received a new proposal from the service ${proposal.service.id} you posted on TalentLayer !`,
+              //TODO Add more details
+              `You just received a new proposal from ${proposal.seller.handle} for the service ${proposal.service.id} you posted on TalentLayer !`,
               [proposal.service.buyer.address],
             );
             const sentProposal = await Proposal.create({ id: proposal.id });

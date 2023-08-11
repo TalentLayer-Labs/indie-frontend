@@ -25,10 +25,13 @@ export const sendMailToAddresses = async (
     for (const address of addresses) {
       try {
         console.log('------- Selected Addresses -------');
+
+        // Check whether user granted access to his email
         if (!(await userGaveAccessToPlatform(address, dataProtector))) {
-          console.warn(`User ${address} did not grant access to the platform`);
+          console.warn(`User ${address} did not grant access to his email`);
           continue;
         }
+
         const protectedData: ProtectedData[] = await dataProtector.fetchProtectedData({
           owner: address,
         });
