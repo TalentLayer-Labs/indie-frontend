@@ -3,8 +3,8 @@ import mongoose from 'mongoose';
 import { Proposal } from './proposal-model';
 import { getProposalsFromPlatformServices } from '../../../../queries/proposals';
 import { IProposal } from '../../../../types';
-import { sendMailToMyContacts } from '../../utils/sendMailToMyContacts';
 import { userGaveAccessToPlatform } from '../../utils/iexec-utils';
+import { sendMailToAddresses } from '../../utils/sendMailToAddresses';
 
 const setCron = async () => {
   cron.schedule('0 0 */1 * * *', async () => {
@@ -50,7 +50,7 @@ const setCron = async () => {
               continue;
             }
 
-            await sendMailToMyContacts(
+            await sendMailToAddresses(
               'You got a new proposal !',
               `You just received a new proposal from the service ${proposal.service.id} you posted on TalentLayer !`,
               [proposal.service.buyer.address],
