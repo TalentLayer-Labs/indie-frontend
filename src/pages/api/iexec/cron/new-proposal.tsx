@@ -65,6 +65,8 @@ const setCron = async () => {
       }
     } catch (e) {
       console.log(e);
+      await mongoose.disconnect();
     }
+    await mongoose.disconnect();
   });
 };
