@@ -70,7 +70,7 @@ const serviceDescriptionQueryFields = `
   }
 `;
 
-// **********************  OPTION 1-  we apply each case of filtering with AND & OR **********************
+// **********************  Both query & optional filters are combined with AND & OR **********************
 const getFilteredServiceCondition = (params: IProps) => {
   let condition = 'where: {';
 
