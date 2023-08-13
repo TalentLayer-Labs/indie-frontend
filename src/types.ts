@@ -258,3 +258,8 @@ export type IEvidenceDetails = {
   description: string;
   fileHash: string;
 };
+
+export enum EmailType {
+  NewProposal = 'NewProposal',
+  ProposalAccepted = 'ProposalAccepted',
+}

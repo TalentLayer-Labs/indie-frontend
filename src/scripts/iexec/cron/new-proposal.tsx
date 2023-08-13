@@ -2,7 +2,7 @@ import * as cron from 'node-cron';
 import mongoose from 'mongoose';
 import { Proposal } from './proposal-model';
 import { getProposalsFromPlatformServices } from '../../../queries/proposals';
-import { IProposal } from '../../../types';
+import { EmailType, IProposal } from '../../../types';
 import { sendMailToAddresses } from '../../sendMailToAddresses';
 
 const setCron = async () => {
@@ -28,7 +28,9 @@ const setCron = async () => {
       if (response.data.data.proposals.length > 0) {
         for (const proposal of response.data.data.proposals as IProposal[]) {
           try {
-            const existingProposal = await Proposal.findOne({ id: proposal.id });
+            const existingProposal = await Proposal.findOne({
+              id: `${proposal.id}-${EmailType.NewProposal}`,
+            });
             if (!existingProposal) {
               nonSentProposalIds.push(proposal);
             }
@@ -52,7 +54,9 @@ const setCron = async () => {
               [proposal.service.buyer.address],
               true,
             );
-            const sentProposal = await Proposal.create({ id: proposal.id });
+            const sentProposal = await Proposal.create({
+              id: `${proposal.id}-${EmailType.NewProposal}`,
+            });
             sentProposal.save();
             console.log('Email sent');
           } catch (e) {
