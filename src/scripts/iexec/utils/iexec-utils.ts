@@ -27,7 +27,7 @@ export const userGaveAccessToPlatform = async (
   const protectedEmail = protectedData.find(item => item.name === 'TalentLayer email');
 
   if (!protectedEmail) {
-    console.warn('Web3MailProvider ----  - User has no protected email');
+    console.warn(`Web3MailProvider ----  - User ${userAddress} has no protected email`);
     return false;
   }
 
@@ -37,11 +37,11 @@ export const userGaveAccessToPlatform = async (
   });
 
   if (listGrantedAccess.length == 0) {
-    console.warn('Web3MailProvider ----  - User has not granted access yet');
+    console.warn(`Web3MailProvider ----  - User ${userAddress} has not granted access yet`);
     return false;
   }
 
-  console.warn('Web3MailProvider ----  - User has granted access');
+  console.warn(`Web3MailProvider ----  - User ${userAddress} has granted access`);
 
   return true;
 };

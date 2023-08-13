@@ -4,7 +4,7 @@ import {
   ProtectedData,
   getWeb3Provider as getProtectorProvider,
 } from '@iexec/dataprotector';
-import { userGaveAccessToPlatform } from './iexec-utils';
+import { userGaveAccessToPlatform } from './iexec/utils/iexec-utils';
 
 export const sendMailToAddresses = async (
   emailSubject: string,
@@ -24,7 +24,7 @@ export const sendMailToAddresses = async (
 
     for (const address of addresses) {
       try {
-        console.log('------- Selected Addresses -------');
+        console.log(`------- Sending to ${address} -------`);
 
         // Check whether user granted access to his email
         if (!(await userGaveAccessToPlatform(address, dataProtector))) {

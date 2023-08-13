@@ -1,10 +1,9 @@
 import * as cron from 'node-cron';
 import mongoose from 'mongoose';
 import { Proposal } from './proposal-model';
-import { getProposalsFromPlatformServices } from '../../../../queries/proposals';
-import { IProposal } from '../../../../types';
-import { userGaveAccessToPlatform } from '../../utils/iexec-utils';
-import { sendMailToAddresses } from '../../utils/sendMailToAddresses';
+import { getProposalsFromPlatformServices } from '../../../queries/proposals';
+import { IProposal } from '../../../types';
+import { sendMailToAddresses } from '../../sendMailToAddresses';
 
 const setCron = async () => {
   cron.schedule('0 0 */1 * * *', async () => {
