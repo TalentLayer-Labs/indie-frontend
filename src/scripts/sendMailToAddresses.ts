@@ -10,6 +10,7 @@ export const sendMailToAddresses = async (
   emailSubject: string,
   emailContent: string,
   addresses: [string],
+  throwable = false,
 ) => {
   console.log('Sending email to addresses');
   const privateKey = process.env.NEXT_PUBLIC_WEB3MAIL_PLATFORM_PRIVATE_KEY;
@@ -28,7 +29,8 @@ export const sendMailToAddresses = async (
 
         // Check whether user granted access to his email
         if (!(await userGaveAccessToPlatform(address, dataProtector))) {
-          console.warn(`User ${address} did not grant access to his email`);
+          if (throwable)
+            throwError(`sendMailToAddresses - User ${address} did not grant access to his email`);
           continue;
         }
 
@@ -44,11 +46,15 @@ export const sendMailToAddresses = async (
 
         console.log('sent email', mailSent);
       } catch (e) {
-        console.error(e);
+        throwable ? throwError(e) : console.error(e);
       }
     }
   } catch (e) {
     console.error(e);
     throw e;
   }
+};
+
+const throwError = (message: string) => {
+  throw new Error(message);
 };

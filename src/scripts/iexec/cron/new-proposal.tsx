@@ -42,11 +42,13 @@ const setCron = async () => {
       if (nonSentProposalIds) {
         for (const proposal of nonSentProposalIds) {
           try {
+            // @dev: This function needs to be throwable to avoid persisting the proposal in the DB if the email is not sent
             await sendMailToAddresses(
               'You got a new proposal !',
               //TODO Add more details
               `You just received a new proposal from ${proposal.seller.handle} for the service ${proposal.service.id} you posted on TalentLayer !`,
               [proposal.service.buyer.address],
+              true,
             );
             const sentProposal = await Proposal.create({ id: proposal.id });
             sentProposal.save();
