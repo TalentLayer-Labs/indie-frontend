@@ -55,6 +55,6 @@ export const sendMailToAddresses = async (
   }
 };
 
-const throwError = (message: string) => {
+const throwError = (message: any) => {
   throw new Error(message);
 };
