@@ -44,9 +44,11 @@ const setCron = async () => {
           try {
             // @dev: This function needs to be throwable to avoid persisting the proposal in the DB if the email is not sent
             await sendMailToAddresses(
-              'You got a new proposal !',
-              //TODO Add more details
-              `You just received a new proposal from ${proposal.seller.handle} for the service ${proposal.service.id} you posted on TalentLayer !`,
+              `You got a new proposal ! - ${proposal.description?.title}`,
+              `You just received a new proposal for the service ${proposal.service.id} you posted on TalentLayer !
+              ${proposal.seller.handle} can complete your service for the following amount: ${proposal.rateAmount} : ${proposal.rateToken}. 
+              Here is what is proposed: ${proposal.description?.about}.
+              This Proposal can be viewed at ${process.env.NEXT_PUBLIC_IPFS_BASE_URL}${proposal.id}`,
               [proposal.service.buyer.address],
               true,
             );
