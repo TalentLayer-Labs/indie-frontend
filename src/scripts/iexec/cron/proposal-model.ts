@@ -1,11 +1,16 @@
 import { Schema, model, models } from 'mongoose';
 
-const proposalSchema = new Schema({
+const emailSchema = new Schema({
   id: {
     type: String,
     required: true,
     unique: true,
   },
+  date: {
+    type: Number,
+    required: true,
+    unique: false,
+  },
 });
 
-export const Proposal = models.Proposal || model('Proposal', proposalSchema);
+export const Email = models.Email || model('Email', emailSchema);

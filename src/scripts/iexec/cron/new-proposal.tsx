@@ -1,6 +1,6 @@
 import * as cron from 'node-cron';
 import mongoose from 'mongoose';
-import { Proposal } from './proposal-model';
+import { Email } from './proposal-model';
 import { getProposalsFromPlatformServices } from '../../../queries/proposals';
 import { EmailType, IProposal } from '../../../types';
 import { sendMailToAddresses } from '../../sendMailToAddresses';
@@ -28,7 +28,7 @@ const setCron = async () => {
       if (response.data.data.proposals.length > 0) {
         for (const proposal of response.data.data.proposals as IProposal[]) {
           try {
-            const existingProposal = await Proposal.findOne({
+            const existingProposal = await Email.findOne({
               id: `${proposal.id}-${EmailType.NewProposal}`,
             });
             if (!existingProposal) {
@@ -54,10 +54,13 @@ const setCron = async () => {
               [proposal.service.buyer.address],
               true,
             );
-            const sentProposal = await Proposal.create({
+            // TODO: Rename to email
+            const sentEmail = await Email.create({
               id: `${proposal.id}-${EmailType.NewProposal}`,
+              //TODO add date ==> Pas encore testé
+              date: `${new Date().getTime()}`,
             });
-            sentProposal.save();
+            sentEmail.save();
             console.log('Email sent');
           } catch (e) {
             console.error(e);
