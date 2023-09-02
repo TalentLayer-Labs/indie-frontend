@@ -54,7 +54,7 @@ const setCron = async () => {
               [proposal.service.buyer.address],
               true,
             );
-            // TODO: Rename to email
+            // TODO: Rename to email || Check modified schema
             const sentEmail = await Email.create({
               id: `${proposal.id}-${EmailType.NewProposal}`,
               //TODO add date ==> Pas encore testé

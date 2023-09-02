@@ -1,5 +1,5 @@
 import { IExecWeb3mail, getWeb3Provider as getMailProvider, Contact } from '@iexec/web3mail';
-import { userGaveAccessToPlatform } from './iexec/utils/iexec-utils';
+import { userGaveAccessToPlatform } from '../modules/Web3Mail/utils/iexec-utils';
 import { IExecDataProtector, getWeb3Provider as getProtectorProvider } from '@iexec/dataprotector';
 
 export const sendMailToMyContacts = async (emailSubject: string, emailContent: string) => {
