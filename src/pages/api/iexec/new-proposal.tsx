@@ -20,28 +20,30 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
   try {
     const response = await getProposalsFromPlatformServices(platformId);
-    const nonSentProposalIds: IProposal[] = [];
+    console.log('All proposals', response.data.data.proposals);
+    const nonSentProposals: IProposal[] = [];
 
     // Check if some proposals are not already in the DB
     if (response.data.data.proposals.length > 0) {
       for (const proposal of response.data.data.proposals as IProposal[]) {
+        console.log('Proposal', proposal.service.buyer.address);
         try {
           const existingProposal = await Email.findOne({
             id: `${proposal.id}-${EmailType.NewProposal}`,
           });
           if (!existingProposal) {
-            nonSentProposalIds.push(proposal);
+            console.log('Proposal not in DB');
+            nonSentProposals.push(proposal);
           }
         } catch (e) {
           console.error(e);
-          res.status(500).json('Database error');
         }
       }
     }
 
     // If some proposals are not already in the DB, email the hirer & persist the proposal in the DB
-    if (nonSentProposalIds) {
-      for (const proposal of nonSentProposalIds) {
+    if (nonSentProposals) {
+      for (const proposal of nonSentProposals) {
         try {
           // @dev: This function needs to be throwable to avoid persisting the proposal in the DB if the email is not sent
           await sendMailToAddresses(
@@ -53,23 +55,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             [proposal.service.buyer.address],
             true,
           );
-          // TODO: Rename to email || Check modified schema
           const sentEmail = await Email.create({
             id: `${proposal.id}-${EmailType.NewProposal}`,
-            //TODO add date ==> Pas encore testé
             date: `${new Date().getTime()}`,
           });
           sentEmail.save();
           console.log('Email sent');
         } catch (e) {
           console.error(e);
-          res.status(500).json('Error while sending email');
         }
       }
     }
   } catch (e) {
     console.log(e);
     await mongoose.disconnect();
+    //TODO : handle error - List of emails which didnt go through ?
+    res.status(500).json('Error while sending email');
   }
+  res.status(200).json('Tudo Bem');
   await mongoose.disconnect();
 }
