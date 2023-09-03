@@ -4,9 +4,11 @@ import { EmailType, IProposal } from '../../../types';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { Email } from '../../../scripts/iexec/cron/proposal-model';
 import { sendMailToAddresses } from '../../../scripts/sendMailToAddresses';
+import { Timestamp } from '../../../scripts/iexec/cron/timestamp-model';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const mongoUri = process.env.NEXT_MONGO_URI;
+  const TIMESTAMP_NOW_SECONDS = Math.floor(new Date().getTime() / 1000);
 
   if (!mongoUri) {
     throw new Error('MongoDb URI is not set');
@@ -16,10 +18,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const platformId = process.env.NEXT_PUBLIC_PLATFORM_ID;
 
   if (!platformId) {
-    throw new Error('Private key is not set');
+    throw new Error('Platform Id is not set');
   }
   try {
-    const response = await getProposalsFromPlatformServices(platformId);
+    //Get latest timestamp from DB if exists
+    let timestamp = await Timestamp.findOne({ id: '1' });
+    if (!timestamp) {
+      timestamp = await Timestamp.create({
+        id: '1',
+        date: `${TIMESTAMP_NOW_SECONDS - 3600 * 24}`,
+      });
+      timestamp.save();
+    }
+    const timestampValue = timestamp.date;
+
+    // Overrite timestamp with new value
+    const newTimestamp = await Timestamp.updateOne(
+      { id: '1' },
+      { date: `${TIMESTAMP_NOW_SECONDS}` },
+    );
+    const response = await getProposalsFromPlatformServices(platformId, timestampValue);
     console.log('All proposals', response.data.data.proposals);
     const nonSentProposals: IProposal[] = [];
 
@@ -57,7 +75,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           );
           const sentEmail = await Email.create({
             id: `${proposal.id}-${EmailType.NewProposal}`,
-            date: `${new Date().getTime()}`,
+            date: `${TIMESTAMP_NOW_SECONDS}`,
           });
           sentEmail.save();
           console.log('Email sent');
