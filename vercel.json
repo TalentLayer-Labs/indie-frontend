@@ -1,5 +1,11 @@
 {
   "rewrites":  [
     {"source": "/(.*)", "destination": "/"}
+  ],
+  "crons":[
+    {
+      "path":"/api/iexec/new-proposal?key=racoonKey",
+      "schedule":"0 0 */1 * * *"
+    }
   ]
 }

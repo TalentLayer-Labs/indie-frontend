@@ -10,6 +10,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const mongoUri = process.env.NEXT_MONGO_URI;
   const TIMESTAMP_NOW_SECONDS = Math.floor(new Date().getTime() / 1000);
 
+  // Check whether the key is valid
+  const key = req.query.key;
+  if (key !== process.env.NEXT_PRIVATE_CRON_KEY) {
+    return res.status(401).json({ message: 'Unauthorized' });
+  }
+
   if (!mongoUri) {
     throw new Error('MongoDb URI is not set');
   }
@@ -87,7 +93,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   } catch (e) {
     console.log(e);
     await mongoose.disconnect();
-    //TODO : handle error - List of emails which didnt go through ?
     res.status(500).json('Error while sending email');
   }
   res.status(200).json('Tudo Bem');
