@@ -2,7 +2,11 @@ import { IExecWeb3mail, getWeb3Provider as getMailProvider, Contact } from '@iex
 import { userGaveAccessToPlatform } from '../modules/Web3Mail/utils/iexec-utils';
 import { IExecDataProtector, getWeb3Provider as getProtectorProvider } from '@iexec/dataprotector';
 
-export const sendMailToMyContacts = async (emailSubject: string, emailContent: string) => {
+export const sendMailToMyContacts = async (
+  emailSubject: string,
+  emailContent: string,
+  throwable = false,
+) => {
   console.log('Sending email to all contacts');
   const privateKey = process.env.NEXT_PUBLIC_WEB3MAIL_PLATFORM_PRIVATE_KEY;
   if (!privateKey) {
@@ -20,7 +24,10 @@ export const sendMailToMyContacts = async (emailSubject: string, emailContent: s
       try {
         // Check whether user granted access to his email
         if (!(await userGaveAccessToPlatform(contact.address, dataProtector))) {
-          console.warn(`User ${contact.address} did not grant access to his email`);
+          if (throwable)
+            console.warn(
+              `sendMailToAddresses - User ${contact.address} did not grant access to his email`,
+            );
           continue;
         }
 
@@ -31,11 +38,15 @@ export const sendMailToMyContacts = async (emailSubject: string, emailContent: s
         });
         console.log('sentMail', sentMail);
       } catch (e) {
-        console.error(e);
+        throwable ? throwError(e) : console.error(e);
       }
     }
   } catch (e) {
-    console.error(e);
+    throwable ? throwError(e) : console.error(e);
     throw e;
   }
+};
+
+const throwError = (message: any) => {
+  throw new Error(message);
 };

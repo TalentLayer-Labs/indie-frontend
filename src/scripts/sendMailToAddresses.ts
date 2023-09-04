@@ -29,8 +29,11 @@ export const sendMailToAddresses = async (
 
         // Check whether user granted access to his email
         if (!(await userGaveAccessToPlatform(address, dataProtector))) {
-          if (throwable)
-            throwError(`sendMailToAddresses - User ${address} did not grant access to his email`);
+          throwable
+            ? throwError(`sendMailToAddresses - User ${address} did not grant access to his email`)
+            : console.warn(
+                `sendMailToAddresses - User ${address} did not grant access to his email`,
+              );
           continue;
         }
 
@@ -46,12 +49,11 @@ export const sendMailToAddresses = async (
 
         console.log('sent email', mailSent);
       } catch (e) {
-        throwable ? throwError(e) : console.error(e);
+        throwable ? throwError(e) : console.log(e);
       }
     }
   } catch (e) {
-    console.error(e);
-    throw e;
+    throwable ? throwError(e) : console.log(e);
   }
 };
 

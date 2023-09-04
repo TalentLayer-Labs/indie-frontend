@@ -26,6 +26,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (!platformId) {
     throw new Error('Platform Id is not set');
   }
+
   try {
     //Get latest timestamp from DB if exists
     let timestamp = await Timestamp.findOne({ id: '1' });
@@ -39,11 +40,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const timestampValue = timestamp.date;
 
     // Overrite timestamp with new value
-    const newTimestamp = await Timestamp.updateOne(
-      { id: '1' },
-      { date: `${TIMESTAMP_NOW_SECONDS}` },
-    );
-    const response = await getProposalsFromPlatformServices(platformId, timestampValue);
+    await Timestamp.updateOne({ id: '1' }, { date: `${TIMESTAMP_NOW_SECONDS}` });
+    const response = await getProposalsFromPlatformServices(platformId, '0');
+    // const response = await getProposalsFromPlatformServices(platformId, timestampValue);
     console.log('All proposals', response.data.data.proposals);
     const nonSentProposals: IProposal[] = [];
 
@@ -60,7 +59,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             nonSentProposals.push(proposal);
           }
         } catch (e) {
-          console.error(e);
+          console.log(e);
         }
       }
     }
@@ -73,7 +72,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           await sendMailToAddresses(
             `You got a new proposal ! - ${proposal.description?.title}`,
             `You just received a new proposal for the service ${proposal.service.id} you posted on TalentLayer !
-              ${proposal.seller.handle} can complete your service for the following amount: ${proposal.rateAmount} : ${proposal.rateToken}. 
+              ${proposal.seller.handle} can complete your service for the following amount: ${proposal.rateAmount} : ${proposal.rateToken.symbol}. 
               Here is what is proposed: ${proposal.description?.about}.
               This Proposal can be viewed at ${process.env.NEXT_PUBLIC_IPFS_BASE_URL}${proposal.id}`,
             [proposal.service.buyer.address],
@@ -86,7 +85,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           sentEmail.save();
           console.log('Email sent');
         } catch (e) {
-          console.error(e);
+          console.log(e);
         }
       }
     }

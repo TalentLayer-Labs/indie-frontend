@@ -148,6 +148,9 @@ export const getProposalsFromPlatformServices = (id: string, timestamp: string):
         ) {
           id
           rateAmount
+          rateToken {
+            symbol
+          }
           service {
             id
             buyer {
