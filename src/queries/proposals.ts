@@ -139,12 +139,13 @@ export const getProposalById = (id: string): Promise<any> => {
   return processRequest(query);
 };
 
-export const getProposalsFromPlatformServices = (id: string, timestamp: string): Promise<any> => {
+export const getProposalsFromPlatformServices = (id: string, timestamp?: string): Promise<any> => {
+  const timestampCondition = timestamp ? `, updatedAt_gt: "${timestamp}"` : '';
   const query = `
       {
         proposals(
           orderBy: updatedAt
-          where: {status: Pending, service_: {platform: "${id}", status: Opened}, updatedAt_gt: "${timestamp}"}
+          where: {status: Pending, service_: {platform: "${id}", status: Opened} ${timestampCondition}}
         ) {
           id
           rateAmount
