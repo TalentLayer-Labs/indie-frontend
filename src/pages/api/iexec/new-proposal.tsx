@@ -3,7 +3,7 @@ import { getProposalsFromPlatformServices } from '../../../queries/proposals';
 import { EmailType, IProposal } from '../../../types';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { Email } from '../../../modules/Web3Mail/schemas/proposal-model';
-import { sendMailToAddresses } from '../../../scripts/sendMailToAddresses';
+import { sendMailToAddresses } from '../../../scripts/iexec/sendMailToAddresses';
 import { Timestamp } from '../../../modules/Web3Mail/schemas/timestamp-model';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -41,6 +41,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // Overrite timestamp with new value
     await Timestamp.updateOne({ id: '1' }, { date: `${TIMESTAMP_NOW_SECONDS}` });
+    //TODO Uncomment
     const response = await getProposalsFromPlatformServices(platformId, '0');
     // const response = await getProposalsFromPlatformServices(platformId, timestampValue);
     console.log('All proposals', response.data.data.proposals);

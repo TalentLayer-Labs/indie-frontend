@@ -4,7 +4,7 @@ import {
   ProtectedData,
   getWeb3Provider as getProtectorProvider,
 } from '@iexec/dataprotector';
-import { userGaveAccessToPlatform } from '../modules/Web3Mail/utils/iexec-utils';
+import { userGaveAccessToPlatform } from '../../modules/Web3Mail/utils/iexec-utils';
 
 export const sendMailToAddresses = async (
   emailSubject: string,

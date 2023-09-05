@@ -2,9 +2,9 @@ import mongoose from 'mongoose';
 import { Email } from '../../modules/Web3Mail/schemas/proposal-model';
 import { getProposalsFromPlatformServices } from '../../queries/proposals';
 import { EmailType, IProposal } from '../../types';
-import { sendMailToAddresses } from '../sendMailToAddresses';
+import { sendMailToAddresses } from './sendMailToAddresses';
 
-const sendAcceptedProposalEmail = async () => {
+const sendAcceptedProposalsEmail = async (timestamp?: string) => {
   const mongoUri = process.env.NEXT_MONGO_URI;
 
   if (!mongoUri) {
@@ -18,7 +18,7 @@ const sendAcceptedProposalEmail = async () => {
     throw new Error('Private key is not set');
   }
   try {
-    const response = await getProposalsFromPlatformServices(platformId);
+    const response = await getProposalsFromPlatformServices(platformId, timestamp);
     const nonSentProposalIds: IProposal[] = [];
 
     // Check if some proposals are not already in the DB
