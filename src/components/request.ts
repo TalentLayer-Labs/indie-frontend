@@ -139,3 +139,12 @@ export const delegateMintID = async (
     throw err;
   }
 };
+
+export const activateCron = async (): Promise<any> => {
+  try {
+    return await axios.post('/api/iexec/new-proposal?key=racoonKey');
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+};

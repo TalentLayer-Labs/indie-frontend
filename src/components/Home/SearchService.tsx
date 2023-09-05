@@ -1,4 +1,5 @@
 import SearchServiceButton from '../Form/SearchServiceButton';
+import { activateCron } from '../request';
 
 function SearchService() {
   return (
@@ -12,6 +13,7 @@ function SearchService() {
             Earn money doing what you love. Find a job that fits your skills and schedule.
           </p>
           <SearchServiceButton value={''} />
+          <button onClick={() => activateCron()}>Activate Cron</button>
         </div>
       </div>
     </div>
