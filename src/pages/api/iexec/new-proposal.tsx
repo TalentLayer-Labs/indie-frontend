@@ -2,9 +2,9 @@ import mongoose from 'mongoose';
 import { getProposalsFromPlatformServices } from '../../../queries/proposals';
 import { EmailType, IProposal } from '../../../types';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { Email } from '../../../scripts/iexec/cron/proposal-model';
+import { Email } from '../../../modules/Web3Mail/schemas/proposal-model';
 import { sendMailToAddresses } from '../../../scripts/sendMailToAddresses';
-import { Timestamp } from '../../../scripts/iexec/cron/timestamp-model';
+import { Timestamp } from '../../../modules/Web3Mail/schemas/timestamp-model';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const mongoUri = process.env.NEXT_MONGO_URI;
@@ -55,11 +55,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             id: `${proposal.id}-${EmailType.NewProposal}`,
           });
           if (!existingProposal) {
-            console.log('Proposal not in DB');
+            console.error('Proposal not in DB');
             nonSentProposals.push(proposal);
           }
         } catch (e) {
-          console.log(e);
+          console.error(e);
         }
       }
     }
@@ -85,12 +85,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           sentEmail.save();
           console.log('Email sent');
         } catch (e) {
-          console.log(e);
+          console.error(e);
         }
       }
     }
   } catch (e) {
-    console.log(e);
+    console.error(e);
     await mongoose.disconnect();
     res.status(500).json('Error while sending email');
   }
