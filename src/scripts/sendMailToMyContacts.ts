@@ -24,10 +24,13 @@ export const sendMailToMyContacts = async (
       try {
         // Check whether user granted access to his email
         if (!(await userGaveAccessToPlatform(contact.address, dataProtector))) {
-          if (throwable)
-            console.warn(
-              `sendMailToAddresses - User ${contact.address} did not grant access to his email`,
-            );
+          throwable
+            ? throwError(
+                `sendMailToMyContacts - User ${contact.address} did not grant access to his email`,
+              )
+            : console.warn(
+                `sendMailToMyContacts - User ${contact.address} did not grant access to his email`,
+              );
           continue;
         }
 
