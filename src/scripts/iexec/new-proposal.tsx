@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { NewProposalEmail } from '../../modules/Web3Mail/schemas/proposal-model';
+import { NewProposalEmail } from '../../modules/Web3Mail/schemas/new-proposal-model';
 import { getProposalsFromPlatformServices } from '../../queries/proposals';
 import { EmailType, IProposal } from '../../types';
 import { sendMailToAddresses } from './sendMailToAddresses';

@@ -167,3 +167,32 @@ export const getProposalsFromPlatformServices = (id: string, timestamp?: string)
     `;
   return processRequest(query);
 };
+
+export const getAcceptedProposal = (id: string, timestamp?: string): Promise<any> => {
+  const timestampCondition = timestamp ? `, updatedAt_gt: "${timestamp}"` : '';
+  const query = `
+      {
+        proposals(
+          orderBy: updatedAt
+          where: {status: Validated, service_: {platform: "${id}", status: Opened} ${timestampCondition}}
+        ) {
+          id
+          rateAmount
+          rateToken {
+            symbol
+          }
+          service {
+            id
+            buyer {
+              address
+            }
+          }
+          seller {
+            address
+            handle
+          }
+        }
+      }
+    `;
+  return processRequest(query);
+};

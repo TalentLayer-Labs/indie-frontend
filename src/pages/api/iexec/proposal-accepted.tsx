@@ -1,10 +1,10 @@
 import mongoose from 'mongoose';
-import { getProposalsFromPlatformServices } from '../../../queries/proposals';
+import { getAcceptedProposal } from '../../../queries/proposals';
 import { EmailType, IProposal } from '../../../types';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { NewProposalEmail } from '../../../modules/Web3Mail/schemas/new-proposal-model';
 import { sendMailToAddresses } from '../../../scripts/iexec/sendMailToAddresses';
 import { Timestamp } from '../../../modules/Web3Mail/schemas/timestamp-model';
+import { AcceptedProposalEmail } from '../../../modules/Web3Mail/schemas/accepted-proposal-model';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const mongoUri = process.env.NEXT_MONGO_URI;
@@ -45,7 +45,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       { date: `${TIMESTAMP_NOW_SECONDS}` },
     );
     //TODO Uncomment
-    const response = await getProposalsFromPlatformServices(platformId, '0');
+    const response = await getAcceptedProposal(platformId, '0');
     // const response = await getProposalsFromPlatformServices(platformId, timestampValue);
     console.log('All proposals', response.data.data.proposals);
     const nonSentProposals: IProposal[] = [];
@@ -55,7 +55,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       for (const proposal of response.data.data.proposals as IProposal[]) {
         console.log('Proposal', proposal.service.buyer.address);
         try {
-          const existingProposal = await NewProposalEmail.findOne({
+          const existingProposal = await AcceptedProposalEmail.findOne({
             id: `${proposal.id}-${EmailType.NewProposal}`,
           });
           if (!existingProposal) {
@@ -72,19 +72,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (nonSentProposals) {
       for (const proposal of nonSentProposals) {
         //TODO Do we need to integrate a check on user's metadata to see if they opted to a certain feature ?
+        //TODO Who do we send the notification to, buyer, seller or both ?
         try {
           // @dev: This function needs to be throwable to avoid persisting the proposal in the DB if the email is not sent
           await sendMailToAddresses(
-            `You got a new proposal ! - ${proposal.description?.title}`,
-            `You just received a new proposal for the service ${proposal.service.id} you posted on TalentLayer !
-              ${proposal.seller.handle} can complete your service for the following amount: ${proposal.rateAmount} : ${proposal.rateToken.symbol}. 
-              Here is what is proposed: ${proposal.description?.about}.
+            `Your proposal got accepted ! - ${proposal.description?.title}`,
+            `The proposal you made for the service ${proposal.service.id} you posted on TalentLayer got accepted by ${proposal.service.buyer} !
+              The following amount was agreed: ${proposal.rateAmount} : ${proposal.rateToken.symbol}. 
+              For the following work to be provided: ${proposal.description?.about}.
               This Proposal can be viewed at ${process.env.NEXT_PUBLIC_IPFS_BASE_URL}${proposal.id}`,
-            [proposal.service.buyer.address],
+            [proposal.seller.address],
             true,
           );
-          const sentEmail = await NewProposalEmail.create({
-            id: `${proposal.id}-${EmailType.NewProposal}`,
+          const sentEmail = await AcceptedProposalEmail.create({
+            id: `${proposal.id}-${EmailType.AcceptedProposal}`,
             date: `${TIMESTAMP_NOW_SECONDS}`,
           });
           sentEmail.save();

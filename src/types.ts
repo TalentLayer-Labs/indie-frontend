@@ -261,5 +261,5 @@ export type IEvidenceDetails = {
 
 export enum EmailType {
   NewProposal = 'NewProposal',
-  ProposalAccepted = 'ProposalAccepted',
+  AcceptedProposal = 'AcceptedProposal',
 }
