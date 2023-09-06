@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import { getProposalsFromPlatformServices } from '../../../queries/proposals';
 import { EmailType, IProposal } from '../../../types';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { Email } from '../../../modules/Web3Mail/schemas/proposal-model';
+import { NewProposalEmail } from '../../../modules/Web3Mail/schemas/proposal-model';
 import { sendMailToAddresses } from '../../../scripts/iexec/sendMailToAddresses';
 import { Timestamp } from '../../../modules/Web3Mail/schemas/timestamp-model';
 
@@ -29,10 +29,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   try {
     //Get latest timestamp from DB if exists
-    let timestamp = await Timestamp.findOne({ id: '1' });
+    let timestamp = await Timestamp.findOne({ type: EmailType.NewProposal });
     if (!timestamp) {
       timestamp = await Timestamp.create({
-        id: '1',
+        type: EmailType.NewProposal,
         date: `${TIMESTAMP_NOW_SECONDS - 3600 * 24}`,
       });
       timestamp.save();
@@ -40,7 +40,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const timestampValue = timestamp.date;
 
     // Overrite timestamp with new value
-    await Timestamp.updateOne({ id: '1' }, { date: `${TIMESTAMP_NOW_SECONDS}` });
+    await Timestamp.updateOne(
+      { type: EmailType.NewProposal },
+      { date: `${TIMESTAMP_NOW_SECONDS}` },
+    );
     //TODO Uncomment
     const response = await getProposalsFromPlatformServices(platformId, '0');
     // const response = await getProposalsFromPlatformServices(platformId, timestampValue);
@@ -52,7 +55,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       for (const proposal of response.data.data.proposals as IProposal[]) {
         console.log('Proposal', proposal.service.buyer.address);
         try {
-          const existingProposal = await Email.findOne({
+          const existingProposal = await NewProposalEmail.findOne({
             id: `${proposal.id}-${EmailType.NewProposal}`,
           });
           if (!existingProposal) {
@@ -68,6 +71,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // If some proposals are not already in the DB, email the hirer & persist the proposal in the DB
     if (nonSentProposals) {
       for (const proposal of nonSentProposals) {
+        //TODO Do we need to integrate a check on user's metadata to see if they opted to a certain feature ?
         try {
           // @dev: This function needs to be throwable to avoid persisting the proposal in the DB if the email is not sent
           await sendMailToAddresses(
@@ -79,7 +83,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             [proposal.service.buyer.address],
             true,
           );
-          const sentEmail = await Email.create({
+          const sentEmail = await NewProposalEmail.create({
             id: `${proposal.id}-${EmailType.NewProposal}`,
             date: `${TIMESTAMP_NOW_SECONDS}`,
           });

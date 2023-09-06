@@ -1,7 +1,7 @@
 import { Schema, model, models } from 'mongoose';
 
 const timestampSchema = new Schema({
-  id: {
+  type: {
     type: String,
     required: true,
     unique: true,

@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { Email } from '../../modules/Web3Mail/schemas/proposal-model';
+import { NewProposalEmail } from '../../modules/Web3Mail/schemas/proposal-model';
 import { getProposalsFromPlatformServices } from '../../queries/proposals';
 import { EmailType, IProposal } from '../../types';
 import { sendMailToAddresses } from './sendMailToAddresses';
@@ -25,7 +25,7 @@ const sendAcceptedProposalsEmail = async (timestamp?: string) => {
     if (response.data.data.proposals.length > 0) {
       for (const proposal of response.data.data.proposals as IProposal[]) {
         try {
-          const existingProposal = await Email.findOne({
+          const existingProposal = await NewProposalEmail.findOne({
             id: `${proposal.id}-${EmailType.NewProposal}`,
           });
           if (!existingProposal) {
@@ -40,6 +40,7 @@ const sendAcceptedProposalsEmail = async (timestamp?: string) => {
     // If some proposals are not already in the DB, email the hirer & persist the proposal in the DB
     if (nonSentProposalIds) {
       for (const proposal of nonSentProposalIds) {
+        //TODO Do we need to integrate a check on user's metadata to see if they opted to a certain feature ?
         try {
           // @dev: This function needs to be throwable to avoid persisting the proposal in the DB if the email is not sent
           await sendMailToAddresses(
@@ -51,7 +52,7 @@ const sendAcceptedProposalsEmail = async (timestamp?: string) => {
             [proposal.service.buyer.address],
             true,
           );
-          const sentEmail = await Email.create({
+          const sentEmail = await NewProposalEmail.create({
             id: `${proposal.id}-${EmailType.NewProposal}`,
             date: `${new Date().getTime()}`,
           });

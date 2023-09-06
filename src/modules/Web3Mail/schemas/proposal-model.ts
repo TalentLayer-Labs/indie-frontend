@@ -1,6 +1,6 @@
 import { Schema, model, models } from 'mongoose';
 
-const emailSchema = new Schema({
+const newProposalEmailSchema = new Schema({
   id: {
     type: String,
     required: true,
@@ -13,4 +13,5 @@ const emailSchema = new Schema({
   },
 });
 
-export const Email = models.Email || model('Email', emailSchema);
+export const NewProposalEmail =
+  models.NewProposalEmail || model('NewProposalEmail', newProposalEmailSchema);
