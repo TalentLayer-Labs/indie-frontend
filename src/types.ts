@@ -260,6 +260,10 @@ export type IEvidenceDetails = {
 };
 
 export enum EmailType {
-  NewProposal = 'NewProposal',
-  AcceptedProposal = 'AcceptedProposal',
+  NewProposal = 'newProposal',
+  ProposalValidated = 'proposalValidated',
+  FundRelease = 'fundRelease',
+  Review = 'review',
+  PlatformMarketing = 'platformMarketing',
+  NewService = 'NewService',
 }

@@ -85,7 +85,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             true,
           );
           const sentEmail = await AcceptedProposalEmail.create({
-            id: `${proposal.id}-${EmailType.AcceptedProposal}`,
+            id: `${proposal.id}-${EmailType.ProposalValidated}`,
             date: `${TIMESTAMP_NOW_SECONDS}`,
           });
           sentEmail.save();
