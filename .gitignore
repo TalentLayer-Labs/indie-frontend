@@ -25,6 +25,7 @@ dist-ssr
 
 .env
 .next
+vercel.json
 
 # typescript
 *.tsbuildinfo

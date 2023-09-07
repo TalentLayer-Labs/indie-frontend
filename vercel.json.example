@@ -1,3 +1,4 @@
+//TODO Add explanation in readme
 {
   "rewrites":  [
     {"source": "/(.*)", "destination": "/"}
