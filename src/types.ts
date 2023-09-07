@@ -265,5 +265,6 @@ export enum EmailType {
   FundRelease = 'fundRelease',
   Review = 'review',
   PlatformMarketing = 'platformMarketing',
-  NewService = 'NewService',
+  ProtocolMarketing = 'protocolMarketing',
+  NewService = 'newService',
 }

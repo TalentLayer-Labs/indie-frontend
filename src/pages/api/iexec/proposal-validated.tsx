@@ -4,7 +4,7 @@ import { EmailType, IProposal } from '../../../types';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { sendMailToAddresses } from '../../../scripts/iexec/sendMailToAddresses';
 import { Timestamp } from '../../../modules/Web3Mail/schemas/timestamp-model';
-import { AcceptedProposalEmail } from '../../../modules/Web3Mail/schemas/accepted-proposal-model';
+import { Web3Mail } from '../../../modules/Web3Mail/schemas/web3mail-model';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const mongoUri = process.env.NEXT_MONGO_URI;
@@ -55,7 +55,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       for (const proposal of response.data.data.proposals as IProposal[]) {
         console.log('Proposal', proposal.service.buyer.address);
         try {
-          const existingProposal = await AcceptedProposalEmail.findOne({
+          const existingProposal = await Web3Mail.findOne({
             id: `${proposal.id}-${EmailType.NewProposal}`,
           });
           if (!existingProposal) {
@@ -84,7 +84,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             [proposal.seller.address],
             true,
           );
-          const sentEmail = await AcceptedProposalEmail.create({
+          const sentEmail = await Web3Mail.create({
             id: `${proposal.id}-${EmailType.ProposalValidated}`,
             date: `${TIMESTAMP_NOW_SECONDS}`,
           });
