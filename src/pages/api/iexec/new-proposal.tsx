@@ -5,10 +5,13 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { NewProposalEmail } from '../../../modules/Web3Mail/schemas/new-proposal-model';
 import { sendMailToAddresses } from '../../../scripts/iexec/sendMailToAddresses';
 import { Timestamp } from '../../../modules/Web3Mail/schemas/timestamp-model';
+import * as vercel from '../../../../vercel.json';
+import { parseExpression } from 'cron-parser';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const mongoUri = process.env.NEXT_MONGO_URI;
   const TIMESTAMP_NOW_SECONDS = Math.floor(new Date().getTime() / 1000);
+  const RETRY_FACTOR = 5;
 
   // Check whether the key is valid
   const key = req.query.key;
@@ -27,6 +30,28 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     throw new Error('Platform Id is not set');
   }
 
+  // Check whether the user provided a timestamp or if it will come from the cron config
+  let sinceTimestamp: string | undefined = '';
+  if (req.query.sinceTimestamp) {
+    sinceTimestamp = req.query.sinceTimestamp as string;
+  } else {
+    const cronSchedule = vercel?.crons?.find(cron => cron.type == EmailType.NewProposal)?.schedule;
+    if (!cronSchedule) {
+      throw new Error('No Cron Schedule found');
+    }
+    /** @dev: The timestamp is set to the previous cron execution minus the duration
+    of the cron schedule multiplied by a retry factor, so that non sent emails
+    can be sent again */
+    const cronExpression = parseExpression(cronSchedule);
+    const duration =
+      cronExpression.next().toDate().getTime() / 1000 -
+      cronExpression.prev().toDate().getTime() / 1000;
+    sinceTimestamp = (
+      cronExpression.prev().toDate().getTime() / 1000 -
+      duration * RETRY_FACTOR
+    ).toString();
+  }
+  console.log('timestamp', sinceTimestamp);
   try {
     //Get latest timestamp from DB if exists
     let timestamp = await Timestamp.findOne({ type: EmailType.NewProposal });
@@ -77,7 +102,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           await sendMailToAddresses(
             `You got a new proposal ! - ${proposal.description?.title}`,
             `You just received a new proposal for the service ${proposal.service.id} you posted on TalentLayer !
-              ${proposal.seller.handle} can complete your service for the following amount: ${proposal.rateAmount} : ${proposal.rateToken.symbol}. 
+              ${proposal.seller.handle} can complete your service for the following amount: ${proposal.rateAmount} : ${proposal.rateToken.symbol}.
               Here is what is proposed: ${proposal.description?.about}.
               This Proposal can be viewed at ${process.env.NEXT_PUBLIC_IPFS_BASE_URL}${proposal.id}`,
             [proposal.service.buyer.address],
