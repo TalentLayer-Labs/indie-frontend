@@ -3,7 +3,7 @@ import { getAcceptedProposal } from '../../../queries/proposals';
 import { EmailType, IProposal } from '../../../types';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { sendMailToAddresses } from '../../../scripts/iexec/sendMailToAddresses';
-import { Timestamp } from '../../../modules/Web3Mail/schemas/timestamp-model';
+import { CronProbe } from '../../../modules/Web3Mail/schemas/timestamp-model';
 import { Web3Mail } from '../../../modules/Web3Mail/schemas/web3mail-model';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -29,9 +29,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   try {
     //Get latest timestamp from DB if exists
-    let timestamp = await Timestamp.findOne({ type: EmailType.NewProposal });
+    let timestamp = await CronProbe.findOne({ type: EmailType.NewProposal });
     if (!timestamp) {
-      timestamp = await Timestamp.create({
+      timestamp = await CronProbe.create({
         type: EmailType.NewProposal,
         date: `${TIMESTAMP_NOW_SECONDS - 3600 * 24}`,
       });
@@ -40,7 +40,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const timestampValue = timestamp.date;
 
     // Overrite timestamp with new value
-    await Timestamp.updateOne(
+    await CronProbe.updateOne(
       { type: EmailType.NewProposal },
       { date: `${TIMESTAMP_NOW_SECONDS}` },
     );

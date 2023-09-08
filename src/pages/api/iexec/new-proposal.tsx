@@ -4,7 +4,7 @@ import { EmailType, IProposal } from '../../../types';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { NewProposalEmail } from '../../../modules/Web3Mail/schemas/new-proposal-model';
 import { sendMailToAddresses } from '../../../scripts/iexec/sendMailToAddresses';
-import { Timestamp } from '../../../modules/Web3Mail/schemas/timestamp-model';
+import { CronProbe } from '../../../modules/Web3Mail/schemas/timestamp-model';
 import * as vercel from '../../../../vercel.json';
 import { parseExpression } from 'cron-parser';
 
@@ -95,6 +95,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // If some proposals are not already in the DB, email the hirer & persist the proposal in the DB
     if (nonSentProposals) {
+      let successCount = 0;
+      let errorCount = 0;
       for (const proposal of nonSentProposals) {
         //TODO Do we need to integrate a check on user's metadata to see if they opted to a certain feature ?
         try {
@@ -113,9 +115,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             date: `${TIMESTAMP_NOW_SECONDS}`,
           });
           sentEmail.save();
+          successCount++;
           console.log('Email sent');
         } catch (e) {
+          errorCount++;
           console.error(e);
+        } finally {
+          if (!req.query.sinceTimestamp) {
+            // Update cron probe in db
+            const cronProbe = await CronProbe.create({
+              type: EmailType.NewProposal,
+              lastRanAt: `${TIMESTAMP_NOW_SECONDS}`,
+              successCount: successCount,
+              errorCount: errorCount,
+              duration: cronDuration,
+            });
+            cronProbe.save();
+          }
         }
       }
     }
