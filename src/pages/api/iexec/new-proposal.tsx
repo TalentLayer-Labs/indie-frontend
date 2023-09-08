@@ -2,11 +2,11 @@ import mongoose from 'mongoose';
 import { getProposalsFromPlatformServices } from '../../../queries/proposals';
 import { EmailType, IProposal } from '../../../types';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { NewProposalEmail } from '../../../modules/Web3Mail/schemas/new-proposal-model';
 import { sendMailToAddresses } from '../../../scripts/iexec/sendMailToAddresses';
 import { CronProbe } from '../../../modules/Web3Mail/schemas/timestamp-model';
 import * as vercel from '../../../../vercel.json';
 import { parseExpression } from 'cron-parser';
+import { Web3Mail } from '../../../modules/Web3Mail/schemas/web3mail-model';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const mongoUri = process.env.NEXT_MONGO_URI;
@@ -32,6 +32,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   // Check whether the user provided a timestamp or if it will come from the cron config
   let sinceTimestamp: string | undefined = '';
+  let cronDuration = 0;
   if (req.query.sinceTimestamp) {
     sinceTimestamp = req.query.sinceTimestamp as string;
   } else {
@@ -43,35 +44,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     of the cron schedule multiplied by a retry factor, so that non sent emails
     can be sent again */
     const cronExpression = parseExpression(cronSchedule);
-    const duration =
+    cronDuration =
       cronExpression.next().toDate().getTime() / 1000 -
       cronExpression.prev().toDate().getTime() / 1000;
     sinceTimestamp = (
       cronExpression.prev().toDate().getTime() / 1000 -
-      duration * RETRY_FACTOR
+      cronDuration * RETRY_FACTOR
     ).toString();
   }
   console.log('timestamp', sinceTimestamp);
   try {
-    //Get latest timestamp from DB if exists
-    let timestamp = await Timestamp.findOne({ type: EmailType.NewProposal });
-    if (!timestamp) {
-      timestamp = await Timestamp.create({
-        type: EmailType.NewProposal,
-        date: `${TIMESTAMP_NOW_SECONDS - 3600 * 24}`,
-      });
-      timestamp.save();
-    }
-    const timestampValue = timestamp.date;
-
-    // Overrite timestamp with new value
-    await Timestamp.updateOne(
-      { type: EmailType.NewProposal },
-      { date: `${TIMESTAMP_NOW_SECONDS}` },
-    );
     //TODO Uncomment
     const response = await getProposalsFromPlatformServices(platformId, '0');
-    // const response = await getProposalsFromPlatformServices(platformId, timestampValue);
+    // const response = await getProposalsFromPlatformServices(platformId, sinceTimestamp);
     console.log('All proposals', response.data.data.proposals);
     const nonSentProposals: IProposal[] = [];
 
@@ -80,7 +65,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       for (const proposal of response.data.data.proposals as IProposal[]) {
         console.log('Proposal', proposal.service.buyer.address);
         try {
-          const existingProposal = await NewProposalEmail.findOne({
+          const existingProposal = await Web3Mail.findOne({
             id: `${proposal.id}-${EmailType.NewProposal}`,
           });
           if (!existingProposal) {
@@ -110,9 +95,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             [proposal.service.buyer.address],
             true,
           );
-          const sentEmail = await NewProposalEmail.create({
+          const sentEmail = await Web3Mail.create({
             id: `${proposal.id}-${EmailType.NewProposal}`,
-            date: `${TIMESTAMP_NOW_SECONDS}`,
+            type: EmailType.NewProposal,
+            sentAt: `${TIMESTAMP_NOW_SECONDS}`,
           });
           sentEmail.save();
           successCount++;
