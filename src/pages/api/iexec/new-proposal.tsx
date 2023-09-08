@@ -1,12 +1,13 @@
 import mongoose from 'mongoose';
 import { getProposalsFromPlatformServices } from '../../../queries/proposals';
-import { EmailType, IProposal } from '../../../types';
+import { EmailType, IProposal, Web3mailPreferences } from '../../../types';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { sendMailToAddresses } from '../../../scripts/iexec/sendMailToAddresses';
 import { CronProbe } from '../../../modules/Web3Mail/schemas/timestamp-model';
 import * as vercel from '../../../../vercel.json';
 import { parseExpression } from 'cron-parser';
 import { Web3Mail } from '../../../modules/Web3Mail/schemas/web3mail-model';
+import { getUserWeb3mailPreferences } from '../../../queries/users';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const mongoUri = process.env.NEXT_MONGO_URI;
@@ -83,8 +84,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       let successCount = 0;
       let errorCount = 0;
       for (const proposal of nonSentProposals) {
-        //TODO Do we need to integrate a check on user's metadata to see if they opted to a certain feature ?
         try {
+          // Check whether the user opted for the called feature
+          //TODO query not tested
+          const userWeb3mailPreferences = await getUserWeb3mailPreferences(
+            platformId,
+            proposal.service.buyer.address,
+            Web3mailPreferences.activeOnNewProposal,
+          );
+          if (!userWeb3mailPreferences) {
+            //TODO @Romain: Throw error here caught l118 or is this fine ?
+            errorCount++;
+            console.warn(`User has not opted in for the ${EmailType.NewProposal} feature`);
+            continue;
+          }
           // @dev: This function needs to be throwable to avoid persisting the proposal in the DB if the email is not sent
           await sendMailToAddresses(
             `You got a new proposal ! - ${proposal.description?.title}`,

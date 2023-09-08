@@ -268,3 +268,13 @@ export enum EmailType {
   ProtocolMarketing = 'protocolMarketing',
   NewService = 'newService',
 }
+
+export enum Web3mailPreferences {
+  activeOnNewService = 'activeOnNewService',
+  activeOnNewProposal = 'activeOnNewProposal',
+  activeOnProposalValidated = 'activeOnProposalValidated',
+  activeOnFundRelease = 'activeOnFundRelease',
+  activeOnReview = 'activeOnReview',
+  activeOnPlatformMarketing = 'activeOnPlatformMarketing',
+  activeOnProtocolMarketing = 'activeOnProtocolMarketing',
+}
