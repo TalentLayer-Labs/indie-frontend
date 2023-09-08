@@ -3,7 +3,7 @@ import { IExecDataProtector, getWeb3Provider as getProtectorProvider } from '@ie
 export const userGaveAccessToPlatform = async (
   userAddress: string,
   providedDataProtector?: IExecDataProtector,
-): Promise<boolean> => {
+): Promise<string | null> => {
   const privateKey = process.env.NEXT_PUBLIC_WEB3MAIL_PLATFORM_PRIVATE_KEY;
   if (!privateKey) {
     throw new Error('Private key is not set');
@@ -28,7 +28,7 @@ export const userGaveAccessToPlatform = async (
 
   if (!protectedEmail) {
     console.warn(`Web3MailProvider ----  - User ${userAddress} has no protected email`);
-    return false;
+    return null;
   }
 
   const listGrantedAccess = await dataProtector.fetchGrantedAccess({
@@ -38,10 +38,10 @@ export const userGaveAccessToPlatform = async (
 
   if (listGrantedAccess.length == 0) {
     console.warn(`Web3MailProvider ----  - User ${userAddress} has not granted access yet`);
-    return false;
+    return null;
   }
 
   console.warn(`Web3MailProvider ----  - User ${userAddress} has granted access`);
 
-  return true;
+  return protectedEmail.address;
 };

@@ -1,9 +1,5 @@
 import { IExecWeb3mail, getWeb3Provider as getMailProvider } from '@iexec/web3mail';
-import {
-  IExecDataProtector,
-  ProtectedData,
-  getWeb3Provider as getProtectorProvider,
-} from '@iexec/dataprotector';
+import { IExecDataProtector, getWeb3Provider as getProtectorProvider } from '@iexec/dataprotector';
 import { userGaveAccessToPlatform } from '../../modules/Web3Mail/utils/iexec-utils';
 
 export const sendMailToAddresses = async (
@@ -28,7 +24,8 @@ export const sendMailToAddresses = async (
         console.log(`------- Sending to ${address} -------`);
 
         // Check whether user granted access to his email
-        if (!(await userGaveAccessToPlatform(address, dataProtector))) {
+        const protectedEmailAddress = await userGaveAccessToPlatform(address, dataProtector);
+        if (!protectedEmailAddress) {
           throwable
             ? throwError(`sendMailToAddresses - User ${address} did not grant access to his email`)
             : console.warn(
@@ -37,12 +34,9 @@ export const sendMailToAddresses = async (
           continue;
         }
 
-        const protectedData: ProtectedData[] = await dataProtector.fetchProtectedData({
-          owner: address,
-        });
-        console.log('protectedData', protectedData);
+        //TODO Not tested with new address
         const mailSent = await web3mail.sendEmail({
-          protectedData: protectedData[0].address,
+          protectedData: protectedEmailAddress,
           emailSubject: emailSubject,
           emailContent: emailContent,
         });

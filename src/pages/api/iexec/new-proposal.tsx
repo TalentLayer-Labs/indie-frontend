@@ -134,10 +134,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
       }
     }
-  } catch (e) {
+  } catch (e: any) {
     console.error(e);
     await mongoose.disconnect();
-    res.status(500).json('Error while sending email');
+    res.status(500).json(`Error while sending email - ${e.message}`);
   }
   res.status(200).json('Tudo Bem');
   await mongoose.disconnect();
