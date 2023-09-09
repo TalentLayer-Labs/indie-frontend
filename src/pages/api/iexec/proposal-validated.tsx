@@ -4,14 +4,15 @@ import { EmailType, IProposal, Web3mailPreferences } from '../../../types';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { sendMailToAddresses } from '../../../scripts/iexec/sendMailToAddresses';
 import { CronProbe } from '../../../modules/Web3Mail/schemas/timestamp-model';
-import * as vercel from '../../../../vercel.json';
-import { parseExpression } from 'cron-parser';
 import { Web3Mail } from '../../../modules/Web3Mail/schemas/web3mail-model';
 import { getUserWeb3mailPreferences } from '../../../queries/users';
+import { calculateCronData } from '../../../modules/Web3Mail/utils/iexec-utils';
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const mongoUri = process.env.NEXT_MONGO_URI;
   const TIMESTAMP_NOW_SECONDS = Math.floor(new Date().getTime() / 1000);
   const RETRY_FACTOR = 5;
+  let successCount = 0,
+    errorCount = 0;
 
   // Check whether the key is valid
   const key = req.query.key;
@@ -31,29 +32,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   // Check whether the user provided a timestamp or if it will come from the cron config
-  let sinceTimestamp: string | undefined = '';
-  let cronDuration = 0;
-  if (req.query.sinceTimestamp) {
-    sinceTimestamp = req.query.sinceTimestamp as string;
-  } else {
-    const cronSchedule = vercel?.crons?.find(
-      cron => cron.type == EmailType.ProposalValidated,
-    )?.schedule;
-    if (!cronSchedule) {
-      throw new Error('No Cron Schedule found');
-    }
-    /** @dev: The timestamp is set to the previous cron execution minus the duration
-     of the cron schedule multiplied by a retry factor, so that non sent emails
-     can be sent again */
-    const cronExpression = parseExpression(cronSchedule);
-    cronDuration =
-      cronExpression.next().toDate().getTime() / 1000 -
-      cronExpression.prev().toDate().getTime() / 1000;
-    sinceTimestamp = (
-      cronExpression.prev().toDate().getTime() / 1000 -
-      cronDuration * RETRY_FACTOR
-    ).toString();
-  }
+  const { sinceTimestamp, cronDuration } = calculateCronData(
+    req,
+    RETRY_FACTOR,
+    EmailType.ProposalValidated,
+  );
   console.log('timestamp', sinceTimestamp);
   try {
     //TODO Uncomment
@@ -82,8 +65,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // If some proposals are not already in the DB, email the hirer & persist the proposal in the DB
     if (nonSentProposals) {
-      let successCount = 0;
-      let errorCount = 0;
       for (const proposal of nonSentProposals) {
         //TODO Do we need to integrate a check on user's metadata to see if they opted to a certain feature ?
         //TODO Who do we send the notification to, buyer, seller or both ?
@@ -142,6 +123,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     await mongoose.disconnect();
     res.status(500).json(`Error while sending email - ${e.message}`);
   }
-  res.status(200).json('Tudo Bem');
+  res
+    .status(200)
+    .json(`Web3 Emails sent - ${successCount} email successfully sent | ${errorCount} errors`);
   await mongoose.disconnect();
 }
