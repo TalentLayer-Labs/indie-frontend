@@ -34,7 +34,6 @@ export const sendMailToAddresses = async (
           continue;
         }
 
-        //TODO Not tested with new address
         const mailSent = await web3mail.sendEmail({
           protectedData: protectedEmailAddress,
           emailSubject: emailSubject,

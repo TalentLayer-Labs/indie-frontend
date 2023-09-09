@@ -140,5 +140,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res.status(500).json(`Error while sending email - ${e.message}`);
   }
   res.status(200).json('Tudo Bem');
+  //TODO: "unhandledRejection: Error [MongoNotConnectedError]: Client must be connected before running operations"
   await mongoose.disconnect();
 }

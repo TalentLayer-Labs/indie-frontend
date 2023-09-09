@@ -11,7 +11,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   console.log('Sending email to addresses');
   const privateKey = process.env.NEXT_PUBLIC_WEB3MAIL_PLATFORM_PRIVATE_KEY;
   if (!privateKey) {
-    //TODO On peut lauisser ça quand on est dans une API ou faut renvoyer une 500 ?
+    //TODO On peut laisser ça quand on est dans une API ou faut renvoyer une 500 ?
     throw new Error('Private key is not set');
   }
   try {

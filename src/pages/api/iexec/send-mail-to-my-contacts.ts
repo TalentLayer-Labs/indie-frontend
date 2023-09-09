@@ -5,6 +5,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { emailSubject, emailContent, throwable = false } = req.body;
+  //TODO: When throwable = false, no API status answer. Could send back a 200 with a err + success count ?
   if (!emailSubject || !emailContent) return res.status(500).json(`Missing argument`);
 
   console.log('Sending email to all contacts');
