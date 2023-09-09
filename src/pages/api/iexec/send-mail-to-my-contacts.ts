@@ -1,17 +1,15 @@
-import { IExecWeb3mail, getWeb3Provider as getMailProvider } from '@iexec/web3mail';
+import { IExecWeb3mail, getWeb3Provider as getMailProvider, Contact } from '@iexec/web3mail';
 import { IExecDataProtector, getWeb3Provider as getProtectorProvider } from '@iexec/dataprotector';
-import { NextApiRequest, NextApiResponse } from 'next';
 import { userGaveAccessToPlatform } from '../../../modules/Web3Mail/utils/iexec-utils';
+import { NextApiRequest, NextApiResponse } from 'next';
 
-//TODO test API
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { emailSubject, emailContent, addresses, throwable = false } = req.body;
-  if (!emailSubject || !emailContent || !addresses) return res.status(500).json(`Missing argument`);
+  const { emailSubject, emailContent, throwable = false } = req.body;
+  if (!emailSubject || !emailContent) return res.status(500).json(`Missing argument`);
 
-  console.log('Sending email to addresses');
+  console.log('Sending email to all contacts');
   const privateKey = process.env.NEXT_PUBLIC_WEB3MAIL_PLATFORM_PRIVATE_KEY;
   if (!privateKey) {
-    //TODO On peut lauisser ça quand on est dans une API ou faut renvoyer une 500 ?
     throw new Error('Private key is not set');
   }
   try {
@@ -20,34 +18,32 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const protectorWebProvider = getProtectorProvider(privateKey);
     const dataProtector = new IExecDataProtector(protectorWebProvider);
 
-    for (const address of addresses) {
+    console.log('------- All Contacts -------');
+    const contactList: Contact[] = await web3mail.fetchMyContacts();
+    for (const contact of contactList) {
       try {
-        console.log(`------- Sending to ${address} -------`);
-
         // Check whether user granted access to his email
-        const protectedEmailAddress = await userGaveAccessToPlatform(address, dataProtector);
-
-        if (!protectedEmailAddress) {
+        if (!(await userGaveAccessToPlatform(contact.address, dataProtector))) {
           if (throwable) {
             return res
               .status(500)
-              .json(`sendMailToAddresses - User ${address} did not grant access to his email`);
+              .json(
+                `sendMailToAddresses - User ${contact.address} did not grant access to his email`,
+              );
           } else {
             console.error(
-              `sendMailToAddresses - User ${address} did not grant access to his email`,
+              `sendMailToMyContacts - User ${contact.address} did not grant access to his email`,
             );
           }
           continue;
         }
 
-        //TODO Not tested with new address from utils
-        const mailSent = await web3mail.sendEmail({
-          protectedData: protectedEmailAddress,
+        const sentMail = await web3mail.sendEmail({
+          protectedData: contact.address,
           emailSubject: emailSubject,
           emailContent: emailContent,
         });
-
-        console.log('sent email', mailSent);
+        console.log('sentMail', sentMail);
       } catch (e: any) {
         if (throwable) {
           return res.status(500).json(e.message);

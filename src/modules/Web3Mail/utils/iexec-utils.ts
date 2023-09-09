@@ -37,11 +37,13 @@ export const userGaveAccessToPlatform = async (
   });
 
   if (listGrantedAccess.length == 0) {
-    console.warn(`Web3MailProvider ----  - User ${userAddress} has not granted access yet`);
+    console.warn(
+      `Web3MailProvider ----  - User ${userAddress} has not granted access to his email yet`,
+    );
     return null;
   }
 
-  console.warn(`Web3MailProvider ----  - User ${userAddress} has granted access`);
+  console.warn(`Web3MailProvider ----  - User ${userAddress} has granted access to his email`);
 
   return protectedEmail.address;
 };
