@@ -1,14 +1,17 @@
 import mongoose from 'mongoose';
 import { getAcceptedProposal } from '../../../queries/proposals';
-import { EmailType, IProposal } from '../../../types';
+import { EmailType, IProposal, Web3mailPreferences } from '../../../types';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { sendMailToAddresses } from '../../../scripts/iexec/sendMailToAddresses';
 import { CronProbe } from '../../../modules/Web3Mail/schemas/timestamp-model';
+import * as vercel from '../../../../vercel.json';
+import { parseExpression } from 'cron-parser';
 import { Web3Mail } from '../../../modules/Web3Mail/schemas/web3mail-model';
-
+import { getUserWeb3mailPreferences } from '../../../queries/users';
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const mongoUri = process.env.NEXT_MONGO_URI;
   const TIMESTAMP_NOW_SECONDS = Math.floor(new Date().getTime() / 1000);
+  const RETRY_FACTOR = 5;
 
   // Check whether the key is valid
   const key = req.query.key;
@@ -27,23 +30,32 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     throw new Error('Platform Id is not set');
   }
 
-  try {
-    //Get latest timestamp from DB if exists
-    let timestamp = await CronProbe.findOne({ type: EmailType.NewProposal });
-    if (!timestamp) {
-      timestamp = await CronProbe.create({
-        type: EmailType.NewProposal,
-        date: `${TIMESTAMP_NOW_SECONDS - 3600 * 24}`,
-      });
-      timestamp.save();
+  // Check whether the user provided a timestamp or if it will come from the cron config
+  let sinceTimestamp: string | undefined = '';
+  let cronDuration = 0;
+  if (req.query.sinceTimestamp) {
+    sinceTimestamp = req.query.sinceTimestamp as string;
+  } else {
+    const cronSchedule = vercel?.crons?.find(
+      cron => cron.type == EmailType.ProposalValidated,
+    )?.schedule;
+    if (!cronSchedule) {
+      throw new Error('No Cron Schedule found');
     }
-    const timestampValue = timestamp.date;
-
-    // Overrite timestamp with new value
-    await CronProbe.updateOne(
-      { type: EmailType.NewProposal },
-      { date: `${TIMESTAMP_NOW_SECONDS}` },
-    );
+    /** @dev: The timestamp is set to the previous cron execution minus the duration
+     of the cron schedule multiplied by a retry factor, so that non sent emails
+     can be sent again */
+    const cronExpression = parseExpression(cronSchedule);
+    cronDuration =
+      cronExpression.next().toDate().getTime() / 1000 -
+      cronExpression.prev().toDate().getTime() / 1000;
+    sinceTimestamp = (
+      cronExpression.prev().toDate().getTime() / 1000 -
+      cronDuration * RETRY_FACTOR
+    ).toString();
+  }
+  console.log('timestamp', sinceTimestamp);
+  try {
     //TODO Uncomment
     const response = await getAcceptedProposal(platformId, '0');
     // const response = await getProposalsFromPlatformServices(platformId, timestampValue);
@@ -56,7 +68,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         console.log('Proposal', proposal.service.buyer.address);
         try {
           const existingProposal = await Web3Mail.findOne({
-            id: `${proposal.id}-${EmailType.NewProposal}`,
+            id: `${proposal.id}-${EmailType.ProposalValidated}`,
           });
           if (!existingProposal) {
             console.error('Proposal not in DB');
@@ -70,10 +82,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // If some proposals are not already in the DB, email the hirer & persist the proposal in the DB
     if (nonSentProposals) {
+      let successCount = 0;
+      let errorCount = 0;
       for (const proposal of nonSentProposals) {
         //TODO Do we need to integrate a check on user's metadata to see if they opted to a certain feature ?
         //TODO Who do we send the notification to, buyer, seller or both ?
         try {
+          // Check whether the user opted for the called feature
+          //TODO query not tested
+          const userWeb3mailPreferences = await getUserWeb3mailPreferences(
+            platformId,
+            proposal.service.buyer.address,
+            Web3mailPreferences.activeOnProposalValidated,
+          );
+          if (!userWeb3mailPreferences) {
+            //TODO @Romain: Throw error here caught l118 or is this fine ?
+            errorCount++;
+            console.warn(`User has not opted in for the ${EmailType.ProposalValidated} feature`);
+            continue;
+          }
           // @dev: This function needs to be throwable to avoid persisting the proposal in the DB if the email is not sent
           await sendMailToAddresses(
             `Your proposal got accepted ! - ${proposal.description?.title}`,
@@ -86,19 +113,34 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           );
           const sentEmail = await Web3Mail.create({
             id: `${proposal.id}-${EmailType.ProposalValidated}`,
+            type: EmailType.ProposalValidated,
             date: `${TIMESTAMP_NOW_SECONDS}`,
           });
           sentEmail.save();
+          successCount++;
           console.log('Email sent');
         } catch (e) {
+          errorCount++;
           console.error(e);
+        } finally {
+          if (!req.query.sinceTimestamp) {
+            // Update cron probe in db
+            const cronProbe = await CronProbe.create({
+              type: EmailType.ProposalValidated,
+              lastRanAt: `${TIMESTAMP_NOW_SECONDS}`,
+              successCount: successCount,
+              errorCount: errorCount,
+              duration: cronDuration,
+            });
+            cronProbe.save();
+          }
         }
       }
     }
-  } catch (e) {
+  } catch (e: any) {
     console.error(e);
     await mongoose.disconnect();
-    res.status(500).json('Error while sending email');
+    res.status(500).json(`Error while sending email - ${e.message}`);
   }
   res.status(200).json('Tudo Bem');
   await mongoose.disconnect();
