@@ -5,7 +5,8 @@ import { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { emailSubject, emailContent, throwable = false } = req.body;
-  //TODO: When throwable = false, no API status answer. Could send back a 200 with a err + success count ?
+  let successCount = 0,
+    errorCount = 0;
   if (!emailSubject || !emailContent) return res.status(500).json(`Missing argument`);
 
   console.log('Sending email to all contacts');
@@ -32,6 +33,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 `sendMailToAddresses - User ${contact.address} did not grant access to his email`,
               );
           } else {
+            errorCount++;
             console.error(
               `sendMailToMyContacts - User ${contact.address} did not grant access to his email`,
             );
@@ -44,16 +46,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           emailSubject: emailSubject,
           emailContent: emailContent,
         });
+        successCount++;
         console.log('sentMail', sentMail);
       } catch (e: any) {
         if (throwable) {
           return res.status(500).json(e.message);
         } else {
+          errorCount++;
           console.error(e.message);
         }
       }
     }
   } catch (e: any) {
-    return res.status(500).json(e.message);
+    console.error(e);
+    res.status(500).json(`Error while sending email - ${e.message}`);
   }
+  res
+    .status(200)
+    .json(`Web3 Emails sent - ${successCount} email successfully sent | ${errorCount} errors`);
 }

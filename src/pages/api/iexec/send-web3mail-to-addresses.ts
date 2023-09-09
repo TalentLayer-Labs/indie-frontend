@@ -6,6 +6,8 @@ import { userGaveAccessToPlatform } from '../../../modules/Web3Mail/utils/iexec-
 //TODO test API
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { emailSubject, emailContent, addresses, throwable = false } = req.body;
+  let successCount = 0,
+    errorCount = 0;
   if (!emailSubject || !emailContent || !addresses) return res.status(500).json(`Missing argument`);
 
   console.log('Sending email to addresses');
@@ -33,6 +35,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               .status(500)
               .json(`sendMailToAddresses - User ${address} did not grant access to his email`);
           } else {
+            errorCount++;
             console.error(
               `sendMailToAddresses - User ${address} did not grant access to his email`,
             );
@@ -40,23 +43,27 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           continue;
         }
 
-        //TODO Not tested with new address from utils
         const mailSent = await web3mail.sendEmail({
           protectedData: protectedEmailAddress,
           emailSubject: emailSubject,
           emailContent: emailContent,
         });
-
+        successCount++;
         console.log('sent email', mailSent);
       } catch (e: any) {
         if (throwable) {
           return res.status(500).json(e.message);
         } else {
+          errorCount++;
           console.error(e.message);
         }
       }
     }
   } catch (e: any) {
-    return res.status(500).json(e.message);
+    console.error(e);
+    res.status(500).json(`Error while sending email - ${e.message}`);
   }
+  res
+    .status(200)
+    .json(`Web3 Emails sent - ${successCount} email successfully sent | ${errorCount} errors`);
 }
