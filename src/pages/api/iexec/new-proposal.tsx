@@ -3,17 +3,17 @@ import { getProposalsFromPlatformServices } from '../../../queries/proposals';
 import { EmailType, IProposal, Web3mailPreferences } from '../../../types';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { sendMailToAddresses } from '../../../scripts/iexec/sendMailToAddresses';
-import { CronProbe } from '../../../modules/Web3Mail/schemas/timestamp-model';
-import { Web3Mail } from '../../../modules/Web3Mail/schemas/web3mail-model';
 import { getUserWeb3mailPreferences } from '../../../queries/users';
 import {
   calculateCronData,
   checkProposalExistenceInDb,
+  persistCronProbe,
+  persistEmail,
 } from '../../../modules/Web3Mail/utils/iexec-utils';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const mongoUri = process.env.NEXT_MONGO_URI;
-  const TIMESTAMP_NOW_SECONDS = Math.floor(new Date().getTime() / 1000);
+  //TODO Make environment variable ?
   const RETRY_FACTOR = 5;
   let successCount = 0,
     errorCount = 0;
@@ -83,29 +83,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             [proposal.service.buyer.address],
             true,
           );
-          const sentEmail = await Web3Mail.create({
-            id: `${proposal.id}-${EmailType.NewProposal}`,
-            type: EmailType.NewProposal,
-            sentAt: `${TIMESTAMP_NOW_SECONDS}`,
-          });
-          sentEmail.save();
+          await persistEmail(proposal.id, EmailType.NewProposal);
           successCount++;
           console.log('Email sent');
-        } catch (e) {
+        } catch (e: any) {
           errorCount++;
-          console.error(e);
-        } finally {
-          if (!req.query.sinceTimestamp) {
-            // Update cron probe in db
-            const cronProbe = await CronProbe.create({
-              type: EmailType.NewProposal,
-              lastRanAt: `${TIMESTAMP_NOW_SECONDS}`,
-              successCount: successCount,
-              errorCount: errorCount,
-              duration: cronDuration,
-            });
-            cronProbe.save();
-          }
+          console.error(e.message);
         }
       }
     }
@@ -113,6 +96,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     console.error(e);
     await mongoose.disconnect();
     res.status(500).json(`Error while sending email - ${e.message}`);
+  } finally {
+    if (!req.query.sinceTimestamp) {
+      // Update cron probe in db
+      persistCronProbe(EmailType.NewProposal, successCount, errorCount, cronDuration);
+    }
   }
   res
     .status(200)
