@@ -3,13 +3,16 @@ import { getAcceptedProposal } from '../../../queries/proposals';
 import { EmailType, IProposal, Web3mailPreferences } from '../../../types';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { sendMailToAddresses } from '../../../scripts/iexec/sendMailToAddresses';
-import { CronProbe } from '../../../modules/Web3Mail/schemas/timestamp-model';
-import { Web3Mail } from '../../../modules/Web3Mail/schemas/web3mail-model';
 import { getUserWeb3mailPreferences } from '../../../queries/users';
-import { calculateCronData } from '../../../modules/Web3Mail/utils/iexec-utils';
+import {
+  calculateCronData,
+  checkProposalExistenceInDb,
+  persistCronProbe,
+  persistEmail,
+} from '../../../modules/Web3Mail/utils/iexec-utils';
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const mongoUri = process.env.NEXT_MONGO_URI;
-  const TIMESTAMP_NOW_SECONDS = Math.floor(new Date().getTime() / 1000);
   const RETRY_FACTOR = 5;
   let successCount = 0,
     errorCount = 0;
@@ -49,24 +52,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (response.data.data.proposals.length > 0) {
       for (const proposal of response.data.data.proposals as IProposal[]) {
         console.log('Proposal', proposal.service.buyer.address);
-        try {
-          const existingProposal = await Web3Mail.findOne({
-            id: `${proposal.id}-${EmailType.ProposalValidated}`,
-          });
-          if (!existingProposal) {
-            console.error('Proposal not in DB');
-            nonSentProposals.push(proposal);
-          }
-        } catch (e) {
-          console.error(e);
-        }
+        await checkProposalExistenceInDb(proposal, nonSentProposals, EmailType.ProposalValidated);
       }
     }
 
     // If some proposals are not already in the DB, email the hirer & persist the proposal in the DB
     if (nonSentProposals) {
       for (const proposal of nonSentProposals) {
-        //TODO Do we need to integrate a check on user's metadata to see if they opted to a certain feature ?
         //TODO Who do we send the notification to, buyer, seller or both ?
         try {
           // Check whether the user opted for the called feature
@@ -92,36 +84,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             [proposal.seller.address],
             true,
           );
-          const sentEmail = await Web3Mail.create({
-            id: `${proposal.id}-${EmailType.ProposalValidated}`,
-            type: EmailType.ProposalValidated,
-            date: `${TIMESTAMP_NOW_SECONDS}`,
-          });
-          sentEmail.save();
+          await persistEmail(proposal.id, EmailType.ProposalValidated);
           successCount++;
           console.log('Email sent');
-        } catch (e) {
+        } catch (e: any) {
           errorCount++;
-          console.error(e);
-        } finally {
-          if (!req.query.sinceTimestamp) {
-            // Update cron probe in db
-            const cronProbe = await CronProbe.create({
-              type: EmailType.ProposalValidated,
-              lastRanAt: `${TIMESTAMP_NOW_SECONDS}`,
-              successCount: successCount,
-              errorCount: errorCount,
-              duration: cronDuration,
-            });
-            cronProbe.save();
-          }
+          console.error(e.message);
         }
       }
     }
   } catch (e: any) {
-    console.error(e);
+    console.error(e.message);
     await mongoose.disconnect();
     res.status(500).json(`Error while sending email - ${e.message}`);
+  } finally {
+    if (!req.query.sinceTimestamp) {
+      // Update cron probe in db
+      persistCronProbe(EmailType.ProposalValidated, successCount, errorCount, cronDuration);
+    }
   }
   res
     .status(200)
