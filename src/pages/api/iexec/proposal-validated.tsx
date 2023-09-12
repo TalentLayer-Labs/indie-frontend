@@ -4,12 +4,12 @@ import { EmailType, IProposal, Web3mailPreferences } from '../../../types';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { sendMailToAddresses } from '../../../scripts/iexec/sendMailToAddresses';
 import { getUserWeb3mailPreferences } from '../../../queries/users';
+import { calculateCronData } from '../../../modules/Web3Mail/utils/cron-utils';
 import {
-  calculateCronData,
   checkProposalExistenceInDb,
   persistCronProbe,
   persistEmail,
-} from '../../../modules/Web3Mail/utils/iexec-utils';
+} from '../../../modules/Web3Mail/utils/database-utils';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const mongoUri = process.env.NEXT_MONGO_URI;
@@ -59,7 +59,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // If some proposals are not already in the DB, email the hirer & persist the proposal in the DB
     if (nonSentProposals) {
       for (const proposal of nonSentProposals) {
-        //TODO Who do we send the notification to, buyer, seller or both ?
         try {
           // Check whether the user opted for the called feature
           //TODO query not tested
@@ -69,10 +68,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             Web3mailPreferences.activeOnProposalValidated,
           );
           if (!userWeb3mailPreferences) {
-            //TODO @Romain: Throw error here caught l118 or is this fine ?
-            errorCount++;
-            console.warn(`User has not opted in for the ${EmailType.ProposalValidated} feature`);
-            continue;
+            throw new Error(`User has not opted in for the ${EmailType.ProposalValidated} feature`);
           }
           // @dev: This function needs to be throwable to avoid persisting the proposal in the DB if the email is not sent
           await sendMailToAddresses(
@@ -95,16 +91,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
   } catch (e: any) {
     console.error(e.message);
-    await mongoose.disconnect();
-    res.status(500).json(`Error while sending email - ${e.message}`);
+    return res.status(500).json(`Error while sending email - ${e.message}`);
   } finally {
     if (!req.query.sinceTimestamp) {
       // Update cron probe in db
       persistCronProbe(EmailType.ProposalValidated, successCount, errorCount, cronDuration);
     }
   }
-  res
+  return res
     .status(200)
     .json(`Web3 Emails sent - ${successCount} email successfully sent | ${errorCount} errors`);
-  await mongoose.disconnect();
 }

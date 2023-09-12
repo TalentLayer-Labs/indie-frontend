@@ -4,16 +4,15 @@ import { EmailType, IProposal, Web3mailPreferences } from '../../../types';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { sendMailToAddresses } from '../../../scripts/iexec/sendMailToAddresses';
 import { getUserWeb3mailPreferences } from '../../../queries/users';
+import { calculateCronData } from '../../../modules/Web3Mail/utils/cron-utils';
 import {
-  calculateCronData,
   checkProposalExistenceInDb,
   persistCronProbe,
   persistEmail,
-} from '../../../modules/Web3Mail/utils/iexec-utils';
+} from '../../../modules/Web3Mail/utils/database-utils';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const mongoUri = process.env.NEXT_MONGO_URI;
-  //TODO Make environment variable ?
   const RETRY_FACTOR = 5;
   let successCount = 0,
     errorCount = 0;
@@ -68,10 +67,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             Web3mailPreferences.activeOnNewProposal,
           );
           if (!userWeb3mailPreferences) {
-            //TODO @Romain: Throw error here caught l118 or is this fine ?
-            errorCount++;
-            console.warn(`User has not opted in for the ${EmailType.NewProposal} feature`);
-            continue;
+            throw new Error(`User has not opted in for the ${EmailType.NewProposal} feature`);
           }
           // @dev: This function needs to be throwable to avoid persisting the proposal in the DB if the email is not sent
           await sendMailToAddresses(
@@ -94,17 +90,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
   } catch (e: any) {
     console.error(e);
-    await mongoose.disconnect();
-    res.status(500).json(`Error while sending email - ${e.message}`);
+    return res.status(500).json(`Error while sending email - ${e.message}`);
   } finally {
     if (!req.query.sinceTimestamp) {
       // Update cron probe in db
       persistCronProbe(EmailType.NewProposal, successCount, errorCount, cronDuration);
     }
   }
-  res
+  return res
     .status(200)
     .json(`Web3 Emails sent - ${successCount} email successfully sent | ${errorCount} errors`);
-  //TODO: "unhandledRejection: Error [MongoNotConnectedError]: Client must be connected before running operations"
-  await mongoose.disconnect();
 }

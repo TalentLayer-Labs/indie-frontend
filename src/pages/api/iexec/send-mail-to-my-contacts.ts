@@ -12,7 +12,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   console.log('Sending email to all contacts');
   const privateKey = process.env.NEXT_PUBLIC_WEB3MAIL_PLATFORM_PRIVATE_KEY;
   if (!privateKey) {
-    throw new Error('Private key is not set');
+    return res.status(500).json(`Private key is not set`);
   }
   try {
     const mailWeb3Provider = getMailProvider(privateKey);
@@ -59,9 +59,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
   } catch (e: any) {
     console.error(e.message);
-    res.status(500).json(`Error while sending email - ${e.message}`);
+    return res.status(500).json(`Error while sending email - ${e.message}`);
   }
-  res
+  return res
     .status(200)
     .json(`Web3 Emails sent - ${successCount} email successfully sent | ${errorCount} errors`);
 }

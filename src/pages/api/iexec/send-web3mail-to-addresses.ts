@@ -3,7 +3,6 @@ import { IExecDataProtector, getWeb3Provider as getProtectorProvider } from '@ie
 import { NextApiRequest, NextApiResponse } from 'next';
 import { userGaveAccessToPlatform } from '../../../modules/Web3Mail/utils/iexec-utils';
 
-//TODO test API
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { emailSubject, emailContent, addresses, throwable = false } = req.body;
   let successCount = 0,
@@ -13,8 +12,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   console.log('Sending email to addresses');
   const privateKey = process.env.NEXT_PUBLIC_WEB3MAIL_PLATFORM_PRIVATE_KEY;
   if (!privateKey) {
-    //TODO On peut laisser ça quand on est dans une API ou faut renvoyer une 500 ?
-    throw new Error('Private key is not set');
+    return res.status(500).json(`Private key is not set`);
   }
   try {
     const mailWeb3Provider = getMailProvider(privateKey);
@@ -61,9 +59,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
   } catch (e: any) {
     console.error(e.message);
-    res.status(500).json(`Error while sending email - ${e.message}`);
+    return res.status(500).json(`Error while sending email - ${e.message}`);
   }
-  res
+  return res
     .status(200)
     .json(`Web3 Emails sent - ${successCount} email successfully sent | ${errorCount} errors`);
 }
