@@ -42,9 +42,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   );
   console.log('timestamp', sinceTimestamp);
   try {
-    //TODO Uncomment
-    const response = await getProposalsFromPlatformServices(platformId, '0');
-    // const response = await getProposalsFromPlatformServices(platformId, sinceTimestamp);
+    const response = await getProposalsFromPlatformServices(platformId, sinceTimestamp);
     console.log('All proposals', response.data.data.proposals);
     const nonSentProposals: IProposal[] = [];
 
