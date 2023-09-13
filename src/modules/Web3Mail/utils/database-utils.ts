@@ -1,4 +1,4 @@
-import { EmailType, IPayment, IProposal } from '../../../types';
+import { EmailType, IPayment, IProposal, IReview } from '../../../types';
 import { Web3Mail } from '../schemas/web3mail-model';
 import { CronProbe } from '../schemas/timestamp-model';
 
@@ -35,6 +35,24 @@ export const checkPaymentExistenceInDb = async (
     if (!existingPayment) {
       console.error('Payment not in DB');
       nonSentPayments.push(payment);
+    }
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+export const checkReviewExistenceInDb = async (
+  review: IReview,
+  nonSentReviews: IReview[],
+  emailType: EmailType,
+) => {
+  try {
+    const existingReview = await Web3Mail.findOne({
+      id: `${review.id}-${emailType}`,
+    });
+    if (!existingReview) {
+      console.error('Review not in DB');
+      nonSentReviews.push(review);
     }
   } catch (e) {
     console.error(e);

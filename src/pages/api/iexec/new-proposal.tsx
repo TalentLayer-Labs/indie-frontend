@@ -46,14 +46,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     console.log('All proposals', response.data.data.proposals);
     const nonSentProposals: IProposal[] = [];
 
-    // Check if some proposals are not already in the DB
+    // Check if some entities are not already in the DB
     if (response.data.data.proposals.length > 0) {
       for (const proposal of response.data.data.proposals as IProposal[]) {
         await checkProposalExistenceInDb(proposal, nonSentProposals, EmailType.NewProposal);
       }
     }
 
-    // If some proposals are not already in the DB, email the hirer & persist the proposal in the DB
+    // If some entities are not already in the DB, email the hirer & persist the proposal in the DB
     if (nonSentProposals) {
       for (const proposal of nonSentProposals) {
         try {
