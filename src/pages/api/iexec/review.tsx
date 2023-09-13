@@ -58,9 +58,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               (fromAddress = review.service.seller.address))
             : ((fromHandle = review.service.buyer.handle),
               (fromAddress = review.service.buyer.address));
-          console.log('Handle', fromHandle);
-          console.log('Address', fromAddress);
-          console.log('Payment id', review.id);
           // Check whether the user opted for the called feature | Seller if fund release, Buyer if fund reimbursement
           //TODO query not tested
           const userWeb3mailPreferences = await getUserWeb3mailPreferences(
