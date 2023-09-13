@@ -1,8 +1,9 @@
-import { EmailType, IProposal } from '../../../types';
+import { EmailType, IPayment, IProposal } from '../../../types';
 import { Web3Mail } from '../schemas/web3mail-model';
 import { CronProbe } from '../schemas/timestamp-model';
 
 const getTimestampNowSeconds = () => Math.floor(new Date().getTime() / 1000);
+
 export const checkProposalExistenceInDb = async (
   proposal: IProposal,
   nonSentProposals: IProposal[],
@@ -16,6 +17,24 @@ export const checkProposalExistenceInDb = async (
     if (!existingProposal) {
       console.error('Proposal not in DB');
       nonSentProposals.push(proposal);
+    }
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+export const checkPaymentExistenceInDb = async (
+  payment: IPayment,
+  nonSentPayments: IPayment[],
+  emailType: EmailType,
+) => {
+  try {
+    const existingPayment = await Web3Mail.findOne({
+      id: `${payment.id}-${emailType}`,
+    });
+    if (!existingPayment) {
+      console.error('Payment not in DB');
+      nonSentPayments.push(payment);
     }
   } catch (e) {
     console.error(e);

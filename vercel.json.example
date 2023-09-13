@@ -12,6 +12,11 @@
       "type":"proposalValidated",
       "path":"/api/iexec/proposal-validated?key=racoonKey",
       "schedule":"0 */1 * * *"
+    },
+    {
+      "type":"fundRelease",
+      "path":"/api/iexec/fund-release?key=racoonKey",
+      "schedule":"0 */1 * * *"
     }
   ]
 }

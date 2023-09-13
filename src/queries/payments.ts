@@ -64,3 +64,38 @@ export const getPaymentsForUser = (
     `;
   return processRequest(query);
 };
+
+export const getNewPayment = (id: string, timestamp?: string): Promise<any> => {
+  const timestampCondition = timestamp ? `, createdAt_gt: "${timestamp}"` : '';
+  const query = `
+      {
+        payments(
+          orderBy: createdAt
+          where: {service_: {platform: "${id}"} ${timestampCondition}}
+        ) {
+          id
+          amount
+          createdAt
+          paymentType
+          rateToken {
+            symbol
+          }
+          service {
+            id
+            buyer {
+              address
+              handle
+            }
+            seller {
+              address
+              handle
+            }
+            description {
+              title
+            }
+          }
+        }
+      }
+    `;
+  return processRequest(query);
+};
