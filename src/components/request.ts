@@ -142,35 +142,7 @@ export const delegateMintID = async (
 
 export const activateCron = async (): Promise<any> => {
   try {
-    // return await axios.post('/api/iexec/platform-marketing?key=racoonKey', {
-    //   emailSubject: 'Coucou',
-    //   emailContent: 'Ca va ?',
-    // });
-    // return await axios.post('/api/iexec/review?key=racoonKey');
-    return await axios.post('/api/iexec/new-service?key=racoonKey&sinceTimestamp=1688189019');
-    // return await axios.post('/api/iexec/fund-release?key=racoonKey');
-    // return await axios.post('/api/iexec/new-proposal?key=racoonKey');
-    // return await axios.post('/api/iexec/new-proposal?key=racoonKey&sinceTimestamp=12345454');
-    // return await axios.post('/api/iexec/review?key=racoonKey&sinceTimestamp=12345454');
-  } catch (err) {
-    console.error(err);
-    throw err;
-  }
-};
-
-export const sendmailToAddresses = async (
-  emailSubject: string,
-  emailContent: string,
-  addresses: string[],
-  throwable?: boolean,
-): Promise<any> => {
-  try {
-    return await axios.post('/api/iexec/send-web3mail-to-addresses?key=racoonKey', {
-      emailSubject,
-      emailContent,
-      addresses,
-      throwable,
-    });
+    return await axios.post('/api/iexec/new-proposal?key=racoonKey');
   } catch (err) {
     console.error(err);
     throw err;
