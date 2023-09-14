@@ -17,6 +17,16 @@
       "type":"fundRelease",
       "path":"/api/iexec/fund-release?key=racoonKey",
       "schedule":"0 */1 * * *"
+    },
+    {
+      "type":"review",
+      "path":"/api/iexec/review?key=racoonKey",
+      "schedule":"0 */1 * * *"
+    },
+    {
+      "type":"newService",
+      "path":"/api/iexec/new-service?key=racoonKey",
+      "schedule":"0 */1 * * *"
     }
   ]
 }
