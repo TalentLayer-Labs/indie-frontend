@@ -130,3 +130,23 @@ export const getUserWeb3mailPreferences = (
     `;
   return processRequest(query);
 };
+
+export const getUserWeb3mailPreferencesForNewServices = (
+  platformId: string,
+  address: string,
+  web3mailPreference: Web3mailPreferences,
+): Promise<any> => {
+  const query = `
+    {
+      user(address: "${address}, service_: {platform: "${platformId}"}) {
+        id
+        description{
+          skills_raw
+          web3mailPreferences {
+            ${web3mailPreference}
+        }
+      }
+    }
+    `;
+  return processRequest(query);
+};

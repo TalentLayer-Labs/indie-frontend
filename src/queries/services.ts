@@ -173,3 +173,34 @@ export const getServiceById = (id: string): Promise<any> => {
     `;
   return processRequest(query);
 };
+
+export const getNewServicesForPlatform = (id: string, timestamp?: string): Promise<any> => {
+  const timestampCondition = timestamp ? `, updatedAt_gt: "${timestamp}"` : '';
+  const query = `
+      {
+        services(
+          orderBy: updatedAt
+          where: {status: Opened, platform: "${id}" ${timestampCondition}}
+        ) {
+          id
+          description {
+            keywords_raw
+            keywords {
+              id
+            }
+            about
+            rateAmount
+            rateToken {
+              symbol
+            }
+            startDate
+            title
+          }
+          buyer {
+            address
+          }
+        }
+      }
+    `;
+  return processRequest(query);
+};
