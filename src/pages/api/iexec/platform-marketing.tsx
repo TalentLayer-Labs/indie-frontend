@@ -34,12 +34,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         try {
           // Check whether the user opted for the called feature
           //TODO query not tested
-          const userWeb3mailPreferences = await getUserWeb3mailPreferences(
+          const userData = await getUserWeb3mailPreferences(
             platformId,
             contact.address,
             Web3mailPreferences.activeOnPlatformMarketing,
           );
-          if (!userWeb3mailPreferences) {
+          if (!userData?.description?.web3mailPreferences?.activeOnPlatformMarketing) {
             throw new Error(`User has not opted in for the ${EmailType.PlatformMarketing} feature`);
           }
           await sendMailToAddresses(`${emailSubject}`, `${emailContent}`, [contact.address], true);

@@ -60,12 +60,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         try {
           // Check whether the user opted for the called feature
           //TODO query not tested
-          const userWeb3mailPreferences = await getUserWeb3mailPreferences(
+          const userData = await getUserWeb3mailPreferences(
             platformId,
             proposal.service.buyer.address,
             Web3mailPreferences.activeOnProposalValidated,
           );
-          if (!userWeb3mailPreferences) {
+          if (!userData?.description?.web3mailPreferences?.activeOnProposalValidated) {
             throw new Error(`User has not opted in for the ${EmailType.ProposalValidated} feature`);
           }
           // @dev: This function needs to be throwable to avoid persisting the proposal in the DB if the email is not sent

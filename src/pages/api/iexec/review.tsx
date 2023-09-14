@@ -60,12 +60,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               (fromAddress = review.service.buyer.address));
           // Check whether the user opted for the called feature | Seller if fund release, Buyer if fund reimbursement
           //TODO query not tested
-          const userWeb3mailPreferences = await getUserWeb3mailPreferences(
+          const userData = await getUserWeb3mailPreferences(
             platformId,
             fromAddress,
             Web3mailPreferences.activeOnReview,
           );
-          if (!userWeb3mailPreferences) {
+          if (!userData?.description?.web3mailPreferences?.activeOnReview) {
             throw new Error(
               `User ${fromAddress} has not opted in for the ${EmailType.Review} feature`,
             );
