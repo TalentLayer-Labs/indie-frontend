@@ -4,7 +4,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { userGaveAccessToPlatform } from '../../../modules/Web3Mail/utils/iexec-utils';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { emailSubject, emailContent, addresses, throwable = false } = req.body;
+  const { emailSubject, emailContent, addresses } = req.body;
   let successCount = 0,
     errorCount = 0;
   if (!emailSubject || !emailContent || !addresses) return res.status(500).json(`Missing argument`);
@@ -14,6 +14,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (!privateKey) {
     return res.status(500).json(`Private key is not set`);
   }
+
   try {
     const mailWeb3Provider = getMailProvider(privateKey);
     const web3mail = new IExecWeb3mail(mailWeb3Provider);
@@ -28,16 +29,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const protectedEmailAddress = await userGaveAccessToPlatform(address, dataProtector);
 
         if (!protectedEmailAddress) {
-          if (throwable) {
-            return res
-              .status(500)
-              .json(`sendMailToAddresses - User ${address} did not grant access to his email`);
-          } else {
-            errorCount++;
-            console.error(
-              `sendMailToAddresses - User ${address} did not grant access to his email`,
-            );
-          }
+          errorCount++;
+          console.error(`sendMailToAddresses - User ${address} did not grant access to his email`);
           continue;
         }
 
@@ -49,12 +42,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         successCount++;
         console.log('sent email', mailSent);
       } catch (e: any) {
-        if (throwable) {
-          return res.status(500).json(e.message);
-        } else {
-          errorCount++;
-          console.error(e.message);
-        }
+        errorCount++;
+        console.error(e.message);
       }
     }
   } catch (e: any) {

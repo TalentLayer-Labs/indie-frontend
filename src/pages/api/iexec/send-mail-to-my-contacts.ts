@@ -4,7 +4,7 @@ import { userGaveAccessToPlatform } from '../../../modules/Web3Mail/utils/iexec-
 import { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { emailSubject, emailContent, throwable = false } = req.body;
+  const { emailSubject, emailContent } = req.body;
   let successCount = 0,
     errorCount = 0;
   if (!emailSubject || !emailContent) return res.status(500).json(`Missing argument`);
@@ -26,18 +26,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       try {
         // Check whether user granted access to his email
         if (!(await userGaveAccessToPlatform(contact.address, dataProtector))) {
-          if (throwable) {
-            return res
-              .status(500)
-              .json(
-                `sendMailToAddresses - User ${contact.address} did not grant access to his email`,
-              );
-          } else {
-            errorCount++;
-            console.error(
-              `sendMailToMyContacts - User ${contact.address} did not grant access to his email`,
-            );
-          }
+          errorCount++;
+          console.error(
+            `sendMailToMyContacts - User ${contact.address} did not grant access to his email`,
+          );
           continue;
         }
 
@@ -49,12 +41,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         successCount++;
         console.log('sentMail', sentMail);
       } catch (e: any) {
-        if (throwable) {
-          return res.status(500).json(e.message);
-        } else {
-          errorCount++;
-          console.error(e.message);
-        }
+        errorCount++;
+        console.error(e.message);
       }
     }
   } catch (e: any) {
