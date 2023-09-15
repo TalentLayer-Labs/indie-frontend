@@ -54,29 +54,35 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // If some entities are not already in the DB, email the hirer & persist the payment in the DB
     if (nonSentPaymentEmails) {
       for (const payment of nonSentPaymentEmails) {
-        try {
-          let handle = '',
-            action = '',
-            address = '';
-          payment.paymentType === PaymentTypeEnum.Release
-            ? ((handle = payment.service.seller.handle),
-              (action = 'released'),
-              (address = payment.service.seller.address))
-            : ((handle = payment.service.buyer.handle),
-              (action = 'reimbursed'),
-              (address = payment.service.buyer.address));
-          // Check whether the user opted for the called feature | Seller if fund release, Buyer if fund reimbursement
-          //TODO query not tested
-          const userData = await getUserWeb3mailPreferences(
-            platformId,
-            address,
-            Web3mailPreferences.activeOnFundRelease,
+        let handle = '',
+          action = '',
+          address = '';
+        payment.paymentType === PaymentTypeEnum.Release
+          ? ((handle = payment.service.seller.handle),
+            (action = 'released'),
+            (address = payment.service.seller.address))
+          : ((handle = payment.service.buyer.handle),
+            (action = 'reimbursed'),
+            (address = payment.service.buyer.address));
+        console.log('Handle', handle);
+        console.log('Action', action);
+        console.log('Address', address);
+        console.log('Payment id', payment.id);
+        // Check whether the user opted for the called feature | Seller if fund release, Buyer if fund reimbursement
+        //TODO query not tested
+        const userData = await getUserWeb3mailPreferences(
+          platformId,
+          address,
+          Web3mailPreferences.activeOnFundRelease,
+        );
+        if (!userData?.description?.web3mailPreferences?.activeOnFundRelease) {
+          console.error(
+            `User ${address} has not opted in for the ${EmailType.FundRelease} feature`,
           );
-          if (!userData?.description?.web3mailPreferences?.activeOnFundRelease) {
-            throw new Error(
-              `User ${address} has not opted in for the ${EmailType.FundRelease} feature`,
-            );
-          }
+          continue;
+        }
+
+        try {
           // @dev: This function needs to be throwable to avoid persisting the entity in the DB if the email is not sent
           await sendMailToAddresses(
             `Funds ${action} for the service - ${payment.service.description?.title}`,

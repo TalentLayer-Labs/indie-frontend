@@ -2,6 +2,10 @@ import { IExecWeb3mail, getWeb3Provider as getMailProvider } from '@iexec/web3ma
 import { IExecDataProtector, getWeb3Provider as getProtectorProvider } from '@iexec/dataprotector';
 import { userGaveAccessToPlatform } from '../../modules/Web3Mail/utils/iexec-utils';
 
+/**
+ * @dev: The parameter "throwable" will interrupt the function's loop and throw an error if set to true
+ * and simply log the error & keep iterating on all the loop's addresses if set to false.
+ */
 export const sendMailToAddresses = async (
   emailSubject: string,
   emailContent: string,

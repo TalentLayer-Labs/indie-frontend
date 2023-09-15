@@ -50,26 +50,28 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // If some entities are not already in the DB, email the hirer & persist the payment in the DB
     if (nonSentReviewEmails) {
       for (const review of nonSentReviewEmails) {
+        let fromHandle = '',
+          fromAddress = '';
+        review.to.address === review.service.buyer.address
+          ? ((fromHandle = review.service.seller.handle),
+            (fromAddress = review.service.seller.address))
+          : ((fromHandle = review.service.buyer.handle),
+            (fromAddress = review.service.buyer.address));
+        console.log('Handle', fromHandle);
+        console.log('Address', fromAddress);
+        console.log('Payment id', review.id);
+        console.log('Reviewer is the buyer', review.to.address === review.service.buyer.address);
+        // Check whether the user opted for the called feature | Seller if fund release, Buyer if fund reimbursement
+        //TODO query not tested
+        const userData = await getUserWeb3mailPreferences(
+          platformId,
+          fromAddress,
+          Web3mailPreferences.activeOnReview,
+        );
+        if (!userData?.description?.web3mailPreferences?.activeOnReview) {
+          console.error(`User ${fromAddress} has not opted in for the ${EmailType.Review} feature`);
+        }
         try {
-          let fromHandle = '',
-            fromAddress = '';
-          review.to.address === review.service.buyer.address
-            ? ((fromHandle = review.service.seller.handle),
-              (fromAddress = review.service.seller.address))
-            : ((fromHandle = review.service.buyer.handle),
-              (fromAddress = review.service.buyer.address));
-          // Check whether the user opted for the called feature | Seller if fund release, Buyer if fund reimbursement
-          //TODO query not tested
-          const userData = await getUserWeb3mailPreferences(
-            platformId,
-            fromAddress,
-            Web3mailPreferences.activeOnReview,
-          );
-          if (!userData?.description?.web3mailPreferences?.activeOnReview) {
-            throw new Error(
-              `User ${fromAddress} has not opted in for the ${EmailType.Review} feature`,
-            );
-          }
           // @dev: This function needs to be throwable to avoid persisting the entity in the DB if the email is not sent
           await sendMailToAddresses(
             `A review was created for the service - ${review.service.description?.title}`,

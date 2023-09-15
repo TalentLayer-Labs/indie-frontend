@@ -57,17 +57,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // If some entities are not already in the DB, email the hirer & persist the proposal in the DB
     if (nonSentProposals) {
       for (const proposal of nonSentProposals) {
+        // Check whether the user opted for the called feature
+        //TODO query not tested
+        const userData = await getUserWeb3mailPreferences(
+          platformId,
+          proposal.service.buyer.address,
+          Web3mailPreferences.activeOnProposalValidated,
+        );
+        if (!userData?.description?.web3mailPreferences?.activeOnProposalValidated) {
+          console.error(`User has not opted in for the ${EmailType.ProposalValidated} feature`);
+          continue;
+        }
         try {
-          // Check whether the user opted for the called feature
-          //TODO query not tested
-          const userData = await getUserWeb3mailPreferences(
-            platformId,
-            proposal.service.buyer.address,
-            Web3mailPreferences.activeOnProposalValidated,
-          );
-          if (!userData?.description?.web3mailPreferences?.activeOnProposalValidated) {
-            throw new Error(`User has not opted in for the ${EmailType.ProposalValidated} feature`);
-          }
           // @dev: This function needs to be throwable to avoid persisting the proposal in the DB if the email is not sent
           await sendMailToAddresses(
             `Your proposal got accepted ! - ${proposal.description?.title}`,

@@ -31,17 +31,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (contactList) {
       for (const contact of contactList) {
         console.log(contact.address);
+        // Check whether the user opted for the called feature
+        //TODO query not tested
+        const userData = await getUserWeb3mailPreferences(
+          platformId,
+          contact.address,
+          Web3mailPreferences.activeOnPlatformMarketing,
+        );
+        if (!userData?.description?.web3mailPreferences?.activeOnPlatformMarketing) {
+          console.error(`User has not opted in for the ${EmailType.PlatformMarketing} feature`);
+          continue;
+        }
         try {
-          // Check whether the user opted for the called feature
-          //TODO query not tested
-          const userData = await getUserWeb3mailPreferences(
-            platformId,
-            contact.address,
-            Web3mailPreferences.activeOnPlatformMarketing,
-          );
-          if (!userData?.description?.web3mailPreferences?.activeOnPlatformMarketing) {
-            throw new Error(`User has not opted in for the ${EmailType.PlatformMarketing} feature`);
-          }
           await sendMailToAddresses(`${emailSubject}`, `${emailContent}`, [contact.address], true);
           successCount++;
           console.log('Email sent');

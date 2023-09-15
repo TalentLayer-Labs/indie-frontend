@@ -2,6 +2,11 @@ import { IExecWeb3mail, getWeb3Provider as getMailProvider, Contact } from '@iex
 import { userGaveAccessToPlatform } from '../../modules/Web3Mail/utils/iexec-utils';
 import { IExecDataProtector, getWeb3Provider as getProtectorProvider } from '@iexec/dataprotector';
 
+// @Romain: I never had to use throwable here, do you think we should keep it?
+/**
+ * @dev: The parameter "throwable" will interrupt the function's loop and throw an error if set to true
+ * and simply log the error & keep iterating on all the loop's addresses if set to false.
+ */
 export const sendMailToMyContacts = async (
   emailSubject: string,
   emailContent: string,
