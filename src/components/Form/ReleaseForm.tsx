@@ -3,7 +3,7 @@ import { Field, Form, Formik } from 'formik';
 import { useContext, useMemo, useState } from 'react';
 import { useProvider, useSigner } from 'wagmi';
 import TalentLayerContext from '../../context/talentLayer';
-import { executePayment } from '../../contracts/executePayment';
+import { executePayment } from '../../contracts/escrowFunctions';
 import { IService, IToken, ServiceStatusEnum } from '../../types';
 import { renderTokenAmount } from '../../utils/conversion';
 

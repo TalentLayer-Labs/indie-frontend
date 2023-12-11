@@ -5,19 +5,15 @@ import { useContext, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useProvider, useSigner } from 'wagmi';
 import * as Yup from 'yup';
-import { config } from '../../config';
 import TalentLayerContext from '../../context/talentLayer';
-import ServiceRegistry from '../../contracts/ABI/TalentLayerService.json';
 import { postToIPFS } from '../../utils/ipfs';
-import { createMultiStepsTransactionToast, showErrorTransactionToast } from '../../utils/toast';
 import { parseRateAmount } from '../../utils/web3';
 import SubmitButton from './SubmitButton';
 import useAllowedTokens from '../../hooks/useAllowedTokens';
-import { getServiceSignature } from '../../utils/signature';
 import { IToken } from '../../types';
 import useServiceById from '../../hooks/useServiceById';
 import { SkillsInput } from './skills-input';
-import { delegateCreateService, delegateUpdateService } from '../request';
+import { createOrUpdateService } from '../../contracts/createOrUpdateService';
 
 interface IFormValues {
   title: string;
@@ -25,21 +21,22 @@ interface IFormValues {
   keywords: string;
   rateToken: string;
   rateAmount: number;
+  referralAmount: number;
 }
 
 function ServiceForm({ serviceId }: { serviceId?: string }) {
-  const { open: openConnectModal } = useWeb3Modal();
   const { user, account } = useContext(TalentLayerContext);
-  const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
   const { data: signer } = useSigner({
     chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
   });
-  const existingService = useServiceById(serviceId as string);
-
+  const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
+  const { open: openConnectModal } = useWeb3Modal();
   const router = useRouter();
+
+  const existingService = useServiceById(serviceId as string);
   const allowedTokenList = useAllowedTokens();
   const existingToken = allowedTokenList.find(value => {
-    return value.address === existingService?.description?.rateToken;
+    return value.address === existingService?.rateToken.address;
   });
   const [selectedToken, setSelectedToken] = useState<IToken>();
   const { isActiveDelegate } = useContext(TalentLayerContext);
@@ -48,7 +45,7 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
     title: existingService?.description?.title || '',
     about: existingService?.description?.about || '',
     keywords: existingService?.description?.keywords_raw || '',
-    rateToken: existingService?.description?.rateToken || '',
+    rateToken: existingService?.rateToken.address || '',
     rateAmount:
       existingService?.description?.rateAmount &&
       allowedTokenList &&
@@ -57,6 +54,15 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
         ? Number(
             ethers.utils.formatUnits(
               BigNumber.from(existingService?.description?.rateAmount),
+              existingToken.decimals,
+            ),
+          )
+        : 0,
+    referralAmount:
+      existingService?.referralAmount && allowedTokenList && existingToken && existingToken.decimals
+        ? Number(
+            ethers.utils.formatUnits(
+              BigNumber.from(existingService?.referralAmount),
               existingToken.decimals,
             ),
           )
@@ -96,6 +102,12 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
       }),
   });
 
+  const validateReferralAmount = (value: number) => {
+    if (value < initialValues.referralAmount && initialValues.referralAmount !== 0) {
+      return 'Referral amount cannot be inferior to previous amount';
+    }
+  };
+
   const onSubmit = async (
     values: IFormValues,
     {
@@ -104,71 +116,41 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
     }: { setSubmitting: (isSubmitting: boolean) => void; resetForm: () => void },
   ) => {
     const token = allowedTokenList.find(token => token.address === values.rateToken);
-    if (account?.isConnected === true && provider && signer && token && user) {
-      try {
-        const parsedRateAmount = await parseRateAmount(
-          values.rateAmount.toString(),
-          values.rateToken,
-          token.decimals,
-        );
-        const parsedRateAmountString = parsedRateAmount.toString();
-        const cid = await postToIPFS(
-          JSON.stringify({
-            title: values.title,
-            about: values.about,
-            keywords: values.keywords,
-            role: 'buyer',
-            rateToken: values.rateToken,
-            rateAmount: parsedRateAmountString,
-          }),
-        );
-
-        const contract = new ethers.Contract(
-          config.contracts.serviceRegistry,
-          ServiceRegistry.abi,
-          signer,
-        );
-
-        // Get platform signature
-        const signature = await getServiceSignature({ profileId: Number(user?.id), cid });
-
-        let tx;
-
-        if (isActiveDelegate) {
-          const response = existingService
-            ? await delegateUpdateService(user.id, user.address, existingService.id, cid)
-            : await delegateCreateService(user.id, user.address, cid);
-          tx = response.data.transaction;
-        } else {
-          tx = existingService
-            ? await contract.updateServiceData(user?.id, existingService.id, cid)
-            : await contract.createService(
-                user?.id,
-                process.env.NEXT_PUBLIC_PLATFORM_ID,
-                cid,
-                signature,
-              );
-        }
-
-        const newId = await createMultiStepsTransactionToast(
-          {
-            pending: `${existingService ? 'Updating' : 'Creating'} your job...`,
-            success: `Congrats! Your job has been ${existingService ? 'updated' : 'created'} !`,
-            error: `An error occurred while ${existingService ? 'Updating' : 'Creating'} your job`,
-          },
-          provider,
-          tx,
-          'service',
-          cid,
-        );
-        setSubmitting(false);
-        resetForm();
-        if (newId) {
-          router.push(`/services/${newId}`);
-        }
-      } catch (error) {
-        showErrorTransactionToast(error);
-      }
+    if (account?.isConnected === true && signer && provider && token && user) {
+      const parsedRateAmount = await parseRateAmount(
+        values.rateAmount.toString(),
+        values.rateToken,
+        token.decimals,
+      );
+      const parsedReferralAmount = await parseRateAmount(
+        values.referralAmount.toString(),
+        values.rateToken,
+        token.decimals,
+      );
+      const parsedRateAmountString = parsedRateAmount.toString();
+      const cid = await postToIPFS(
+        JSON.stringify({
+          title: values.title,
+          about: values.about,
+          keywords: values.keywords,
+          role: 'buyer',
+          rateAmount: parsedRateAmountString,
+        }),
+      );
+      await createOrUpdateService(
+        signer,
+        provider,
+        router,
+        user.id,
+        user.address,
+        existingService?.id,
+        parsedReferralAmount,
+        values.rateToken,
+        cid,
+        isActiveDelegate,
+        setSubmitting,
+        resetForm,
+      );
     } else {
       openConnectModal();
     }
@@ -179,7 +161,8 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
       initialValues={initialValues}
       enableReinitialize={true}
       onSubmit={onSubmit}
-      validationSchema={validationSchema}>
+      validationSchema={validationSchema}
+      validateOnChange={true}>
       {({ isSubmitting, setFieldValue }) => (
         <Form>
           <div className='grid grid-cols-1 gap-6 border border-gray-200 rounded-md p-8'>
@@ -238,29 +221,51 @@ function ServiceForm({ serviceId }: { serviceId?: string }) {
               </label>
               <label className='block'>
                 <span className='text-gray-700'>Token</span>
-                <Field
-                  component='select'
-                  id='rateToken'
-                  name='rateToken'
-                  className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
-                  placeholder=''
-                  onChange={(e: { target: { value: string } }) => {
-                    const token = allowedTokenList.find(token => token.address === e.target.value);
-                    setSelectedToken(token);
-                    setFieldValue('rateToken', e.target.value);
-                  }}>
-                  <option value=''>Select a token</option>
-                  {allowedTokenList.map((token, index) => (
-                    <option key={index} value={token.address}>
-                      {token.symbol}
-                    </option>
-                  ))}
-                </Field>
+                {!existingService ? (
+                  <Field
+                    component='select'
+                    id='rateToken'
+                    name='rateToken'
+                    className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
+                    placeholder=''
+                    onChange={(e: { target: { value: string } }) => {
+                      const token = allowedTokenList.find(
+                        token => token.address === e.target.value,
+                      );
+                      setSelectedToken(token);
+                      setFieldValue('rateToken', e.target.value);
+                    }}>
+                    <option value=''>Select a token</option>
+                    {allowedTokenList.map((token, index) => (
+                      <option key={index} value={token.address}>
+                        {token.symbol}
+                      </option>
+                    ))}
+                  </Field>
+                ) : (
+                  <p className='my-2 block w-full text-gray-500'>
+                    {existingService?.rateToken.symbol}
+                  </p>
+                )}
                 <span className='text-red-500'>
                   <ErrorMessage name='rateToken' />
                 </span>
               </label>
             </div>
+            <label className='block'>
+              <span className='text-gray-700'>Referral amount (Opt)</span>
+              <Field
+                type='number'
+                id='referralAmount'
+                name='referralAmount'
+                className='mt-1 mb-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
+                placeholder=''
+                validate={validateReferralAmount}
+              />
+              <span className='text-red-500'>
+                <ErrorMessage name='referralAmount' />
+              </span>
+            </label>
 
             <SubmitButton isSubmitting={isSubmitting} label='Post' />
           </div>

@@ -1,5 +1,4 @@
 import { useContext } from 'react';
-import { useRouter } from 'next/router';
 import TalentLayerContext from '../context/talentLayer';
 import { renderTokenAmount } from '../utils/conversion';
 import { IProposal, ProposalStatusEnum } from '../types';
@@ -58,7 +57,7 @@ function UserProposalItem({ proposal }: { proposal: IProposal }) {
         </div>
         <div className='flex flex-row gap-4 justify-between items-center border-t border-gray-100 pt-4'>
           <p className='text-gray-900 font-bold line-clamp-1 flex-1'>
-            {renderTokenAmount(proposal.rateToken, proposal.rateAmount)}
+            {renderTokenAmount(service.rateToken, proposal.rateAmount)}
           </p>
           <Link
             className='text-indigo-600 bg-indigo-50 hover:bg-indigo-500 hover:text-white px-5 py-2 rounded-lg'

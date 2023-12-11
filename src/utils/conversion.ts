@@ -1,4 +1,4 @@
-import { ethers } from 'ethers';
+import { BigNumberish, ethers } from 'ethers';
 import { config } from '../config';
 import { IToken } from '../types';
 
@@ -8,7 +8,10 @@ export const renderTokenAmount = (token: IToken, value: string): string => {
 };
 
 // TODO: query tokens list from graph
-export const renderTokenAmountFromConfig = (tokenAddress: string, value: string): string | null => {
+export const renderTokenAmountFromConfig = (
+  tokenAddress: string,
+  value: string | BigNumberish,
+): string | null => {
   if (config.tokens[tokenAddress] === undefined || !value) {
     return null;
   }

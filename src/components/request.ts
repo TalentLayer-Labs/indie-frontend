@@ -1,16 +1,21 @@
 /* eslint-disable no-console */
 import axios from 'axios';
+import { BigNumber } from 'ethers';
 
 export const delegateCreateService = async (
   userId: string,
   userAddress: string,
   cid: string,
+  token: string,
+  referralAmount: BigNumber,
 ): Promise<any> => {
   try {
     return await axios.post('/api/delegate/create-service', {
       userId,
       userAddress,
       cid,
+      token,
+      referralAmount,
     });
   } catch (err) {
     console.error(err);
@@ -22,6 +27,7 @@ export const delegateUpdateService = async (
   userId: string,
   userAddress: string,
   serviceId: string,
+  referralAmount: BigNumber,
   cid: string,
 ): Promise<any> => {
   try {
@@ -29,6 +35,7 @@ export const delegateUpdateService = async (
       userId,
       userAddress,
       serviceId,
+      referralAmount,
       cid,
     });
   } catch (err) {
@@ -58,22 +65,22 @@ export const delegateCreateOrUpdateProposal = async (
   userId: string,
   userAddress: string,
   serviceId: string,
-  valuesRateToken: string,
   parsedRateAmountString: string,
   cid: string,
   convertExpirationDateString: string,
-  existingProposalStatus?: string,
+  existingProposal: boolean,
+  referrerId: string,
 ): Promise<any> => {
   try {
     return await axios.post('/api/delegate/create-update-proposal', {
       userId,
       userAddress,
       serviceId,
-      valuesRateToken,
       parsedRateAmountString,
       cid,
       convertExpirationDateString,
-      existingProposalStatus,
+      existingProposal,
+      referrerId,
     });
   } catch (err) {
     console.error(err);

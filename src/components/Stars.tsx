@@ -14,7 +14,7 @@ function Stars({ rating, numReviews }: { rating: number; numReviews: number }) {
       ))}
 
       <span className='bg-indigo-700 text-white text-xs font-semibold mr-2 px-2.5 py-0.5 rounded ml-3'>
-        {rating}/5
+        {rating.toFixed(1)}/5
       </span>
       <span className='text-xs text-gray-400'>
         {numReviews} review{numReviews > 1 ? 's' : ''}

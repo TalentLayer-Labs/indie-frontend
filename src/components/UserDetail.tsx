@@ -8,6 +8,8 @@ import Loading from './Loading';
 import Stars from './Stars';
 import Image from 'next/image';
 import DelegateModal from './Modal/DelegateModal';
+import { renderTokenAmountFromConfig } from '../utils/conversion';
+import ClaimReferralBalanceModal from './Modal/ClaimReferralBalanceModal';
 
 function UserDetail({ user }: { user: IUser }) {
   const { user: currentUser } = useContext(TalentLayerContext);
@@ -16,6 +18,16 @@ function UserDetail({ user }: { user: IUser }) {
   if (!user?.id) {
     return <Loading />;
   }
+
+  const hasClaimableBalance = () => {
+    let hasBalance = false;
+    currentUser?.referralGains?.forEach(gain => {
+      if (Number(gain.availableBalance) > 0) {
+        hasBalance = true;
+      }
+    });
+    return hasBalance;
+  };
 
   return (
     <div className='flex flex-col rounded-xl p-4 border border-gray-200'>
@@ -38,25 +50,79 @@ function UserDetail({ user }: { user: IUser }) {
             </div>
           </div>
         </div>
-        <Stars rating={Number(user.rating)} numReviews={user.userStats.numReceivedReviews} />
+        <Stars rating={Number(user.rating)} numReviews={user.userStat.numReceivedReviews} />
       </div>
-      <div className=' border-t border-gray-100 pt-4 w-full'>
-        {userDescription?.name && (
-          <p className='text-sm text-gray-500 mt-4'>
-            <strong>Name:</strong> {userDescription?.name}
+      <div className='flex flex-row'>
+        <div className='border-t border-gray-100 pt-4 w-full'>
+          <p className='text-m text-gray-600 mt-4'>
+            <strong>User Data</strong>
           </p>
-        )}
-        <p className='text-sm text-gray-500 mt-4'>
-          <strong>Skills:</strong> {userDescription?.skills_raw}
-        </p>
-        <p className='text-sm text-gray-500 mt-4'>
-          <strong>About:</strong> {userDescription?.about}
-        </p>
-        {userDescription?.role && (
+          {userDescription?.name && (
+            <p className='text-sm text-gray-500 mt-4'>
+              <strong>Name:</strong> {userDescription?.name}
+            </p>
+          )}
           <p className='text-sm text-gray-500 mt-4'>
-            <strong>Role:</strong> {userDescription?.role}
+            <strong>Skills:</strong> {userDescription?.skills_raw}
           </p>
-        )}
+          <p className='text-sm text-gray-500 mt-4'>
+            <strong>About:</strong> {userDescription?.about}
+          </p>
+          {userDescription?.role && (
+            <p className='text-sm text-gray-500 mt-4'>
+              <strong>Role:</strong> {userDescription?.role}
+            </p>
+          )}
+        </div>
+
+        <div className='border-t border-gray-100 pt-4 w-full'>
+          {!!Number(user?.userStat.numReferredUsers) && (
+            <>
+              <p className='text-m text-gray-600 mt-4'>
+                <strong>Referral data</strong>
+              </p>
+              {!!Number(user?.userStat.averageReferredRating) && (
+                <p className='text-sm text-gray-500 mt-4'>
+                  <strong>Referred users:</strong> {user?.userStat.numReferredUsers}
+                </p>
+              )}
+              {!!Number(user?.userStat.averageReferredRating) && (
+                <p className='text-sm text-gray-500 mt-4'>
+                  <strong>Average rating for referred services:</strong>{' '}
+                  {user?.userStat.averageReferredRating}
+                </p>
+              )}
+            </>
+          )}
+          {currentUser?.id == user.id &&
+            currentUser?.referralGains &&
+            currentUser?.referralGains.length > 0 && (
+              <>
+                <div className='flex flex-row mt-4'>
+                  <div className=''>
+                    <p className='text-m text-gray-600'>
+                      <strong>Referral gains</strong>
+                    </p>
+                    {currentUser?.referralGains.map(gain => (
+                      <p className='text-sm text-gray-500'>
+                        - {renderTokenAmountFromConfig(gain.token.address, gain.totalGain)}{' '}
+                      </p>
+                    ))}
+                  </div>
+                  {hasClaimableBalance() && (
+                    <div className='ml-2 self-start text-indigo-600 bg-indigo-50 text-xs hover:bg-indigo-500 hover:text-white px-3 py-1 rounded-lg'>
+                      {
+                        <ClaimReferralBalanceModal
+                          userId={currentUser.id}
+                          referralGains={currentUser.referralGains}
+                        />
+                      }
+                    </div>
+                  )}
+                </div>
+              </>
+            )}
+        </div>
       </div>
 
       {currentUser?.id === user.id && (

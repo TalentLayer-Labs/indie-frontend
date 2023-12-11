@@ -10,11 +10,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     userId,
     userAddress,
     serviceId,
-    valuesRateToken,
     parsedRateAmountString,
     cid,
     convertExpirationDateString,
-    existingProposalStatus,
+    existingProposal,
+    referrerId,
   } = req.body;
 
   // @dev : you can add here all the checks you need to confirm the delegation for a user
@@ -33,35 +33,33 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       signer,
     );
 
+    const signature = await getProposalSignature({
+      profileId: Number(userId),
+      cid,
+      serviceId: Number(serviceId),
+    });
+
     let transaction;
 
-    if (existingProposalStatus) {
-      transaction = await serviceRegistryContract.updateProposal(
-        userId,
-        serviceId,
-        valuesRateToken,
-        parsedRateAmountString,
-        cid,
-        convertExpirationDateString,
-      );
-    } else {
-      const signature = await getProposalSignature({
-        profileId: Number(userId),
-        cid,
-        serviceId: Number(serviceId),
-      });
-
-      transaction = await serviceRegistryContract.createProposal(
-        userId,
-        serviceId,
-        valuesRateToken,
-        parsedRateAmountString,
-        process.env.NEXT_PUBLIC_PLATFORM_ID,
-        cid,
-        convertExpirationDateString,
-        signature,
-      );
-    }
+    existingProposal
+      ? (transaction = await serviceRegistryContract.updateProposal(
+          userId,
+          serviceId,
+          parsedRateAmountString,
+          cid,
+          convertExpirationDateString,
+          referrerId,
+        ))
+      : (transaction = await serviceRegistryContract.createProposal(
+          userId,
+          serviceId,
+          parsedRateAmountString,
+          process.env.NEXT_PUBLIC_PLATFORM_ID,
+          cid,
+          convertExpirationDateString,
+          signature,
+          referrerId,
+        ));
 
     res.status(200).json({ transaction: transaction });
   } catch (error) {

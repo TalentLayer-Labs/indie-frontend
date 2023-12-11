@@ -3,21 +3,16 @@ import { ErrorMessage, Field, Form, Formik } from 'formik';
 import { useRouter } from 'next/router';
 import { useProvider, useSigner } from 'wagmi';
 import * as Yup from 'yup';
-import { config } from '../../config';
-import ServiceRegistry from '../../contracts/ABI/TalentLayerService.json';
 import { IProposal, IService, IUser } from '../../types';
 import { postToIPFS } from '../../utils/ipfs';
-import { createMultiStepsTransactionToast, showErrorTransactionToast } from '../../utils/toast';
 import { parseRateAmount } from '../../utils/web3';
 import ServiceItem from '../ServiceItem';
 import SubmitButton from './SubmitButton';
 import useAllowedTokens from '../../hooks/useAllowedTokens';
-import { getProposalSignature } from '../../utils/signature';
-import { delegateCreateOrUpdateProposal } from '../request';
-import { useContext } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import TalentLayerContext from '../../context/talentLayer';
-import { useState } from 'react';
 import MetaEvidenceModal from '../../modules/Disputes/components/MetaEvidenceModal';
+import { createOrUpdateProposal } from '../../contracts/createOrUpdateProposal';
 
 interface IFormValues {
   about: string;
@@ -25,6 +20,7 @@ interface IFormValues {
   rateAmount: number;
   expirationDate: number;
   videoUrl: string;
+  referrerId: number;
 }
 
 const validationSchema = Yup.object({
@@ -52,6 +48,11 @@ function ProposalForm({
   const { isActiveDelegate } = useContext(TalentLayerContext);
   const [conditionsValidated, setConditionsValidated] = useState(false);
 
+  //Store referrerId in local storage if any
+  useEffect(() => {
+    localStorage.setItem(`${service.id}-${user.id}`, router.query.referrerId as string);
+  }, [router.query.referrerId]);
+
   if (allowedTokenList.length === 0) {
     return <div>Loading...</div>;
   }
@@ -63,9 +64,7 @@ function ProposalForm({
       (Number(existingProposal?.expirationDate) - Date.now() / 1000) / (60 * 60 * 24),
     );
 
-    const token = allowedTokenList.find(
-      token => token.address === existingProposal?.rateToken.address,
-    );
+    const token = allowedTokenList.find(token => token.address === service.rateToken.address);
 
     existingRateTokenAmount = FixedNumber.from(
       ethers.utils.formatUnits(existingProposal.rateAmount, token?.decimals),
@@ -74,10 +73,16 @@ function ProposalForm({
 
   const initialValues: IFormValues = {
     about: existingProposal?.description?.about || '',
-    rateToken: existingProposal?.rateToken.address || '',
+    rateToken: service.rateToken.address,
     rateAmount: existingRateTokenAmount || 0,
     expirationDate: existingExpirationDate || 15,
     videoUrl: existingProposal?.description?.video_url || '',
+    referrerId:
+      (service.referralAmount &&
+        (Number(existingProposal?.referrer?.id) ||
+          Number(localStorage.getItem(`${service.id}-${user.id}`)) ||
+          Number(router.query.referrerId as string))) ||
+      0,
   };
 
   const onSubmit = async (
@@ -87,92 +92,40 @@ function ProposalForm({
       resetForm,
     }: { setSubmitting: (isSubmitting: boolean) => void; resetForm: () => void },
   ) => {
-    const token = allowedTokenList.find(token => token.address === values.rateToken);
+    const token = allowedTokenList.find(token => token.address === service.rateToken.address);
     if (provider && signer && token) {
-      try {
-        const parsedRateAmount = await parseRateAmount(
-          values.rateAmount.toString(),
-          values.rateToken,
-          token.decimals,
-        );
-        const now = Math.floor(Date.now() / 1000);
-        const convertExpirationDate = now + 60 * 60 * 24 * values.expirationDate;
-        const convertExpirationDateString = convertExpirationDate.toString();
+      const parsedRateAmount = await parseRateAmount(
+        values.rateAmount.toString(),
+        service.rateToken.address,
+        token.decimals,
+      );
+      const now = Math.floor(Date.now() / 1000);
+      const convertExpirationDate = now + 60 * 60 * 24 * values.expirationDate;
+      const convertExpirationDateString = convertExpirationDate.toString();
 
-        const parsedRateAmountString = parsedRateAmount.toString();
+      const cid = await postToIPFS(
+        JSON.stringify({
+          about: values.about,
+          video_url: values.videoUrl,
+        }),
+      );
 
-        const cid = await postToIPFS(
-          JSON.stringify({
-            about: values.about,
-            video_url: values.videoUrl,
-          }),
-        );
-
-        // Get platform signature
-        const signature = await getProposalSignature({
-          profileId: Number(user.id),
-          cid,
-          serviceId: Number(service.id),
-        });
-
-        let tx;
-        console.log('isActiveDelegate', isActiveDelegate);
-        if (isActiveDelegate) {
-          const response = await delegateCreateOrUpdateProposal(
-            user.id,
-            user.address,
-            service.id,
-            values.rateToken,
-            parsedRateAmountString,
-            cid,
-            convertExpirationDateString,
-            existingProposal?.status,
-          );
-          tx = response.data.transaction;
-        } else {
-          const contract = new ethers.Contract(
-            config.contracts.serviceRegistry,
-            ServiceRegistry.abi,
-            signer,
-          );
-          tx = existingProposal
-            ? await contract.updateProposal(
-                user.id,
-                service.id,
-                values.rateToken,
-                parsedRateAmountString,
-                cid,
-                convertExpirationDateString,
-              )
-            : await contract.createProposal(
-                user.id,
-                service.id,
-                values.rateToken,
-                parsedRateAmountString,
-                process.env.NEXT_PUBLIC_PLATFORM_ID,
-                cid,
-                convertExpirationDateString,
-                signature,
-              );
-        }
-
-        await createMultiStepsTransactionToast(
-          {
-            pending: 'Creating your proposal...',
-            success: 'Congrats! Your proposal has been added',
-            error: 'An error occurred while creating your proposal',
-          },
-          provider,
-          tx,
-          'proposal',
-          cid,
-        );
-        setSubmitting(false);
-        resetForm();
-        router.back();
-      } catch (error) {
-        showErrorTransactionToast(error);
-      }
+      await createOrUpdateProposal(
+        signer,
+        provider,
+        router,
+        user.id,
+        user.address,
+        values.referrerId.toString(),
+        service.id,
+        convertExpirationDateString,
+        !!existingProposal,
+        parsedRateAmount,
+        cid,
+        isActiveDelegate,
+        setSubmitting,
+        resetForm,
+      );
     }
   };
 
@@ -217,17 +170,12 @@ function ProposalForm({
               <label className='block'>
                 <span className='text-gray-700'>Token</span>
                 <Field
-                  component='select'
+                  component='text'
                   id='rateToken'
                   name='rateToken'
-                  className='mt-1 mb-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
+                  className='mt-2 mb-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
                   placeholder=''>
-                  <option value=''>Select a token</option>
-                  {allowedTokenList.map((token, index) => (
-                    <option key={index} value={token.address}>
-                      {token.symbol}
-                    </option>
-                  ))}
+                  {service.rateToken.symbol}
                 </Field>
                 <span className='text-red-500'>
                   <ErrorMessage name='rateToken' />
@@ -260,6 +208,23 @@ function ProposalForm({
                 <ErrorMessage name='videoUrl' />
               </span>
             </label>
+            {!!Number(service.referralAmount) && (
+              <>
+                <label className='block flex-1'>
+                  <span className='text-gray-700'>Referrer id (optional)</span>
+                  <Field
+                    type='text'
+                    id='referrerId'
+                    name='referrerId'
+                    className='mt-1 mb-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50'
+                    placeholder='TalentLayer id of referrer'
+                  />
+                  <span className='text-red-500'>
+                    <ErrorMessage name='referrerId' />
+                  </span>
+                </label>
+              </>
+            )}
 
             <div className='flex-col items-center mb-4'>
               <MetaEvidenceModal

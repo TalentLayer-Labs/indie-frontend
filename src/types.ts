@@ -7,8 +7,9 @@ export type IUser = {
   address: string;
   rating: string;
   description?: IUserDetails;
-  userStats: IUserStats;
+  userStat: IUserStat;
   delegates?: string[];
+  referralGains?: IReferralGain[];
 };
 
 export type IUserDetails = {
@@ -21,13 +22,16 @@ export type IUserDetails = {
   skills_raw: string;
 };
 
-export type IUserStats = {
+export type IUserStat = {
   numReceivedReviews: number;
   numGivenReviews: number;
   numCreatedServices: number;
   numFinishedServicesAsBuyer: number;
   numCreatedProposals: number;
   numFinishedServicesAsSeller: number;
+  numReferredUsers: number;
+  numReferredUsersReviewsReceived: number;
+  averageReferredRating: number;
 };
 
 export type IAccount = {
@@ -72,6 +76,8 @@ export enum TransactionStatusEnum {
 export type IService = {
   id: string;
   status: ServiceStatusEnum;
+  rateToken: IToken;
+  referralAmount?: string;
   buyer: IUser;
   seller: IUser;
   sender: IUser;
@@ -182,6 +188,7 @@ export type IProposal = {
   updatedAt: string;
   description?: IProposalDetails;
   expirationDate: string;
+  referrer: IUser;
 };
 
 export type IFees = {
@@ -257,4 +264,13 @@ export type IEvidenceDetails = {
   fileTypeExtension: string;
   description: string;
   fileHash: string;
+};
+
+export type IReferralGain = {
+  id: string;
+  user: IUser;
+  token: IToken;
+  service: IService;
+  totalGain: string;
+  availableBalance: string;
 };

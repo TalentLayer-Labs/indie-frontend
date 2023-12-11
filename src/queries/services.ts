@@ -17,6 +17,13 @@ const serviceQueryFields = `
   status
   createdAt
   cid
+  referralAmount
+  rateToken {
+    name
+    symbol
+    address
+    decimals
+  }
   transaction {
     id
     status
@@ -26,7 +33,7 @@ const serviceQueryFields = `
     handle
     address
     rating
-    userStats {
+    userStat {
       numReceivedReviews
     }
   }
@@ -45,12 +52,6 @@ const serviceQueryFields = `
   },
   validatedProposal: proposals(where: {status: "Validated"}){
     id,
-    rateToken {
-      address
-      decimals
-      name
-      symbol
-    },
     rateAmount,
   }
 `;
@@ -63,7 +64,6 @@ const serviceDescriptionQueryFields = `
   startDate
   expectedEndDate
   rateAmount
-  rateToken
   keywords_raw
   keywords {
     id

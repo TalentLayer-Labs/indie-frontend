@@ -1,4 +1,4 @@
-import { ethers } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 import { Check, X } from 'heroicons-react';
 import { useState } from 'react';
 import { useBalance, useProvider, useSigner } from 'wagmi';
@@ -6,7 +6,7 @@ import { FEE_RATE_DIVIDER } from '../../config';
 import { validateProposal } from '../../contracts/acceptProposal';
 import useFees from '../../hooks/useFees';
 import ContactButton from '../../modules/Messaging/components/ContactButton';
-import { IAccount, IProposal, IService } from '../../types';
+import { IAccount, IProposal, IToken, IService } from '../../types';
 import { renderTokenAmount } from '../../utils/conversion';
 import Step from '../Step';
 import { postToIPFS } from '../../utils/ipfs';
@@ -14,12 +14,14 @@ import { generateMetaEvidence } from '../../modules/Disputes/utils/dispute';
 
 function ValidateProposalModal({
   proposal,
-  service,
   account,
+  service,
+  token,
 }: {
   proposal: IProposal;
-  service: IService;
   account: IAccount;
+  service: IService;
+  token: IToken;
 }) {
   const { data: signer } = useSigner({
     chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string),
@@ -27,11 +29,11 @@ function ValidateProposalModal({
   const provider = useProvider({ chainId: parseInt(process.env.NEXT_PUBLIC_NETWORK_ID as string) });
   const [show, setShow] = useState(false);
   const { data: ethBalance } = useBalance({ address: account.address });
-  const isProposalUseEth: boolean = proposal.rateToken.address === ethers.constants.AddressZero;
+  const isProposalUseEth: boolean = token.address === ethers.constants.AddressZero;
   const { data: tokenBalance } = useBalance({
     address: account.address,
     enabled: !isProposalUseEth,
-    token: proposal.rateToken.address,
+    token: token.address,
   });
 
   const originValidatedProposalPlatformId = proposal.platform.id;
@@ -42,13 +44,17 @@ function ValidateProposalModal({
     originValidatedProposalPlatformId,
   );
 
+  //Extract amounts
   const jobRateAmount = ethers.BigNumber.from(proposal.rateAmount);
-  const protocolFee = jobRateAmount.mul(protocolEscrowFeeRate).div(FEE_RATE_DIVIDER);
-  const originServiceFee = jobRateAmount.mul(originServiceFeeRate).div(FEE_RATE_DIVIDER);
-  const originValidatedProposalFee = jobRateAmount
+  const referralAmount = BigNumber.from(proposal.service.referralAmount);
+  const totalAmountBeforeFees = jobRateAmount.add(referralAmount);
+  //Calculate fees
+  const protocolFee = totalAmountBeforeFees.mul(protocolEscrowFeeRate).div(FEE_RATE_DIVIDER);
+  const originServiceFee = totalAmountBeforeFees.mul(originServiceFeeRate).div(FEE_RATE_DIVIDER);
+  const originValidatedProposalFee = totalAmountBeforeFees
     .mul(originValidatedProposalFeeRate)
     .div(FEE_RATE_DIVIDER);
-  const totalAmount = jobRateAmount
+  const totalAmount = totalAmountBeforeFees
     .add(originServiceFee)
     .add(originValidatedProposalFee)
     .add(protocolFee);
@@ -63,8 +69,8 @@ function ValidateProposalModal({
       proposal.description?.about || '',
       service.buyer.handle,
       proposal.seller.handle,
-      proposal.rateToken.address,
-      proposal.rateToken.symbol,
+      service.rateToken.address,
+      service.rateToken.symbol,
       proposal.rateAmount,
       service.description?.title || '',
       service.description?.startDate,
@@ -77,7 +83,7 @@ function ValidateProposalModal({
       provider,
       proposal.service.id,
       proposal.seller.id,
-      proposal.rateToken.address,
+      token.address,
       proposal.cid,
       metaEvidenceCid,
       totalAmount,
@@ -153,9 +159,17 @@ function ValidateProposalModal({
                   <div className='flex justify-between w-full'>
                     <p className='text-base leading-4 text-gray-800'>Job rate</p>
                     <p className='text-base  leading-4 text-gray-600'>
-                      {renderTokenAmount(proposal.rateToken, proposal.rateAmount)}
+                      {renderTokenAmount(token, proposal.rateAmount)}
                     </p>
                   </div>
+                  {!!Number(referralAmount) && (
+                    <div className='flex justify-between items-center w-full'>
+                      <p className='text-base leading-4 text-gray-800'>Referral amount</p>
+                      <p className='text-base  leading-4 text-gray-600'>
+                        +{renderTokenAmount(token, referralAmount.toString())}
+                      </p>
+                    </div>
+                  )}
                   <div className='flex justify-between items-center w-full'>
                     <p className='text-base leading-4 text-gray-800'>
                       Fees from the marketplace originating the service{' '}
@@ -164,7 +178,7 @@ function ValidateProposalModal({
                       </span>
                     </p>
                     <p className='text-base  leading-4 text-gray-600'>
-                      +{renderTokenAmount(proposal.rateToken, originServiceFee.toString())}
+                      +{renderTokenAmount(token, originServiceFee.toString())}
                     </p>
                   </div>
                   <div className='flex justify-between items-center w-full'>
@@ -179,8 +193,7 @@ function ValidateProposalModal({
                       </span>
                     </p>
                     <p className='text-base  leading-4 text-gray-600'>
-                      +
-                      {renderTokenAmount(proposal.rateToken, originValidatedProposalFee.toString())}
+                      +{renderTokenAmount(token, originValidatedProposalFee.toString())}
                     </p>
                   </div>
                   <div className='flex justify-between items-center w-full'>
@@ -191,14 +204,14 @@ function ValidateProposalModal({
                       </span>
                     </p>
                     <p className='text-base  leading-4 text-gray-600'>
-                      +{renderTokenAmount(proposal.rateToken, protocolFee.toString())}
+                      +{renderTokenAmount(token, protocolFee.toString())}
                     </p>
                   </div>
                 </div>
                 <div className='flex justify-between items-center w-full'>
                   <p className='text-base font-semibold leading-4 text-gray-800'>Total</p>
                   <p className='text-base  font-semibold leading-4 text-gray-600'>
-                    {renderTokenAmount(proposal.rateToken, totalAmount.toString())}
+                    {renderTokenAmount(token, totalAmount.toString())}
                   </p>
                 </div>
               </div>
@@ -225,7 +238,7 @@ function ValidateProposalModal({
                       </p>
                     </div>
                   )}
-                  {ethBalance && (
+                  {ethBalance && token.address === ethers.constants.AddressZero && (
                     <div className='flex justify-between w-full'>
                       <p className='text-base leading-4 text-gray-800'>
                         {ethBalance.formatted} MATIC
@@ -248,7 +261,7 @@ function ValidateProposalModal({
               </div>
             </div>
             <div className='flex items-center p-6 space-x-2 rounded-b border-t border-gray-200 '>
-              {hasEnoughBalance() ? (
+              {!hasEnoughBalance() ? (
                 <button
                   onClick={() => onSubmit()}
                   type='button'
@@ -258,7 +271,6 @@ function ValidateProposalModal({
               ) : (
                 <button
                   disabled
-                  // onClick={() => onSubmit()}
                   type='button'
                   className='hover:text-red-600 hover:bg-red-50 bg-red-500 text-white rounded-lg px-5 py-2.5 text-center'>
                   Validate proposal

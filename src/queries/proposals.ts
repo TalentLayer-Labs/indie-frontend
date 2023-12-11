@@ -6,23 +6,24 @@ export const getAllProposalsByServiceId = (id: string): Promise<any> => {
       proposals(where: {service_: {id: "${id}"}}) {
         service {
           id,
-          cid
+          cid,
+          referralAmount
           buyer {
             id
           }
           platform {
             id
           }
+          rateToken {
+            address
+            decimals
+            name
+            symbol
+          }
         }
         cid
         id
         status
-        rateToken {
-          address
-          decimals
-          name
-          symbol
-        }
         rateAmount
         createdAt
         updatedAt
@@ -32,7 +33,7 @@ export const getAllProposalsByServiceId = (id: string): Promise<any> => {
           address
           cid
           rating
-          userStats {
+          userStat {
             numReceivedReviews
           }
         }
@@ -59,12 +60,6 @@ export const getAllProposalsByUser = (id: string): Promise<any> => {
         proposals(where: {seller: "${id}", status: "Pending"}) {
           id
           rateAmount
-          rateToken {
-            address
-            decimals
-            name
-            symbol
-          }
           status
           cid
           createdAt
@@ -79,6 +74,12 @@ export const getAllProposalsByUser = (id: string): Promise<any> => {
             buyer {
               id
               handle
+            }
+            rateToken {
+              address
+              decimals
+              name
+              symbol
             }
           }
           description {
@@ -99,13 +100,18 @@ export const getProposalById = (id: string): Promise<any> => {
   const query = `
       {
         proposals(where: {id: "${id}"}) {
-          rateToken {
-            address
+          service {
+            rateToken {
+                address
+            }
           }
           rateAmount
           description {
             about
             video_url
+          }
+          referrer {
+            id
           }
           status
           expirationDate
